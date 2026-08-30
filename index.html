@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPM — Sexual Performance Management</title>
+<style>
+:root{--bg:#071014;--p:#102229;--p2:#152f37;--line:#28505c;--tx:#f4f8f9;--mut:#9eb1b7;--ac:#64e3c2}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(#071014,#0b171b);color:var(--tx);min-height:100vh}
+.wrap{width:min(980px,92%);margin:auto}.top{position:sticky;top:0;background:#071014e8;border-bottom:1px solid #ffffff12;z-index:9}.top .wrap{height:64px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900}.brand b{background:var(--ac);color:#05221a;padding:8px 11px;border-radius:11px;margin-right:8px}
+button{font:inherit;cursor:pointer}.btn{border:0;border-radius:13px;padding:11px 15px;font-weight:800}.pri{background:var(--ac);color:#05221a}.sec{background:#15282f;color:white;border:1px solid var(--line)}
+.hero{padding:68px 0}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}h1{font-size:clamp(44px,7vw,74px);line-height:.98;letter-spacing:-3px;margin:15px 0}
+.lead{font-size:19px;color:#c2d0d4;line-height:1.55}.ey{display:inline-block;border:1px solid #2a6659;background:#0c2822;color:#aef5e2;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.card{background:linear-gradient(180deg,#12262d,#0e1c21);border:1px solid var(--line);border-radius:20px;padding:22px;margin:16px 0}.score{width:170px;height:170px;border-radius:50%;margin:auto;display:grid;place-items:center;background:conic-gradient(var(--ac) 0 72%,#1d3840 72%)}.score>div{width:138px;height:138px;border-radius:50%;background:#0c1b20;display:grid;place-items:center;text-align:center}.score strong{font-size:48px}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 9px;color:#b8c7cc;font-size:12px}
+#app{display:none;padding:28px 0 60px}.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:15px}.tab{white-space:nowrap;background:#13262d;color:#b8c6cb;border:1px solid var(--line);border-radius:12px;padding:10px}.tab.on{background:#1b3b43;color:white}
+.panel{display:none}.panel.on{display:block}.bar{height:8px;background:#1c3740;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac)}
+.q{margin-top:18px}.q h3{margin-bottom:6px}.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.opts label{border:1px solid var(--line);border-radius:11px;padding:11px 5px;text-align:center;background:#13272e;font-size:12px}.opts label.sel{border-color:var(--ac);background:#173b34}
+.actions{display:flex;justify-content:space-between;margin-top:18px}.notice{border:1px solid var(--line);background:#0e2026;border-radius:13px;padding:14px;color:#cbd8dc}.danger{border-color:#703c3c;background:#2a1717;color:#ffd0d0}
+.res{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center}.domains{display:grid;gap:10px}.drow{display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center}.dbar{height:8px;background:#1b343c;border-radius:999px;overflow:hidden}.dbar i{display:block;height:100%;background:var(--ac)}
+.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.day{border:1px solid var(--line);border-radius:14px;padding:14px;background:#0d1b20}.day span{font-size:11px;color:var(--ac)}.day p{color:#b9c8cd}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}.f label{display:block;color:var(--mut);font-size:12px}.f input,.f select{width:100%;background:#0b171b;border:1px solid var(--line);color:white;border-radius:11px;padding:11px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.st{background:#0d1b20;border:1px solid var(--line);border-radius:13px;padding:14px}.st b{font-size:24px;display:block}.st span{font-size:11px;color:var(--mut)}
+.foot{padding:25px 0 50px;color:#81949a;font-size:12px}@media(max-width:760px){.grid,.res{grid-template-columns:1fr}.plan,.form,.stats{grid-template-columns:1fr}.opts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap"><div class="brand"><b>S</b>SPM</div><div><button id="lang" class="btn sec">ES</button> <button id="startTop" class="btn pri">Start</button></div></div></header>
+
+<main id="home">
+<section class="hero"><div class="wrap grid">
+<div>
+<span class="ey">PRIVATE • STRUCTURED • ACTION-ORIENTED</span>
+<h1>Sexual Performance Management</h1>
+<p class="lead" id="lead">Understand what may be affecting your sexual performance, get a personalized 28-day action plan, and track what improves.</p>
+<button id="start" class="btn pri">Get my free SPM Score™</button>
+<p style="color:var(--mut);font-size:12px">18+ • Educational wellness prototype • Not a diagnostic test.</p>
+</div>
+
+<div class="card">
+<div class="score"><div><div><strong>72</strong><small>SPM SCORE™</small></div></div></div>
+<div class="pills">
+<span class="pill">Erection</span><span class="pill">Control</span>
+<span class="pill">Desire</span><span class="pill">Confidence</span>
+<span class="pill">Wellbeing</span><span class="pill">Lifestyle</span>
+</div>
+</div>
+</div></section>
+</main>
+
+<section id="app"><div class="wrap">
+
+<div class="tabs">
+<button class="tab on" data-p="assess">Assessment</button>
+<button class="tab" data-p="results">Results</button>
+<button class="tab" data-p="plan">28-day plan</button>
+<button class="tab" data-p="check">Check-in</button>
+<button class="tab" data-p="progress">Progress</button>
+</div>
+
+<section id="assess" class="panel on">
+<div class="card">
+<h2 id="at">SPM Assessment</h2>
+<div class="notice" id="cons">Answer based on your usual experience over roughly the last 4 weeks.</div>
+<div class="bar" style="margin-top:16px"><i id="pb" style="width:0"></i></div>
+<div id="qbox"></div>
+<div class="actions"><button id="prev" class="btn sec">Back</button><button id="next" class="btn pri">Next</button></div>
+</div>
+</section>
+
+<section id="results" class="panel">
+<div id="safety"></div>
+<div class="card res">
+<div class="score" id="meter"><div><div><strong id="sv">—</strong><small>SPM SCORE™</small></div></div></div>
+<div><span class="ey" id="band">Complete assessment</span><h2 id="pt">Your performance profile</h2><p class="lead" id="pc">Complete the assessment to see your result.</p></div>
+</div>
+
+<div class="card"><h3>Domain breakdown</h3><div id="domains" class="domains"></div></div>
+
+<div class="card">
+<h3>Personalized 28-day program — US$39</h3>
+<p style="color:var(--mut)">MVP demo. Real payment will be connected in the commercial version.</p>
+<button id="unlock" class="btn pri">Unlock demo plan</button>
+</div>
+</section>
+
+<section id="plan" class="panel">
+<div class="card">
+<h2>Your 28-day SPM Program</h2>
+<div id="lock" class="notice">Complete the assessment and unlock the plan.</div>
+<div id="plangrid" class="plan"></div>
+</div>
+</section>
+
+<section id="check" class="panel">
+<div class="card"><h2>Daily check-in</h2>
+<div class="form">
+<div class="f"><label>Program day</label><select id="day"></select></div>
+<div class="f"><label>Confidence 0–10</label><input id="conf" type="number" min="0" max="10" value="6"></div>
+<div class="f"><label>Satisfaction 0–10</label><input id="sat" type="number" min="0" max="10" value="6"></div>
+<div class="f"><label>Completed today's action?</label><select id="done"><option value="1">Yes</option><option value="0">No</option></select></div>
+</div>
+<p><button id="saveCheck" class="btn pri">Save check-in</button></p>
+</div>
+</section>
+
+<section id="progress" class="panel">
+<div class="card"><h2>Progress</h2>
+<div class="stats">
+<div class="st"><b id="nChecks">0</b><span>check-ins</span></div>
+<div class="st"><b id="adh">0%</b><span>adherence</span></div>
+<div class="st"><b id="avgConf">—</b><span>avg confidence</span></div>
+<div class="st"><b id="avgSat">—</b><span>avg satisfaction</span></div>
+</div>
+</div>
+</section>
+
+</div></section>
+
+<footer class="foot"><div class="wrap">
+SPM MVP • Educational sexual-wellness prototype for adults 18+. It does not diagnose, prescribe medication, provide emergency care or establish medical clearance.
+</div></footer>
+
+<script>
+const S=JSON.parse(localStorage.getItem("spm")||"{}");
+S.a=S.a||{};S.c=S.c||[];S.lang=S.lang||"en";S.un=!!S.un;
+let qi=0;
+
+const Q=[
+["age","Are you 18 years of age or older?","¿Tienes 18 años o más?","yn"],
+["e1","How reliably can you get an erection when you want sexual activity?","¿Qué tan confiablemente logras una erección cuando deseas actividad sexual?","erection"],
+["e2","How reliably can you maintain it through the activity you want?","¿Qué tan confiablemente la mantienes durante la actividad sexual que deseas?","erection"],
+["j1","How much control do you feel you have over when you ejaculate?","¿Cuánto control sientes sobre el momento de eyacular?","control"],
+["j2","How satisfied are you with your current ejaculatory timing?","¿Qué tan satisfecho estás con tu tiempo eyaculatorio actual?","control"],
+["d1","How satisfied are you with your level of sexual desire?","¿Qué tan satisfecho estás con tu nivel de deseo sexual?","desire"],
+["c1","How confident do you feel before sexual activity?","¿Qué tan seguro te sientes antes de la actividad sexual?","confidence"],
+["c2","How well can you stay present instead of monitoring performance?","¿Qué tan bien logras mantenerte presente sin vigilar tu desempeño?","confidence"],
+["w1","How satisfied are you with your overall sexual experience?","¿Qué tan satisfecho estás con tu experiencia sexual general?","wellbeing"],
+["l1","How consistently do you get restorative sleep?","¿Qué tan consistentemente logras un sueño reparador?","lifestyle"],
+["l2","How consistently are you physically active?","¿Qué tan consistentemente realizas actividad física?","lifestyle"],
+["rf1","During sex or moderate exertion, have you recently had chest pain, fainting or severe unexplained breathlessness?","Durante sexo o esfuerzo moderado, ¿has tenido dolor en el pecho, desmayo o falta de aire intensa?","yn"],
+["rf2","Do you currently have or recently had an erection lasting 4 hours or more?","¿Tienes o has tenido recientemente una erección de 4 horas o más?","yn"]
+];
+
+const DN={
+en:{erection:"Erection",control:"Ejaculatory control",desire:"Desire",confidence:"Confidence",wellbeing:"Wellbeing",lifestyle:"Lifestyle"},
+es:{erection:"Erección",control:"Control eyaculatorio",desire:"Deseo",confidence:"Confianza",wellbeing:"Bienestar",lifestyle:"Estilo de vida"}
+};
+
+const PR={
+en:{
+erection:["Erection-focused profile","Your main opportunity is erection reliability."],
+control:["Control-focused profile","Your main opportunity is perceived ejaculatory control."],
+desire:["Desire & energy profile","Your main opportunity is desire and arousal."],
+confidence:["Confidence profile","Performance monitoring appears to be a key limiter."],
+wellbeing:["Sexual wellbeing profile","Overall satisfaction is the main opportunity."],
+lifestyle:["Lifestyle leverage profile","Lifestyle factors may be suppressing performance."]
+},
+es:{
+erection:["Perfil enfocado en erección","Tu principal oportunidad es la confiabilidad eréctil."],
+control:["Perfil enfocado en control","Tu principal oportunidad está en el control eyaculatorio percibido."],
+desire:["Perfil de deseo y energía","Tu principal oportunidad está en deseo y excitación."],
+confidence:["Perfil de confianza","La vigilancia del desempeño parece ser un limitante importante."],
+wellbeing:["Perfil de bienestar sexual","La satisfacción global es la principal oportunidad."],
+lifestyle:["Perfil de estilo de vida","Factores de estilo de vida pueden estar reduciendo el desempeño."]
+}
+};
+
+function persist(){localStorage.setItem("spm",JSON.stringify(S))}
+
+function show(p){
+document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("on",x.id===p));
+document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on",x.dataset.p===p));
+if(p==="results")renderResult();
+if(p==="plan")renderPlan();
+if(p==="progress")renderProgress();
+}
+
+function openApp(){
+document.getElementById("home").style.display="none";
+document.getElementById("app").style.display="block";
+show("assess");scrollTo(0,0)
+}
+
+document.getElementById("start").onclick=openApp;
+document.getElementById("startTop").onclick=openApp;
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>show(b.dataset.p));
+
+function renderQ(){
+let q=Q[qi],txt=S.lang==="es"?q[2]:q[1],v=S.a[q[0]];
+document.getElementById("pb").style.width=(qi/Q.length*100)+"%";
+document.getElementById("prev").style.visibility=qi?"visible":"hidden";
+document.getElementById("next").textContent=qi===Q.length-1?(S.lang==="es"?"Ver mi puntaje":"See my score"):(S.lang==="es"?"Siguiente":"Next");
+
+let h=`<div class="q"><small>${qi+1}/${Q.length}</small><h3>${txt}</h3><div class="opts">`;
+
+if(q[3]==="yn"){
+h+=`<label data-v="0" class="${v===0?"sel":""}">No</label>
+<label data-v="1" class="${v===1?"sel":""}">${S.lang==="es"?"Sí":"Yes"}</label>`;
+}else{
+let labs=S.lang==="es"?["Muy bajo","Bajo","Medio","Bueno","Excelente"]:["Very low","Low","Medium","Good","Excellent"];
+h+=labs.map((x,i)=>`<label data-v="${i}" class="${v===i?"sel":""}">${i}<br>${x}</label>`).join("");
+}
+
+h+="</div></div>";
+document.getElementById("qbox").innerHTML=h;
+
+document.querySelectorAll("#qbox label").forEach(l=>l.onclick=()=>{
+S.a[q[0]]=Number(l.dataset.v);persist();renderQ()
+});
+}
+
+document.getElementById("prev").onclick=()=>{if(qi){qi--;renderQ()}};
+
+document.getElementById("next").onclick=()=>{
+if(S.a[Q[qi][0]]===undefined)return alert(S.lang==="es"?"Selecciona una respuesta.":"Select an answer.");
+if(qi<Q.length-1){qi++;renderQ()}
+else{calculate();show("results");scrollTo(0,0)}
+};
+
+function calculate(){
+let sums={},counts={};
+Q.filter(q=>q[3]!=="yn").forEach(q=>{
+let v=S.a[q[0]];
+sums[q[3]]=(sums[q[3]]||0)+v;
+counts[q[3]]=(counts[q[3]]||0)+1
+});
+
+let ds={};
+Object.keys(DN.en).forEach(d=>ds[d]=Math.round((sums[d]||0)/((counts[d]||1)*4)*100));
+
+let ov=Math.round(Object.values(ds).reduce((a,b)=>a+b,0)/Object.keys(ds).length);
+let pr=Object.entries(ds).sort((a,b)=>a[1]-b[1])[0][0];
+
+S.r={ov,ds,pr,adult:S.a.age===1,urgent:S.a.rf1===1||S.a.rf2===1};
+persist();
+}
+
+function renderResult(){
+if(!S.r)return;
+let r=S.r;
+document.getElementById("sv").textContent=r.ov;
+document.getElementById("meter").style.background=`conic-gradient(var(--ac) 0 ${r.ov}%,#1d3840 ${r.ov}%)`;
+
+let p=PR[S.lang][r.pr];
+document.getElementById("pt").textContent=p[0];
+document.getElementById("pc").textContent=p[1];
+
+document.getElementById("band").textContent=
+r.ov>=80?"Strong baseline":r.ov>=60?"Moderate opportunity":"High opportunity";
+
+document.getElementById("domains").innerHTML=
+Object.entries(r.ds).map(([d,v])=>`
+<div class="drow">
+<span>${DN[S.lang][d]}</span>
+<div class="dbar"><i style="width:${v}%"></i></div>
+<b>${v}</b>
+</div>`).join("");
+
+document.getElementById("safety").innerHTML=
+!r.adult?`<div class="notice danger">18+ only. Do not continue.</div>`:
+r.urgent?`<div class="notice danger"><b>${S.lang==="es"?"Busca atención médica":"Seek medical care"}.</b></div>`:
+`<div class="notice">${S.lang==="es"?"No reportaste banderas urgentes en este filtro breve.":"No urgent flag was reported in this brief screen."}</div>`;
+}
+
+document.getElementById("unlock").onclick=()=>{
+if(!S.r)return alert("Complete assessment first.");
+if(!S.r.adult||S.r.urgent)return alert("Plan unavailable due to safety screen.");
+S.un=true;persist();show("plan");
+};
+
+const BASE={
+en:[
+"Define one concrete 28-day goal and record your baseline.",
+"Protect a realistic sleep window tonight.",
+"Do 20–30 minutes of moderate physical activity appropriate for you.",
+"Practice five minutes of slow breathing.",
+"Identify three factors that improve arousal and three that reduce it.",
+"Plan one low-pressure intimate experience without a required performance goal.",
+"Review the week and keep the two habits that helped most."
+],
+es:[
+"Define una meta concreta para 28 días y registra tu línea de base.",
+"Protege una ventana de sueño realista esta noche.",
+"Realiza 20–30 minutos de actividad física moderada adecuada para ti.",
+"Practica cinco minutos de respiración lenta.",
+"Identifica tres factores que mejoran tu excitación y tres que la reducen.",
+"Programa una experiencia íntima de baja presión sin objetivo obligatorio de rendimiento.",
+"Revisa la semana y conserva los dos hábitos que más ayudaron."
+]
+};
+
+function renderPlan(){
+if(!S.r)return;
+document.getElementById("lock").style.display=S.un?"none":"block";
+
+let arr=[];
+for(let i=0;i<28;i++)arr.push(BASE[S.lang][i%7]);
+
+document.getElementById("plangrid").innerHTML=
+arr.map((x,i)=>`
+<div class="day">
+<span>DAY ${i+1}</span>
+<b>${i%7===6?"Review":"Action"}</b>
+<p>${x}</p>
+</div>`).join("");
+}
+
+for(let i=1;i<=28;i++)
+document.getElementById("day").innerHTML+=`<option>${i}</option>`;
+
+document.getElementById("saveCheck").onclick=()=>{
+let o={
+day:Number(document.getElementById("day").value),
+conf:Number(document.getElementById("conf").value),
+sat:Number(document.getElementById("sat").value),
+done:Number(document.getElementById("done").value)
+};
+
+let ix=S.c.findIndex(x=>x.day===o.day);
+if(ix>=0)S.c[ix]=o;else S.c.push(o);
+
+persist();renderProgress();
+alert(S.lang==="es"?"Check-in guardado.":"Check-in saved.");
+};
+
+function renderProgress(){
+let c=S.c;
+let avg=k=>c.length?(c.reduce((a,x)=>a+x[k],0)/c.length).toFixed(1):"—";
+
+document.getElementById("nChecks").textContent=c.length;
+document.getElementById("adh").textContent=c.length?
+Math.round(c.reduce((a,x)=>a+x.done,0)/c.length*100)+"%":"0%";
+document.getElementById("avgConf").textContent=avg("conf");
+document.getElementById("avgSat").textContent=avg("sat");
+}
+
+document.getElementById("lang").onclick=()=>{
+S.lang=S.lang==="en"?"es":"en";persist();applyLang();
+};
+
+function applyLang(){
+document.getElementById("lang").textContent=S.lang==="en"?"ES":"EN";
+document.getElementById("lead").textContent=
+S.lang==="es"?
+"Entiende qué puede estar afectando tu desempeño sexual, recibe un plan personalizado de 28 días y mide qué mejora.":
+"Understand what may be affecting your sexual performance, get a personalized 28-day action plan, and track what improves.";
+
+document.getElementById("at").textContent=S.lang==="es"?"Evaluación SPM":"SPM Assessment";
+document.getElementById("cons").textContent=
+S.lang==="es"?
+"Responde según tu experiencia habitual durante aproximadamente las últimas 4 semanas.":
+"Answer based on your usual experience over roughly the last 4 weeks.";
+
+document.getElementById("prev").textContent=S.lang==="es"?"Atrás":"Back";
+renderQ();
+
+if(S.r){renderResult();renderPlan()}
+}
+
+applyLang();
+renderProgress();
+</script>
+</body>
+</html>
