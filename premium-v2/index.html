@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071014">
+<title>SPM Premium V2 — Adaptive Sexual Performance Program</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="wrap topin">
+ <div class="brand"><div class="logo">S</div><div>SPM <small>Premium V2 • Sexual Performance Management</small></div></div>
+ <div style="display:flex;gap:8px"><button id="langBtn" class="btn sec sm">EN</button><button id="topStart" class="btn pri sm">Comenzar</button></div>
+</div></header>
+<main id="landing">
+<section class="hero"><div class="wrap heroGrid">
+ <div>
+  <span class="kicker"><i class="dot"></i><span id="kicker">Evaluación adaptativa • programa guiado • seguimiento</span></span>
+  <h1>Sexual Performance Management</h1>
+  <p class="lead" id="heroLead">No todos necesitan las mismas preguntas ni el mismo plan. SPM parte de lo que te preocupa, identifica el patrón que más pesa y construye una ruta de 28 días que se adapta a tu respuesta.</p>
+  <div class="heroActions"><button id="heroStart" class="btn pri">Crear mi mapa de rendimiento</button><button id="learnBtn" class="btn sec">Ver cómo funciona</button></div>
+  <p class="micro" id="heroMicro">Mayores de 18 años • Herramienta educativa de bienestar • No diagnostica ni prescribe medicamentos.</p>
+ </div>
+ <div class="heroCard">
+  <h3 id="notGeneric">Esto ya no es un cuestionario genérico.</h3>
+  <div class="promise">
+   <div><b id="p1a">1. Tú marcas qué te preocupa</b><span id="p1b">Erección, pérdida de firmeza, control eyaculatorio, deseo, confianza o varias áreas.</span></div>
+   <div><b id="p2a">2. Las preguntas cambian</b><span id="p2b">SPM abre solo las ramas relevantes y agrega preguntas de contraste para no asumir que tu primera impresión es la causa principal.</span></div>
+   <div><b id="p3a">3. El resultado explica por qué</b><span id="p3b">El Performance Map™ compara tu motivo inicial con el patrón encontrado y define prioridades, modificadores y fortalezas.</span></div>
+   <div><b id="p4a">4. El plan enseña habilidades</b><span id="p4b">Cada día incluye aprender, practicar, medir, aplicar y completar; el Daily Coach decide si progresar, repetir o bajar intensidad.</span></div>
+  </div>
+ </div>
+</div></section>
+<section class="section" id="how"><div class="wrap">
+ <div class="sectionHead"><span class="kicker" id="methodLabel">SPM Premium V2</span><h2 id="howTitle">De “¿qué me pasa?” a “sé qué trabajar hoy”.</h2><p id="howText">La experiencia completa conserva tu motivo de consulta, pero no queda atrapada en él: cruza desempeño, contexto, seguridad, hábitos, confianza y piso pélvico para construir una ruta individual.</p></div>
+ <div class="flowGrid">
+  <div class="flow"><div class="n">01</div><h3 id="f1t">Motivo</h3><p id="f1c">Selecciona una o varias dificultades concretas.</p></div>
+  <div class="flow"><div class="n">02</div><h3 id="f2t">Evaluación adaptativa</h3><p id="f2c">Solo se abren las ramas pertinentes, más preguntas de contraste y seguridad.</p></div>
+  <div class="flow"><div class="n">03</div><h3 id="f3t">Performance Map™</h3><p id="f3c">Driver principal, secundario, modificadores, fortalezas y explicación.</p></div>
+  <div class="flow"><div class="n">04</div><h3 id="f4t">Programa + Coach</h3><p id="f4c">28 días en 4 fases con seguimiento y adaptación diaria.</p></div>
+ </div>
+</div></section>
+</main>
+<section id="app"><div class="wrap appShell">
+ <aside class="side"><div class="card">
+  <button class="navbtn on" data-panel="intake" id="navAssessment">Evaluación</button>
+  <button class="navbtn" data-panel="map" id="navMap" disabled>Performance Map</button>
+  <button class="navbtn" data-panel="plan" id="navPlan" disabled>Programa 28 días</button>
+  <button class="navbtn" data-panel="coach" id="navCoach" disabled>Daily Coach</button>
+  <button class="navbtn" data-panel="progressPanel" id="navProgress" disabled>Progreso</button>
+ </div></aside>
+ <div class="content">
+  <section id="intake" class="panel on">
+   <div class="card" id="ageCard">
+    <div class="stepHead"><div><span class="stepBadge" id="step1">Paso 1 • elegibilidad</span><h2 id="ageTitle">Antes de empezar</h2></div></div>
+    <p class="micro" id="ageText">SPM Premium V2 está diseñado para adultos. No reemplaza una valoración médica.</p>
+    <h3 id="ageQ">¿Tienes 18 años o más?</h3>
+    <div class="ageChoices"><button class="choice" data-age="1"><b id="yes18">Sí, tengo 18 años o más</b></button><button class="choice" data-age="0"><b id="no18">No</b></button></div>
+   </div>
+   <div class="card" id="motiveCard" hidden>
+    <div class="stepHead"><div><span class="stepBadge" id="step2">Paso 2 • motivo de consulta</span><h2 id="motiveTitle">¿Qué estás experimentando?</h2></div></div>
+    <p class="micro" id="motiveText">Puedes marcar más de una opción. Esto define qué preguntas se abrirán después.</p>
+    <div class="motiveGrid" id="motiveGrid"></div>
+    <div class="actions"><button id="motiveBack" class="btn sec">Atrás</button><button id="motiveNext" class="btn pri">Continuar</button></div>
+   </div>
+   <div class="card" id="quizCard" hidden>
+    <div class="stepHead"><div><span class="stepBadge" id="step3">Paso 3 • evaluación adaptativa</span><h2 id="quizTitle">Preguntas personalizadas</h2></div><span class="micro" id="qCount"></span></div>
+    <div class="progress"><i id="prog"></i></div><div class="qmeta"><span id="qSection"></span><span id="qRoute"></span></div><div id="qbox"></div>
+    <div class="actions"><button id="qBack" class="btn sec">Atrás</button><button id="qNext" class="btn pri">Siguiente</button></div>
+   </div>
+  </section>
+  <section id="map" class="panel"><div id="safetyBox"></div>
+   <div class="card mapHero"><div class="ring" id="scoreRing"><div class="ringin"><div><strong id="scoreValue">—</strong><small>SPM SCORE™</small></div></div></div><div><span class="badge" id="profileBadge">Performance Map™</span><h2 id="profileTitle">—</h2><p class="lead" style="font-size:16px" id="profileExplain"></p></div></div>
+   <div class="card"><h3 id="domainTitle">Mapa por dominios</h3><div class="domainGrid" id="domainGrid"></div></div>
+   <div class="mapColumns"><div class="card"><h3 id="whyTitle">Por qué SPM te ubicó aquí</h3><div class="miniList" id="whyList"></div></div><div class="card"><h3 id="contextTitle">Modificadores y fortalezas</h3><div class="miniList" id="modifierList"></div></div></div>
+   <div class="card"><h3 id="week1Title">Qué cambia en tu Semana 1</h3><p id="week1Rationale" class="lead" style="font-size:15px"></p><button class="btn pri" id="goPlan">Ver mi programa de 28 días</button></div>
+  </section>
+  <section id="plan" class="panel"><div class="card"><div class="stepHead"><div><span class="stepBadge">SPM Premium V2</span><h2 id="planTitle">Tu programa adaptativo de 28 días</h2><p class="micro" id="planSub">No es una lista de consejos. Cada día tiene una habilidad, una práctica, una medición y una regla de progresión.</p></div></div><div class="phaseTabs" id="phaseTabs"></div><div id="weekIntro" class="weekIntro"></div><div class="dayGrid" id="dayGrid"></div></div></section>
+  <section id="coach" class="panel"><div class="card"><div class="stepHead"><div><span class="stepBadge">Daily Coach</span><h2 id="coachTitle">Dime cómo fue hoy y ajusto el siguiente paso</h2><p class="micro" id="coachSub">El Coach no cambia tratamientos médicos. Ajusta intensidad, repetición y progresión de las habilidades del programa.</p></div></div>
+   <div class="coachGrid"><div class="field"><label id="dayLabel">Día del programa</label><select id="coachDay"></select></div><div class="field"><label id="sleepLabel">Sueño 0–10</label><input id="sleep" type="number" min="0" max="10" value="6"></div><div class="field"><label id="stressLabel">Estrés 0–10</label><input id="stress" type="number" min="0" max="10" value="5"></div><div class="field"><label id="confLabel">Confianza sexual 0–10</label><input id="confidence" type="number" min="0" max="10" value="6"></div><div class="field"><label id="desireLabel">Deseo 0–10</label><input id="desire" type="number" min="0" max="10" value="6"></div><div class="field"><label id="outcomeLabel">Resultado del objetivo de hoy 0–10</label><input id="outcome" type="number" min="0" max="10" value="6"></div><div class="field"><label id="activityLabel">¿Hubo actividad sexual/intimidad?</label><select id="sexualActivity"><option value="0">No</option><option value="1">Sí</option></select></div><div class="field"><label id="completeLabel">¿Completaste la práctica?</label><select id="completed"><option value="1">Sí</option><option value="0">No</option></select></div><div class="field"><label id="redFlagLabel">¿Apareció dolor intenso, síntoma súbito o una bandera médica nueva?</label><select id="newFlag"><option value="0">No</option><option value="1">Sí</option></select></div><div class="field"><label id="noteLabel">Nota opcional</label><textarea id="note" rows="3"></textarea></div></div>
+   <p><button class="btn pri" id="coachSave">Analizar mi día</button></p><div id="coachDecision" class="coachDecision"></div></div></section>
+  <section id="progressPanel" class="panel"><div class="card"><h2 id="progressTitle">Progreso</h2><div class="stats"><div class="stat"><b id="stChecks">0</b><span id="st1">registros</span></div><div class="stat"><b id="stAdh">0%</b><span id="st2">adherencia</span></div><div class="stat"><b id="stConf">—</b><span id="st3">confianza prom.</span></div><div class="stat"><b id="stOutcome">—</b><span id="st4">resultado prom.</span></div><div class="stat"><b id="stDecision">—</b><span id="st5">última decisión</span></div></div></div><div class="card"><h3 id="chartTitle">Tendencia de confianza</h3><div class="chart" id="chart"></div></div><div class="card"><h3 id="reassessTitle">Día 28: reevaluar, no adivinar</h3><p class="micro" id="reassessText">Al finalizar, SPM debe comparar tu mapa inicial con un nuevo mapa y decidir qué mantener, qué retirar y qué requiere revisión profesional.</p></div></section>
+ </div>
+</div></section>
+<footer class="footer"><div class="wrap" id="footerText">SPM Premium V2 • Prototipo educativo de bienestar sexual para mayores de 18 años. No diagnostica disfunción eréctil, eyaculación precoz, hipogonadismo ni otras enfermedades; no prescribe medicamentos ni sustituye atención de urgencias.</div></footer>
+<script src="engine.js"></script><script src="modules.js"></script><script src="app.js"></script>
+</body></html>
