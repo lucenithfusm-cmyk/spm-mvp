@@ -17,7 +17,10 @@ function label(k){return (M.profiles?.[k]?.label_es)||({erection:'Rendimiento er
 async function boot(){
  const {data:{session}}=await db.auth.getSession();
  if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
- db.auth.onAuthStateChange(async(_,session)=>{if(session?.user&&!S.user){S.user=session.user;await enterApp()}});
+ db.auth.onAuthStateChange(async(event,session)=>{
+   if(event==='PASSWORD_RECOVERY'){show('authScreen');setTimeout(finishRecovery,100);return}
+   if(session?.user&&!S.user){S.user=session.user;await enterApp()}
+ });
 }
 async function sign(mode){
  hideMsg();const email=$('email').value.trim(), password=$('password').value;
@@ -30,6 +33,25 @@ async function sign(mode){
  if(res.error){msg(res.error.message,'danger');return}
  if(mode==='signup'&&!res.data.session){msg('Cuenta creada. Revisa tu correo para confirmar y luego vuelve a entrar.','good');return}
  S.user=res.data.user;await enterApp();
+}
+async function resetPassword(){
+ hideMsg();const email=$('email').value.trim();
+ if(!email){msg('Escribe primero el correo de tu cuenta.','warn');$('email').focus();return}
+ const btn=$('forgotBtn');btn.disabled=true;btn.textContent='Enviando…';
+ const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.href});
+ btn.disabled=false;btn.textContent='¿Olvidaste tu contraseña?';
+ if(error){msg('No pudimos enviar el enlace: '+error.message,'danger');return}
+ msg('Te enviamos un enlace al correo para crear una nueva contraseña. Revisa también spam o correo no deseado.','good');
+}
+async function finishRecovery(){
+ const first=window.prompt('Crea una nueva contraseña para SPM (mínimo 6 caracteres):');
+ if(first===null)return;
+ if(first.length<6){msg('La nueva contraseña debe tener al menos 6 caracteres.','warn');return}
+ const second=window.prompt('Confirma la nueva contraseña:');
+ if(first!==second){msg('Las contraseñas no coinciden. Vuelve a abrir el enlace de recuperación.','warn');return}
+ const {error}=await db.auth.updateUser({password:first});
+ if(error){msg('No pudimos cambiar la contraseña: '+error.message,'danger');return}
+ msg('Contraseña actualizada correctamente. Ya puedes continuar con SPM.','good');
 }
 async function enterApp(){
  show('appScreen'); $('who').textContent=S.user.email||'Usuario'; await ensureProfile(); await restore(); renderMotives();
@@ -54,16 +76,27 @@ async function restore(){
 function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){const g=$('motiveGrid');g.innerHTML='';motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.className='choice'+(S.motives.includes(id)?' sel':'');b.innerHTML=`<b>${t}</b>`;b.onclick=()=>{S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives()};g.appendChild(b)})}
 function buildQueue(){const sec=new Set(['goal','lifestyle','health','pelvic_floor','safety']);S.motives.forEach(m=>{if(m!=='optimization')sec.add(m)});if(S.motives.includes('optimization'))['confidence','wellbeing','desire'].forEach(x=>sec.add(x));S.queue=E.assessment.questions.filter(q=>sec.has(q.section))}
+function shouldShow(q){if(!q?.show_if)return true;return S.answers[q.show_if.id]===q.show_if.equals}
+function nextVisibleIndex(from){for(let i=from+1;i<S.queue.length;i++)if(shouldShow(S.queue[i]))return i;return S.queue.length}
+function prevVisibleIndex(from){for(let i=from-1;i>=0;i--)if(shouldShow(S.queue[i]))return i;return -1}
+function visibleQueue(){return S.queue.filter(shouldShow)}
+function clearHiddenAnswers(){S.queue.forEach(q=>{if(q.show_if&&!shouldShow(q))delete S.answers[q.id]})}
 function scaleOptions(){return [1,2,3,4,5].map(v=>({value:v,label:['Muy bajo / nunca','Bajo / rara vez','Intermedio','Bueno / frecuente','Muy bueno / casi siempre'][v-1]}))}
 function renderQ(){
- const q=S.queue[S.qi]; if(!q)return finishAssessment();
- $('qCount').textContent=`${S.qi+1} / ${S.queue.length}`;$('prog').style.width=`${((S.qi+1)/S.queue.length)*100}%`;$('qSection').textContent=q.section.replace('_',' ');
- const box=$('qbox');box.innerHTML=`<h3 class="qtitle">${q.prompt_es}</h3>`;let opts=[];
- if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions();
- else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:'Sí'}];
- else opts=(q.options||[]).map(o=>({value:o.value,label:o.es}));
- const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
- opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;renderQ()};w.appendChild(b)});box.appendChild(w);$('qBack').disabled=S.qi===0;
+ if(S.qi>=S.queue.length)return finishAssessment();
+ let q=S.queue[S.qi];if(!shouldShow(q)){S.qi=nextVisibleIndex(S.qi-1);return renderQ()}
+ const visible=visibleQueue(),pos=Math.max(0,visible.findIndex(x=>x.id===q.id));
+ $('qCount').textContent=`${pos+1} / ${visible.length}`;$('prog').style.width=`${((pos+1)/visible.length)*100}%`;$('qSection').textContent=q.section.replace('_',' ');
+ const box=$('qbox');box.innerHTML=`<h3 class="qtitle">${q.prompt_es}</h3>`;
+ if(q.type==='text'){
+   const input=document.createElement('textarea');input.className='assessmentText';input.rows=3;input.placeholder=q.placeholder_es||'Escribe tu respuesta';input.value=S.answers[q.id]||'';
+   input.oninput=()=>{S.answers[q.id]=input.value};box.appendChild(input);setTimeout(()=>input.focus(),50);
+ }else{
+   let opts=[];if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions();else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:'Sí'}];else opts=(q.options||[]).map(o=>({value:o.value,label:o.es}));
+   const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
+   opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
+ }
+ $('qBack').disabled=prevVisibleIndex(S.qi)<0;
 }
 function scoreMap(){
  const domains={};S.queue.forEach(q=>{if(!q.domain||S.answers[q.id]===undefined)return;let v=Number(S.answers[q.id]);if(!Number.isFinite(v))return;if(q.type==='scale5_reverse')v=6-v;const s=(v-1)*25,w=q.weight||1;(domains[q.domain]??={sum:0,w:0});domains[q.domain].sum+=s*w;domains[q.domain].w+=w});
@@ -126,10 +159,11 @@ function renderProgress(){
 }
 async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
 document.addEventListener('DOMContentLoaded',()=>{
- $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');$('logoutBtn').onclick=signOut;
+ $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){$('ageCard').hidden=true;$('motiveCard').hidden=false}else msg('SPM está diseñado para mayores de 18 años.','warn')});
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg('Selecciona al menos un motivo.','warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
- $('qBack').onclick=()=>{if(S.qi>0){S.qi--;renderQ()}};$('qNext').onclick=()=>{const q=S.queue[S.qi];if(S.answers[q.id]===undefined){msg('Selecciona una respuesta.','warn');return}S.qi++;renderQ()};
+ $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
+ $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?'Escribe una respuesta para continuar.':'Selecciona una respuesta.','warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
  document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
 });
 })();
