@@ -2,13 +2,14 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071014"><title>SPM Premium — Programa adaptativo</title><link rel="stylesheet" href="style.css">
 <style>
-.authWrap{min-height:100vh;display:grid;place-items:center;padding:30px}.authCard{width:min(520px,94%)}.authCard h1{font-size:42px;letter-spacing:-2px}.authFields{display:grid;gap:10px;margin:18px 0}.authFields input{width:100%;background:#08171b;border:1px solid var(--line);color:white;border-radius:12px;padding:13px}.authActions{display:flex;gap:8px;flex-wrap:wrap}.userbar{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.cloud{color:var(--accent);font-weight:800}.globalStatus{position:sticky;top:72px;z-index:25;width:min(900px,92%);margin:10px auto}.screen[hidden]{display:none!important}
+.authWrap{min-height:100vh;display:grid;place-items:center;padding:30px}.authCard{width:min(520px,94%)}.authCard h1{font-size:42px;letter-spacing:-2px}.authFields{display:grid;gap:10px;margin:18px 0}.authFields input,.assessmentText{width:100%;background:#08171b;border:1px solid var(--line);color:white;border-radius:12px;padding:13px;font:inherit}.assessmentText{margin-top:14px;resize:vertical;min-height:92px}.authActions{display:flex;gap:8px;flex-wrap:wrap}.forgotRow{margin-top:10px}.forgotLink{background:transparent;border:0;color:var(--accent);font-weight:800;padding:6px 0;cursor:pointer}.userbar{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px}.cloud{color:var(--accent);font-weight:800}.globalStatus{position:sticky;top:72px;z-index:25;width:min(900px,92%);margin:10px auto}.screen[hidden]{display:none!important}
 </style></head><body>
 <section id="authScreen" class="screen authWrap">
  <div class="card authCard"><span class="kicker"><i class="dot"></i>SPM Premium</span><h1>Tu programa empieza aquí.</h1>
  <p class="lead">Crea una cuenta para conservar de forma privada tu evaluación, Performance Map™, programa de 28 días y progreso.</p>
  <div class="authFields"><input id="email" type="email" autocomplete="email" placeholder="Correo electrónico"><input id="password" type="password" autocomplete="current-password" placeholder="Contraseña (mínimo 6 caracteres)"></div>
  <div class="authActions"><button id="authBtn" class="btn pri">Entrar</button><button id="signupBtn" class="btn sec">Crear cuenta</button></div>
+ <div class="forgotRow"><button id="forgotBtn" class="forgotLink" type="button">¿Olvidaste tu contraseña?</button></div>
  <p class="micro">Mayores de 18 años. Herramienta educativa de bienestar sexual. No diagnostica ni prescribe medicamentos.</p>
  <div id="authStatus" class="notice" hidden></div>
  </div>
