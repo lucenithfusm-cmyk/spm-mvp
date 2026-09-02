@@ -1,0 +1,1 @@
+(()=>{const img=document.querySelector('.rtsvisual img');const p=window.SPM_REAL_AVATAR_PARTS||[];if(img&&p.length===5){img.src='data:image/jpeg;base64,'+p.join('');img.dataset.realistic='1';}})();
