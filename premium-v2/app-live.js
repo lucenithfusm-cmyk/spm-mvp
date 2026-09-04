@@ -138,6 +138,19 @@ async function completeDay(day,card){
  card.querySelector('.doneBtn').textContent='Completado ✓';card.querySelector('.tag').textContent='Completado ✓';
  const next=Math.min(28,Math.max(...S.completed,1)+1);await db.from('plans').update({current_day:next}).eq('id',S.planId);renderProgress();msg(`Día ${day} guardado correctamente.`,'good');
 }
+window.SPM_SAVE_MODULE=async function({day,moduleKey,metricValue=null,metadata={}}){
+ if(!S.planId||!S.user)throw new Error('No hay un plan activo para guardar esta práctica.');
+ const payload={user_id:S.user.id,plan_id:S.planId,day_number:day,module_key:moduleKey,metric_value:metricValue,metadata:{...metadata,source:'premium-v2-live'},completed_at:new Date().toISOString()};
+ const {error}=await db.from('activity_completions').upsert(payload,{onConflict:'plan_id,day_number,module_key'});
+ if(error)throw error;
+ S.completed.add(day);
+ const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent||0)===day);
+ if(card){const done=card.querySelector('.doneBtn'),tag=card.querySelector('.tag');if(done)done.textContent='Completado ✓';if(tag)tag.textContent='Completado ✓'}
+ const next=Math.min(28,Math.max(...S.completed,1)+1);
+ await db.from('plans').update({current_day:next}).eq('id',S.planId);
+ renderProgress();msg(`Práctica del día ${day} guardada correctamente.`,'good');
+ return{ok:true};
+};
 function populateCoach(){const s=$('coachDay');s.innerHTML='';for(let i=1;i<=28;i++)s.insertAdjacentHTML('beforeend',`<option value="${i}">Día ${i}</option>`);if(S.completed.size)s.value=String(Math.min(28,Math.max(...S.completed)))}
 function coachDecision(v){if(v.flag)return{code:'clinical_review',text:'Pausa el entrenamiento de intensidad y busca revisión profesional externa por la nueva señal de seguridad.'};if(!v.completed||v.outcome<=3||v.stress>=8)return{code:'repeat_reduce',text:'Repite la habilidad de hoy con menor intensidad. El objetivo es consolidar, no forzar progresión.'};if(v.outcome>=7&&v.confidence>=6)return{code:'progress',text:'Buen patrón de respuesta. Puedes avanzar al siguiente día manteniendo la misma calidad de ejecución.'};return{code:'maintain',text:'Mantén la práctica actual un día más y observa consistencia antes de progresar.'}}
 async function saveCoach(){
