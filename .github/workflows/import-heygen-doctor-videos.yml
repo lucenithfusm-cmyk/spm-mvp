@@ -1,0 +1,39 @@
+name: Import approved Dr SPM videos
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-heygen-doctor-videos.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-videos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download approved HeyGen renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p premium-v2/assets/videos
+          curl --fail --location --retry 3 --output premium-v2/assets/videos/dr-spm-vascular.mp4 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/1855fd2f6d27ce905a36275f2fdade0d.mp4?Expires=1789168275&Signature=jMvfRg6HyUzXqrOI9cSxGv5ZkseLtglYVgVJiD2ZugiTrmadejOtt7n5zUUAiifpfpFcKoJJeA41HGtUaAnzpQYb8iUt7RK7Zf710nf3qrmixY1zulAWtyEdhzanuaV1csWP62gyp6NdSoNybukzkQgXAvgeK8A4p5hMn~EOZwJAIJ9~aAWKvlxRF4W8tK4AWBcAgMK3nAUUJkeNBh89I83Fmzhw8p3Ih7~Y3VhxBybMdzHc3L4aBRa2-nIHGt2buJu4UoLEW42SQDzg2NrrmV1bIJywi8OwAzdZDtUK7-6YUor15uxbGGdTZ5RV4adjkM1QglVH-Y2Cw~QOi4j1jA__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output premium-v2/assets/videos/dr-spm-medications.mp4 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/c1a96f9b47e3a36df30bb19bc67a9ee8.mp4?Expires=1789169064&Signature=kDmoJ7F7JUqWFzAg3jyktFJIW2DfbnWS4wKboBv84CGjLTFjCgIq4XSsNTQGuw-BJYUFXaWsmNh6mTciwQxn6QzzOS33qrhoPfqEMJeQN84HHFaGhwRwTtQJKYtWzrfwY7JwoHxelcn1h82Td23zWPcWfRJjdMyFf-zysTnTnbeOT3fAFyBaQvZM16dLEu0nBGQt9wBcdlZgVb0cnb-nWjw5bWzQQIzr57CyPSAMkiBBARLcvU8a9CADOVq~ddALhFyb6~GhC8F3CignCFx616O0kbkc1fUMhOALfhQLASHGnglkBqq9Uyy7Ls8es7AmNo~PbYm89ShJT2~4x6rgpw__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output premium-v2/assets/videos/dr-spm-performance-anxiety.mp4 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/f6c9bfb2b795632899c5dc89b341e301.mp4?Expires=1789169079&Signature=gNvxUW98MgDRFYPcxSMsDP0fiUA5sJ3nnZn-kJ6HCtEyp3BoRNC9~34EhUYP2rj54zHa2oWhC5OoApb8odVZ6qeUHsdxJ~bEGWj6c~61GIj5zc2di9cKlDb2Mtcxfp6jojxE9JogBzF09XQbr-6YSOj-Q7ZdTgvLuvwUOKxt~5METFzyDC7sfQJaXQrwzNBYRIR3O3HGCsPNoSHlJANXxPWBsEzLc6cnDktthzA62P8-Oa3Ai7VDg5lpB9sayJ4rEo7pmvS1z6A5fBD-jcRIii2p0diNuLS1FGvrh~geel4L9ci-MH53VOYpDYWVcV6S3rjnKuh1~z1GRaL8nCt2lg__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output premium-v2/assets/videos/dr-spm-metabolic.mp4 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/a71b469e4b3de9b265b2f7be36e2981c.mp4?Expires=1789169079&Signature=XaY5k355fwEinHvdSrTRDyrmYlu9KweXKshV~l5fFG58Nb9o9J9~2qYb9n6lNIfibIwVQjl7opr1kOVibOLK~34YQv4GzAB60wnYELZIxP-hmUv9y95xgY~1IOckqnvoGUadb6MWar9XZFYdPmYpcsqEamVdRs4icKnz3j75P6o17tYgc82wV3~LT9zfIisxs5-ynYG4S9xutCnG93-O-S3BQJ1CD-KlCk4uZ6JvlL-rpYEcecI4P2nm6ZM8nxXNtCfM2YSz6moR1Z9JMrLX4jA1O295y4L2qOvQuBYVM0hnlCTzBx27H-wvJOtfTEGMJuIuhooe1uw8mUZ1vEieig__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output premium-v2/assets/videos/dr-spm-low-desire.mp4 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/44fd626998f66412059895f226bcc647.mp4?Expires=1789169100&Signature=lf4WSTyan3gTpQZ-XQBKjOyQM1kt0RSuaTPL8qlmfwuAKusxtG8CNs7mvPm1Y0O20Acv~~dVl477Qlx6fghv2q3SxZGz~WCCihWJ6adPTnOH4iiijVsmQCIqlmVib~2UP-6SW8fcKXV~JSFhKNZY54QplRWTUTWOdcJ-gV0iJ513nH3ePh1Wdql3M9cMvHDj0AZkr-YHtAkc5EJfLfW9ukXgoSvWUUAYR2OyaCuim0McNoI49Izf-j619gIG8OgDZLYKjZdQGzCVDURcma8x~lkTXys-UZDOdhmGfR61XOa60gy9ZRGJ~xYcJzcBVF6LLqph5H3kqTqSrwqg1jnUOw__&Key-Pair-Id=K38HBHX5LX3X2H'
+          ls -lh premium-v2/assets/videos
+      - name: Commit imported videos
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add premium-v2/assets/videos/*.mp4
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Add approved Dr SPM videos'
+          git push
