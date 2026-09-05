@@ -4,11 +4,12 @@ if(window.SPM_CORE_TOUCH_RESCUE_V2)return;
 window.SPM_CORE_TOUCH_RESCUE_V2=true;
 
 const style=document.createElement('style');
-style.textContent=`#appScreen button,#authScreen button,#appScreen input,#appScreen select,#appScreen textarea{touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(112,221,194,.18)}#appScreen button:not(:disabled),#authScreen button:not(:disabled){pointer-events:auto!important}`;
+style.textContent=`#appScreen button,#authScreen button,#appScreen input,#appScreen select,#appScreen textarea{touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(112,221,194,.18)}#appScreen button:not(:disabled),#authScreen button:not(:disabled){pointer-events:auto!important;position:relative;z-index:2}`;
 document.head.appendChild(style);
 
-const CORE='#ageCard,#motiveCard,#quizCard,.side,#map,#coach,#progressPanel,#authScreen';
+const ROOTS=['#ageCard','#motiveCard','#quizCard','.side','#map','#coach','#progressPanel','#authScreen'];
 let lastRescue=0;
+
 function visible(el){
   if(!el||el.disabled)return false;
   const r=el.getBoundingClientRect();
@@ -16,30 +17,55 @@ function visible(el){
   const cs=getComputedStyle(el);
   return cs.display!=='none'&&cs.visibility!=='hidden'&&cs.pointerEvents!=='none';
 }
+
+function candidates(){
+  return [...document.querySelectorAll(ROOTS.map(r=>`${r} button:not(:disabled),${r} [role="button"]`).join(','))].filter(visible);
+}
+
 function underPoint(x,y){
-  const candidates=[...document.querySelectorAll(`${CORE} button:not(:disabled),${CORE} [role="button"]`)].filter(visible);
-  return candidates.find(el=>{const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom})||null;
+  const stack=document.elementsFromPoint?.(x,y)||[];
+  for(const node of stack){
+    const btn=node.closest?.('button:not(:disabled),[role="button"]');
+    if(btn&&ROOTS.some(r=>btn.closest(r))&&visible(btn))return btn;
+  }
+  return candidates().find(el=>{const r=el.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom})||null;
 }
-function invoke(el,event){
-  if(!el||!el.closest(CORE))return false;
-  try{
-    if(typeof el.onclick==='function'){
-      el.onclick.call(el,event);
-      return true;
-    }
-    const id=el.id;
-    if(id==='motiveNext'){
-      const fn=el.onclick; if(typeof fn==='function'){fn.call(el,event);return true;}
-    }
-  }catch(err){console.error('SPM core touch rescue',err)}
-  return false;
-}
+
 function pointFromEvent(e){
   const t=e.changedTouches?.[0]||e.touches?.[0];
   if(t)return {x:t.clientX,y:t.clientY};
   if(Number.isFinite(e.clientX)&&Number.isFinite(e.clientY))return {x:e.clientX,y:e.clientY};
   return null;
 }
+
+function advanceAge(value){
+  const age=document.getElementById('ageCard');
+  const motive=document.getElementById('motiveCard');
+  if(!age||!motive||age.hidden)return false;
+  if(String(value)==='1'){
+    age.hidden=true;
+    motive.hidden=false;
+    motive.scrollIntoView?.({block:'start',behavior:'auto'});
+  }else{
+    const status=document.getElementById('status');
+    if(status){status.className='notice warn globalStatus';status.textContent='SPM Premium está disponible únicamente para mayores de 18 años.';status.hidden=false;}
+  }
+  return true;
+}
+
+function invoke(el,event){
+  if(!el)return false;
+  if(el.matches?.('[data-age]'))return advanceAge(el.dataset.age);
+  try{
+    if(typeof el.onclick==='function'){
+      el.onclick.call(el,event);
+      return true;
+    }
+    el.click?.();
+    return true;
+  }catch(err){console.error('SPM core interaction rescue',err);return false;}
+}
+
 function rescue(e){
   const p=pointFromEvent(e);if(!p)return;
   const el=underPoint(p.x,p.y);if(!el)return;
@@ -49,29 +75,43 @@ function rescue(e){
     e.stopImmediatePropagation?.();
   }
 }
-// Capture at window level so this runs before document-level legacy handlers/overlays.
-window.addEventListener('touchend',rescue,{capture:true,passive:false});
-window.addEventListener('pointerup',e=>{if(e.pointerType==='touch')rescue(e)},{capture:true,passive:false});
-window.addEventListener('click',e=>{
-  if(Date.now()-lastRescue<700){
-    const p=pointFromEvent(e);const el=p?underPoint(p.x,p.y):null;
-    if(el){e.preventDefault();e.stopImmediatePropagation?.();}
-  }
-},{capture:true});
 
-// Hard fallback for the first eligibility step. It does not depend on app-live's click synthesis.
-window.addEventListener('touchend',e=>{
-  const age=document.getElementById('ageCard');
-  const motive=document.getElementById('motiveCard');
-  if(!age||age.hidden||!motive)return;
-  const p=pointFromEvent(e);if(!p)return;
-  const yes=age.querySelector('[data-age="1"]');
-  if(!yes)return;
-  const r=yes.getBoundingClientRect();
-  if(p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom){
-    age.hidden=true;motive.hidden=false;
+// Capture all major interaction paths. This also covers laptop/desktop tests.
+window.addEventListener('touchend',rescue,{capture:true,passive:false});
+window.addEventListener('pointerup',rescue,{capture:true,passive:false});
+window.addEventListener('click',e=>{
+  const ageBtn=e.target?.closest?.('[data-age]');
+  if(ageBtn){
+    if(advanceAge(ageBtn.dataset.age)){
+      if(e.cancelable)e.preventDefault();
+      e.stopImmediatePropagation?.();
+      return;
+    }
+  }
+  if(Date.now()-lastRescue<500){
     if(e.cancelable)e.preventDefault();
     e.stopImmediatePropagation?.();
   }
-},{capture:true,passive:false});
+},{capture:true});
+
+function bindAgeGate(){
+  document.querySelectorAll('#ageCard [data-age]').forEach(btn=>{
+    if(btn.dataset.spmGateBound)return;
+    btn.dataset.spmGateBound='1';
+    btn.type='button';
+    const go=e=>{
+      if(advanceAge(btn.dataset.age)){
+        if(e?.cancelable)e.preventDefault();
+        e?.stopImmediatePropagation?.();
+      }
+    };
+    btn.addEventListener('pointerdown',go,{capture:true,passive:false});
+    btn.addEventListener('touchstart',go,{capture:true,passive:false});
+    btn.addEventListener('click',go,{capture:true});
+  });
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindAgeGate,{once:true});
+else bindAgeGate();
+new MutationObserver(bindAgeGate).observe(document.documentElement,{childList:true,subtree:true});
 })();
