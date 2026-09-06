@@ -1,0 +1,25 @@
+(()=>{
+const MOMENTS=[
+ {at:6,k:'TU EVALUACIÓN ESTÁ TOMANDO FORMA',t:'No estamos mirando un solo síntoma',b:'Tus respuestas nos ayudan a integrar respuesta sexual, contexto, hábitos y factores que pueden influir en tu rendimiento.',i:'◎'},
+ {at:11,k:'UNA MIRADA MÁS COMPLETA',t:'¿Por qué preguntamos por tus hábitos?',b:'Sueño, estrés, actividad física y salud general forman parte del contexto. SPM los integra para comprender mejor tu perfil, no para darte una respuesta genérica.',i:'◌'},
+ {at:16,k:'VAMOS POR MUY BUEN CAMINO',t:'Cada respuesta añade contexto',b:'Ya estamos organizando la información por áreas. Esto permite identificar cuáles parecen tener mayor prioridad y cuáles pueden actuar como factores secundarios.',i:'◇'},
+ {at:21,k:'INTEGRANDO TU PERFIL',t:'Tu caso no se compara con una plantilla',b:'La evaluación conecta tus respuestas entre sí para construir una orientación individual y definir qué áreas merecen mayor atención.',i:'⌁'},
+ {at:26,k:'YA FALTA POCO',t:'Estamos llegando a los últimos detalles',b:'Estas preguntas finales ayudan a ordenar prioridades y a preparar una propuesta de trabajo coherente con lo que has reportado.',i:'✓'}
+];
+const seen=new Set();let layer=null,last='';
+function addCSS(){if(document.getElementById('spmRefreshCSS'))return;const s=document.createElement('style');s.id='spmRefreshCSS';s.textContent=`
+.spmRefresh{position:fixed;inset:0;z-index:99999;background:rgba(3,16,21,.96);display:grid;place-items:center;padding:22px;backdrop-filter:blur(14px)}
+.spmRefreshCard{width:min(520px,100%);border:1px solid rgba(143,227,208,.3);border-radius:30px;padding:34px 26px 28px;background:linear-gradient(155deg,#123038,#071b21);box-shadow:0 24px 70px rgba(0,0,0,.42);position:relative;overflow:hidden}
+.spmRefreshCard:before{content:'';position:absolute;width:230px;height:230px;border-radius:50%;background:rgba(143,227,208,.07);right:-105px;top:-105px}
+.spmOrbit{width:88px;height:88px;border-radius:50%;border:1px solid rgba(143,227,208,.38);display:grid;place-items:center;margin-bottom:28px;color:#8fe3d0;font-size:34px;position:relative}
+.spmOrbit:after{content:'';position:absolute;inset:10px;border-radius:50%;border:5px solid rgba(143,227,208,.14);border-top-color:#8fe3d0;animation:spmSpin 4s linear infinite}@keyframes spmSpin{to{transform:rotate(360deg)}}
+.spmRK{font-size:12px;letter-spacing:.14em;font-weight:850;color:#8fe3d0;margin-bottom:12px}.spmRefresh h2{font-size:30px;line-height:1.08;margin:0 0 16px;color:#f4f8f8}.spmRefresh p{font-size:18px;line-height:1.55;margin:0;color:#b8c8cc}
+.spmMiniProgress{margin:28px 0 12px;height:5px;border-radius:99px;background:#173039;overflow:hidden}.spmMiniProgress i{display:block;height:100%;background:#8fe3d0;border-radius:99px}.spmStage{font-size:11px;line-height:1.5;color:#8fa5aa;margin-bottom:22px;letter-spacing:.05em}
+.spmRefreshActions{display:grid;grid-template-columns:1fr auto;gap:10px}.spmRefresh button{border:1px solid rgba(143,227,208,.28);border-radius:17px;padding:15px 16px;background:#17323b;color:#f6fbfa;font-weight:800;font-size:16px}.spmRefresh .listen{width:54px;color:#8fe3d0}.spmRefreshHint{margin-top:12px!important;font-size:12px!important;color:#789197!important}
+@media(max-width:520px){.spmRefreshCard{padding:30px 22px 24px;border-radius:26px}.spmRefresh h2{font-size:27px}.spmRefresh p{font-size:17px}}
+`;document.head.appendChild(s)}
+function say(x){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`${x.t}. ${x.b}`);u.lang='es-CO';u.rate=.93;u.pitch=1;window.speechSynthesis.speak(u)}
+function show(x,pos,total){addCSS();layer=document.createElement('div');layer.className='spmRefresh';const pct=Math.round(pos/Math.max(total,1)*100);layer.innerHTML=`<section class="spmRefreshCard" role="dialog" aria-modal="true"><div class="spmOrbit" aria-hidden="true">${x.i}</div><div class="spmRK">${x.k}</div><h2>${x.t}</h2><p>${x.b}</p><div class="spmMiniProgress"><i style="width:${pct}%"></i></div><div class="spmStage">PERFIL GENERAL · RESPUESTA SEXUAL · HÁBITOS · CONTEXTO · INTEGRACIÓN</div><div class="spmRefreshActions"><button class="continue" type="button">Continuar mi evaluación</button><button class="listen" type="button" aria-label="Escuchar este mensaje">▶</button></div><p class="spmRefreshHint">Puedes leerlo o escucharlo. El audio es opcional.</p></section>`;document.body.appendChild(layer);layer.querySelector('.continue').onclick=()=>{window.speechSynthesis?.cancel?.();layer.remove();layer=null};layer.querySelector('.listen').onclick=()=>say(x)}
+function tick(){if(layer)return;const card=document.getElementById('quizCard'),count=document.getElementById('qCount');if(!card||card.hidden||!count)return;const text=count.textContent.trim();if(!text||text===last)return;last=text;const m=text.match(/(\d+)\s*\/\s*(\d+)/);if(!m)return;const pos=Number(m[1]),total=Number(m[2]);const x=MOMENTS.find(v=>v.at===pos&&!seen.has(v.at));if(x){seen.add(x.at);setTimeout(()=>show(x,pos,total),220)}}
+setInterval(tick,250);
+})();
