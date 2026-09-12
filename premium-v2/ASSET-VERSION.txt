@@ -1,0 +1,4 @@
+SPM Insight media bundle: 2026-09-11-v1
+Images: 4 Spanish premium posters bundled in-repository.
+Audio: 4 Spanish + 4 English male MP3 tracks stored in-repository.
+Language core: ES/EN state enabled for new media integrations.
