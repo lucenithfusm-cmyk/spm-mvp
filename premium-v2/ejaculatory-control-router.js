@@ -5,7 +5,7 @@ const ASSESS_KEY='spm_ep_assessments_v1';
 const CHECKPOINTS={1:{label:'Evaluación inicial',ielt:true,pedt:true},14:{label:'Revisión intermedia',ielt:true,pedt:false},28:{label:'Reevaluación final',ielt:true,pedt:true}};
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 function isEpRoute(){const title=($(PROFILE_SELECTOR)?.textContent||'').trim();return /Control eyaculatorio/i.test(title)}
-function pruneWrongRoute(){if(isEpRoute())return;$$('.ecLaunch,.epAssessLaunch').forEach(b=>b.remove());$$('.dayCard').forEach(c=>{delete c.dataset.ecEnhanced;delete c.dataset.epAssessEnhanced})}
+function pruneWrongRoute(){if(isEpRoute())return;$$('.ecLaunch,.epAssessLaunch').forEach(b=>b.remove())}
 function restoreEpButtons(){if(!isEpRoute())return;const api=window.SPM_EJACULATORY_CONTROL;if(!api?.schedule)return;$$('.dayCard').forEach(card=>{const d=Number($('.dayNum',card)?.textContent||0),meta=api.schedule[d];if(!meta||$('.ecLaunch',card))return;const area=$('.interactive',card);if(!area)return;const b=document.createElement('button');b.type='button';b.className='btn pri ecLaunch';const names={startstop:'Start/Stop',squeeze:'Stop–Squeeze',combined:'Técnica combinada'};b.textContent=`▶ Control eyaculatorio · S${meta.week}.${meta.session} · ${names[meta.tech]||meta.tech}`;b.onclick=e=>{e.stopPropagation();api.open(d)};area.prepend(b)})}
 function rows(){try{return JSON.parse(localStorage.getItem(ASSESS_KEY)||'[]')}catch(e){return[]}}
 function saveRow(rec){let data=rows();const i=data.findIndex(x=>x.day===rec.day);if(i>=0)data[i]=rec;else data.push(rec);data.sort((a,b)=>a.day-b.day);localStorage.setItem(ASSESS_KEY,JSON.stringify(data));window.dispatchEvent(new CustomEvent('spm:ep-assessment-saved',{detail:rec}))}
@@ -19,5 +19,9 @@ function compareHtml(data){const b=data.find(x=>x.day===1),m=data.find(x=>x.day=
 function assessmentButtons(){if(!isEpRoute())return;$$('.dayCard').forEach(card=>{const d=Number($('.dayNum',card)?.textContent||0),cfg=CHECKPOINTS[d];if(!cfg||$('.epAssessLaunch',card))return;const area=$('.interactive',card)||card;const b=document.createElement('button');b.type='button';b.className='epAssessLaunch';const saved=rows().some(x=>x.day===d);b.textContent=`📊 ${cfg.label} · ${cfg.ielt?'IELT':''}${cfg.pedt?' + PEDT':''}${saved?' ✓':''}`;b.onclick=e=>{e.preventDefault();e.stopPropagation();openAssessment(d)};area.prepend(b)})}
 function handleTechniqueIntro(){const teach=$('#ecTeach');if(!teach?.classList.contains('on'))return;const tech=($('#ecTechTitle')?.textContent||'').trim();if(!tech)return;const key='spm_ec_tech_intro_'+tech.toLowerCase().replace(/[^a-z0-9]+/g,'_');if(localStorage.getItem(key)==='1')return;const btn=$('#ecTechAudio');if(!btn)return;localStorage.setItem(key,'1');setTimeout(()=>btn.click(),180)}
 function sync(){pruneWrongRoute();restoreEpButtons();assessmentButtons();handleTechniqueIntro()}
-new MutationObserver(sync).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});document.addEventListener('DOMContentLoaded',sync);setTimeout(sync,500);window.SPM_EP_ASSESSMENT={open:openAssessment,records:rows};
+const dayGrid=$('#dayGrid'),profileTitle=$(PROFILE_SELECTOR),ecModal=$('#spmEcModal');
+if(dayGrid)new MutationObserver(sync).observe(dayGrid,{childList:true,subtree:true});
+if(profileTitle)new MutationObserver(sync).observe(profileTitle,{childList:true,subtree:true,characterData:true});
+if(ecModal)new MutationObserver(handleTechniqueIntro).observe(ecModal,{attributes:true,subtree:true,attributeFilter:['class']});
+document.addEventListener('DOMContentLoaded',sync);setTimeout(sync,500);window.SPM_EP_ASSESSMENT={open:openAssessment,records:rows};
 })();
