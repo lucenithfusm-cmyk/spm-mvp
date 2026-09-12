@@ -292,7 +292,8 @@ function incrementModeCount(){
 function recommendedMode(){return Number(localStorage.getItem(MODE_COUNT_KEY)||0)%2===0?'guided':'interactive'}
 function updateRecommendations(){
  const preferred=recommendedMode();$$('.pfi-mode-panel').forEach(panel=>{
-  $$('.pfi-recommended',panel).forEach(x=>x.remove());const target=panel.querySelector(preferred==='guided'?'.pfi-guided-wrap':'.pfi-interactive-wrap');if(target)target.insertAdjacentHTML('afterbegin','<span class="pfi-recommended">Recomendado hoy</span>');
+  if(panel.dataset.recommendedMode===preferred&&panel.querySelector('.pfi-recommended'))return;
+  $$('.pfi-recommended',panel).forEach(x=>x.remove());const target=panel.querySelector(preferred==='guided'?'.pfi-guided-wrap':'.pfi-interactive-wrap');if(target){target.insertAdjacentHTML('afterbegin','<span class="pfi-recommended">Recomendado hoy</span>');panel.dataset.recommendedMode=preferred}
  });
 }
 function decorateCards(){
