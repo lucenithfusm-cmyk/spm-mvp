@@ -1,0 +1,53 @@
+name: Fetch SPM Insight audio assets
+
+on:
+  push:
+    branches:
+      - refresh-assets-fix-v3
+    paths:
+      - '.github/workflows/fetch-spm-insight-audio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-audio:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: refresh-assets-fix-v3
+          fetch-depth: 0
+
+      - name: Download approved Spanish and English male voice assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p premium-v2/assets/audio
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/31f1765c-99fc-41b2-9a87-626533751a44.mp3' -o premium-v2/assets/audio/insight-1-es.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/8e39f68d-2183-43d6-b4c1-a3034ca2e183.mp3' -o premium-v2/assets/audio/insight-2-es.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/046a09ef-366f-44af-8295-d393de65d196.mp3' -o premium-v2/assets/audio/insight-3-es.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/3324f836-7ca9-44d8-b56a-7984d069bb1e.mp3' -o premium-v2/assets/audio/insight-4-es.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/8cabcdee-b4d7-46cd-8bcf-5bfc6528efbd.mp3' -o premium-v2/assets/audio/insight-1-en.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/f14a87a4-e69d-4f1f-b392-db74327cf6b9.mp3' -o premium-v2/assets/audio/insight-2-en.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/9f04b80a-21cd-41ae-b3ec-cb6ca31ff39e.mp3' -o premium-v2/assets/audio/insight-3-en.mp3
+          curl -L --fail --retry 3 --retry-delay 2 'https://storage.googleapis.com/adm--audio-playback--7d--public/mcp-preview/0e5e48b6-0c1b-4646-ae63-d65b42a3eef6.mp3' -o premium-v2/assets/audio/insight-4-en.mp3
+          test -s premium-v2/assets/audio/insight-1-es.mp3
+          test -s premium-v2/assets/audio/insight-4-en.mp3
+
+      - name: Commit permanent audio assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add premium-v2/assets/audio/*.mp3
+          if git diff --cached --quiet; then
+            echo 'Audio assets already present; nothing to commit.'
+            exit 0
+          fi
+          git commit -m 'Store permanent bilingual SPM Insight audio assets [skip ci]'
+          git push origin HEAD:refresh-assets-fix-v3
