@@ -91,6 +91,7 @@ function bindRestoredActions(assessmentCount){
  }
  window.SPM_SAVE_MODULE=saveModule;
  window.SPM_RESTORED_CONTEXT=CTX;
+ window.dispatchEvent(new Event('spm:resourcecontext'));
 }
 async function restoreExisting(){
  if(running||restored||!window.supabase)return false;running=true;
@@ -119,7 +120,7 @@ async function restoreExisting(){
    db.from('assessments').select('id',{count:'exact',head:true}).eq('user_id',uid)
   ]);
   if(cr.error)throw cr.error;if(dr.error)throw dr.error;if(ac.error)throw ac.error;
-  CTX={db,uid,session,plan,assessment,map,done:new Set((cr.data||[]).map(x=>x.day_number)),checkins:dr.data||[]};
+  CTX={db,uid,session,plan,assessment,map,done:new Set((cr.data||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number)),checkins:dr.data||[]};
   hideIntake();enableProgramNav();renderMap();renderPlan();renderCoach();renderProgress();bindRestoredActions(ac.count||0);activate('map');restored=true;
   status(`Tu análisis y Performance Map fueron restaurados. Tu programa continúa en el día ${Number(plan.current_day)||1}.`);
   return true;

@@ -1,0 +1,10 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),{JSDOM}=require('jsdom');
+const path=__dirname+'/../premium-v2/',wait=()=>new Promise(r=>setTimeout(r,100));
+async function boot(saved){const dom=new JSDOM(fs.readFileSync(path+'live-v4.html','utf8'),{url:'https://spm.test/',runScripts:'outside-only',pretendToBeVisual:true});const w=dom.window;
+ if(saved)w.localStorage.setItem('spm-test-db',JSON.stringify(saved));w.eval(fs.readFileSync(__dirname+'/mock-api.js','utf8'));
+ for(const file of ['engine.js','health-intake-v2.js','modules.js','app-live.js'])w.eval(fs.readFileSync(path+file,'utf8'));await wait();return dom;}
+test('clean-user app boots without optional newAssessment button; motives select and advance',async()=>{const dom=await boot(),d=dom.window.document;assert.equal(d.querySelector('#appScreen').hidden,false);d.querySelector('[data-age="1"]').click();d.querySelector('[data-motive="erection"]').click();d.querySelector('[data-motive="desire"]').click();d.querySelector('#motiveNext').click();assert.equal(d.querySelector('#quizCard').hidden,false);assert.ok(d.querySelector('#qbox').textContent.length>0);dom.window.close();});
+test('existing plan restores while resource records never complete program days',async()=>{
+ const u='00000000-0000-4000-8000-000000000001',dom=await boot({plans:[{id:'plan',user_id:u,status:'active',assessment_id:'assessment',performance_map_id:'map'}],assessments:[{id:'assessment',motives:['erection'],answers:{}}],performance_maps:[{id:'map',primary_domain:'erection',secondary_domain:'confidence',domain_scores:{erection:50,confidence:60},spm_score:55,safety_level:'none',safety_flags:[]}],activity_completions:[{plan_id:'plan',day_number:1,module_key:'daily_practice'},{plan_id:'plan',day_number:14,module_key:'resource:response:test'}]});
+ const c=dom.window.SPM_RESOURCE_CONTEXT();assert.equal(c.planId,'plan');assert.deepEqual(Array.from(c.completed),[1]);assert.equal(c.day,2);await assert.rejects(dom.window.SPM_RESOURCE_RECORDS.save({kind:'response',day:2},'other:plan'),/Program changed/);dom.window.close();
+});

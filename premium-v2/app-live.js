@@ -5,6 +5,18 @@ const db=window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+// Read-only integration surface. Educational records never modify scores or completion state.
+window.SPM_RESOURCE_CONTEXT=()=>{
+ if(!S.user)return null;
+ const r=window.SPM_RESTORED_CONTEXT;
+ if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Number(r.plan.current_day)||1,answers:r.assessment.answers||{},motives:r.assessment.motives||[],primary:r.map.primary_domain,safety:r.map.safety_level,flags:r.map.safety_flags||[],completed:[...r.done],checkins:r.checkins||[]};
+ if(!S.planId||!S.map)return null;
+ return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
+};
+window.SPM_RESOURCE_RECORDS={
+ async read(){const c=window.SPM_RESOURCE_CONTEXT();if(!c)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
+ async save(record,expectedScope){const c=window.SPM_RESOURCE_CONTEXT();if(!c)throw new Error('No active program');if(expectedScope&&expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:c.userId,plan_id:c.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
+};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
  ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
@@ -69,11 +81,11 @@ async function restore(){
  ]);
  if(a){S.motives=a.motives||[];S.answers=a.answers||{}}
  if(m){S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]}}
- S.completed=new Set((c||[]).map(x=>x.day_number));S.checkins=d||[];
+ S.completed=new Set((c||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=d||[];
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
 }
-function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];window.SPM_RESTORED_CONTEXT=null;window.dispatchEvent(new Event('spm:resourcecontext'));nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
  motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.motive=id;b.innerHTML=`<b>${t}</b>`;syncMotiveButton(b,id);b.addEventListener('click',event=>activateMotive(event,id));b.addEventListener('touchend',event=>activateMotive(event,id),{passive:false});fragment.appendChild(b)});
@@ -176,14 +188,15 @@ function renderProgress(){
  $('stChecks').textContent=n;$('stAdh').textContent=adh+'%';$('stConf').textContent=avg('confidence');$('stOutcome').textContent=avg('outcome');$('stDecision').textContent=n?(S.checkins[n-1].decision_code||'—'):'—';
  const chart=$('chart');chart.innerHTML='';S.checkins.slice(-14).forEach(x=>{const c=document.createElement('div');c.className='col';c.style.height=`${Math.max(8,(Number(x.confidence)||0)*10)}%`;c.dataset.v=`D${x.day_number}: ${x.confidence}`;chart.appendChild(c)});
  $('savedState').textContent=S.planId?'Guardado en la nube ✓':'Aún sin plan';
+ window.dispatchEvent(new Event('spm:resourcecontext'));
 }
-async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
+async function signOut(){await db.auth.signOut();S.user=null;window.SPM_RESTORED_CONTEXT=null;window.dispatchEvent(new Event('spm:resourcecontext'));show('authScreen');resetForAssessment();}
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false}else msg('SPM está diseñado para mayores de 18 años.','warn')});
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg('Selecciona al menos un motivo.','warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?'Escribe una respuesta para continuar.':'Selecciona una respuesta.','warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
- document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
+ document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;const newAssessment=$('newAssessment');if(newAssessment)newAssessment.onclick=()=>{resetForAssessment();hideMsg()};boot();
 });
 })();
