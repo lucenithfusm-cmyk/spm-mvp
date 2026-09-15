@@ -29,8 +29,43 @@ function addCalendar(){const main=$('.pfi-overlay:not([hidden]) .pfi-main');if(!
 function syncAvatar(){const root=$('.pfi-overlay:not([hidden])');if(!root)return;const stage=$('[data-pfi-avatar]',root),caption=$('[data-pfi-caption]',root);if(!stage)return;const phase=($('#pfiGuidedPhase',root)?.textContent||$('#pfiSoloPhase',root)?.textContent||'LISTO').toUpperCase();stage.classList.remove('contract','relax','pfi-pulse');if(/CONTRAE/.test(phase)){stage.classList.add('contract','pfi-pulse');if(caption)caption.innerHTML='<strong>CONTRAE</strong> · elevación suave · respira normalmente'}else if(/RELAJA/.test(phase)){stage.classList.add('relax');if(caption)caption.innerHTML='<strong>RELAJA</strong> · suelta por completo · continúa respirando'}else if(/COMPLETADO/.test(phase)){if(caption)caption.innerHTML='<strong>COMPLETADO ✓</strong> · buen trabajo'}else if(caption)caption.innerHTML='<strong>LISTO</strong> · mantén respiración natural';}
 function addMobileQuickbar(){const shell=$('.pfi-overlay:not([hidden]) .pfi-shell');if(!shell||shell.querySelector('.pfi-quickbar'))return;const bar=document.createElement('div');bar.className='pfi-quickbar';bar.innerHTML=['Conoce','Identifica','Contrae','Relaja','Serie','Recomendaciones','Práctica'].map((x,i)=>`<button type="button" data-pfi-q="${i}">${i+1}. ${x}</button>`).join('');shell.appendChild(bar);$$('[data-pfi-q]',bar).forEach(b=>b.onclick=()=>$$('.pfi-step',shell)[Number(b.dataset.pfiQ)]?.click());}
 function enhanceOverlay(){const o=$('.pfi-overlay:not([hidden])');if(!o)return;$$('.pfi-step',o).forEach((b,i)=>{b.disabled=false;b.setAttribute('title',`Ir directamente al paso ${i+1}: ${b.textContent.trim()}`)});addScreenHelp();decorateGuided();decorateAutonomous();addCalendar();addMobileQuickbar();syncAvatar();}
-function decorateCards(){document.querySelectorAll('.dayCard').forEach(card=>{const text=(card.textContent||'').toLowerCase();if(!/piso p[eé]lvico/.test(text))return;const panel=$('.pfi-mode-panel',card);if(!panel||panel.dataset.fidelityV2==='1')return;panel.dataset.fidelityV2='1';panel.classList.remove('pfi-premium-single');const head=$('.pfi-mode-head',panel);if(head)head.innerHTML='<div><b>Piso pélvico · elige cómo entrar hoy</b><span>La primera vez recomendamos recorrer los 7 pasos. Después puedes ir directamente a una serie guiada o a tu práctica autónoma.</span></div>';const grid=$('.pfi-mode-grid',panel);if(grid){grid.style.gridTemplateColumns='1fr 1fr';const jumps=document.createElement('div');jumps.className='pfi-fidelity-intro';jumps.innerHTML=`<button class="pfi-fidelity-jump" data-jump="0"><strong>▦ APRENDER</strong><span>Recorrer los 7 pasos</span></button><button class="pfi-fidelity-jump" data-jump="4"><strong>▶ ENTRENAR</strong><span>Ir a Serie guiada</span></button><button class="pfi-fidelity-jump" data-jump="6"><strong>◎ PRACTICAR</strong><span>Ir a Práctica autónoma</span></button>`;panel.appendChild(jumps);$$('[data-jump]',jumps).forEach(btn=>btn.onclick=e=>{e.preventDefault();e.stopPropagation();const launch=$('.pfi-launch',panel);if(!launch)return;launch.click();const target=Number(btn.dataset.jump);let tries=0;const jump=()=>{tries++;const o=$('.pfi-overlay:not([hidden])');if(o){$$('.pfi-step',o)[target]?.click();return}if(tries<30)setTimeout(jump,120)};setTimeout(jump,180)});}}
- });}
+function decorateCards(){
+ document.querySelectorAll('.dayCard').forEach(card=>{
+  const text=(card.textContent||'').toLowerCase();
+  if(!/piso p[eé]lvico/.test(text))return;
+  const panel=$('.pfi-mode-panel',card);
+  if(!panel||panel.dataset.fidelityV2==='1')return;
+  panel.dataset.fidelityV2='1';
+  panel.classList.remove('pfi-premium-single');
+  const head=$('.pfi-mode-head',panel);
+  if(head)head.innerHTML='<div><b>Piso pélvico · elige cómo entrar hoy</b><span>La primera vez recomendamos recorrer los 7 pasos. Después puedes ir directamente a una serie guiada o a tu práctica autónoma.</span></div>';
+  const grid=$('.pfi-mode-grid',panel);
+  if(!grid)return;
+  grid.style.gridTemplateColumns='1fr 1fr';
+  const jumps=document.createElement('div');
+  jumps.className='pfi-fidelity-intro';
+  jumps.innerHTML=`<button class="pfi-fidelity-jump" data-jump="0"><strong>▦ APRENDER</strong><span>Recorrer los 7 pasos</span></button><button class="pfi-fidelity-jump" data-jump="4"><strong>▶ ENTRENAR</strong><span>Ir a Serie guiada</span></button><button class="pfi-fidelity-jump" data-jump="6"><strong>◎ PRACTICAR</strong><span>Ir a Práctica autónoma</span></button>`;
+  panel.appendChild(jumps);
+  $$('[data-jump]',jumps).forEach(btn=>{
+   btn.onclick=e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const launch=$('.pfi-launch',panel);
+    if(!launch)return;
+    launch.click();
+    const target=Number(btn.dataset.jump);
+    let tries=0;
+    const jump=()=>{
+     tries++;
+     const o=$('.pfi-overlay:not([hidden])');
+     if(o){$$('.pfi-step',o)[target]?.click();return;}
+     if(tries<30)setTimeout(jump,120);
+    };
+    setTimeout(jump,180);
+   };
+  });
+ });
+}
 function scan(){decorateCards();enhanceOverlay()}
 const grid=document.getElementById('dayGrid');if(grid)new MutationObserver(()=>requestAnimationFrame(decorateCards)).observe(grid,{childList:true,subtree:true});
 const overlay=$('.pfi-overlay');if(overlay){const mo=new MutationObserver(()=>requestAnimationFrame(enhanceOverlay));mo.observe(overlay,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});}
