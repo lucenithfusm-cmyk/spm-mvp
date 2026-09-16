@@ -20,26 +20,27 @@
       'use strict';
       const ROOT = new URL('premium-v2/', location.href).href;
       const EXTRA = [
-        'spm-language-core-v1.js?v=20260915v8',
-        'assets/spm-insight-audio-v1.js?v=20260915v8',
-        'evaluation-refresh-v1.js?v=20260915v8',
-        'commercial-conversion-v1.js?v=20260915v8',
-        'commercial-offer-v2.js?v=20260915v8',
-        'signup-hotfix-v1.js?v=20260915v8',
-        'checkpoint-evaluations-v1.js?v=20260915v8',
-        'adaptation-engine-v1.js?v=20260915v8',
-        'day28-outcomes-maintenance-v1.js?v=20260915v8',
-        'real-avatar-img.js?v=20260915v8',
-        'breathing-img-1.js?v=20260915v8',
-        'breathing-img-2.js?v=20260915v8',
-        'breathing-img-3.js?v=20260915v8',
-        'recovery-story-premium-v4.js?v=20260915v8',
-        'recovery-story-extra-v1.js?v=20260915v8',
-        'recovery-story-voice-avatar-fix-v1.js?v=20260915v8',
-        'spm-premium-polish-v3.js?v=20260915v8'
+        'spm-language-core-v1.js?v=20260915v9',
+        'assets/spm-insight-audio-v1.js?v=20260915v9',
+        'evaluation-refresh-v1.js?v=20260915v9',
+        'commercial-conversion-v1.js?v=20260915v9',
+        'commercial-offer-v2.js?v=20260915v9',
+        'signup-hotfix-v1.js?v=20260915v9',
+        'checkpoint-evaluations-v1.js?v=20260915v9',
+        'adaptation-engine-v1.js?v=20260915v9',
+        'day28-outcomes-maintenance-v1.js?v=20260915v9',
+        'real-avatar-img.js?v=20260915v9',
+        'breathing-img-1.js?v=20260915v9',
+        'breathing-img-2.js?v=20260915v9',
+        'breathing-img-3.js?v=20260915v9',
+        'recovery-story-premium-v4.js?v=20260915v9',
+        'recovery-story-extra-v1.js?v=20260915v9',
+        'recovery-story-voice-avatar-fix-v1.js?v=20260915v9',
+        'spm-premium-polish-v3.js?v=20260915v9',
+        'spm-activity-photos-v1.js?v=20260915v1'
       ];
       const scriptTag = src => '<scr' + 'ipt src="' + ROOT + src + '"><' + '/scr' + 'ipt>';
-      fetch(ROOT + 'live-v4.html?v=20260915v8', {cache: 'no-store'})
+      fetch(ROOT + 'live-v4.html?v=20260915v9', {cache: 'no-store'})
         .then(response => {
           if (!response.ok) throw new Error('No se pudo cargar el piloto (' + response.status + ').');
           return response.text();
