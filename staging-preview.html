@@ -18,23 +18,22 @@
   <script>
     (() => {
       'use strict';
-      const ROOT = 'https://cdn.jsdelivr.net/gh/lucenithfusm-cmyk/spm-mvp@feat%2Fpremium-resources-staging/premium-v2/';
+      const ROOT = new URL('premium-v2/', location.href).href;
       const EXTRA = [
-        'spm-language-core-v1.js?v=20260911a',
-        'assets/spm-insight-audio-v1.js?v=20260911b',
-        'evaluation-refresh-v1.js?v=20260912c',
-        'commercial-conversion-v1.js?v=20260906v2',
-        'commercial-offer-v2.js?v=20260906v1',
-        'signup-hotfix-v1.js?v=20260908v1',
-        'checkpoint-evaluations-v1.js?v=20260909v1',
-        'adaptation-engine-v1.js?v=20260909v1',
-        'day28-outcomes-maintenance-v1.js?v=20260909v1',
-        'recovery-dialogue-v1.js?v=20260915b',
-        'recovery-microstory-v2.js?v=20260915b',
-        'recovery-story-premium-v3.js?v=20260915a'
+        'spm-language-core-v1.js?v=20260915v4',
+        'assets/spm-insight-audio-v1.js?v=20260915v4',
+        'evaluation-refresh-v1.js?v=20260915v4',
+        'commercial-conversion-v1.js?v=20260915v4',
+        'commercial-offer-v2.js?v=20260915v4',
+        'signup-hotfix-v1.js?v=20260915v4',
+        'checkpoint-evaluations-v1.js?v=20260915v4',
+        'adaptation-engine-v1.js?v=20260915v4',
+        'day28-outcomes-maintenance-v1.js?v=20260915v4',
+        'real-avatar-img.js?v=20260915v4',
+        'recovery-story-premium-v4.js?v=20260915v4'
       ];
       const scriptTag = src => '<scr' + 'ipt src="' + ROOT + src + '"><' + '/scr' + 'ipt>';
-      fetch(ROOT + 'live-v4.html', {cache: 'no-store'})
+      fetch(ROOT + 'live-v4.html?v=20260915v4', {cache: 'no-store'})
         .then(response => {
           if (!response.ok) throw new Error('No se pudo cargar el piloto (' + response.status + ').');
           return response.text();
