@@ -1,3 +1,2 @@
-SPM Premium deployment trigger
-2026-09-15 recovery microstory staging release
-Includes recovery dialogue and animated microstory modules for testing on feat/premium-resources-staging.
+SPM Premium staging deploy trigger
+activity-premium-v2=2026-09-16T00:31-05:00
