@@ -20,24 +20,25 @@
       'use strict';
       const ROOT = new URL('premium-v2/', location.href).href;
       const EXTRA = [
-        'spm-language-core-v1.js?v=20260915v6',
-        'assets/spm-insight-audio-v1.js?v=20260915v6',
-        'evaluation-refresh-v1.js?v=20260915v6',
-        'commercial-conversion-v1.js?v=20260915v6',
-        'commercial-offer-v2.js?v=20260915v6',
-        'signup-hotfix-v1.js?v=20260915v6',
-        'checkpoint-evaluations-v1.js?v=20260915v6',
-        'adaptation-engine-v1.js?v=20260915v6',
-        'day28-outcomes-maintenance-v1.js?v=20260915v6',
-        'real-avatar-img.js?v=20260915v6',
-        'breathing-img-1.js?v=20260915v6',
-        'breathing-img-2.js?v=20260915v6',
-        'breathing-img-3.js?v=20260915v6',
-        'recovery-story-premium-v4.js?v=20260915v6',
-        'recovery-story-voice-avatar-fix-v1.js?v=20260915v6'
+        'spm-language-core-v1.js?v=20260915v7',
+        'assets/spm-insight-audio-v1.js?v=20260915v7',
+        'evaluation-refresh-v1.js?v=20260915v7',
+        'commercial-conversion-v1.js?v=20260915v7',
+        'commercial-offer-v2.js?v=20260915v7',
+        'signup-hotfix-v1.js?v=20260915v7',
+        'checkpoint-evaluations-v1.js?v=20260915v7',
+        'adaptation-engine-v1.js?v=20260915v7',
+        'day28-outcomes-maintenance-v1.js?v=20260915v7',
+        'real-avatar-img.js?v=20260915v7',
+        'breathing-img-1.js?v=20260915v7',
+        'breathing-img-2.js?v=20260915v7',
+        'breathing-img-3.js?v=20260915v7',
+        'recovery-story-premium-v4.js?v=20260915v7',
+        'recovery-story-extra-v1.js?v=20260915v1',
+        'recovery-story-voice-avatar-fix-v1.js?v=20260915v7'
       ];
       const scriptTag = src => '<scr' + 'ipt src="' + ROOT + src + '"><' + '/scr' + 'ipt>';
-      fetch(ROOT + 'live-v4.html?v=20260915v6', {cache: 'no-store'})
+      fetch(ROOT + 'live-v4.html?v=20260915v7', {cache: 'no-store'})
         .then(response => {
           if (!response.ok) throw new Error('No se pudo cargar el piloto (' + response.status + ').');
           return response.text();
