@@ -19,5 +19,5 @@ button[data-food]>.spm-food-premium-crop{height:150px;margin-bottom:10px}
 @media(max-width:600px){.spm-food-premium-crop{height:160px}button[data-food]>.spm-food-premium-crop{height:145px}.spm-plate-premium{max-height:none}}
 `;document.head.appendChild(st);
 const mo=new MutationObserver(()=>scan());mo.observe(document.documentElement,{subtree:true,childList:true});
-document.addEventListener('click',e=>{if(e.target.closest('[data-food]'))setTimeout(scan,0)},true);window.addEventListener('spm:languagechange',()=>setTimeout(scan,0));setTimeout(scan,0);setTimeout(scan,300);
+document.addEventListener('click',e=>{const hot=e.target.closest('.spm-plate-premium [data-food]');if(hot){e.preventDefault();const id=hot.dataset.food;const target=[...document.querySelectorAll('.sr-dialog .sr-grid [data-food]')].find(b=>b.dataset.food===id);target?.click();return;}if(e.target.closest('[data-food]'))setTimeout(scan,0)},true);window.addEventListener('spm:languagechange',()=>setTimeout(scan,0));setTimeout(scan,0);setTimeout(scan,300);
 })();
