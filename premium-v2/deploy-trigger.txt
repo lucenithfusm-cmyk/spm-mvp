@@ -1,3 +1,3 @@
 SPM Premium staging deploy trigger
-activity-premium-v2=2026-09-16T00:33-05:00
-activity-sprite=ed8e250865d01d247ac54acf138cf7a1fa7f43cb
+activity-premium-v2=2026-09-16T00:35-05:00
+activity-sprite=ready
