@@ -1,0 +1,28 @@
+(()=>{'use strict';
+if(window.SPM_RECOVERY_SINGLE_CONTROLLER_V4)return;window.SPM_RECOVERY_SINGLE_CONTROLLER_V4=true;
+window.SPM_RECOVERY_EXCLUSIVE_AUDIO_V3=true;window.SPM_RECOVERY_SEQUENCE_STAGING_V2=true;window.SPM_RECOVERY_VOICE_AVATAR_FIX_V2=true;
+let serial=0,activeRoot=null,activeVideo=null,activeUtter=null,paused=false;
+const lang=()=>String(window.SPM_LANGUAGE?.get?.()||window.SPM_LANG||'es').toLowerCase().startsWith('en')?'en':'es';
+const female=/monica|mónica|paulina|luciana|sofia|sofía|carmen|helena|isabel|laura|maria|maría|salome|salomé|samantha|victoria|karen|moira|tessa|fiona|ava|allison|susan|serena|kate/i;
+function hardStop(){serial++;try{speechSynthesis.cancel()}catch{};document.querySelectorAll('.spm-v4 video').forEach(v=>{try{v.pause();v.loop=false}catch{}});activeVideo=null;activeUtter=null;paused=false;if(activeRoot)activeRoot.querySelector('.spm-v4-wave')?.classList.remove('playing');activeRoot=null}
+function activate(r,i){const cards=[...r.querySelectorAll('.spm-v4-card')];cards.forEach((c,n)=>c.classList.toggle('active',n===i));cards[i]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});return cards[i]}
+function stat(r,who,msg='reproduciendo…'){const s=r.querySelector('.spm-v4-status');if(s)s.innerHTML=who?'<strong>'+who+':</strong> '+msg:msg}
+function patient(card,which,my,next){try{speechSynthesis.cancel()}catch{};document.querySelectorAll('.spm-v4 video').forEach(v=>{if(v!==activeVideo)try{v.pause()}catch{}});
+ const v=card.querySelector('video.spm-patient-heygen');if(!v){setTimeout(next,250);return}
+ const r=card.closest('.spm-v4'),ps=[...r.querySelectorAll('.spm-v4-card.patient')],w1=(ps[0]?.querySelector('.spm-v4-copy')?.textContent||'').trim().split(/\s+/).filter(Boolean).length||1,w2=(ps[1]?.querySelector('.spm-v4-copy')?.textContent||'').trim().split(/\s+/).filter(Boolean).length||1;
+ const ready=()=>{if(my!==serial)return;const d=Number(v.duration);if(!isFinite(d)||d<=0){setTimeout(next,250);return}const cut=Math.max(1,Math.min(d-.5,d*w1/(w1+w2))),start=which?cut:0,end=which?d:cut;let finished=false;
+  const finish=()=>{if(finished)return;finished=true;v.removeEventListener('timeupdate',watch);v.removeEventListener('ended',finish);try{v.pause()}catch{};activeVideo=null;if(my===serial)setTimeout(next,450)};
+  const watch=()=>{if(v.currentTime>=end-.08)finish()};try{v.pause();v.loop=false;v.muted=false;v.defaultMuted=false;v.volume=1;v.playbackRate=1;v.currentTime=start;activeVideo=v;v.addEventListener('timeupdate',watch);v.addEventListener('ended',finish,{once:true});v.play().catch(()=>{stat(r,'Paciente','toca “Escuchar historia” nuevamente para activar el audio');finish()})}catch{finish()}};
+ if(v.readyState>=1)ready();else v.addEventListener('loadedmetadata',ready,{once:true})}
+function doctor(card,my,next){try{speechSynthesis.cancel()}catch{};document.querySelectorAll('.spm-v4 video').forEach(v=>{try{v.pause()}catch{}});
+ const txt=(card.querySelector('.spm-v4-copy')?.textContent||'').trim();if(!txt){setTimeout(next,250);return}const all=speechSynthesis.getVoices?.()||[],loc=all.filter(v=>String(v.lang||'').toLowerCase().startsWith(lang())),voice=loc.find(v=>female.test(v.name))||loc[0]||all[0]||null,dv=card.querySelector('video');
+ try{if(dv){dv.currentTime=0;dv.loop=true;dv.muted=true;dv.playbackRate=.95;dv.play().catch(()=>{})}}catch{}
+ const u=new SpeechSynthesisUtterance(txt);activeUtter=u;u.lang=lang()==='en'?'en-US':'es-CO';u.voice=voice;u.rate=.86;u.pitch=.98;
+ const finish=()=>{try{dv?.pause()}catch{};activeUtter=null;if(my===serial)setTimeout(next,500)};u.onend=finish;u.onerror=finish;speechSynthesis.speak(u)}
+function start(r){hardStop();activeRoot=r;const my=serial,cards=[...r.querySelectorAll('.spm-v4-card')];let i=0,p=0;r.querySelector('.spm-v4-wave')?.classList.add('playing');
+ const next=()=>{if(my!==serial)return;if(i>=cards.length){r.querySelector('.spm-v4-wave')?.classList.remove('playing');stat(r,'',lang()==='en'?'Story finished. You can listen again whenever you want.':'Historia finalizada. Puedes escucharla nuevamente cuando quieras.');return}const c=activate(r,i),isDoctor=c.classList.contains('doctor');stat(r,isDoctor?'Doctor SPM':(lang()==='en'?'Patient':'Paciente'));const done=()=>{i++;next()};if(isDoctor)doctor(c,my,done);else patient(c,p++,my,done)};next()}
+function toggle(r){if(activeRoot!==r)return;paused=!paused;const b=r.querySelector('.spm-v4-pause');if(paused){try{activeVideo?.pause();speechSynthesis.pause()}catch{};r.querySelector('.spm-v4-wave')?.classList.remove('playing');if(b)b.textContent='▶ '+(lang()==='en'?'Resume audio':'Continuar audio')}else{try{activeVideo?.play().catch(()=>{});speechSynthesis.resume()}catch{};r.querySelector('.spm-v4-wave')?.classList.add('playing');if(b)b.textContent='⏸ '+(lang()==='en'?'Pause audio':'Pausar audio')}}
+function idle(){document.querySelectorAll('.spm-v4 video').forEach(v=>{if(v!==activeVideo){try{v.pause();v.removeAttribute('autoplay')}catch{}}})}
+document.addEventListener('click',e=>{const p=e.target.closest('.spm-v4-play'),q=e.target.closest('.spm-v4-pause');if(p){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();start(p.closest('.spm-v4'));return}if(q){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();toggle(q.closest('.spm-v4'));return}if(e.target.closest('[data-scenario],[data-sr-close]')){hardStop();setTimeout(idle,0)}},true);
+new MutationObserver(()=>requestAnimationFrame(idle)).observe(document.documentElement,{childList:true,subtree:true});setTimeout(idle,0);window.addEventListener('pagehide',hardStop);
+})();
