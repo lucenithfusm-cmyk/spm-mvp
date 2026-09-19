@@ -1,0 +1,42 @@
+name: Fix low desire Dr SPM video staging
+on:
+  push:
+    branches:
+      - feat/premium-resources-staging
+    paths:
+      - '.github/workflows/fix-low-desire-video-staging.yml'
+permissions:
+  contents: write
+jobs:
+  crop-low-desire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect and remove only the baked white top and bottom bands
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='premium-v2/assets/videos/dr-spm-low-desire.mp4'
+          OUT='premium-v2/assets/videos/dr-spm-low-desire-content.mp4'
+          CROP=$(ffmpeg -hide_banner -ss 3 -i "$SRC" -t 8 -vf "negate,cropdetect=24:16:0" -an -f null - 2>&1 | grep -o 'crop=[0-9:]*' | tail -1 | cut -d= -f2 || true)
+          echo "Detected crop: $CROP"
+          if [ -z "$CROP" ]; then
+            echo "Could not detect white bands safely."
+            exit 1
+          fi
+          IFS=: read -r W H X Y <<< "$CROP"
+          IW=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$SRC")
+          if [ "$W" -ne "$IW" ] || [ "$Y" -le 0 ]; then
+            echo "Safety stop: detection would crop sides or did not find a top band."
+            exit 1
+          fi
+          ffmpeg -y -i "$SRC" -vf "crop=$CROP" -c:v libx264 -preset medium -crf 19 -c:a aac -b:a 160k -movflags +faststart "$OUT"
+          ffprobe -v error -show_entries stream=width,height -of csv=p=0 "$OUT"
+      - name: Commit only corrected low desire content video
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add premium-v2/assets/videos/dr-spm-low-desire-content.mp4
+          git commit -m 'Crop white bands from low desire Dr SPM video'
+          git push
