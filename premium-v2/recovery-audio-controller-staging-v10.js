@@ -7,6 +7,7 @@ let root=null,activeVideo=null,activeAudio=null,paused=false,run=0;
 const isEn=r=>{const text=(r?.querySelector('.spm-v4-play')?.textContent||'')+' '+(r?.querySelector('.spm-v4-head')?.textContent||'');if(/Escuchar historia|CASO|ÉL /i.test(text))return false;if(/Listen to story|CASE|HE /i.test(text))return true;return String(window.SPM_LANGUAGE?.get?.()||window.SPM_LANG||'es').toLowerCase().startsWith('en')};
 const MALE=/jorge|diego|carlos|enrique|juan|miguel|alvaro|álvaro|alejandro|antonio|pablo|andres|andrés|mateo|martin|martín|daniel|alex|aaron|arthur|fred|ralph|tom|oliver|james|gordon|lee|eddy|reed|rocko/i;
 const FEMALE=/monica|mónica|paulina|luciana|sofia|sofía|carmen|helena|isabel|laura|maria|maría|salome|salomé|samantha|victoria|karen|moira|tessa|fiona|ava|allison|susan|serena|kate/i;
+const PATIENT_SEGMENTS={before:[7.95,8.23],condom:[5.56,5.84],during:[6.90,7.07],early:[5.50,5.87],next:[7.02,7.17],partner:[5.45,5.88],urge:[6.94,7.21]};
 function voices(r){const all=synth?.getVoices?.()||[],prefix=isEn(r)?'en':'es',local=all.filter(v=>String(v.lang||'').toLowerCase().startsWith(prefix));const patient=local.find(v=>MALE.test(v.name))||local.find(v=>!FEMALE.test(v.name))||null;const doctor=local.find(v=>FEMALE.test(v.name)&&v!==patient)||local.find(v=>v!==patient)||local[0]||null;return{patient,doctor}}
 function status(r,who,msg){const s=r?.querySelector('.spm-v4-status');if(s)s.innerHTML=who?'<strong>'+who+':</strong> '+msg:msg}
 function resetPause(r){const b=r?.querySelector('.spm-v4-pause');if(b)b.textContent='⏸ '+(isEn(r)?'Pause audio':'Pausar audio')}
@@ -25,7 +26,7 @@ function utter(card,voice,lang,patient,token,done){
  let started=false,finished=false,watch=0,resumeTimer=0,maxTimer=0;
  const clear=()=>{if(watch)clearInterval(watch);if(resumeTimer)clearTimeout(resumeTimer);if(maxTimer)clearTimeout(maxTimer)};
  const start=()=>{if(finished||token!==run)return;if(!started){started=true;visual(card,patient)}else if(!patient&&activeVideo?.paused&&!paused){activeVideo.play().catch(()=>{})}status(r,who,lang.startsWith('en')?'playing…':'reproduciendo…')};
- const finish=()=>{if(finished)return;finished=true;clear();if(token!==run)return;stopVisual();done()};
+ const finish=()=>{if(finished)return;finished=true;clear();if(token!==run)return;stopVisual();if(patient)done();else{try{synth.cancel()}catch{};setTimeout(()=>{if(token===run)done()},220)}};
  if(patient)visual(card,true);else prepareDoctor(card);
  status(r,who,lang.startsWith('en')?'preparing audio…':'preparando audio…');
  u.onstart=start;u.onend=finish;u.onerror=finish;
@@ -39,12 +40,13 @@ function utter(card,voice,lang,patient,token,done){
 function spanishPatient(r,card,ordinal,token,done){
  const audio=r.querySelector('audio.spm-patient-story-audio');if(!audio){status(r,'Paciente','audio masculino no disponible.');setTimeout(done,350);return}
  const patients=[...r.querySelectorAll('.spm-v4-card.patient')],words=patients.map(c=>(c.querySelector('.spm-v4-copy')?.textContent||'').trim().split(/\s+/).filter(Boolean).length||1);
- let finished=false,to=Infinity;
- const cleanup=()=>{audio.removeEventListener('timeupdate',watch);audio.removeEventListener('ended',finish);audio.removeEventListener('error',fail)};
+ const segment=PATIENT_SEGMENTS[r.dataset.spmPatientScenario||''];
+ let finished=false,to=Infinity,seekTimer=0,seekHandler=null;
+ const cleanup=()=>{audio.removeEventListener('timeupdate',watch);audio.removeEventListener('ended',finish);audio.removeEventListener('error',fail);if(seekHandler)audio.removeEventListener('seeked',seekHandler);if(seekTimer)clearTimeout(seekTimer)};
  const finish=()=>{if(finished)return;finished=true;cleanup();try{audio.pause()}catch{}activeAudio=null;stopVisual();if(token===run)setTimeout(done,60)};
  const fail=()=>{if(finished)return;finished=true;cleanup();try{audio.pause()}catch{}activeAudio=null;stopVisual();status(r,'Paciente','audio masculino no disponible.');if(token===run)setTimeout(done,350)};
  const watch=()=>{if(audio.currentTime>=to-.06)finish()};
- const begin=()=>{if(token!==run)return;const d=Number(audio.duration)||0;if(!d||!isFinite(d)){fail();return}const cut=Math.max(.6,Math.min(d-.45,d*words[0]/(words[0]+words[1]))),from=ordinal===0?0:cut;to=ordinal===0?cut:d;try{audio.pause();audio.currentTime=from;audio.muted=false;audio.volume=1;activeAudio=audio;visual(card,true,ordinal===1);status(r,'Paciente','reproduciendo…');audio.addEventListener('timeupdate',watch);audio.addEventListener('ended',finish);audio.addEventListener('error',fail);const p=audio.play();p?.catch?.(fail)}catch{fail()}};
+ const begin=()=>{if(token!==run)return;const d=Number(audio.duration)||0;if(!d||!isFinite(d)){fail();return}const fallback=Math.max(.6,Math.min(d-.45,d*words[0]/(words[0]+words[1]))),cut=segment?.[0]||fallback,from=ordinal===0?0:(segment?.[1]||cut);to=ordinal===0?cut:d;const playSegment=()=>{if(finished||token!==run)return;if(seekHandler){audio.removeEventListener('seeked',seekHandler);seekHandler=null}if(seekTimer){clearTimeout(seekTimer);seekTimer=0}audio.muted=false;audio.defaultMuted=false;audio.volume=1;activeAudio=audio;visual(card,true,ordinal===1);status(r,'Paciente','reproduciendo…');audio.addEventListener('timeupdate',watch);audio.addEventListener('ended',finish);audio.addEventListener('error',fail);const p=audio.play();p?.catch?.(fail)};try{audio.pause();if(ordinal===1){seekHandler=()=>playSegment();audio.addEventListener('seeked',seekHandler,{once:true});audio.currentTime=from;seekTimer=setTimeout(playSegment,260)}else{audio.currentTime=0;playSegment()}}catch{fail()}};
  if(audio.readyState>=1)begin();else{audio.muted=true;const unlock=audio.play();unlock?.catch?.(()=>{});audio.addEventListener('loadedmetadata',begin,{once:true});try{audio.load()}catch{}}
 }
 function playSpanish(r){stop();root=r;resetPause(r);warmSpeech(r);const token=run,cards=[...r.querySelectorAll('.spm-v4-card')],vs=voices(r);let patientOrdinal=0,i=0;r.querySelector('.spm-v4-wave')?.classList.add('playing');const next=()=>{if(token!==run)return;if(i>=cards.length){r.querySelector('.spm-v4-wave')?.classList.remove('playing');status(r,'','Historia finalizada. Puedes escucharla nuevamente cuando quieras.');return}const card=setCard(r,i),patient=!card.classList.contains('doctor'),done=()=>{i++;next()};if(patient)spanishPatient(r,card,patientOrdinal++,token,done);else utter(card,vs.doctor,'es-CO',false,token,done)};next()}
