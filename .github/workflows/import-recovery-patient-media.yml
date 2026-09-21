@@ -1,0 +1,52 @@
+name: Import Recovery patient media
+
+on:
+  push:
+    branches:
+      - feat/premium-resources-staging
+    paths:
+      - '.github/workflows/import-recovery-patient-media.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-patient-media:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download approved patient renders
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tmp-recovery premium-v2/assets/videos premium-v2/assets/audio
+          curl --fail --location --retry 3 --output "tmp-recovery/condom.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/ca99c02457d337c3ab88a3a5e140b380.mp4?Expires=1790258581&Signature=fCDiAVbPXXA-pTpp0ZU3hYIHh5cRC6r3O4jIhCUICqTgxdv~YfR0249JEo8JuNNzOD0733sKDU6-lFLAjDqZR5d29DZjIytKKNq9wLBH9uKbcCH0fUNDaGoGdyUcN-h8RoIFM5ssHg3VXaAOrO-HqlhhzS1U7J4mStkXproXS0Xc3GM0JbJuo2~0v6KvqbyDcG7TnFbAH7MaoySsFglHXcg-cHU6cDQT~VQJq4CTtag~SU3u~VmzQcr8JiQiXH6vyJySUvc8gvXKvWZbYqEs9rO4JnCJ1KnR-uANZuodbw2vWxgAOZ5hB~9czTb8lV~HbrRSOUuTioOanqtZlYnbqQ__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/before.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/d3f6c74f062b13bf61ebe42d056cdc1b.mp4?Expires=1790258608&Signature=oEAsnSXfsvYqKUEqyS82rTXSlkXq6meJjJMegPF-0H7GH2hbEP9B3i59Zx6SrRwlpYGNLB3zzlddt3MmGHhmb-EfXhL-B-r-PlrjKzyWHCKSq7v--~4PEgBpdU9mLwXshRFDgXOI8fJtqUBMIAfDXF71iRS0N2AILJYsy9iMk-S4PXCo-xkSEotJFa1cha3ebeKhsjcw1GYplp27wuEOpG9u6MWEQ7T5Kz-fF2ypdA2wvSr8KLwE~s0DWWZNUxmKICMPTUkAnE2PYXBNRwfte5o5lw3~X7dxlMfocg-S6cCUmDuGhT2DSZHuXNBCunjilycFCIJLFVUPtk38kqtHZg__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/during.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/b6c102549408a175c7f27ffdb5aeb965.mp4?Expires=1790258438&Signature=nwPNG9kHaxEgSHdlHULJnz2eGLTfg1d0HOxBWph8LR2cmZyT4pGY5IoxuZ0yfyA1kvQ0v16tr4bqy02mYaJz1~owDvOiyvp~GX9IT-ygQHMF10w6Okk1PvfEM0YKpCTvMrWBxBPk5pVUcPb7RGrJyFfbAubsiu2Y9dsrWKw8GITXJYliLaZftikgcsylbp4qBAnAIHshu~bmlxqfU6wgyeRJ9vCZ-TVPafynjYlzXP9k1-FWdPD5hOV60bNB2kCZyvkbP-lzox0wWIAAFMO3utkdUQsxQTTBlzXLm74v51VsiEBhCWO~l~Y68bcRBZUIO71xx6JVg1KDnp~3OjPP5A__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/early.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/24aa61cfadbd7b5f4db25dd7c28b0d38.mp4?Expires=1790258413&Signature=KttJM6ZeANPPY7kZ6Z1JIy1pGq-VpFGVS6pO1hJIeb38WBPYKBlIfcZ9hi4GxKx~ZNl46lbIMbfwmKeg8jX3eRs4TUxZ8BDFhnx2jgQLB9cm6WU9pFj3M3FCML~SRgCSxgbcqAK2dga4zcnqLtux5xyJRFCeNLnio7JOmQAJXRrV3qsTHP0jwEUAd4wZ0i0yKRdVh3hjzPzHjBrYy8HIkv30-fECIu7fCI7SMjadgUzLhKMbYRWvBsC3QkGnRjCcUum~GxfyI-geU11TnEKZW3bXxn~AaDIT8rF3tsaVpdbAikzEIKqjk4PkcTNMfVXthGyAqrgOLJpSqXGQ34HYdQ__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/urge.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/417c33a50dc39bd0df045416a9f530a0.mp4?Expires=1790258423&Signature=ZImvcfRigkv4T3GEQtAkRgGMDyMhCoq2AFZ8GEw~3-DQw5PRtduL72k1jRn5YT5eqogXktd~63KJrLhDVxEZtRTK0Ul7El4UbCPHg9fx9Ug~Bst3FBp88xyBZM1AvKaEnana5OvSJ2pZhXsXEBhAr~21g8g-IDjFJlBiCxzaEPbF2cE49EzroZAroQWeplAUu4-W59DDIB0E~yvtP0kOo2ejA~MKcWt83PHp8TqjyE6biNZx1X8~nYM1dVenKXyebUht0z1EPGXvqQiPU3aDXnqoc1iiUyuMO~j5MW1XftXlYIRtMQLeuQ~Wl9W2BIVdNX65GEyZIuC5hPlk~BmfFg__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/partner.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/73a21fb0024d4b2a8b8cc2a394b74aa9.mp4?Expires=1790258594&Signature=hbInkV4P~pgTB-DPKkzz6JnVL5xJd9Hmf-47XdHazLHNs87aL6PkNVQC1CT0ky0grqn2ZEKzd~OCJEt7pWUd3LTm3wJisdwGrVtLCNVo7W0MMG7tzzymeuE6zRF7tpB84tL5g9dd8Tz3zjtxhxfSZSvJgRmQA2NU3cfSOhXOUIA7lfm3nxAH3mPLeeRDze3aMcvCBY3Ft7TW3MC5jZsY3syWPNfKVpt41Rpy7iM0-AbwcHGRshhAghcoe~bo73MJc2EhWDpvypTNC74MSJYAUxHd8XiOJrGNPjoxdNzdSYwL3wiay9MgzW6HH8K7hcjOk0iC4VFkM8J3a4NZE1KC1w__&Key-Pair-Id=K38HBHX5LX3X2H'
+          curl --fail --location --retry 3 --output "tmp-recovery/next.mp4" 'https://files2.heygen.ai/aws_pacific/avatar_tmp/f27f0d2de72d470e919ed331523331ef/bc9120a18dd0c304c5b2e3af967f0a9e.mp4?Expires=1790258682&Signature=NU8LqStALnfxXsOC5WVPnR92z2AD9XgZpEbaIfN3~DTKNTg4NN8gbqE72hZGppH~xVfg~Ggw2bHVALm-kKUhcAAZfYKtxNt9fNJsq6KjcgCFcGF9ORvUhTqp9PUlZ1p8dzLovPF~zqqkAvDLg-ESbpakVunoPrFBIxwDZlY1G88xQQks20Gl0g-uBE4JPtjnvj3MREa1pSEK3D8a3dYgb6MdDvK5FKYeTL3MJXLrOnflTR~glPz1D7OawdGrSiAtXwwz4LXMgp6BmsRldNLHvkOuFkEoDyRi4Enj1vp-oPT2FNXqjYtr-q-22~jplpIqeZhgyt91A~uaq5gZBvuQ6w__&Key-Pair-Id=K38HBHX5LX3X2H'
+      - name: Build one reusable video and patient audio tracks
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -hide_banner -loglevel error -y -i tmp-recovery/during.mp4 -an -vf "scale='min(720,iw)':-2" -c:v libx264 -preset medium -crf 27 -movflags +faststart premium-v2/assets/videos/recovery-patient-master.mp4
+          for id in condom before during early urge partner next; do
+            ffmpeg -hide_banner -loglevel error -y -i "tmp-recovery/$id.mp4" -vn -ac 1 -ar 44100 -b:a 96k "premium-v2/assets/audio/recovery-patient-$id-es.mp3"
+          done
+          ls -lh premium-v2/assets/videos/recovery-patient-master.mp4 premium-v2/assets/audio/recovery-patient-*-es.mp3
+      - name: Commit imported patient media
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add premium-v2/assets/videos/recovery-patient-master.mp4 premium-v2/assets/audio/recovery-patient-*-es.mp3
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Add local Recovery patient media'
+          git push
