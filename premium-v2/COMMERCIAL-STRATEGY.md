@@ -61,9 +61,11 @@ La idea que debe comprender el usuario antes de ver el precio es:
 - Utiliza animación abstracta para conectar señales, formar el Performance Map™ y construir la ruta de 28 días.
 - La narración corresponde a la voz masculina del entrenador SPM: seria, varonil y contundente.
 - El Dr. SPM no aparece ni narra esta pieza. Su avatar y su voz se reservan para intervenciones clínicas donde tenga presencia visual.
+- El guion final no repite el proceso de análisis: convierte la comprensión acumulada en una decisión de inicio.
+- La narración no incluye advertencias clínicas. Los avisos necesarios permanecen breves y discretos fuera del video, en la pantalla de resultado o activación.
 - Los subtítulos permanecen disponibles durante toda la experiencia.
 - La animación puede omitirse y respeta la preferencia de movimiento reducido.
-- No presenta precio ni promesas terapéuticas; prepara el valor percibido antes del resultado personalizado.
+- No presenta precio ni promesas terapéuticas; cierra con una invitación directa a activar la ruta personalizada y comenzar el Día 1.
 
 ## Medición del embudo
 
