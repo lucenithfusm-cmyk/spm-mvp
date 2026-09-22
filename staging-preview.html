@@ -10,5 +10,49 @@
 </head>
 <body>
 <main class="loading" id="loading"><div><b>Preparando SPM Premium…</b><p>Cargando la versión segura de revisión.</p></div></main>
-<script>(()=>{'use strict';const ROOT=new URL('premium-v2/',location.href).href;const EXTRA=["spm-language-core-v1.js?v=20260921r21","assets/spm-insight-audio-v1.js?v=20260921r21","evaluation-refresh-v1.js?v=20260921r21","commercial-conversion-v1.js?v=20260921r21","commercial-offer-v2.js?v=20260921r21","signup-hotfix-v1.js?v=20260921r21","checkpoint-evaluations-v1.js?v=20260921r21","adaptation-engine-v1.js?v=20260921r21","day28-outcomes-maintenance-v1.js?v=20260921r21","real-avatar-img.js?v=20260921r21","breathing-trainer-heygen-staging-v2.js?v=20260921r21","recovery-story-premium-v4.js?v=20260921r21","recovery-story-extra-v1.js?v=20260921r21","recovery-media-local-staging-v4.js?v=20260921r21","recovery-audio-controller-staging-v10.js?v=20260921r21","spm-premium-polish-v3.js?v=20260921r21","spm-visual-cards-staging-v4.js?v=20260921r21","final-review-hotfix-v1.js?v=20260921r21"];const scriptTag=src=>'<scr'+'ipt src="'+ROOT+src+'"><'+'/scr'+'ipt>';fetch(ROOT+'live-v4.html?v=20260921r21',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('No se pudo cargar el piloto ('+r.status+').');return r.text()}).then(source=>{const base='<base href="'+ROOT+'"><meta name="robots" content="noindex,nofollow,noarchive">',extras=EXTRA.map(scriptTag).join(''),page=source.replace('<head>','<head>'+base).replace('</body>',extras+'</body>');document.open();document.write(page);document.close()}).catch(error=>{const box=document.getElementById('loading');if(box)box.innerHTML='<div><b>No pudimos abrir SPM</b><p>'+String(error.message||error)+'<br>Actualiza la página para volver a intentarlo.</p></div>'})})();</script>
-</body></html>
+<script>
+(()=>{
+  'use strict';
+  const ROOT=new URL('premium-v2/',location.href).href;
+  const VERSION='20260921r22';
+  const EXTRA=[
+    'spm-language-core-v1.js',
+    'assets/spm-insight-audio-v1.js',
+    'evaluation-refresh-v1.js',
+    'commercial-conversion-v1.js',
+    'commercial-offer-v2.js',
+    'signup-hotfix-v1.js',
+    'checkpoint-evaluations-v1.js',
+    'adaptation-engine-v1.js',
+    'day28-outcomes-maintenance-v1.js',
+    'real-avatar-img.js',
+    'breathing-trainer-heygen-staging-v2.js',
+    'recovery-story-premium-v4.js',
+    'recovery-story-extra-v1.js',
+    'recovery-media-local-staging-v4.js',
+    'recovery-audio-controller-staging-v10.js',
+    'spm-premium-polish-v3.js',
+    'spm-language-switcher-staging-v1.js',
+    'spm-visual-cards-staging-v4.js',
+    'final-review-hotfix-v1.js'
+  ].map(src=>`${src}?v=${VERSION}`);
+  const scriptTag=src=>'<scr'+'ipt src="'+ROOT+src+'"><'+'/scr'+'ipt>';
+  fetch(ROOT+`live-v4.html?v=${VERSION}`,{cache:'no-store'})
+    .then(response=>{
+      if(!response.ok)throw new Error(`No se pudo cargar el piloto (${response.status}).`);
+      return response.text();
+    })
+    .then(source=>{
+      const base='<base href="'+ROOT+'"><meta name="robots" content="noindex,nofollow,noarchive">';
+      const extras=EXTRA.map(scriptTag).join('');
+      const page=source.replace('<head>','<head>'+base).replace('</body>',extras+'</body>');
+      document.open();document.write(page);document.close();
+    })
+    .catch(error=>{
+      const box=document.getElementById('loading');
+      if(box)box.innerHTML='<div><b>No pudimos abrir SPM</b><p>'+String(error.message||error)+'<br>Actualiza la página para volver a intentarlo.</p></div>';
+    });
+})();
+</script>
+</body>
+</html>
