@@ -12,15 +12,16 @@
     .qaToggle{border:1px solid #8fe3d077;border-radius:999px;background:#0a2b31;color:#eafffa;padding:13px 17px;font-weight:900;box-shadow:0 12px 38px #0009;cursor:pointer}
     .qaPanel{width:min(340px,calc(100vw - 24px));margin-bottom:9px;padding:16px;border:1px solid #8fe3d055;border-radius:22px;background:#061b20f5;box-shadow:0 18px 58px #000b;backdrop-filter:blur(14px)}
     .qaPanel[hidden]{display:none}.qaHead{display:flex;justify-content:space-between;gap:12px;align-items:start}.qaHead b{font-size:17px}.qaClose{border:0;background:transparent;color:#9fb6b8;font-size:24px;line-height:1;cursor:pointer}
-    .qaNote{margin:7px 0 13px;color:#9eb2b6;font-size:12px;line-height:1.4}.qaGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qaBtn{min-height:45px;border:1px solid #24464d;border-radius:13px;background:#0b2930;color:#e9f4f2;padding:8px;font-weight:800;font-size:12px;cursor:pointer}.qaBtn.primary{grid-column:1/-1;background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaBtn.end{grid-column:1/-1;background:#102329;color:#b9c9cc}.qaStatus{margin-top:10px;color:#8fe3d0;font-size:11px;font-weight:800}
+    .qaNote{margin:7px 0 13px;color:#9eb2b6;font-size:12px;line-height:1.4}.qaLang{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.qaLang button{min-height:42px;border:1px solid #2d5056;border-radius:12px;background:#0a252b;color:#b8cbce;font-weight:950;cursor:pointer}.qaLang button.on{background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qaBtn{min-height:45px;border:1px solid #24464d;border-radius:13px;background:#0b2930;color:#e9f4f2;padding:8px;font-weight:800;font-size:12px;cursor:pointer}.qaBtn.primary{grid-column:1/-1;background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaBtn.end{grid-column:1/-1;background:#102329;color:#b9c9cc}.qaStatus{margin-top:10px;color:#8fe3d0;font-size:11px;font-weight:800}
   </style>
 </head>
 <body>
-  <iframe id="spmPilot" src="live-v4.html?test=commercial-v17" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe>
+  <iframe id="spmPilot" src="live-v4.html?test=commercial-v18" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe>
   <aside class="qa" aria-label="Control de revisión comercial">
     <div class="qaPanel" id="qaPanel" hidden>
       <div class="qaHead"><b>Revisar recorrido comercial</b><button class="qaClose" id="qaClose" type="button" aria-label="Cerrar menú">×</button></div>
       <p class="qaNote">Vista interna repetible. No modifica tu evaluación, usuario, programa ni progreso.</p>
+      <div class="qaLang" aria-label="Idioma de la prueba"><button type="button" data-lang="es">ES · Español</button><button type="button" data-lang="en">EN · English</button></div>
       <div class="qaGrid">
         <button class="qaBtn" data-view="intro" type="button">Introducción</button>
         <button class="qaBtn" data-view="signal" type="button">Refresh perfil</button>
@@ -38,11 +39,13 @@
       const frame=document.getElementById('spmPilot');
       const panel=document.getElementById('qaPanel');
       const status=document.getElementById('qaStatus');
-      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922h','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
-      document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden};
+      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922i','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
+      function syncLang(){const current=frame.contentWindow?.SPM_LANGUAGE?.get?.()||'es';document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===current))}
+      document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)syncLang()};
       document.getElementById('qaClose').onclick=()=>{panel.hidden=true};
       function loadScript(d,src){return new Promise(resolve=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return resolve();const s=d.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;d.body.appendChild(s)})}
-      frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;await Promise.all(scripts.map(src=>loadScript(d,src)));status.textContent='Listo para revisar todas las veces que necesites.'});
+      frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;await Promise.all(scripts.map(src=>loadScript(d,src)));syncLang();status.textContent='Listo para revisar todas las veces que necesites.'});
+      document.querySelector('.qaLang').onclick=e=>{const button=e.target.closest('[data-lang]');if(!button)return;const w=frame.contentWindow;if(!w.SPM_LANGUAGE){status.textContent='Espera unos segundos y vuelve a elegir el idioma.';return}w.SPM_COMMERCIAL_PREVIEW?.close();w.SPM_COMMERCIAL_GATE_PREVIEW?.close();w.SPM_LANGUAGE.set(button.dataset.lang);syncLang();status.textContent=button.dataset.lang==='es'?'Español activado.':'English enabled.'};
       document.querySelector('.qaGrid').onclick=e=>{
         const button=e.target.closest('[data-view]');if(!button)return;
         const w=frame.contentWindow,view=button.dataset.view,journey=w.SPM_COMMERCIAL_PREVIEW,gate=w.SPM_COMMERCIAL_GATE_PREVIEW;
