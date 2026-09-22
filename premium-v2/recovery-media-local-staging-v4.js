@@ -8,13 +8,13 @@ window.SPM_RECOVERY_PATIENT_LOCAL_V2=true;window.SPM_RECOVERY_PATIENT_HEYGEN_STA
 const MASTER='assets/videos/recovery-patient-master.mp4';
 const DOCTOR='assets/videos/dr-spm-performance-anxiety-content.mp4';
 const AUDIO={
- condom:'assets/audio/recovery-patient-condom-es.mp3',
- before:'assets/audio/recovery-patient-before-es.mp3',
- during:'assets/audio/recovery-patient-during-es.mp3',
- early:'assets/audio/recovery-patient-early-es.mp3',
- urge:'assets/audio/recovery-patient-urge-es.mp3',
- partner:'assets/audio/recovery-patient-partner-es.mp3',
- next:'assets/audio/recovery-patient-next-es.mp3'
+ condom:'assets/audio/recovery-patient-condom-es.mp3?v=20260921r22',
+ before:'assets/audio/recovery-patient-before-es.mp3?v=20260921r22',
+ during:'assets/audio/recovery-patient-during-es.mp3?v=20260921r22',
+ early:'assets/audio/recovery-patient-early-es.mp3?v=20260921r22',
+ urge:'assets/audio/recovery-patient-urge-es.mp3?v=20260921r22',
+ partner:'assets/audio/recovery-patient-partner-es.mp3?v=20260921r22',
+ next:'assets/audio/recovery-patient-next-es.mp3?v=20260921r22'
 };
 function scenario(root){
  const s=(root.querySelector('.spm-v4-head h3')?.textContent||'').toLowerCase();
