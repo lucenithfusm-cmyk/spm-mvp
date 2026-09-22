@@ -29,9 +29,9 @@ La idea que debe comprender el usuario antes de ver el precio es:
    - Daily Coach: sostiene registros, continuidad y ajustes.
 
 5. **Oferta**
-   - Presentar el Ciclo Inicial SPM por US$39 como precio piloto.
-   - Indicar claramente que el cobro real todavía no está habilitado.
-   - Mantener la activación simulada para validar el recorrido completo.
+   - Presentar el programa personalizado SPM de 28 días por US$39.
+   - La prueba piloto no forma parte de la oferta: es únicamente el entorno interno usado por la propietaria para validar avances.
+   - Mientras se integra la pasarela, mantener un control interno de activación simulada claramente separado del mensaje comercial.
 
 6. **Entrega**
    - Después de activar, llevar al usuario al Performance Map™ y al Día 1.
@@ -55,6 +55,16 @@ La idea que debe comprender el usuario antes de ver el precio es:
 5. Así funcionan el mapa, el plan y el acompañamiento.
 6. Este es el precio y así se activa.
 
+## Pieza cinematográfica final
+
+- Se presenta después de completar el cuestionario y antes del resultado preliminar.
+- Utiliza animación abstracta para conectar señales, formar el Performance Map™ y construir la ruta de 28 días.
+- La narración corresponde a la voz masculina del entrenador SPM: seria, varonil y contundente.
+- El Dr. SPM no aparece ni narra esta pieza. Su avatar y su voz se reservan para intervenciones clínicas donde tenga presencia visual.
+- Los subtítulos permanecen disponibles durante toda la experiencia.
+- La animación puede omitirse y respeta la preferencia de movimiento reducido.
+- No presenta precio ni promesas terapéuticas; prepara el valor percibido antes del resultado personalizado.
+
 ## Medición del embudo
 
 | Evento | Qué permite evaluar |
@@ -63,11 +73,11 @@ La idea que debe comprender el usuario antes de ver el precio es:
 | `cta_create_program` | Resonancia del resultado y deseo de continuar |
 | `checkout_view` | Usuarios que ven precio y condiciones |
 | `checkout_back` | Fricción o dudas después de ver la oferta |
-| `pilot_unlock` | Finalización de la activación simulada |
+| `program_activation_test` | Finalización de la activación interna simulada; no equivale a una venta |
 
 Cada evento conserva idioma, prioridad inicial y estado de seguridad para poder analizar el embudo sin registrar respuestas clínicas individuales.
 
-## Criterios para aprobar el piloto
+## Criterios para aprobar la prueba interna
 
 - El mensaje funciona en español e inglés.
 - La prioridad mostrada coincide con el resultado de la evaluación.
