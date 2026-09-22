@@ -38,7 +38,7 @@
       const frame=document.getElementById('spmPilot');
       const panel=document.getElementById('qaPanel');
       const status=document.getElementById('qaStatus');
-      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922f','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
+      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922g','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
       document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden};
       document.getElementById('qaClose').onclick=()=>{panel.hidden=true};
       function loadScript(d,src){return new Promise(resolve=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return resolve();const s=d.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;d.body.appendChild(s)})}
