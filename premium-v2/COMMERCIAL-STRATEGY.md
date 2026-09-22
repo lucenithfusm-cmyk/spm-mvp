@@ -103,3 +103,11 @@ Cada evento conserva idioma, prioridad inicial y estado de seguridad para poder 
 - Mobile no oculta contenido ni impide volver al resultado.
 - La activación lleva al Performance Map™ y permite comenzar el Día 1.
 - Los eventos se registran una sola vez por acción y sin respuestas clínicas.
+
+## Visor interno de revisión
+
+- `commercial-pilot.html` incluye el control flotante **Revisar comercial**.
+- Permite abrir por separado la introducción, los dos refresh, la cinematografía final y el cierre comercial tantas veces como sea necesario.
+- La vista previa no modifica la evaluación, la cuenta, el Performance Map™, el programa de 28 días ni el progreso guardado.
+- La cinematografía abierta desde el visor no registra eventos comerciales, para no contaminar las métricas reales del embudo.
+- La simulación de activación dentro del cierre comercial solo cierra la vista cuando se abre desde el visor; no desbloquea ni altera el estado del usuario.

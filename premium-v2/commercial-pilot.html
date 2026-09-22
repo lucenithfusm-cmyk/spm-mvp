@@ -1,1 +1,59 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071014"><title>SPM · Prueba interna comercial</title><style>html,body{margin:0;width:100%;height:100%;background:#071014}iframe{border:0;width:100%;height:100%;display:block;background:#071014}</style></head><body><iframe id="spmPilot" src="live-v4.html?test=commercial-v16" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe><script>(()=>{const frame=document.getElementById('spmPilot');frame.addEventListener('load',()=>{const d=frame.contentDocument;if(!d)return;['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922e','commercial-conversion-v1.js?v=20260922b','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'].forEach(src=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return;const s=d.createElement('script');s.src=src;d.body.appendChild(s)})})})();</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071014">
+  <title>SPM · Prueba interna comercial</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#071014;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+    iframe{border:0;width:100%;height:100%;display:block;background:#071014}
+    .qa{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:999999;color:#eff9f7}
+    .qaToggle{border:1px solid #8fe3d077;border-radius:999px;background:#0a2b31;color:#eafffa;padding:13px 17px;font-weight:900;box-shadow:0 12px 38px #0009;cursor:pointer}
+    .qaPanel{width:min(340px,calc(100vw - 24px));margin-bottom:9px;padding:16px;border:1px solid #8fe3d055;border-radius:22px;background:#061b20f5;box-shadow:0 18px 58px #000b;backdrop-filter:blur(14px)}
+    .qaPanel[hidden]{display:none}.qaHead{display:flex;justify-content:space-between;gap:12px;align-items:start}.qaHead b{font-size:17px}.qaClose{border:0;background:transparent;color:#9fb6b8;font-size:24px;line-height:1;cursor:pointer}
+    .qaNote{margin:7px 0 13px;color:#9eb2b6;font-size:12px;line-height:1.4}.qaGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qaBtn{min-height:45px;border:1px solid #24464d;border-radius:13px;background:#0b2930;color:#e9f4f2;padding:8px;font-weight:800;font-size:12px;cursor:pointer}.qaBtn.primary{grid-column:1/-1;background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaBtn.end{grid-column:1/-1;background:#102329;color:#b9c9cc}.qaStatus{margin-top:10px;color:#8fe3d0;font-size:11px;font-weight:800}
+  </style>
+</head>
+<body>
+  <iframe id="spmPilot" src="live-v4.html?test=commercial-v17" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe>
+  <aside class="qa" aria-label="Control de revisión comercial">
+    <div class="qaPanel" id="qaPanel" hidden>
+      <div class="qaHead"><b>Revisar recorrido comercial</b><button class="qaClose" id="qaClose" type="button" aria-label="Cerrar menú">×</button></div>
+      <p class="qaNote">Vista interna repetible. No modifica tu evaluación, usuario, programa ni progreso.</p>
+      <div class="qaGrid">
+        <button class="qaBtn" data-view="intro" type="button">Introducción</button>
+        <button class="qaBtn" data-view="signal" type="button">Refresh perfil</button>
+        <button class="qaBtn" data-view="route" type="button">Refresh ruta</button>
+        <button class="qaBtn primary" data-view="cinematic" type="button">Cinematografía final</button>
+        <button class="qaBtn" data-view="gate" type="button">Cierre comercial</button>
+        <button class="qaBtn end" data-view="close" type="button">Cerrar vista</button>
+      </div>
+      <div class="qaStatus" id="qaStatus">Cargando herramientas…</div>
+    </div>
+    <button class="qaToggle" id="qaToggle" type="button">Revisar comercial</button>
+  </aside>
+  <script>
+    (() => {
+      const frame=document.getElementById('spmPilot');
+      const panel=document.getElementById('qaPanel');
+      const status=document.getElementById('qaStatus');
+      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260922f','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
+      document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden};
+      document.getElementById('qaClose').onclick=()=>{panel.hidden=true};
+      function loadScript(d,src){return new Promise(resolve=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return resolve();const s=d.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;d.body.appendChild(s)})}
+      frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;await Promise.all(scripts.map(src=>loadScript(d,src)));status.textContent='Listo para revisar todas las veces que necesites.'});
+      document.querySelector('.qaGrid').onclick=e=>{
+        const button=e.target.closest('[data-view]');if(!button)return;
+        const w=frame.contentWindow,view=button.dataset.view,journey=w.SPM_COMMERCIAL_PREVIEW,gate=w.SPM_COMMERCIAL_GATE_PREVIEW;
+        if(!journey||!gate){status.textContent='Espera unos segundos y vuelve a tocar.';return}
+        if(view==='gate'){journey.close();gate.open()}
+        else if(view==='close'){journey.close();gate.close()}
+        else{gate.close();journey[view]?.()}
+        status.textContent=view==='close'?'Vista cerrada. Puedes abrir otra cuando quieras.':'Mostrando: '+button.textContent.trim();
+        panel.hidden=true;
+      };
+    })();
+  </script>
+</body>
+</html>
