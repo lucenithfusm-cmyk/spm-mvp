@@ -67,6 +67,21 @@ La idea que debe comprender el usuario antes de ver el precio es:
 - La animación puede omitirse y respeta la preferencia de movimiento reducido.
 - No presenta precio ni promesas terapéuticas; cierra con una invitación directa a activar la ruta personalizada y comenzar el Día 1.
 
+### Montaje visual de valor
+
+La escena central utiliza una ráfaga de microdemostraciones de 1–2 segundos, tomadas de herramientas reales del programa:
+
+1. Construcción del Performance Map™.
+2. Plato SPM como muestra de las tarjetas de nutrición.
+3. Una tarjeta fotográfica de movimiento o ejercicio.
+4. Velocímetro de excitación y movimiento de la aguja hacia la zona de atención.
+5. Entrenamiento guiado de piso pélvico.
+6. Seguimiento EHS 1–4.
+7. Historias guiadas con paciente y Dr. SPM como muestra del contenido, sin cambiar la voz narradora del entrenador SPM.
+8. Calendario y registro de progreso del programa de 28 días.
+
+El montaje debe sentirse rápido y aspiracional, no como una demostración extensa. Ninguna microescena revela una lección completa: muestra variedad, interactividad y profundidad para aumentar el deseo de acceder al programa.
+
 ## Medición del embudo
 
 | Evento | Qué permite evaluar |
