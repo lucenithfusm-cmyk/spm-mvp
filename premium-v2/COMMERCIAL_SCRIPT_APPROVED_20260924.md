@@ -79,3 +79,11 @@ The two screenshots supplied afterward show the existing assessment transitions:
 ## Commercial offer artwork approved — 2026-09-24
 
 The user approved the new young-adult-man/stopwatch image (“Súper, esa imagen va ... esta va en el cierre”). Use it as the principal offer image. Preserve the Spanish asset with “Tu ritmo. Tu control.” and localize only that text for English. No numeric performance outcomes or before/after timing claims are shown. This approval does not replace or modify the already approved cinematic bedroom image. A second, supportive image shows two adult men in a relationship, reflecting the user’s instruction to include same-sex couples. The terrace alternative is not selected as the main offer artwork.
+
+## Offer visual story requested — 2026-09-24
+
+The user requested a thoughtful, disappointed adult man seated in bed, with an adult partner lying beside him, followed by program tools/benefits and then the previously approved confident young man with the watch. Added the new illustrative artwork `spm-reflective-moment-v2.webp` for review; it is not marked as user-approved. Proposed copy: “Que un mal momento no decida el siguiente.” / “One difficult moment does not have to define the next.” The photographs depict fictional situations, not patient testimonials or measured before/after outcomes. The supportive two-men couple artwork remains.
+
+The interactive graphic represents the actual 28-day duration in four seven-day blocks. Users can select each week; only its seven bars animate. This is a program calendar preview, not a graph of clinical efficacy, success rates or individual assessment results. No statistics, percentages or duration improvements are fabricated. Reduced-motion preferences stop the animation. The approved cinematic, recordings, Insights, clinical modules and payment test behavior remain unchanged. No HeyGen credits were used.
+
+The user then requested a more visibly annoyed partner. The revised v2 artwork changes the partner’s expression and gaze while preserving the seated man and scene. Use v2 for the offer review; v1 is superseded.
