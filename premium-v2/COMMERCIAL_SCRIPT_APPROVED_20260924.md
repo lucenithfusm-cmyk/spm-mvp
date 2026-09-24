@@ -190,3 +190,17 @@ La usuaria acepta conservar la evaluación sin registro durante siete días y so
 - La recuperación depende de usar el mismo dispositivo, navegador y origen, y de conservar los datos del navegador. El plazo no garantiza recuperación en navegación privada o después de borrar esos datos.
 
 Pruebas con tiempo simulado: regreso en una nueva sesión a los tres días, vencimiento exacto a los siete días y después, ausencia de renovación por solo consultar, actualización de respuestas y recálculo de puntuación/prioridad, un único registro local, eliminación manual, migración, almacenamiento bloqueado y ausencia de escrituras remotas durante el recorrido gratuito. Se mantienen las pruebas de idiomas, seguridad y registro diferido. No se crean cuentas reales, correos ni cobros para verificarlo.
+
+
+## Avance claro de los cuatro Insights — 2026-09-24
+
+La usuaria reporta que los participantes de las pruebas piloto no encuentran Continuar. Solicita avanzar al terminar el audio o al tocar la pantalla. Esta solicitud autoriza ajustar los controles y la navegación de los Insights previamente aprobados.
+
+- Al terminar naturalmente la narración, el Insight se cierra y deja visible la pregunta pendiente del cuestionario. No se responde ni se salta ninguna pregunta automáticamente.
+- Un botón Continuar de al menos 56 px de alto permanece al pie del diálogo, fuera de la imagen desplazable, con espacio para el área segura del teléfono. Se conserva la proporción y el contenido completo de las imágenes.
+- Tocar la imagen o el fondo también permite continuar. Los controles de audio funcionan por separado y un gesto de desplazamiento no dispara el avance.
+- Escuchar/Detener queda visible junto a Continuar. El control impreso en las imágenes conserva su zona de interacción. Si el navegador bloquea la reproducción automática o falla el audio, el avance manual permanece disponible.
+- Se cancelan reproducciones pendientes y se desvinculan los eventos de audio al cerrar. Un audio anterior no puede cerrar un Insight nuevo. El foco vuelve al control previo.
+- Aplicado en español e inglés a las cuatro imágenes y sus audios existentes. No se regeneran recursos ni se utilizan créditos de HeyGen.
+
+Pruebas: ocho combinaciones Insight/idioma, avance al terminar audio, salida manual, controles de audio, gesto de desplazamiento, ausencia de preguntas omitidas, errores y bloqueo de reproducción, cancelación de temporizadores y eventos tardíos. Se verifica además la regresión del visor, del cierre y del video integrado aprobado.
