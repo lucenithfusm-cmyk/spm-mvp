@@ -209,3 +209,11 @@ Pruebas: ocho combinaciones Insight/idioma, avance al terminar audio, salida man
 ## Legibilidad de las respuestas — 2026-09-24
 
 La usuaria identifica en su captura que las opciones del cuestionario son pequeñas y tenues. Se ajustan los estilos exclusivamente dentro de `#quizCard`: texto de 1.0625 rem (17 px con la configuración habitual), peso 600, color claro de alto contraste y etiquetas que heredan esos valores. La opción seleccionada se distingue por fondo menta, texto oscuro y peso 700. El foco de teclado es visible y las respuestas largas pueden ocupar varias líneas. Se actualiza la versión de CSS de la entrada gratuita y de la entrada con cuenta. Las preguntas, respuestas y reglas de puntuación no se alteran.
+
+## Movimiento del cierre comercial — 2026-09-24
+
+A petición de la usuaria, el botón Play tiene un pulso discreto con halo. Las vistas Tu ruta / Practica / Avanza recorren sus tres opciones cada 5 segundos y las semanas 1–4 avanzan cada 3,2 segundos, actualizando las barras y el rango de días. Se mantiene la selección manual y se reinicia el intervalo completo al tocar una opción. Cada sección incluye un control discreto para pausar/reanudar.
+
+El recorrido comienza al entrar la sección en pantalla, pausa fuera de vista, en pestañas ocultas, durante la reproducción del video y mientras se navega con teclado. Respeta la preferencia de movimiento reducido y se reanuda al finalizar el video o regresar a la página. No desplaza la página ni anuncia continuamente los cambios a lectores de pantalla. Se liberan los temporizadores al cerrar el cierre comercial. No se modifican el guion, los archivos del cinematográfico, las imágenes, los precios ni la tipografía aprobada del cuestionario.
+
+Verificación: `tests/offer-motion.test.cjs` en español e inglés (ciclos, controles manuales, pausa, visibilidad, movimiento reducido, teclado, final natural del video, regreso desde historial y limpieza). La regresión del video integrado, los dos CTA, la seguridad y los Insights continúa pasando.

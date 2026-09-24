@@ -2,6 +2,7 @@
 'use strict';
 const STYLE_ID='spmOfferV2CSS';
 let activeFilm=null;
+let activeOffer=null;
 function addCSS(){
   if(document.getElementById(STYLE_ID))return;
   const style=document.createElement('style');style.id=STYLE_ID;
@@ -34,8 +35,10 @@ function addCSS(){
 .spmOfferFilm{position:relative;display:block;width:100%;padding:0;overflow:hidden;border:1px solid #487d735c;border-radius:21px;background:#09252d;color:#f1fff9;cursor:pointer;text-align:left;touch-action:manipulation}
 .spmOfferFilm>img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:contain;opacity:.83;transition:opacity .2s}
 .spmOfferFilm:hover>img,.spmOfferFilm:focus-visible>img{opacity:1}
-.spmOfferPlay{position:absolute;top:35%;left:9%;height:48px;width:48px;border-radius:50%;display:grid;place-items:center;background:#a0ecd9;color:#06232a;font-size:17px;padding-left:3px;box-shadow:0 4px 28px #03181a70;transition:transform .2s}
-.spmOfferFilm:hover .spmOfferPlay{transform:scale(1.08)}
+.spmOfferPlay{position:absolute;top:35%;left:9%;height:48px;width:48px;border-radius:50%;display:grid;place-items:center;background:#a0ecd9;color:#06232a;font-size:17px;padding-left:3px;box-shadow:0 4px 28px #03181a70;animation:spmOfferPlayPulse 2.8s ease-in-out infinite}
+.spmOfferPlay:after{content:'';position:absolute;inset:-7px;border:1px solid #a0ecd98c;border-radius:50%;pointer-events:none;animation:spmOfferPlayHalo 2.8s ease-out infinite}
+@keyframes spmOfferPlayPulse{0%,45%,100%{transform:scale(1)}18%{transform:scale(1.09)}30%{transform:scale(1.03)}}
+@keyframes spmOfferPlayHalo{0%{transform:scale(.88);opacity:0}16%{opacity:.65}65%,100%{transform:scale(1.4);opacity:0}}
 .spmOfferFilmCaption{display:grid;gap:5px;padding:15px 17px;background:#0b2b32}.spmOfferFilmCaption b{font-size:15px}.spmOfferFilmCaption small{color:#8fc3bd;font-size:12px}
 .spmOfferPlayer{overflow-anchor:none;min-width:0}
 .spmOfferExplore>section{min-width:0}
@@ -97,7 +100,9 @@ function addCSS(){
 .spmOfferPanel{border-radius:20px;background:#0b262e;border:1px solid #2a525b;overflow:hidden;animation:spmOfferReveal .18s ease-out}
 .spmOfferToolImage{position:relative;height:222px;background:radial-gradient(ellipse,#17404a,#06191f);overflow:hidden}
 .spmOfferToolImage img{position:absolute;inset:9px;display:block;width:calc(100% - 18px);height:calc(100% - 18px);max-width:none;max-height:none;object-fit:contain;border-radius:8px}
-.spmOfferToolCopy{padding:16px 18px;border-top:1px solid #204049}.spmOfferToolCopy h3{font-size:16px;margin:0 0 7px;color:#edf9f3}.spmOfferToolCopy p{font-size:13px;line-height:1.45;color:#a6c2c5;margin:0}
+.spmOfferToolCopy{padding:16px 18px;min-height:110px;box-sizing:border-box;border-top:1px solid #204049}.spmOfferToolCopy h3{font-size:16px;margin:0 0 7px;color:#edf9f3}.spmOfferToolCopy p{font-size:13px;line-height:1.45;color:#a6c2c5;margin:0}
+.spmOfferMotionToggle{display:block;margin:8px 0 0 auto;min-height:36px;padding:6px 9px;border:0;border-radius:9px;background:transparent;color:#b8d9d2;font:inherit;font-size:11px;font-weight:600;line-height:1.3;cursor:pointer;touch-action:manipulation}
+.spmOfferMotionToggle:hover{background:#8fe3d012}.spmOfferMotionPaused .spmOfferWeekBars i{animation-play-state:paused}
 .spmOfferConnection{margin:0}.spmOfferConnection figcaption{max-width:31%;font-size:clamp(18px,3vw,30px)}
 .spmOfferPracticeRow{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;margin:0 0 34px}
 .spmOfferCalendar{padding:24px;border:1px solid #3b706966;border-radius:24px;background:radial-gradient(ellipse at 0 0,#174038,#0a252b 75%)}
@@ -129,18 +134,62 @@ function addCSS(){
 @media(max-width:680px){.spmOfferMessage{margin:23px auto}.spmOfferMessage p{font-size:14px}.spmOfferPurchase{padding:19px 17px}.spmOfferPurchase .spmCTA{font-size:14px}.spmOfferPurchasePrice strong{font-size:39px}}
 @media(max-width:680px){.spmOfferPaths{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:17px 0 15px}.spmOfferPaths li{padding:14px 12px;border-radius:13px}.spmGateVisual .spmOfferPaths h3{font-size:14px}.spmOfferPaths p,.spmOfferScope .spmOfferScopeFoot{font-size:12px}}
 @media(max-width:680px){.spmOfferReviews{margin-bottom:29px}.spmOfferReviewGrid{grid-template-columns:1fr;gap:13px}.spmOfferReview{padding:20px;border-radius:20px}.spmOfferReview blockquote{margin-bottom:18px}.spmOfferReview blockquote p{font-size:15px;line-height:1.55}.spmOfferReviewNote{font-size:10px}}
-@media(prefers-reduced-motion:reduce){.spmOfferPanel,.spmOfferWeekBars.is-current i{animation:none}.spmOfferPlay,.spmOfferFilm>img,.spmOfferWeekBars i{transition:none}}
+@media(prefers-reduced-motion:reduce){.spmOfferPanel,.spmOfferWeekBars.is-current i,.spmOfferPlay,.spmOfferPlay:after{animation:none}.spmOfferPlay:after{display:none}.spmOfferPlay,.spmOfferFilm>img,.spmOfferWeekBars i{transition:none}}
 `;
   document.head.appendChild(style);
+}
+function refreshOfferMotion(){activeOffer?.rotations.forEach(rotation=>rotation.refresh())}
+function releaseOfferMotion(){
+  if(!activeOffer)return;
+  activeOffer.rotations.forEach(rotation=>rotation.dispose());activeOffer=null;
+}
+function rotateSection(gate,section,delay,next,description){
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)'),isEn=gate.dataset.language==='en';
+  let timer=0,visible=false,paused=false,focused=false,disposed=false,suspended=false;
+  const button=document.createElement('button');button.type='button';button.className='spmOfferMotionToggle';
+  section.appendChild(button);
+  const listeners=[];
+  function on(target,event,handler){target.addEventListener(event,handler);listeners.push(()=>target.removeEventListener(event,handler))}
+  function label(){
+    button.textContent=paused?(isEn?'▶ Resume':'▶ Reanudar'):(isEn?'Ⅱ Pause':'Ⅱ Pausar');
+    button.setAttribute('aria-label',(paused?(isEn?'Resume automatic preview: ':'Reanudar vista automática: '):(isEn?'Pause automatic preview: ':'Pausar vista automática: '))+description);
+    button.hidden=reduced.matches;
+  }
+  function refresh(){
+    clearTimeout(timer);timer=0;
+    if(disposed)return;
+    const running=gate.isConnected&&visible&&!paused&&!focused&&!suspended&&!document.hidden&&!reduced.matches&&!section.closest('[hidden]')&&!(activeFilm?.gate===gate&&activeFilm.playing);
+    section.classList.toggle('spmOfferMotionPaused',!running);
+    if(running)timer=setTimeout(()=>{timer=0;if(!gate.isConnected){dispose();return}next();refresh()},delay);
+  }
+  function dispose(){if(disposed)return;disposed=true;clearTimeout(timer);intersection?.disconnect();listeners.forEach(remove=>remove())}
+  const intersection=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{
+    visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=.35;refresh();
+  },{root:gate,threshold:[0,.35]}):null;
+  on(button,'click',()=>{paused=!paused;label();refresh()});
+  // Manual choices always get a full reading interval before the next change.
+  on(section,'click',refresh);
+  on(section,'focusin',event=>{focused=event.target.matches(':focus-visible');refresh()});
+  on(section,'focusout',event=>{focused=!!event.relatedTarget&&section.contains(event.relatedTarget)&&event.relatedTarget.matches(':focus-visible');refresh()});
+  on(section,'keydown',event=>{if(['Tab','ArrowRight','ArrowLeft','Home','End'].includes(event.key)){focused=true;refresh()}});
+  on(document,'visibilitychange',refresh);
+  on(window,'pagehide',()=>{suspended=true;refresh()});
+  on(window,'pageshow',()=>{suspended=false;refresh()});
+  if(reduced.addEventListener)on(reduced,'change',()=>{label();refresh()});
+  if(intersection)intersection.observe(section);else visible=true;
+  label();refresh();
+  return {refresh,dispose};
 }
 function releaseFilm(close=false,focus=false){
   const session=activeFilm;
   if(!session)return;
   activeFilm=null;
+  session.cleanup?.();
   const current=document.querySelector('.spmJourney');
   if(close&&(!current||current===session.layer))window.SPM_COMMERCIAL_PREVIEW?.close();
   session.poster.hidden=false;session.host.hidden=true;
   if(focus&&session.poster.isConnected)session.poster.focus({preventScroll:true});
+  refreshOfferMotion();
 }
 function playInlineFilm(gate){
   const journey=window.SPM_COMMERCIAL_PREVIEW,poster=gate.querySelector('.spmOfferFilm'),host=gate.querySelector('.spmOfferFilmMount'),error=gate.querySelector('.spmOfferFilmError');
@@ -154,7 +203,12 @@ function playInlineFilm(gate){
   if(!layer)return;
   layer.classList.add('spmOfferInlineFilm');layer.setAttribute('role','region');layer.removeAttribute('aria-modal');
   layer.setAttribute('aria-label',gate.dataset.language==='en'?'SPM program video':'Video del programa SPM');
-  activeFilm={gate,layer,poster,host};
+  const voice=layer.querySelector('.spmFilmNarration');
+  const playbackEvents=['playing','pause','ended','error'];
+  function updatePlayback(event){if(activeFilm?.layer!==layer)return;activeFilm.playing=event.type==='playing';refreshOfferMotion()}
+  playbackEvents.forEach(event=>voice?.addEventListener(event,updatePlayback));
+  activeFilm={gate,layer,poster,host,playing:!!voice&&!voice.paused&&!voice.ended,cleanup:()=>playbackEvents.forEach(event=>voice?.removeEventListener(event,updatePlayback))};
+  refreshOfferMotion();
   host.appendChild(layer);host.hidden=false;poster.hidden=true;error.hidden=true;gate.scrollTop=scrollTop;
   const stop=layer.querySelector('.spmFilmSkip');
   stop.textContent=gate.dataset.language==='en'?'Stop':'Detener';
@@ -165,13 +219,16 @@ function playInlineFilm(gate){
 }
 function mount(){
   if(activeFilm&&(!activeFilm.gate.isConnected||!activeFilm.layer.isConnected))releaseFilm(true);
+  if(activeOffer&&!activeOffer.gate.isConnected)releaseOfferMotion();
   const gate=document.querySelector('.spmGateVisual');
   if(!gate||gate.dataset.offerBound==='1')return;
   addCSS();gate.dataset.offerBound='1';
   gate.querySelectorAll('.spmOfferReflection,.spmOfferConnection,.spmOfferFilm').forEach(artwork=>{const brand=document.createElement('span');brand.className='spmArtworkBrand';brand.textContent='SPM';brand.setAttribute('aria-hidden','true');artwork.appendChild(brand);artwork.dataset.spmBranded='overlay'});
   gate.querySelector('.spmOfferTime')?.setAttribute('data-spm-branded','embedded');
   const tabs=[...gate.querySelectorAll('[role=tab]')],panels=[...gate.querySelectorAll('[role=tabpanel]')];
+  let toolIndex=0,weekIndex=0;
   function select(index,focus=false){
+    toolIndex=index;
     tabs.forEach((tab,n)=>{tab.setAttribute('aria-selected',String(n===index));tab.tabIndex=n===index?0:-1;panels[n].hidden=n!==index});
     if(focus)tabs[index].focus();
   }
@@ -181,15 +238,21 @@ function mount(){
   });
   const weeks=[...gate.querySelectorAll('[data-offer-week]')],bars=[...gate.querySelectorAll('[data-calendar-week]')],range=gate.querySelector('.spmOfferDayRange');
   function selectWeek(index,focus=false){
+    weekIndex=index;
     weeks.forEach((button,n)=>button.setAttribute('aria-pressed',String(n===index)));
     bars.forEach((bar,n)=>bar.classList.toggle('is-current',n===index));
-    if(range)range.textContent=weeks[index].dataset.range;
+    if(range){range.setAttribute('aria-live',focus?'polite':'off');range.textContent=weeks[index].dataset.range}
     if(focus)weeks[index].focus();
   }
   weeks.forEach((button,index)=>{
     button.addEventListener('click',()=>selectWeek(index));
     button.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%weeks.length;else if(event.key==='ArrowLeft')next=(index+weeks.length-1)%weeks.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=weeks.length-1;else return;event.preventDefault();selectWeek(next,true)});
   });
+  const isEn=gate.dataset.language==='en';
+  activeOffer={gate,rotations:[
+    rotateSection(gate,gate.querySelector('.spmOfferTools'),5000,()=>select((toolIndex+1)%tabs.length),isEn?'program tools':'herramientas del programa'),
+    rotateSection(gate,gate.querySelector('.spmOfferCalendar'),3200,()=>selectWeek((weekIndex+1)%weeks.length),isEn?'program weeks':'semanas del programa')
+  ]};
   gate.querySelector('.spmOfferFilm')?.addEventListener('click',()=>playInlineFilm(gate));
   gate.addEventListener('click',event=>{if(event.target.closest('.startPay')&&activeFilm?.gate===gate)releaseFilm(true)},true);
 }
