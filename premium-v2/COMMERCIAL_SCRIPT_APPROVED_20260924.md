@@ -176,3 +176,17 @@ La usuaria solicita que el visitante que llega desde un anuncio empiece la evalu
 - La usuaria propone persuadir con la posible pérdida de la evaluación. Se conserva un mensaje de continuidad verdadero y se explica el guardado temporal; no se añaden contadores, plazos artificiales ni borrado como presión comercial.
 
 Validación: pruebas de ES/EN, reanudación tras recarga, preguntas condicionales, seguridad urgente y revisión, cero llamadas de registro/guardado durante la evaluación gratuita, registro diferido, espera por confirmación de correo y conservación de respuestas, idempotencia de la transferencia y ausencia de planes activos sin pago. El guardado autenticado se prueba con un cliente simulado: no se crean cuentas reales, no se envían correos ni se hacen cobros como parte de estas pruebas. También pasa la regresión del cierre, sus dos CTA, video integrado, cuatro Insights ES/EN y hashes del videoclip aprobado.
+
+
+## Borrador gratuito de siete días — 2026-09-24
+
+La usuaria acepta conservar la evaluación sin registro durante siete días y solicita evitar la acumulación de pruebas que no terminan en una compra. Esta decisión sustituye la retención limitada a la pestaña descrita arriba.
+
+- Se conserva un único borrador en `localStorage` del navegador y origen de la página, con sus respuestas, motivos, posición y una referencia de transferencia si se guarda después en una cuenta. Cada avance sustituye el contenido anterior: no hay historial de borradores ni registros de visitantes en la base de datos. No se almacenan imágenes, videos, correos ni contraseñas en este borrador.
+- El plazo es de siete días desde el último cambio de respuestas, motivos o avance en el cuestionario. Abrir la página, leer el resultado o cambiar el idioma sin avanzar no renueva el plazo. Las respuestas se recalculan con el motor existente; una modificación invalida la referencia de transferencia anterior.
+- La portada y el resultado explican el plazo en ES/EN. Se conserva la acción para borrar el borrador y empezar de nuevo. Si el navegador bloquea el almacenamiento, se puede continuar en la página y se indica que no se conservará para otra visita.
+- Un registro vencido no se recupera: se elimina al volver a abrir la página; si sigue abierta, también se revisa mediante temporizador, foco y visibilidad. El navegador no ejecuta la limpieza con la página cerrada. Los registros malformados se descartan.
+- El borrador anterior de la pestaña se migra una sola vez al nuevo formato y se elimina su copia antigua. Otra pestaña que actualice o borre el borrador lleva la vista a inicio para evitar mezclar respuestas antiguas con nuevas.
+- La recuperación depende de usar el mismo dispositivo, navegador y origen, y de conservar los datos del navegador. El plazo no garantiza recuperación en navegación privada o después de borrar esos datos.
+
+Pruebas con tiempo simulado: regreso en una nueva sesión a los tres días, vencimiento exacto a los siete días y después, ausencia de renovación por solo consultar, actualización de respuestas y recálculo de puntuación/prioridad, un único registro local, eliminación manual, migración, almacenamiento bloqueado y ausencia de escrituras remotas durante el recorrido gratuito. Se mantienen las pruebas de idiomas, seguridad y registro diferido. No se crean cuentas reales, correos ni cobros para verificarlo.
