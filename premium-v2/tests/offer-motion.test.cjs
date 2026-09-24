@@ -15,6 +15,7 @@ function setup(language){
   Object.defineProperty(w.document,'hidden',{get:()=>hidden});
   const preference=new w.EventTarget();preference.matches=false;w.matchMedia=()=>preference;
   w.HTMLElement.prototype.scrollTo=function(){};
+  w.HTMLElement.prototype.getBoundingClientRect=function(){const top=this.classList.contains('spmGate')?0:2000,height=this.classList.contains('spmGate')?900:400;return {left:0,right:390,width:390,top,bottom:top+height,height}};
   w.IntersectionObserver=class{
     constructor(callback){this.callback=callback;observations.push(this)}
     observe(element){this.element=element}
@@ -27,7 +28,7 @@ function setup(language){
   for(const file of ['commercial-conversion-v1.js','commercial-offer-v2.js'])w.eval(fs.readFileSync(path.join(root,file),'utf8'));
   const q=selector=>w.document.querySelector(selector);
   return {w,dom,jobs,q,
-    show(selector,ratio=1){const section=q(selector);observations.filter(o=>o.element===section&&!o.disconnected).forEach(o=>o.callback([{isIntersecting:ratio>0,intersectionRatio:ratio}]))},
+    show(selector,ratio=1,notify=true){const section=q(selector);section.getBoundingClientRect=()=>({left:0,right:390,width:390,top:900-400*ratio,bottom:1300-400*ratio,height:400});if(notify)observations.filter(o=>o.element===section&&!o.disconnected).forEach(o=>o.callback([{isIntersecting:ratio>0,intersectionRatio:ratio}]))},
     tick(ms){const until=now+ms;for(let n=0;n<1000;n++){const due=[...jobs.entries()].filter(([,job])=>job.at<=until).sort((a,b)=>a[1].at-b[1].at)[0];if(!due)break;now=due[1].at;jobs.delete(due[0]);due[1].fn()}now=until},
     hide(value){hidden=value;w.document.dispatchEvent(new w.Event('visibilitychange'))},
     reduce(value){preference.matches=value;preference.dispatchEvent(new w.Event('change'))},
@@ -42,7 +43,7 @@ function setup(language){
     w.SPM_COMMERCIAL_GATE_PREVIEW.open();await Promise.resolve();
     const gate=q('.spmGate');gate.scrollTop=640;
     t.tick(20000);assert.equal(t.tool(),0);assert.equal(t.week(),0,'offscreen previews wait for the reader');
-    t.show('.spmOfferTools');t.show('.spmOfferCalendar');
+    t.show('.spmOfferTools',1,false);t.show('.spmOfferCalendar',1,false);gate.dispatchEvent(new w.Event('scroll'));
     for(let week=1;week<=4;week++){
       t.tick(3200);assert.equal(t.week(),week%4);
       assert.equal(q('.spmOfferWeekBars.is-current').dataset.calendarWeek,String(week%4));

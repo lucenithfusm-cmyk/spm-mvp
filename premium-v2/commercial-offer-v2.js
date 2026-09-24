@@ -145,11 +145,11 @@ function releaseOfferMotion(){
 }
 function rotateSection(gate,section,delay,next,description){
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)'),isEn=gate.dataset.language==='en';
-  let timer=0,visible=false,paused=false,focused=false,disposed=false,suspended=false;
+  let timer=0,paused=false,keyboardFocus=false,disposed=false,suspended=false;
   const button=document.createElement('button');button.type='button';button.className='spmOfferMotionToggle';
   section.appendChild(button);
   const listeners=[];
-  function on(target,event,handler){target.addEventListener(event,handler);listeners.push(()=>target.removeEventListener(event,handler))}
+  function on(target,event,handler,options){target.addEventListener(event,handler,options);listeners.push(()=>target.removeEventListener(event,handler,options))}
   function label(){
     button.textContent=paused?(isEn?'▶ Resume':'▶ Reanudar'):(isEn?'Ⅱ Pause':'Ⅱ Pausar');
     button.setAttribute('aria-label',(paused?(isEn?'Resume automatic preview: ':'Reanudar vista automática: '):(isEn?'Pause automatic preview: ':'Pausar vista automática: '))+description);
@@ -158,25 +158,31 @@ function rotateSection(gate,section,delay,next,description){
   function refresh(){
     clearTimeout(timer);timer=0;
     if(disposed)return;
+    const rect=section.getBoundingClientRect(),viewport=gate.getBoundingClientRect();
+    const width=Math.max(0,Math.min(rect.right,viewport.right)-Math.max(rect.left,viewport.left));
+    const height=Math.max(0,Math.min(rect.bottom,viewport.bottom)-Math.max(rect.top,viewport.top));
+    const visible=rect.width>0&&rect.height>0&&width*height/(rect.width*rect.height)>=.35;
+    const focus=document.activeElement,focused=section.contains(focus)&&(keyboardFocus||focus.matches(':focus-visible'));
     const running=gate.isConnected&&visible&&!paused&&!focused&&!suspended&&!document.hidden&&!reduced.matches&&!section.closest('[hidden]')&&!(activeFilm?.gate===gate&&activeFilm.playing);
     section.classList.toggle('spmOfferMotionPaused',!running);
     if(running)timer=setTimeout(()=>{timer=0;if(!gate.isConnected){dispose();return}next();refresh()},delay);
   }
   function dispose(){if(disposed)return;disposed=true;clearTimeout(timer);intersection?.disconnect();listeners.forEach(remove=>remove())}
-  const intersection=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{
-    visible=entries[0].isIntersecting&&entries[0].intersectionRatio>=.35;refresh();
-  },{root:gate,threshold:[0,.35]}):null;
+  const intersection=typeof IntersectionObserver==='function'?new IntersectionObserver(refresh,{root:gate,threshold:[0,.35]}):null;
   on(button,'click',()=>{paused=!paused;label();refresh()});
   // Manual choices always get a full reading interval before the next change.
   on(section,'click',refresh);
-  on(section,'focusin',event=>{focused=event.target.matches(':focus-visible');refresh()});
-  on(section,'focusout',event=>{focused=!!event.relatedTarget&&section.contains(event.relatedTarget)&&event.relatedTarget.matches(':focus-visible');refresh()});
-  on(section,'keydown',event=>{if(['Tab','ArrowRight','ArrowLeft','Home','End'].includes(event.key)){focused=true;refresh()}});
+  on(section,'focusin',refresh);
+  on(section,'focusout',()=>{keyboardFocus=false;queueMicrotask(refresh)});
+  on(section,'keydown',event=>{if(['Tab','ArrowRight','ArrowLeft','Home','End'].includes(event.key)){keyboardFocus=true;refresh()}});
+  on(section,'pointerdown',()=>{keyboardFocus=false;refresh()});
+  on(gate,'scroll',refresh,{passive:true});
+  on(window,'resize',refresh);
   on(document,'visibilitychange',refresh);
   on(window,'pagehide',()=>{suspended=true;refresh()});
   on(window,'pageshow',()=>{suspended=false;refresh()});
   if(reduced.addEventListener)on(reduced,'change',()=>{label();refresh()});
-  if(intersection)intersection.observe(section);else visible=true;
+  intersection?.observe(section);
   label();refresh();
   return {refresh,dispose};
 }
