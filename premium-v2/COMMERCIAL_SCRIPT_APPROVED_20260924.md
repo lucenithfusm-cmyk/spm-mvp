@@ -93,3 +93,9 @@ The user then requested a more visibly annoyed partner. The revised v2 artwork c
 The user instructed that every created image must display the SPM logo. All future final visual assets and their displayed compositions must carry the established SPM wordmark without covering faces, controls or copy. For this offer, the reflective scene, the two-men couple image and the film thumbnail receive a crisp SPM brand layer in the page. The Spanish and English watch images already include SPM in the artwork. The generated cinematic scenes already display SPM within their approved composition. No registration symbol or new trademark-registration claim is added.
 
 A raster watermark edit was rejected by the image service. The completed implementation brands the website compositions using a separate text layer and preserves the original image files; it does not claim to have embedded a watermark into those original files. Any later standalone advertising export must include the SPM layer as part of that export.
+
+## Animated profile-construction transition requested — 2026-09-24
+
+The user rejected the generic five tiles in the question-18 “Perfil en construcción” transition and requested colored bars that rise, fall and glow. The presentation-only `commercial-profile-visual-v1.js` enhancement replaces those tiles with five animated signal channels, matching colored paths and a central SPM wordmark. It preserves the existing area labels and ES/EN text selection. The motion illustrates profile construction; it does not show measured scores, percentages, clinical results or fabricated progress.
+
+The existing Continue handler, assessment triggers/state, Insights and the complete approved cinematic remain owned by the unchanged journey module. Continue is immediately usable. A pause/resume control and reduced-motion preference support are provided. The enhancement runs in the authorized commercial pilot only; no main/GitHub Pages changes.
