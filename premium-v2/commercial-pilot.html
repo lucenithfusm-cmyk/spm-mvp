@@ -28,7 +28,7 @@
       <select id="qaViewport" style="width:100%;margin:6px 0 12px;padding:8px;border:1px solid #2d5056;border-radius:10px;background:#0a252b;color:#eff9f7"><option value="full">Pantalla actual</option><option value="390">Móvil</option><option value="768">Tablet</option></select>
       <div class="qaGrid">
         <div class="qaGroup">PRIMER CONTACTO DESDE EL ANUNCIO</div>
-        <a class="qaBtn primary" href="free-assessment.html" target="_blank" rel="noopener" style="display:grid;place-items:center;text-decoration:none;text-align:center">Entrada gratuita · sin registro</a>
+        <button class="qaBtn primary" data-view="entry" type="button">Entrada gratuita · sin registro</button>
         <div class="qaGroup">TRANSICIONES DURANTE LA EVALUACIÓN</div>
         <button class="qaBtn" data-view="intro" type="button">Inicio de evaluación</button>
         <button class="qaBtn" data-view="signal" type="button">Perfil en construcción<small>Pregunta 18</small></button>
@@ -59,11 +59,12 @@
       document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)syncLang()};
       document.getElementById('qaClose').onclick=()=>{panel.hidden=true};
       function loadScript(d,src){return new Promise(resolve=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return resolve();const s=d.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;d.body.appendChild(s)})}
-      frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;await Promise.all(scripts.map(src=>loadScript(d,src)));syncLang();status.textContent='Listo para revisar todas las veces que necesites.'});
+      frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;if(!frame.contentWindow.SPM_GUEST_ENTRY)await Promise.all(scripts.map(src=>loadScript(d,src)));syncLang();status.textContent='Listo para revisar todas las veces que necesites.'});
       document.querySelector('.qaLang').onclick=e=>{const button=e.target.closest('[data-lang]');if(!button)return;const w=frame.contentWindow;if(!w.SPM_LANGUAGE){status.textContent='Espera unos segundos y vuelve a elegir el idioma.';return}w.SPM_COMMERCIAL_PREVIEW?.close();w.SPM_COMMERCIAL_GATE_PREVIEW?.close();w.SPM_INSIGHTS_PREVIEW?.close();w.SPM_LANGUAGE.set(button.dataset.lang);syncLang();status.textContent=button.dataset.lang==='es'?'Español activado.':'English enabled.'};
       document.querySelector('.qaGrid').onclick=e=>{
         const button=e.target.closest('[data-view],[data-insight]');if(!button)return;
         const w=frame.contentWindow,view=button.dataset.view,insight=Number(button.dataset.insight),journey=w.SPM_COMMERCIAL_PREVIEW,gate=w.SPM_COMMERCIAL_GATE_PREVIEW,insights=w.SPM_INSIGHTS_PREVIEW;
+        if(view==='entry'){frame.src='free-assessment.html';status.textContent='Abriendo la evaluación gratuita.';panel.hidden=true;return}
         if(!journey||!gate||(insight&&!insights)){status.textContent='Espera unos segundos y vuelve a tocar.';return}
         journey.close();gate.close();insights?.close();
         if(insight)insights.open(insight);
