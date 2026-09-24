@@ -69,3 +69,13 @@ Changes belong only to `feat/commercial-conversion-v3` and Vercel `spm-premium-s
 Before generating any audio or video, define the approved script, language, voice, delivery energy, pace, target duration, format/framing and required source assets. Reuse existing approved material. If a new voice or delivery is uncertain, evaluate a short excerpt before spending credits on a full-length generation. Do not generate exploratory full-length alternatives by default; preserve credits for the remaining advertising assets. Adjust speed, timing and framing locally when feasible without a new HeyGen generation.
 
 This Spanish delivery correction used one full-length HeyGen generation. The additional tempo adjustment and montage synchronization reused that recording without further HeyGen generation. The user subsequently approved the new voice delivery.
+
+## Complete cinematic approved — 2026-09-24
+
+The user explicitly approved the complete published cinematic in both Spanish and English: “El video me encantó, más que aprobadísimo ... tanto en inglés como en español, se escucha perfecto ... Ese va.” Preserve the cinematic source, all its images, both narrations, scene order, timing and framing from commit b8cfde81ba421113b885369e6f7080eb227363fb. Subsequent work concerns the offer page and internal review access, not changes to the approved film. The offer may reopen that exact cinematic for replay.
+
+The two screenshots supplied afterward show the existing assessment transitions: profile building at question 18 and the pathway at question 26. They are separate from the four approved Insights, which appear at questions 6, 11, 16 and 21. Provide direct internal preview controls for all four Insights without altering assessment answers or the approved Insight images/audio.
+
+## Commercial offer artwork approved — 2026-09-24
+
+The user approved the new young-adult-man/stopwatch image (“Súper, esa imagen va ... esta va en el cierre”). Use it as the principal offer image. Preserve the Spanish asset with “Tu ritmo. Tu control.” and localize only that text for English. No numeric performance outcomes or before/after timing claims are shown. This approval does not replace or modify the already approved cinematic bedroom image. A second, supportive image shows two adult men in a relationship, reflecting the user’s instruction to include same-sex couples. The terrace alternative is not selected as the main offer artwork.

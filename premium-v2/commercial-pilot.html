@@ -7,17 +7,19 @@
   <title>SPM · Prueba interna comercial</title>
   <style>
     :root{color-scheme:dark}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#071014;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
-    iframe{border:0;width:100%;height:100%;display:block;background:#071014}
-    .qa{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));z-index:999999;color:#eff9f7}
-    .qaToggle{border:1px solid #8fe3d077;border-radius:999px;background:#0a2b31;color:#eafffa;padding:13px 17px;font-weight:900;box-shadow:0 12px 38px #0009;cursor:pointer}
-    .qaPanel{width:min(340px,calc(100vw - 24px));margin-bottom:9px;padding:16px;border:1px solid #8fe3d055;border-radius:22px;background:#061b20f5;box-shadow:0 18px 58px #000b;backdrop-filter:blur(14px)}
+    body{display:flex;flex-direction:column;overflow:hidden}iframe{border:0;width:100%;height:0;min-height:0;flex:1;display:block;background:#071014}
+    .qa{position:relative;order:-1;z-index:999999;color:#eff9f7;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));background:#07191ff5;border-bottom:1px solid #24454a}.qaBrand{font-size:11px;font-weight:850;letter-spacing:.07em;color:#85beb3}
+    .qaToggle{border:1px solid #8fe3d077;border-radius:999px;background:#0a2b31;color:#eafffa;padding:10px 14px;font-weight:900;font-size:12px;box-shadow:0 12px 38px #0009;cursor:pointer}
+    .qaPanel{position:absolute;right:12px;top:calc(100% + 6px);max-height:calc(100dvh - 76px);overflow:auto;width:min(380px,calc(100vw - 24px));margin-bottom:0;padding:16px;border:1px solid #8fe3d055;border-radius:22px;background:#061b20f5;box-shadow:0 18px 58px #000b;backdrop-filter:blur(14px)}
     .qaPanel[hidden]{display:none}.qaHead{display:flex;justify-content:space-between;gap:12px;align-items:start}.qaHead b{font-size:17px}.qaClose{border:0;background:transparent;color:#9fb6b8;font-size:24px;line-height:1;cursor:pointer}
     .qaNote{margin:7px 0 13px;color:#9eb2b6;font-size:12px;line-height:1.4}.qaLang{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.qaLang button{min-height:42px;border:1px solid #2d5056;border-radius:12px;background:#0a252b;color:#b8cbce;font-weight:950;cursor:pointer}.qaLang button.on{background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qaBtn{min-height:45px;border:1px solid #24464d;border-radius:13px;background:#0b2930;color:#e9f4f2;padding:8px;font-weight:800;font-size:12px;cursor:pointer}.qaBtn.primary{grid-column:1/-1;background:#8fe3d0;color:#062027;border-color:#8fe3d0}.qaBtn.end{grid-column:1/-1;background:#102329;color:#b9c9cc}.qaStatus{margin-top:10px;color:#8fe3d0;font-size:11px;font-weight:800}
+    .qaGroup{grid-column:1/-1;color:#8fe3d0;font-size:10px;letter-spacing:.08em;font-weight:850;margin:9px 1px 0}.qaBtn small{display:block;font-size:10px;color:#90b4b3;font-weight:600;margin-top:3px}.qaHint{grid-column:1/-1;color:#9bb7ba;font-size:11px;line-height:1.4;margin:0 0 3px}.qaBtn:focus-visible,.qaToggle:focus-visible{outline:3px solid #8fe3d0;outline-offset:2px}
   </style>
 </head>
 <body>
-  <iframe id="spmPilot" src="live-v4.html?test=commercial-v21" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe>
+  <iframe id="spmPilot" src="live-v4.html?test=commercial-v22" title="SPM prueba interna comercial" allow="clipboard-read; clipboard-write; autoplay"></iframe>
   <aside class="qa" aria-label="Control de revisión comercial">
+    <span class="qaBrand">SPM · VISOR COMERCIAL</span>
     <div class="qaPanel" id="qaPanel" hidden>
       <div class="qaHead"><b>Revisar recorrido comercial</b><button class="qaClose" id="qaClose" type="button" aria-label="Cerrar menú">×</button></div>
       <p class="qaNote">Vista interna repetible. No modifica tu evaluación, usuario, programa ni progreso.</p>
@@ -25,10 +27,18 @@
       <label for="qaViewport" style="font-size:12px;color:#a8c4c5">Vista de revisión</label>
       <select id="qaViewport" style="width:100%;margin:6px 0 12px;padding:8px;border:1px solid #2d5056;border-radius:10px;background:#0a252b;color:#eff9f7"><option value="full">Pantalla actual</option><option value="390">Móvil</option><option value="768">Tablet</option></select>
       <div class="qaGrid">
-        <button class="qaBtn" data-view="intro" type="button">Introducción</button>
-        <button class="qaBtn" data-view="signal" type="button">Refresh perfil</button>
-        <button class="qaBtn" data-view="route" type="button">Refresh ruta</button>
-        <button class="qaBtn primary" data-view="cinematic" type="button">Cinematografía final</button>
+        <div class="qaGroup">TRANSICIONES DURANTE LA EVALUACIÓN</div>
+        <button class="qaBtn" data-view="intro" type="button">Inicio de evaluación</button>
+        <button class="qaBtn" data-view="signal" type="button">Perfil en construcción<small>Pregunta 18</small></button>
+        <button class="qaBtn" data-view="route" type="button">Tu ruta<small>Pregunta 26</small></button>
+        <p class="qaHint">Son pausas breves del cuestionario. Los cuatro Insights se revisan debajo.</p>
+        <div class="qaGroup">LOS CUATRO INSIGHTS</div>
+        <button class="qaBtn" data-insight="1" type="button">Insight 1<small>Pregunta 6</small></button>
+        <button class="qaBtn" data-insight="2" type="button">Insight 2<small>Pregunta 11</small></button>
+        <button class="qaBtn" data-insight="3" type="button">Insight 3<small>Pregunta 16</small></button>
+        <button class="qaBtn" data-insight="4" type="button">Insight 4<small>Pregunta 21</small></button>
+        <div class="qaGroup">AL TERMINAR LA EVALUACIÓN</div>
+        <button class="qaBtn primary" data-view="cinematic" type="button">Videoclip aprobado</button>
         <button class="qaBtn" data-view="gate" type="button">Cierre comercial</button>
         <button class="qaBtn end" data-view="close" type="button">Cerrar vista</button>
       </div>
@@ -41,22 +51,23 @@
       const frame=document.getElementById('spmPilot');
       const panel=document.getElementById('qaPanel');
       const status=document.getElementById('qaStatus');
-      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260912c','commercial-journey-v1.js?v=20260924-balanced-v4','commercial-conversion-v1.js?v=20260922c','commercial-offer-v2.js?v=20260922a','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
+      const scripts=['spm-language-core-v1.js?v=20260911a','assets/spm-insight-audio-v1.js?v=20260911b','evaluation-refresh-v1.js?v=20260924-insight-preview','commercial-journey-v1.js?v=20260924-balanced-v4','commercial-conversion-v1.js?v=20260924-visual-offer','commercial-offer-v2.js?v=20260924-visual-offer','commercial-price-v1.js?v=20260922b','commercial-analytics-v1.js?v=20260922c','signup-hotfix-v1.js?v=20260908v1','checkpoint-evaluations-v1.js?v=20260909v1','adaptation-engine-v1.js?v=20260909v1','day28-outcomes-maintenance-v1.js?v=20260909v1'];
       document.getElementById('qaViewport').onchange=e=>{const size=e.target.value;frame.style.width=size==='full'?'100%':'min(100%, '+size+'px)';frame.style.margin='0 auto'};
       function syncLang(){const current=frame.contentWindow?.SPM_LANGUAGE?.get?.()||'es';document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('on',b.dataset.lang===current))}
       document.getElementById('qaToggle').onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)syncLang()};
       document.getElementById('qaClose').onclick=()=>{panel.hidden=true};
       function loadScript(d,src){return new Promise(resolve=>{if(d.querySelector(`script[src^="${src.split('?')[0]}"]`))return resolve();const s=d.createElement('script');s.src=src;s.onload=resolve;s.onerror=resolve;d.body.appendChild(s)})}
       frame.addEventListener('load',async()=>{const d=frame.contentDocument;if(!d)return;await Promise.all(scripts.map(src=>loadScript(d,src)));syncLang();status.textContent='Listo para revisar todas las veces que necesites.'});
-      document.querySelector('.qaLang').onclick=e=>{const button=e.target.closest('[data-lang]');if(!button)return;const w=frame.contentWindow;if(!w.SPM_LANGUAGE){status.textContent='Espera unos segundos y vuelve a elegir el idioma.';return}w.SPM_COMMERCIAL_PREVIEW?.close();w.SPM_COMMERCIAL_GATE_PREVIEW?.close();w.SPM_LANGUAGE.set(button.dataset.lang);syncLang();status.textContent=button.dataset.lang==='es'?'Español activado.':'English enabled.'};
+      document.querySelector('.qaLang').onclick=e=>{const button=e.target.closest('[data-lang]');if(!button)return;const w=frame.contentWindow;if(!w.SPM_LANGUAGE){status.textContent='Espera unos segundos y vuelve a elegir el idioma.';return}w.SPM_COMMERCIAL_PREVIEW?.close();w.SPM_COMMERCIAL_GATE_PREVIEW?.close();w.SPM_INSIGHTS_PREVIEW?.close();w.SPM_LANGUAGE.set(button.dataset.lang);syncLang();status.textContent=button.dataset.lang==='es'?'Español activado.':'English enabled.'};
       document.querySelector('.qaGrid').onclick=e=>{
-        const button=e.target.closest('[data-view]');if(!button)return;
-        const w=frame.contentWindow,view=button.dataset.view,journey=w.SPM_COMMERCIAL_PREVIEW,gate=w.SPM_COMMERCIAL_GATE_PREVIEW;
-        if(!journey||!gate){status.textContent='Espera unos segundos y vuelve a tocar.';return}
-        if(view==='gate'){journey.close();gate.open()}
-        else if(view==='close'){journey.close();gate.close()}
-        else{gate.close();journey[view]?.()}
-        status.textContent=view==='close'?'Vista cerrada. Puedes abrir otra cuando quieras.':'Mostrando: '+button.textContent.trim();
+        const button=e.target.closest('[data-view],[data-insight]');if(!button)return;
+        const w=frame.contentWindow,view=button.dataset.view,insight=Number(button.dataset.insight),journey=w.SPM_COMMERCIAL_PREVIEW,gate=w.SPM_COMMERCIAL_GATE_PREVIEW,insights=w.SPM_INSIGHTS_PREVIEW;
+        if(!journey||!gate||(insight&&!insights)){status.textContent='Espera unos segundos y vuelve a tocar.';return}
+        journey.close();gate.close();insights?.close();
+        if(insight)insights.open(insight);
+        else if(view==='gate')gate.open();
+        else if(view!=='close')journey[view]?.();
+        status.textContent=insight?'Mostrando Insight '+insight+' en el idioma seleccionado.':view==='close'?'Vista cerrada. Puedes abrir otra cuando quieras.':'Mostrando: '+button.textContent.trim();
         panel.hidden=true;
       };
     })();
