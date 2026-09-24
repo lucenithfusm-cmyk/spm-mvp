@@ -43,6 +43,17 @@ function addCSS(){
 .spmGateVisual .spmOfferMessage h2{margin:0 0 9px;color:#e8faf3;font-size:clamp(23px,3.4vw,32px);line-height:1.15;letter-spacing:-.035em}
 .spmOfferMessage p{max-width:570px;margin:0 auto;color:#aac8c7;font-size:15px;line-height:1.5}
 .spmOfferMessageConnection{margin:0 auto 30px}.spmOfferMessageFinal{margin:25px auto 15px}
+.spmOfferReviews{margin:0 0 35px}
+.spmGateVisual .spmOfferReviews h2{max-width:650px;margin:9px 0 20px;color:#e8faf3;font-size:clamp(25px,3.4vw,34px);line-height:1.12;letter-spacing:-.035em}
+.spmOfferReviewGrid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
+.spmOfferReview{position:relative;display:flex;flex-direction:column;min-width:0;margin:0;padding:24px 25px;border:1px solid #4f8a7e66;border-radius:23px;background:radial-gradient(ellipse at 0 0,#173e3d,#0a252c 72%)}
+.spmOfferReview:nth-child(2){background:radial-gradient(ellipse at 100% 0,#163744,#0a252c 72%);border-color:#466f805c}
+.spmOfferQuoteMark{height:33px;color:#91dfcd;font:70px/.95 Georgia,serif}
+.spmOfferReview blockquote{margin:7px 0 22px;padding:0;border:0;flex:1}
+.spmOfferReview blockquote p{margin:0;color:#e1efeb;font-size:16px;line-height:1.6}
+.spmOfferReview figcaption{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-top:1px solid #69988b3b;padding-top:15px}
+.spmOfferReview figcaption b{font-size:12px;color:#92decb}.spmOfferReview figcaption span{font-size:11px;color:#95b5b3}
+.spmOfferReviewNote{margin:11px 3px 0;font-size:11px;line-height:1.4;color:#88aaa8}
 .spmOfferPurchase{margin-top:16px;padding:23px;border:1px solid #71c6ad70;border-radius:21px;background:linear-gradient(125deg,#163d3d,#0a252c)}
 .spmOfferPurchasePrice{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:14px 0 10px}.spmOfferPurchasePrice strong{color:#f1fff8;font-size:43px;line-height:1;letter-spacing:-.05em}.spmOfferPurchasePrice span{font-size:12px;font-weight:750;color:#a5e0d0;padding:6px 9px;border:1px solid #7ab29e55;border-radius:99px}
 .spmOfferPurchase p{margin:0 0 19px;color:#c3d9d5;font-size:13px;line-height:1.5}
@@ -109,6 +120,7 @@ function addCSS(){
 }
 @media(max-width:680px){.spmOfferBenefits{gap:7px;margin-top:14px}.spmOfferBenefits>div{padding:15px 5px;flex-direction:column;gap:10px;text-align:center;border-radius:14px}.spmOfferBenefits svg{width:25px;height:25px}.spmOfferBenefits span{font-size:12px}.spmOfferPracticeRow{grid-template-columns:1fr;gap:22px;margin-bottom:29px}.spmOfferCalendar{padding:20px 17px;border-radius:20px}.spmOfferCalendar h2,.spmOfferHope h2{font-size:25px}.spmOfferWeekButtons button{font-size:10px}.spmOfferCalendarFoot{font-size:10px}.spmOfferPracticeRow .spmOfferConnection{margin:0}.spmOfferHope{margin-bottom:22px}}
 @media(max-width:680px){.spmOfferMessage{margin:23px auto}.spmOfferMessage p{font-size:14px}.spmOfferPurchase{padding:19px 17px}.spmOfferPurchase .spmCTA{font-size:14px}.spmOfferPurchasePrice strong{font-size:39px}}
+@media(max-width:680px){.spmOfferReviews{margin-bottom:29px}.spmOfferReviewGrid{grid-template-columns:1fr;gap:13px}.spmOfferReview{padding:20px;border-radius:20px}.spmOfferReview blockquote{margin-bottom:18px}.spmOfferReview blockquote p{font-size:15px;line-height:1.55}.spmOfferReviewNote{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.spmOfferPanel,.spmOfferWeekBars.is-current i{animation:none}.spmOfferPlay,.spmOfferFilm>img,.spmOfferWeekBars i{transition:none}}
 `;
   document.head.appendChild(style);

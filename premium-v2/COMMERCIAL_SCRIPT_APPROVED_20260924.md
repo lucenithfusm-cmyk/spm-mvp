@@ -117,3 +117,16 @@ La usuaria informó que varios participantes de sus pruebas piloto consideran bu
 3. **Conexión — borrador:** “El programa me ayudó a hablar con mi pareja con más tranquilidad y a entender mejor lo que necesitaba trabajar.”
 
 These are not approved participant statements or efficacy evidence. Preserve this status until actual participant confirmation is supplied. No testimonials are inserted into the live offer by this change.
+
+### Actualización: dos reseñas seleccionadas y confirmadas — 2026-09-24
+
+La usuaria corrigió y aprobó la reseña de control y seleccionó la de confianza. Al preguntarle expresamente si reflejan experiencias reales de quienes probaron el programa, confirmó que sí y explicó que ha puesto en práctica los ejercicios de control con amigos y conocidos, con buenos resultados, y que la guía ayuda a mejorar la confianza. Esta confirmación sustituye el estado pendiente de los dos textos seleccionados; la tercera propuesta, sobre comunicación con la pareja, permanece como borrador y no se publica.
+
+Ante la pregunta específica “¿Tienes su autorización para publicar ambas reseñas, sin nombres, en la página comercial de SPM?”, la usuaria respondió “Sí”. Queda confirmada por la usuaria la autorización de esas personas para el uso comercial anónimo de ambas reseñas. Esta confirmación resuelve el bloqueo previo de publicación por falta de autorización de los participantes.
+
+Textos españoles aprobados, conservados literalmente en el cierre:
+
+- **Control eyaculatorio:** “SPM me ayudó a reconocer cuándo mi excitación empezaba a acelerarse y qué la intensificaba. Aprendí a hacer una pausa a tiempo, regular mi ritmo y tener mayor control sobre mi eyaculación. Ahora entiendo mejor las señales de mi cuerpo y sé cómo responder.”
+- **Confianza:** “Tener una guía clara me ayudó a sentir menos presión y a trabajar mi confianza paso a paso.”
+
+Se muestran como reseñas anónimas en dos tarjetas, después del bloque de video/oferta y herramientas, con traducciones equivalentes al inglés. No se añaden nombres, fotografías de supuestos participantes, estrellas, estadísticas, verificación independiente ni garantías de resultados. El pie indica que las experiencias son individuales y los resultados pueden variar. La confirmación procede de la usuaria; no se afirma haber entrevistado a los participantes. La presentación y reproducción aprobadas del videoclip, el precio y los botones de compra se conservan.
