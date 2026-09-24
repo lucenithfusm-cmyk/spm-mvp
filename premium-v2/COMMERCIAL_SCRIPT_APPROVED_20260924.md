@@ -40,7 +40,7 @@ Activate it for thirty-nine dollars and start Day One today.
 
 ## Narration and montage
 
-- Spanish delivery revision: HeyGen Narrator Mateo — Excited (male), `assets/audio/commercial-cinematic-v3-es.mp3`, approximately 41.1 seconds. The user rejected the slow Noxus delivery; the approved spoken words remain identical. Generated at 1.22x with paragraph spacing removed, then mastered with pitch-preserving `atempo=1.08`. Source duration: 44.356 seconds; Spanish montage cues, adjusted from word timestamps: route at 31.093 seconds and ready/CTA at 35.241 seconds. This delivery is available for listening; it is not marked as user-approved.
+- Spanish delivery revision: HeyGen Narrator Mateo — Excited (male), `assets/audio/commercial-cinematic-v3-es.mp3`, approximately 41.1 seconds. The user rejected the slow Noxus delivery; the approved spoken words remain identical. Generated at 1.22x with paragraph spacing removed, then mastered with pitch-preserving `atempo=1.08`. Source duration: 44.356 seconds; Spanish montage cues, adjusted from word timestamps: route at 31.093 seconds and ready/CTA at 35.241 seconds. The user approved this Spanish voice and pace on 2026-09-24: “Esta voz me gusta 👍”. Preserve this exact recording and approved script; reuse it without regenerating unless the user requests a change.
 - English: HeyGen Orson — Firm & Measured (male), `assets/audio/commercial-cinematic-v2-en.mp3`, 44.487 seconds.
 - The audio file follows `SPM_LANGUAGE.get()`. The cinematic uses fixed recordings; it does not select a device voice or fall back to another language.
 - The montage uses 26 real program images, 2 video moments and 3 animated practice/progress moments. It does not replay the four initial-assessment Insights.
@@ -56,4 +56,4 @@ Changes belong only to `feat/commercial-conversion-v3` and Vercel `spm-premium-s
 
 Before generating any audio or video, define the approved script, language, voice, delivery energy, pace, target duration, format/framing and required source assets. Reuse existing approved material. If a new voice or delivery is uncertain, evaluate a short excerpt before spending credits on a full-length generation. Do not generate exploratory full-length alternatives by default; preserve credits for the remaining advertising assets. Adjust speed, timing and framing locally when feasible without a new HeyGen generation.
 
-This Spanish delivery correction used one full-length HeyGen generation. The additional tempo adjustment and montage synchronization reused that recording without further HeyGen generation. The new voice delivery still awaits the user's listening feedback.
+This Spanish delivery correction used one full-length HeyGen generation. The additional tempo adjustment and montage synchronization reused that recording without further HeyGen generation. The user subsequently approved the new voice delivery.
