@@ -24,6 +24,8 @@ const HEALTH=[
 const insertAt=Math.max(0,first);
 kept.splice(insertAt,0,...HEALTH);
 E.assessment.questions=kept;
+// Guest answers remain in the free flow's temporary tab storage, never the shared anon profile.
+if(window.SPM_GUEST_ENTRY){window.SPM_HEALTH_INTAKE_V2={questions:HEALTH};return}
 
 const byPrompt=new Map(HEALTH.map(x=>[x.prompt_es,x]));
 function userKey(){const u=(document.getElementById('who')?.textContent||'anon').trim().toLowerCase();return 'spm_health_profile_v2_'+u.replace(/[^a-z0-9@._-]/g,'_')}

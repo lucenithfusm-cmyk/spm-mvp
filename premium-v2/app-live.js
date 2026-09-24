@@ -4,6 +4,10 @@ const SB_KEY='sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf';
 const db=window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
+const guest=window.SPM_GUEST_ENTRY||null;
+const guestEnglish=()=>!!guest&&window.SPM_LANGUAGE?.get?.()==='en';
+const guestText=(es,en)=>guestEnglish()?en:es;
+function guestProgress(){guest?.progress?.({version:1,motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
@@ -13,8 +17,9 @@ function msg(t,kind='good'){const el=(!$('authScreen').hidden?$('authStatus'):$(
 function hideMsg(){if($('status'))$('status').hidden=true;if($('authStatus'))$('authStatus').hidden=true}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.hidden=x.id!==id)}
 function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.panel===id));}
-function label(k){return (M.profiles?.[k]?.label_es)||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
+function label(k){return (M.profiles?.[k]?.[guestEnglish()?'label_en':'label_es'])||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
+ if(guest){guest.ready(guestAPI);return}
  const {data:{session}}=await db.auth.getSession();
  if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
  db.auth.onAuthStateChange(async(event,session)=>{
@@ -76,32 +81,32 @@ async function restore(){
 function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
- motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${t}</b>`;fragment.appendChild(b)});
+ motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / performance anxiety',wellbeing:'Satisfaction and connection',optimization:'Optimization / prevention'}[id]||t):t}</b>`;fragment.appendChild(b)});
  g.replaceChildren(fragment);
 }
-function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives()}
+function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives();guestProgress()}
 function buildQueue(){const sec=new Set(['goal','lifestyle','health','pelvic_floor','safety']);S.motives.forEach(m=>{if(m!=='optimization')sec.add(m)});if(S.motives.includes('optimization'))['confidence','wellbeing','desire'].forEach(x=>sec.add(x));S.queue=E.assessment.questions.filter(q=>sec.has(q.section))}
 function shouldShow(q){if(!q?.show_if)return true;return S.answers[q.show_if.id]===q.show_if.equals}
 function nextVisibleIndex(from){for(let i=from+1;i<S.queue.length;i++)if(shouldShow(S.queue[i]))return i;return S.queue.length}
 function prevVisibleIndex(from){for(let i=from-1;i>=0;i--)if(shouldShow(S.queue[i]))return i;return -1}
 function visibleQueue(){return S.queue.filter(shouldShow)}
 function clearHiddenAnswers(){S.queue.forEach(q=>{if(q.show_if&&!shouldShow(q))delete S.answers[q.id]})}
-function scaleOptions(){return [1,2,3,4,5].map(v=>({value:v,label:['Muy bajo / nunca','Bajo / rara vez','Intermedio','Bueno / frecuente','Muy bueno / casi siempre'][v-1]}))}
+function scaleOptions(){return [1,2,3,4,5].map(v=>({value:v,label:(guestEnglish()?['Very low / never','Low / rarely','Mid','Good / often','Very good / almost always']:['Muy bajo / nunca','Bajo / rara vez','Intermedio','Bueno / frecuente','Muy bueno / casi siempre'])[v-1]}))}
 function renderQ(){
  if(S.qi>=S.queue.length)return finishAssessment();
  let q=S.queue[S.qi];if(!shouldShow(q)){S.qi=nextVisibleIndex(S.qi-1);return renderQ()}
  const visible=visibleQueue(),pos=Math.max(0,visible.findIndex(x=>x.id===q.id));
- $('qCount').textContent=`${pos+1} / ${visible.length}`;$('prog').style.width=`${((pos+1)/visible.length)*100}%`;$('qSection').textContent=q.section.replace('_',' ');
- const box=$('qbox');box.innerHTML=`<h3 class="qtitle">${q.prompt_es}</h3>`;
+ $('qCount').textContent=`${pos+1} / ${visible.length}`;$('prog').style.width=`${((pos+1)/visible.length)*100}%`;$('qSection').textContent=guest?.sectionLabel?.(q.section)||q.section.replace('_',' ');
+ const box=$('qbox');box.innerHTML=`<h3 class="qtitle">${guestEnglish()?(q.prompt_en||q.prompt_es):q.prompt_es}</h3>`;
  if(q.type==='text'){
-   const input=document.createElement('textarea');input.className='assessmentText';input.rows=3;input.placeholder=q.placeholder_es||'Escribe tu respuesta';input.value=S.answers[q.id]||'';
-   input.oninput=()=>{S.answers[q.id]=input.value};box.appendChild(input);setTimeout(()=>input.focus(),50);
+   const input=document.createElement('textarea');input.className='assessmentText';input.rows=3;input.placeholder=guestEnglish()?(q.placeholder_en||'Write your answer'):(q.placeholder_es||'Escribe tu respuesta');input.value=S.answers[q.id]||'';
+   input.oninput=()=>{S.answers[q.id]=input.value;guestProgress()};box.appendChild(input);setTimeout(()=>input.focus(),50);
  }else{
-   let opts=[];if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions();else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:'Sí'}];else opts=(q.options||[]).map(o=>({value:o.value,label:o.es}));
+   let opts=[];if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions();else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:guestText('Sí','Yes')}];else opts=(q.options||[]).map(o=>({value:o.value,label:guestEnglish()?(o.en||o.es):o.es}));
    const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
    opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
  }
- $('qBack').disabled=prevVisibleIndex(S.qi)<0;
+ $('qBack').disabled=prevVisibleIndex(S.qi)<0;guestProgress();
 }
 function scoreMap(){
  const domains={};S.queue.forEach(q=>{if(!q.domain||S.answers[q.id]===undefined)return;let v=Number(S.answers[q.id]);if(!Number.isFinite(v))return;if(q.type==='scale5_reverse')v=6-v;const s=(v-1)*25,w=q.weight||1;(domains[q.domain]??={sum:0,w:0});domains[q.domain].sum+=s*w;domains[q.domain].w+=w});
@@ -111,7 +116,9 @@ function scoreMap(){
  const total=Math.round(core.reduce((a,k)=>a+scores[k],0)/(core.length||1));return{scores,primary,secondary,urgent,review,total};
 }
 async function finishAssessment(){
- S.map=scoreMap();msg('Guardando tu evaluación y creando el plan…','good');
+ S.map=scoreMap();
+ if(guest){renderMap();$('quizCard').hidden=true;guestProgress();guest.complete(S.map);return}
+ msg('Guardando tu evaluación y creando el plan…','good');
  const now=new Date().toISOString();
  const {data:a,error:ae}=await db.from('assessments').insert({user_id:S.user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:now}).select().single();
  if(ae){msg('No pudimos guardar la evaluación: '+ae.message,'danger');return}S.assessmentId=a.id;
@@ -176,13 +183,51 @@ function renderProgress(){
  $('savedState').textContent=S.planId?'Guardado en la nube ✓':'Aún sin plan';
 }
 async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
+// The free-entry page opts in. Existing signed-in pages keep their original flow.
+const guestAPI=guest?{
+ start(saved){
+  resetForAssessment();hideMsg();show('appScreen');
+  if(saved?.version===1){
+   S.motives=(saved.motives||[]).filter(k=>motiveDefs.some(([id])=>id===k));
+   const ids=new Set(E.assessment.questions.map(q=>q.id));
+   S.answers=Object.fromEntries(Object.entries(saved.answers||{}).filter(([k])=>ids.has(k)));
+   if(S.motives.length)buildQueue();clearHiddenAnswers();
+   S.qi=Math.max(0,Math.min(Number(saved.qi)||0,S.queue.length));
+   if(saved.stage==='result'&&S.queue.length&&visibleQueue().every(q=>S.answers[q.id]!==undefined&&S.answers[q.id]!==null&&(q.type!=='text'||String(S.answers[q.id]).trim()))){renderMotives();finishAssessment();return}
+   if(saved.stage==='questions'&&S.queue.length){$('ageCard').hidden=true;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()}
+   else if(saved.stage==='motives'){$('ageCard').hidden=true;$('motiveCard').hidden=false}
+  }
+  renderMotives();guestProgress();
+ },
+ refresh(){renderMotives();if(!$('quizCard').hidden)renderQ()},
+ async authenticate(mode,email,password){
+  return mode==='signup'?db.auth.signUp({email,password,options:{emailRedirectTo:location.href.split('#')[0]}}):db.auth.signInWithPassword({email,password});
+ },
+ async save(receipt={}){
+  if(!S.map||S.map.urgent.length)throw new Error(guestText('Revisa primero tu orientación de seguridad.','Review your safety guidance first.'));
+  const {data,error}=await db.auth.getUser();if(error||!data?.user)throw new Error(guestText('Confirma tu correo e inicia sesión para guardar la evaluación.','Confirm your email and sign in to save your assessment.'));
+  const user=data.user;const r=receipt.userId===user.id?{...receipt}:{userId:user.id};
+  const {error:profileError}=await db.from('profiles').upsert({id:user.id,alias:(user.email||'usuario').split('@')[0],locale:guestEnglish()?'en':'es'},{onConflict:'id'});
+  if(profileError)throw profileError;
+  if(!r.assessmentId){
+   const {data:a,error:e}=await db.from('assessments').insert({user_id:user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:new Date().toISOString()}).select().single();
+   if(e)throw e;r.assessmentId=a.id;guest.receipt(r);
+  }
+  if(!r.mapId){
+   const {data:m,error:e}=await db.from('performance_maps').insert({user_id:user.id,assessment_id:r.assessmentId,spm_score:S.map.total,primary_domain:S.map.primary,secondary_domain:S.map.secondary,domain_scores:S.map.scores,safety_level:S.map.review.length?'review':'none',safety_flags:S.map.review,explanation:guestText('Prioridad educativa: ','Educational priority: ')+label(S.map.primary)}).select().single();
+   if(e)throw e;r.mapId=m.id;guest.receipt(r);
+  }
+  // Payment integration must confirm entitlement before creating an active plan.
+  return r;
+ }
+}:null;
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive]');if(button&&motiveGrid.contains(button))selectMotive(button.dataset.motive)});
- document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false}else msg('SPM está diseñado para mayores de 18 años.','warn')});
- $('motiveNext').onclick=()=>{if(!S.motives.length){msg('Selecciona al menos un motivo.','warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
+ document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false;guestProgress()}else msg('SPM está diseñado para mayores de 18 años.','warn')});
+ $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Selecciona al menos un motivo.','Choose at least one reason.'),'warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
- $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?'Escribe una respuesta para continuar.':'Selecciona una respuesta.','warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
- document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
+ $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
+ document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;if($('newAssessment'))$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
 });
 })();

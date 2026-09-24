@@ -158,3 +158,21 @@ Los seis bloques informativos, con equivalente en inglés, son:
 - Prevención y optimización — Hábitos protectores y mantenimiento.
 
 La introducción explica que SPM organiza el programa según el perfil, con rutas y herramientas para estas áreas. El pie indica “28 días de ejercicios, educación y seguimiento, con prioridades adaptadas a ti.” El perfil mixto se representa mediante esas prioridades adaptadas, sin presentarlo como otra condición. Se utiliza “bajo deseo sexual”, lenguaje coherente con el contenido existente; no se añade un diagnóstico de trastorno de deseo sexual hipoactivo ni una nueva ruta clínica. Las tarjetas son informativas, no controles de selección. Se conservan imágenes, reseñas y su ubicación, video, precio y comportamiento de pago.
+
+## Cierre comercial e Insights aprobados — 2026-09-24
+
+La usuaria aprobó expresamente el cierre comercial completo y los cuatro Insights: “el cierre comercial me encanta ... Lo apruebo. Los cuatro insights me gustan”. El cierre publicado en b452f879a25dcba5a423d9dd181544672ebded26 y los recursos aprobados quedan cerrados. El trabajo siguiente se limita a la entrada gratuita y a la conexión con ese cierre.
+
+## Entrada gratuita, orientación inicial y registro al activar — 2026-09-24
+
+La usuaria solicita que el visitante que llega desde un anuncio empiece la evaluación gratuita sin correo, contraseña ni creación de cuenta. Tras evaluar, desea una orientación breve personalizada, seguida del cierre comercial aprobado, y que la cuenta se solicite al decidir activar el programa. La nueva página `free-assessment.html` reutiliza el cuestionario, sus reglas condicionales, el cálculo y las señales de seguridad de `app-live.js`; el modo gratuito se activa exclusivamente cuando la página define `SPM_GUEST_ENTRY`.
+
+- Portada con la imagen aprobada del hombre seguro, el logo SPM, un CTA de evaluación gratuita y acceso separado para usuarios existentes.
+- Respuestas y posición temporalmente en `sessionStorage` de esta pestaña, con una acción explícita para borrarlas. No se crea un usuario anónimo ni se escriben respuestas en la base de datos durante el recorrido gratuito. El capturador auxiliar de salud no escribe el perfil persistente compartido “anon” en este modo.
+- Orientación inicial: prioridad educativa y frase sobre lo que se trabajaría. No se genera ni se muestra el calendario detallado, el plan completo ni los ejercicios diarios antes de activarlo. Las alertas marcadas se muestran completas; una señal urgente excluye la compra.
+- El botón “Descubrir mi programa de 28 días” abre el cierre aprobado, con su video integrado. El clic en cualquiera de sus botones de activación abre la cuenta en el modo gratuito, sin alterar el HTML o la presentación aprobada del cierre.
+- Registro/inicio de sesión con el cliente Supabase existente. La evaluación se asocia únicamente al usuario autenticado y verificado por `getUser`. Si el correo requiere confirmación, los datos permanecen temporalmente en la pestaña hasta que la persona confirme e inicie sesión. Una referencia de transferencia evita duplicar evaluación/mapa en los reintentos. No se modifica RLS, no se usa clave de servicio y no se crea un plan activo por el mero hecho de registrarse.
+- La pasarela sigue pendiente. La pantalla posterior al guardado indica claramente que es una versión de revisión con pagos desactivados, sin cobros ni activación de un programa pagado. La integración de pago deberá confirmar el derecho de acceso antes de crear el plan activo.
+- La usuaria propone persuadir con la posible pérdida de la evaluación. Se conserva un mensaje de continuidad verdadero y se explica el guardado temporal; no se añaden contadores, plazos artificiales ni borrado como presión comercial.
+
+Validación: pruebas de ES/EN, reanudación tras recarga, preguntas condicionales, seguridad urgente y revisión, cero llamadas de registro/guardado durante la evaluación gratuita, registro diferido, espera por confirmación de correo y conservación de respuestas, idempotencia de la transferencia y ausencia de planes activos sin pago. El guardado autenticado se prueba con un cliente simulado: no se crean cuentas reales, no se envían correos ni se hacen cobros como parte de estas pruebas. También pasa la regresión del cierre, sus dos CTA, video integrado, cuatro Insights ES/EN y hashes del videoclip aprobado.
