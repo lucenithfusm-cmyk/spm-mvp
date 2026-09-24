@@ -43,10 +43,22 @@ Activate it for thirty-nine dollars and start Day One today.
 - Spanish delivery revision: HeyGen Narrator Mateo — Excited (male), `assets/audio/commercial-cinematic-v3-es.mp3`, approximately 41.1 seconds. The user rejected the slow Noxus delivery; the approved spoken words remain identical. Generated at 1.22x with paragraph spacing removed, then mastered with pitch-preserving `atempo=1.08`. Source duration: 44.356 seconds; Spanish montage cues, adjusted from word timestamps: route at 31.093 seconds and ready/CTA at 35.241 seconds. The user approved this Spanish voice and pace on 2026-09-24: “Esta voz me gusta 👍”. Preserve this exact recording and approved script; reuse it without regenerating unless the user requests a change.
 - English: HeyGen Orson — Firm & Measured (male), `assets/audio/commercial-cinematic-v2-en.mp3`, 44.487 seconds.
 - The audio file follows `SPM_LANGUAGE.get()`. The cinematic uses fixed recordings; it does not select a device voice or fall back to another language.
-- The montage uses 26 real program images, 2 video moments and 3 animated practice/progress moments. It does not replay the four initial-assessment Insights.
-- The Doctor SPM commercial excerpt is `assets/videos/dr-spm-commercial-framed-v2.mp4`. Only baked-in white margins were removed; the full content area is retained with a dark teal surround.
+- The revised montage retains all 26 real program images and 2 video moments. It includes animated Performance Map bars, the restored arousal gauge, the Start–Stop countdown, a 28-day calendar/progress scene and a pathway assembly scene. It does not replay the four initial-assessment Insights.
+- The Doctor SPM commercial excerpt is `assets/videos/dr-spm-commercial-v3.mp4`. Only the previously added teal padding was removed from the v2 excerpt; the full content area is retained. Both videos now use their own extracted frame as a poster and backdrop, with the foreground fully contained.
 - Pause, resume, buffering and replay retain audio/visual timing. The final CTA appears with the recorded “your program is ready” cue and shows US$39.
 - Review in `commercial-pilot.html`: choose ES/EN, then Cinematografía final.
+
+## Visual revision — 2026-09-24
+
+The user approved the Spanish audio but requested balanced scene timing, no overlapping images, the return of the animated arousal gauge, animated bars, a stronger opening and a new impactful closing image. These visual changes are available for review; they are not marked as user-approved.
+
+- The narration is the sole playback clock (`audio.currentTime`). Exactly one opaque scene is shown at a time; inactive scenes are hidden, including their video layers.
+- The branded opening lasts 1.1 seconds. Each program photo lasts about 0.82 seconds in Spanish / 0.92 seconds in English; short demonstrations last 1.25–1.6 seconds. Progress and pathway scenes follow the recorded purpose cue, and the US$39 CTA follows the recorded ready cue.
+- The user liked `assets/commercial-cinema/spm-new-beginning-v1.webp` and requested it inside the montage, with “SPM · Programa de 28 días” on the dark teal area. This new illustrative visual was generated with the built-in image tool, not HeyGen. It depicts a fully clothed adult man taking a purposeful step toward warm daylight. Full head, hands and shoes remain visible.
+- At the user's request, the final image is `assets/commercial-cinema/spm-confident-moment-v3.webp`: an adult man smiling and making a small triumphant gesture in bed, shirtless and covered by the duvet, with his adult partner clearly visible lying beside him. The partner's head rests on a pillow, facing away; face and gender are not identifiable. This is an illustrative image, not a patient testimonial. The proposed overlay is “Disfruta el momento. Confía en ti.” / “Enjoy the moment. Trust yourself.” with SPM 28. No text is baked into either image; typography and language are rendered in HTML. The US$39 activation button remains directly below.
+- Creative direction: premium cinematic 16:10 photographic composition; confident but natural adult male on the right, whole body inside safe margins; uncluttered dark teal left half; restrained mint and warm golden lighting; no medical equipment, diagnoses, claims of outcomes, fake interfaces or before/after comparisons.
+- No HeyGen generations or changes to the approved audio were made for this visual revision. The Spanish audio blob remains `398c1aa2b93345347279646be49e81a97debd0c9`.
+- The user explicitly approved the final bedroom image v3 (“dejemos esa imagen y continuemos”). Preserve that selected image and the approved narration; the complete revised montage remains available for visual review.
 
 ## Scope
 

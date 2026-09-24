@@ -28,90 +28,21 @@ function css(){if($('#spmJourneyCSS'))return;const s=document.createElement('sty
 @keyframes spmDotOn{from{filter:brightness(.8)}to{filter:brightness(1.35);box-shadow:0 0 10px #3fc1a077}}
 @keyframes spmBarGlow{from{filter:brightness(.82)}to{filter:brightness(1.35)}}
 @media(max-width:620px){.spmPathwayGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.spmPathwayGrid span{min-height:34px;font-size:9px}}
-.spmFilmPause{position:absolute;left:50%;top:-4px;transform:translateX(-50%);border:1px solid #3d746d;border-radius:99px;background:#0b302f;color:#dffbf4;padding:9px 13px;font-weight:900;font-size:12px;cursor:pointer}.spmFilmPause[aria-pressed=true]{background:#8fe3d0;color:#062027}.spmBurstVideoPoster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}.spmBurstReel.paused .spmBurst,.spmBurstReel.paused .spmBurst *{animation-play-state:paused!important}.spmBurst:not(.is-live) .spmBurstCoach span,.spmBurst:not(.is-live) .spmEpSteps span,.spmBurst:not(.is-live) .spmDayDots i,.spmBurst:not(.is-live) .spmBurstChart i,.spmBurst:not(.is-live) .spmBurstBreath i,.spmBurst:not(.is-live) .spmPathwayGrid span,.spmBurst:not(.is-live) .spmDialNeedle{animation-play-state:paused}.spmBurst.is-live .spmBurstCoach span,.spmBurst.is-live .spmEpSteps span,.spmBurst.is-live .spmDayDots i,.spmBurst.is-live .spmBurstChart i,.spmBurst.is-live .spmBurstBreath i,.spmBurst.is-live .spmPathwayGrid span,.spmBurst.is-live .spmDialNeedle{animation-play-state:running}@media(max-width:620px){.spmFilmVisual{height:clamp(250px,40vh,350px);margin-top:38px}.spmFilmAudio,.spmFilmSkip,.spmFilmPause{top:-18px}}@media(prefers-reduced-motion:reduce){.spmBurst{animation:none!important;display:none;opacity:0!important;transform:none!important}.spmBurst.is-live{display:block!important;opacity:1!important}.spmBurst video{display:none!important}}`;document.head.appendChild(s)}
+.spmFilmPause{position:absolute;left:50%;top:-4px;transform:translateX(-50%);border:1px solid #3d746d;border-radius:99px;background:#0b302f;color:#dffbf4;padding:9px 13px;font-weight:900;font-size:12px;cursor:pointer}.spmFilmPause[aria-pressed=true]{background:#8fe3d0;color:#062027}.spmBurstVideoPoster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}.spmBurstReel.paused .spmBurst,.spmBurstReel.paused .spmBurst *{animation-play-state:paused!important}.spmBurst:not(.is-live) .spmBurstCoach span,.spmBurst:not(.is-live) .spmEpSteps span,.spmBurst:not(.is-live) .spmDayDots i,.spmBurst:not(.is-live) .spmBurstChart i,.spmBurst:not(.is-live) .spmBurstBreath i,.spmBurst:not(.is-live) .spmPathwayGrid span,.spmBurst:not(.is-live) .spmDialNeedle{animation-play-state:paused}.spmBurst.is-live .spmBurstCoach span,.spmBurst.is-live .spmEpSteps span,.spmBurst.is-live .spmDayDots i,.spmBurst.is-live .spmBurstChart i,.spmBurst.is-live .spmBurstBreath i,.spmBurst.is-live .spmPathwayGrid span,.spmBurst.is-live .spmDialNeedle{animation-play-state:running}@media(max-width:620px){.spmFilmVisual{height:clamp(250px,40vh,350px);margin-top:38px}.spmFilmAudio,.spmFilmSkip,.spmFilmPause{top:-18px}}@media(prefers-reduced-motion:reduce){.spmBurst{animation:none!important;display:none;opacity:0!important;transform:none!important}.spmBurst.is-live{display:block!important;opacity:1!important}.spmBurst video{display:none!important}}`;s.textContent+="\n/* Cinematic v4: one opaque scene, sized independently from the program UI. */\n.spmJourneyCinema{padding:20px 18px;overflow:auto}\n.spmJourneyCinema .spmJCinematic{width:min(960px,100%);margin:auto;isolation:isolate}\n.spmJourneyCinema .spmFilmControls{display:flex;align-items:center;justify-content:space-between;gap:8px}\n.spmJourneyCinema .spmFilmControls button{position:static;transform:none;min-height:40px;padding:9px 15px;font-size:12px}\n.spmJourneyCinema .spmFilmAudioState{position:static;display:block;margin:7px 0 0;font-size:10px;letter-spacing:.04em;min-height:15px}\n.spmJourneyCinema .spmFilmVisual{width:100%;height:auto;aspect-ratio:16/10;max-height:61svh;margin:12px 0 18px;border-radius:24px;background:#061a21;isolation:isolate}\n.spmJourneyCinema .spmFilmVisual:before,.spmJourneyCinema .spmFilmVisual:after{display:none}\n.spmJourneyCinema .spmFilmStage{position:absolute;inset:0;width:100%;height:100%;padding:0;animation:none}\n.spmJourneyCinema .spmBurstReel{position:absolute;inset:0;background:#061a21}\n.spmJourneyCinema .spmBurst{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;box-sizing:border-box;animation:none!important;opacity:1!important;transform:none!important;background:#061a21;isolation:isolate;visibility:hidden;display:none!important}\n.spmJourneyCinema .spmBurst.is-live{display:block!important;visibility:visible}\n.spmJourneyCinema .spmBurst[hidden]{display:none!important;visibility:hidden}\n.spmJourneyCinema .spmBurst *{box-sizing:border-box}\n.spmJourneyCinema .spmBurstBackdrop{inset:-28px;filter:blur(24px) brightness(.23);transform:scale(1.14);z-index:0;opacity:1}\n.spmJourneyCinema .spmBurstFront,.spmJourneyCinema .spmBurstVideoPoster{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;object-fit:contain!important;object-position:center;transform:none;z-index:1}\n.spmJourneyCinema .spmBurstVideoPoster{z-index:1}\n.spmJourneyCinema video.spmBurstFront{z-index:2;background:transparent}\n.spmJourneyCinema .spmBurstLabel{left:12px;bottom:11px;max-width:calc(100% - 24px);font-size:10px;line-height:1.2;padding:7px 10px;background:#031c23ee;color:#eafaf5;box-shadow:0 2px 14px #0004}\n.spmJourneyCinema .spmJStatus{font-size:clamp(24px,4.6vw,35px);min-height:0;line-height:1.08}\n.spmJourneyCinema .spmJSub{font-size:clamp(13px,2vw,15px)!important;min-height:40px;margin-top:10px!important;max-width:700px}\n.spmJourneyCinema .spmJMeter{margin-top:14px;height:4px;width:84%}\n.spmJourneyCinema .spmJMeter i{transition:none}\n.spmJourneyCinema .spmJFinalBtn{margin-top:14px}\n.spmCinemaBrand,.spmCinemaPanel,.spmCinemaFinal{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 25% 10%,#16515a 0,transparent 55%),linear-gradient(145deg,#0a2c35,#03151c 75%);color:#effcf8;display:flex;flex-direction:column;justify-content:center;padding:clamp(18px,4vw,42px)}\n.spmCinemaBrand{text-align:left}\n.spmCinemaBrand:before{content:'';position:absolute;inset:0;background:linear-gradient(transparent 95%,#78d5c808 95%),linear-gradient(90deg,transparent 95%,#78d5c808 95%);background-size:36px 36px}\n.spmCinemaBrand>*{position:relative;z-index:1}\n.spmCinemaBrand small,.spmCinemaPanel>small,.spmCinemaFinal>small{font-size:clamp(9px,1.5vw,12px);font-weight:800;letter-spacing:.16em;color:#8fe3d0}\n.spmCinemaBrand strong{font-size:clamp(54px,11vw,108px);line-height:1;font-weight:950;letter-spacing:-.075em;margin:14px 0 10px}\n.spmCinemaBrand strong span{font-size:.24em;letter-spacing:-.04em;border:1px solid #8fe3d080;border-radius:12px;padding:8px;vertical-align:middle;margin-left:18px;color:#8fe3d0}\n.spmJourneyCinema .spmCinemaBrand p{font-size:clamp(13px,2.5vw,20px);color:#d2e7e5;line-height:1.3}\n.spmBrandOrbit{position:absolute;z-index:0;right:-10%;top:-15%;width:70%;aspect-ratio:1;border:1px solid #8fe3d033;border-radius:50%;box-shadow:0 0 0 24px #8fe3d008,0 0 0 72px #8fe3d008}\n.spmBrandOrbit:after{content:'';position:absolute;inset:14%;border:2px solid transparent;border-top-color:#8fe3d0;border-right-color:#8fe3d050;border-radius:50%;animation:spmOrbitTurn 5s linear infinite}\n.spmBrandTrace{display:flex;gap:5px;margin-top:20px;width:65%;height:4px}\n.spmBrandTrace i{flex:1;border-radius:4px;background:#8fe3d0;transform-origin:left;animation:spmTraceBuild 1.1s ease both}\n.spmBrandTrace i:nth-child(2){animation-delay:.15s}.spmBrandTrace i:nth-child(3){animation-delay:.3s}\n.spmCinemaPanel{text-align:left}\n.spmCinemaPanel h3{margin:7px 0 12px;font-size:clamp(20px,4.2vw,36px);line-height:1.05;letter-spacing:-.04em;color:#f0fbf8}\n.spmJourneyCinema .spmCinemaPanel p{font-size:clamp(11px,1.6vw,15px);color:#a9c7c8;line-height:1.3}\n.spmLiveBars{display:grid;gap:clamp(8px,1.6vw,15px);margin:7px 0 15px}\n.spmLiveBar{display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:center}\n.spmLiveBar span{font-size:clamp(10px,1.4vw,14px);color:#cee3e0;font-weight:750}\n.spmLiveBar>i{display:block;height:9px;border-radius:99px;background:#21434a;overflow:hidden}\n.spmLiveBar em{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3daaba,#8fe3d0);transform:scaleX(.5);transform-origin:left;will-change:transform}\n.spmCinemaDial{text-align:center;align-items:center}\n.spmCinemaDial h3{margin-bottom:0}\n.spmCinemaDial svg{display:block;width:min(330px,78%);height:auto;max-height:64%;overflow:visible}\n.spmDialReadout{font-size:clamp(19px,3.8vw,32px);color:#a1f5dc;font-weight:950;line-height:1;margin-top:-10px}\n.spmDialReadout small{font-size:.45em;color:#85a8ad;font-weight:750}\n.spmCinemaTimer{align-items:center;text-align:center}\n.spmCinemaTimer .spmEpTimer{font-size:clamp(44px,9vw,76px);line-height:1;letter-spacing:-.045em;margin:4px 0 12px;font-variant-numeric:tabular-nums}\n.spmCinemaTimer .spmEpSteps{display:flex;width:min(440px,100%);margin:0;gap:8px}\n.spmCinemaTimer .spmEpSteps span{flex:1;animation:none;background:#ffffff0b;color:#8fafb6;font-size:clamp(10px,1.5vw,13px)}\n.spmCinemaTimer .spmEpSteps span.on{background:#8fe3d0;color:#04242b;border-color:#8fe3d0}\n.spmFilmTap{margin-top:13px;border:1px solid #8fe3d055;border-radius:99px;padding:7px 15px;color:#c3ebe1;font-size:11px;font-weight:800;animation:spmButtonTap 1.6s ease-in-out infinite}\n.spmCinemaProgress .spmDayDots{gap:5px;width:100%;margin-top:10px}\n.spmCinemaProgress .spmDayDots i{height:clamp(12px,2.5vw,27px);background:#193e46;animation:none;border-radius:5px}\n.spmCinemaProgress .spmDayDots i.on{background:#8fe3d0;box-shadow:0 0 12px #8fe3d044}\n.spmCinemaProgress .spmBurstChart{height:clamp(36px,8vw,85px);margin-top:13px;gap:10px}\n.spmCinemaProgress .spmBurstChart i{height:100%;transform-origin:bottom;transform:scaleY(.3);animation:none}\n.spmCinemaRoute .spmRouteSteps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0 15px}\n.spmRouteStep{border:1px solid #39626a;border-radius:14px;padding:16px 8px 12px;background:#0a2930;color:#86a4ab;font-size:clamp(10px,1.5vw,14px);font-weight:800;text-align:center}\n.spmRouteStep b{display:block;font-size:clamp(20px,4vw,32px);margin-bottom:8px;color:#456f77}\n.spmRouteStep.on{border-color:#8fe3d0;background:#123c42;color:#e6fbf4;box-shadow:0 0 20px #8fe3d01a}\n.spmRouteStep.on b{color:#8fe3d0}\n.spmCinemaFinal{text-align:center;align-items:center;background:radial-gradient(ellipse at center,#165458 0,#06252e 55%,#03151c)}\n.spmFinalSeal{font-size:clamp(42px,9vw,80px);letter-spacing:-.07em;font-weight:950;margin:12px 0 7px;color:#effff9}\n.spmFinalSeal span{color:#8fe3d0}\n.spmCinemaFinal .spmFinalLine{height:3px;width:55%;background:linear-gradient(90deg,transparent,#8fe3d0,transparent);margin:13px 0}\n.spmFinalTags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}\n.spmFinalTags span{border:1px solid #77c5b54a;border-radius:99px;padding:8px 12px;color:#bfe5dc;font-size:clamp(10px,1.5vw,13px);font-weight:750}\n.spmBurstReel.paused *{animation-play-state:paused!important}\n@keyframes spmOrbitTurn{to{transform:rotate(360deg)}}\n@keyframes spmTraceBuild{from{transform:scaleX(0)}to{transform:scaleX(1)}}\n@media(max-width:620px){\n .spmJourneyCinema{padding:14px 12px}\n .spmJourneyCinema .spmFilmVisual{border-radius:20px;max-height:none;margin-bottom:18px}\n .spmJourneyCinema .spmFilmControls button{font-size:11px;padding:9px 12px}\n .spmJourneyCinema .spmJSub{max-width:340px;min-height:54px}\n .spmJourneyCinema .spmBurstLabel{font-size:9px;bottom:8px;left:8px;padding:6px 8px;max-width:calc(100% - 16px)}\n .spmCinemaPanel{padding:18px 20px}\n .spmCinemaPanel h3{margin-bottom:9px}\n .spmCinemaDial{padding:12px 16px}\n .spmCinemaDial svg{max-height:63%;width:70%}\n .spmLiveBars{gap:8px;margin:4px 0 10px}\n .spmLiveBar{grid-template-columns:67px 1fr;gap:12px}\n .spmLiveBar>i{height:7px}\n .spmCinemaRoute .spmRouteSteps{margin:12px 0}\n .spmRouteStep{padding:12px 3px 10px;border-radius:10px}\n .spmRouteStep b{margin-bottom:5px}\n .spmFilmTap{margin-top:10px;font-size:10px;padding:5px 12px}\n}\n@media(prefers-reduced-motion:reduce){\n .spmJourneyCinema .spmBurst *{animation:none!important}\n .spmJourneyCinema .spmBurst video{display:none!important}\n}\n\n/* Original closing artwork; the full figure stays inside the frame. */\n.spmJourneyCinema .spmCinemaFinal{padding:clamp(20px,4.8vw,56px);align-items:flex-start;text-align:left;background:#061a21}\n.spmJourneyCinema .spmFinalImage{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;border:0;border-radius:0}\n.spmFinalCopy{position:relative;z-index:2;width:53%;color:#effbf8}\n.spmFinalCopy>small{font-size:clamp(8px,1.4vw,12px);font-weight:850;letter-spacing:.16em;color:#8fe3d0}\n.spmFinalCopy .spmFinalSeal{font-size:clamp(39px,7vw,72px);margin:12px 0 14px;line-height:1;white-space:nowrap}\n.spmJourneyCinema .spmFinalPromise{font-size:clamp(18px,3.4vw,30px);font-weight:800;line-height:1.13;letter-spacing:-.025em;color:#f0fff9}\n.spmFinalCopy .spmFinalTags{justify-content:flex-start}\n.spmFinalCopy .spmFinalTags span{font-size:clamp(8px,1.4vw,13px);padding:7px 10px;background:#04232b88;line-height:1.25}\n.spmFinalCopy .spmFinalLine{width:80%;margin:16px 0}\n.spmBurst.is-live .spmFinalCopy{animation:spmFinalReveal .6s ease-out both}\n.spmCinemaFinal:after{content:'';position:absolute;left:-30%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,#9ce3d50b,transparent);transform:skewX(-20deg);animation:spmClosingLight 5s linear infinite;pointer-events:none;z-index:1}\n.spmBurstReel.paused .spmCinemaFinal:after{animation-play-state:paused}\n@keyframes spmFinalReveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}\n@keyframes spmClosingLight{to{left:110%}}\n@media(max-width:620px){.spmFinalCopy .spmFinalSeal{margin:9px 0 10px}.spmFinalCopy .spmFinalLine{margin:12px 0}.spmFinalCopy .spmFinalTags span{padding:6px 8px;max-width:100%}.spmFinalCopy{width:53%}}\n@media(prefers-reduced-motion:reduce){.spmCinemaFinal:after{animation:none}.spmBurst.is-live .spmFinalCopy{animation:none}}\n\n.spmCinemaFinal:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#03212ab3 0,#03212a75 32%,transparent 56%);z-index:1;pointer-events:none}\n.spmJourneyCinema .spmCinemaFinal:not(.spmCinemaMid) .spmFinalCopy{width:46%}\n@media(max-width:620px){.spmJourneyCinema .spmCinemaFinal:not(.spmCinemaMid) .spmFinalSeal{font-size:34px}.spmJourneyCinema .spmCinemaFinal:not(.spmCinemaMid) .spmFinalCopy>small{font-size:7px;letter-spacing:.09em}.spmJourneyCinema .spmCinemaFinal:not(.spmCinemaMid) .spmFinalPromise{font-size:18px}}\n";document.head.appendChild(s)}
 function stopReel(){if(reelTicker){clearInterval(reelTicker);reelTicker=null}reelPausedAt=0;layer?.querySelectorAll('.spmBurst video').forEach(v=>v.pause())}
-function startReel(root){
-  stopReel();
-  const reel=root.querySelector('.spmBurstReel')||root;
-  const shots=[...reel.querySelectorAll('.spmBurst')];
-  let offset=0,reducedIndex=-1;
-  const timeline=shots.map(shot=>{const slot=Number(shot.dataset.slot)||1000;const beat={shot,start:offset,end:offset+slot};offset+=slot;return beat});
-  const lowMotion=reduced();
-  reel.dataset.reelStarted=String(performance.now());
-  if(lowMotion)shots.forEach(shot=>shot.style.display='none');
-  shots.forEach(shot=>{
-    const media=[...shot.querySelectorAll('video')];
-    shot.addEventListener('animationstart',event=>{
-      if(event.target!==shot||event.animationName!=='spmBurstFlow')return;
-      shot.dataset.burstStarted=String(performance.now());
-      shot.classList.add('is-live');
-      media.forEach(v=>v.play().catch(()=>{}));
-    });
-    shot.addEventListener('animationend',event=>{
-      if(event.target!==shot||event.animationName!=='spmBurstFlow')return;
-      delete shot.dataset.burstStarted;
-      shot.classList.remove('is-live');
-      media.forEach(v=>v.pause());
-    });
-  });
-  function showReduced(now){
-    const elapsed=now-Number(reel.dataset.reelStarted);
-    let index=timeline.findIndex(beat=>elapsed<beat.end);
-    if(index<0)index=timeline.length-1;
-    if(index===reducedIndex)return;
-    if(reducedIndex>=0){const previous=timeline[reducedIndex].shot;previous.classList.remove('is-live');previous.style.display='none';delete previous.dataset.burstStarted}
-    const active=timeline[index].shot;
-    active.style.display='block';
-    active.classList.add('is-live');
-    active.dataset.burstStarted=String(now);
-    reducedIndex=index;
-  }
-  if(lowMotion&&timeline.length)showReduced(performance.now());
-  reelTicker=setInterval(()=>{
-    if(reelPausedAt)return;
-    const now=performance.now();
-    if(lowMotion&&timeline.length)showReduced(now);
-    reel.querySelectorAll('.spmEpTimer').forEach(el=>{
-      const started=Number(el.closest('.spmBurst')?.dataset.burstStarted);if(!started)return;
-      const elapsed=now-started;
-      if(el.dataset.countdown){const seconds=Math.max(0,Number(el.dataset.countdown)-Math.floor(elapsed/350));el.textContent='00:'+String(seconds).padStart(2,'0')}
-      else if(el.dataset.progress){const total=Number(el.dataset.total)||10;const current=Math.min(total,Number(el.dataset.progress)+Math.floor(elapsed/220));el.textContent=String(current).padStart(2,'0')+' / '+String(total).padStart(2,'0')}
-    });
-  },90);
-}
-function pauseReel(root){
-  const reel=root?.querySelector('.spmBurstReel')||root;
-  if(!reel||reelPausedAt)return;
-  reelPausedAt=performance.now();
-  reel.classList.add('paused');
-  reel.querySelectorAll('video').forEach(v=>v.pause());
-}
-function resumeReel(root){
-  const reel=root?.querySelector('.spmBurstReel')||root;
-  if(!reel||!reelPausedAt)return;
-  const now=performance.now(),held=now-reelPausedAt;
-  reel.dataset.reelStarted=String(Number(reel.dataset.reelStarted)+held);
-  reel.querySelectorAll('.spmBurst[data-burst-started]').forEach(shot=>shot.dataset.burstStarted=String(Number(shot.dataset.burstStarted)+held));
-  reelPausedAt=0;
-  reel.classList.remove('paused');
-  if(!reduced())reel.querySelectorAll('.spmBurst.is-live video').forEach(v=>v.play().catch(()=>{}));
-}
 function close(){if(journeyTimer){clearTimeout(journeyTimer);journeyTimer=null}journeyRemaining=0;stopReel();if(filmAudio){filmAudio.pause();filmAudio.removeAttribute('src');filmAudio.load();filmAudio=null}layer?.remove();layer=null}
 function shell(inner,cls=''){css();close();layer=document.createElement('div');layer.className='spmJourney '+cls;layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');layer.innerHTML=inner;document.body.appendChild(layer);return layer}
 function intro(preview=false){if(!preview){state.intro=1;save()}const x=shell(`<section class="spmJourneyCard"><span class="spmJBadge">${t('Antes de comenzar','Before you begin')}</span><h2>${t('Tu evaluación empieza con una idea simple: entender antes de actuar.','Your assessment starts with a simple idea: understand before you act.')}</h2><p>${t('SPM analizará diferentes componentes de tu respuesta sexual para identificar qué áreas conviene trabajar primero. Al finalizar recibirás una lectura preliminar de tu perfil.','SPM will analyze different parts of your sexual response to identify which areas may be most useful to work on first. At the end, you will receive a preliminary reading of your profile.')}</p><div class="spmJIntroList"><div class="spmJIntroItem"><b>01</b><span>${t('Responde según tu experiencia actual, no según lo que crees que debería ocurrir.','Answer based on your current experience, not on what you think should happen.')}</span></div><div class="spmJIntroItem"><b>02</b><span>${t('SPM conectará patrones entre respuesta física, control, confianza, hábitos y conexión.','SPM will connect patterns across physical response, control, confidence, habits and connection.')}</span></div><div class="spmJIntroItem"><b>03</b><span>${t('No buscamos una respuesta perfecta. Buscamos un punto de partida útil para ti.','We are not looking for perfect answers. We are looking for a useful starting point for you.')}</span></div></div><div class="spmJActions"><button class="spmJBtn pri">${t('Comenzar mi evaluación','Start my assessment')}</button></div><p class="spmJFoot">${t('SPM es una herramienta educativa de bienestar sexual. No diagnostica ni sustituye una valoración médica.','SPM is an educational sexual-wellness tool. It does not diagnose or replace medical evaluation.')}</p></section>`);x.querySelector('.spmJBtn').onclick=close}
 function signal(preview=false){if(!preview){state.signal=1;save()}const names=lang()==='en'?['Physical response','Control','Confidence','Habits','Connection']:['Respuesta física','Control','Confianza','Hábitos','Conexión'];const x=shell(`<section class="spmJourneyCard"><span class="spmJBadge">SPM · ${t('Perfil en construcción','Profile in progress')}</span><h2>${t('SPM está conectando tus señales.','SPM is connecting your signals.')}</h2><div class="spmJSignalGrid">${names.map(n=>`<div class="spmJSignal"><i></i>${n}</div>`).join('')}</div><p class="spmJMini">${t('Tu perfil ya empieza a tomar forma.','Your profile is beginning to take shape.')}</p><p>${t('Seguimos conectando señales para identificar qué conviene trabajar primero.','We are continuing to connect signals to identify what may be most useful to work on first.')}</p><div class="spmJActions"><button class="spmJBtn pri">${t('Continuar','Continue')}</button></div></section>`);const cards=[...x.querySelectorAll('.spmJSignal')];if(reduced())cards.forEach(c=>c.classList.add('on'));else cards.forEach((c,i)=>setTimeout(()=>c.classList.add('on'),350+i*330));x.querySelector('.spmJBtn').onclick=close}
 function route(preview=false){if(!preview){state.route=1;save()}const steps=lang()==='en'?['Identify','Train','Measure','Adjust','Consolidate']:['Identificar','Entrenar','Medir','Ajustar','Consolidar'];const x=shell(`<section class="spmJourneyCard"><span class="spmJBadge">SPM · ${t('Tu ruta','Your pathway')}</span><h2>${t('Conocer lo que ocurre es solo el comienzo.','Understanding what is happening is only the beginning.')}</h2><p>${t('Tu programa de 28 días utiliza lo que estamos identificando hoy para decidir qué trabajar, cómo progresar y qué cambios seguir.','Your 28-day program uses what we are identifying today to decide what to work on, how to progress and which changes to track.')}</p><div class="spmJRoute">${steps.map(s=>`<div class="spmJStage">${s}</div>`).join('')}</div><p class="spmJMini">${t('SPM no solo identifica qué ocurre. Está definiendo qué trabajar y en qué orden.','SPM does not just identify what is happening. It is defining what to work on and in what order.')}</p><div class="spmJActions"><button class="spmJBtn pri">${t('Continuar mi evaluación','Continue my assessment')}</button></div></section>`);const cards=[...x.querySelectorAll('.spmJStage')];if(reduced())cards.forEach(c=>c.classList.add('on'));else cards.forEach((c,i)=>setTimeout(()=>c.classList.add('on'),300+i*360));x.querySelector('.spmJBtn').onclick=close}
+
 function cinematic(preview=false){
   if(!preview){state.final=1;save();track('cinematic_start',{language:lang()})}
   const es=lang()!=='en';
-  // Approved commercial script v2; ES text is preserved verbatim.
   const narration=es?"Tu evaluación fue el primer paso. Ahora, empieza a trabajar en el cambio que buscas.\n\nMás confianza. Mayor control. Una forma de vivir tu intimidad con más seguridad. Eso que quieres mejorar merece un plan.\n\nEstamos preparando el tuyo.\n\nSPM transforma tus respuestas en una ruta personalizada de veintiocho días. Al entrar, sabrás qué trabajar primero, cómo practicarlo y cómo seguir tu evolución.\n\nTendrás ejercicios guiados, videos y herramientas interactivas a tu alcance. Cada registro ayudará a ajustar tu siguiente paso.\n\nUn espacio para ti. Una guía para cada día. Un propósito en cada práctica.\n\nTu programa SPM está listo.\n\nActívalo por treinta y nueve dólares y comienza hoy tu Día Uno.":"Your assessment was the first step. Now, start working toward the change you want.\n\nMore confidence. Greater control. A more confident approach to intimacy. What you want to improve deserves a plan.\n\nWe're preparing yours.\n\nSPM turns your answers into a personalized twenty-eight-day pathway. When you begin, you'll know what to work on first, how to practice, and how to track your progress.\n\nYou'll have guided exercises, videos, and interactive tools at your fingertips. Every check-in will help adjust your next step.\n\nA space for you. A guide for each day. A purpose behind every practice.\n\nYour SPM program is ready.\n\nActivate it for thirty-nine dollars and start Day One today.";
   const voiceSource='assets/audio/'+(es?'commercial-cinematic-v3-es.mp3':'commercial-cinematic-v2-en.mp3');
-  const timing=es?{route:31093,ready:35241}:{route:33720,ready:39300};
+  const timing=es?{opening:1100,route:31093,ready:35241,total:41072}:{opening:1100,route:33720,ready:39300,total:44460};
   const label=(a,b)=>es?a:b;
-  const attrs=(i,start,slot)=>' style="--i:'+i+';--delay:'+start+'ms;--dur:'+(slot+320)+'ms" data-slot="'+slot+'"';
-  const photo=(src,name,i,start,slot)=>'<div class="spmBurst spmBurstMedia"'+attrs(i,start,slot)+'><div class="spmBurstBackdrop" style="background-image:url('+src+')"></div><img class="spmBurstFront" src="'+src+'" alt=""><span class="spmBurstLabel">'+name+'</span></div>';
-  const video=(src,poster,name,i,start,slot)=>'<div class="spmBurst spmBurstMedia"'+attrs(i,start,slot)+'><div class="spmBurstBackdrop" style="background-image:url(assets/commercial-cinema/'+poster+')"></div><img class="spmBurstVideoPoster" src="assets/commercial-cinema/'+poster+'" alt=""><video class="spmBurstFront" src="'+src+'" muted loop playsinline preload="none" style="object-position:center;object-fit:contain"></video><span class="spmBurstLabel">'+name+'</span></div>';
   const screens=[
     ['activity-full.jpg','Actividad física guiada','Guided physical activity'],
     ['anatomy-contraction.jpg','Anatomía y contracción','Anatomy and contraction'],
@@ -151,121 +82,124 @@ function cinematic(preview=false){
     ['spm-coach-avatar.jpg','Entrenador SPM','SPM Coach']
   ];
   const videos=[
-    ['assets/videos/dr-spm-commercial-framed-v2.mp4','spm-coach-avatar.jpg','Dr. SPM'],
-    ['assets/videos/recovery-patient-master.mp4','day-11-recovery.jpg',label('Historias que enseñan','Stories that teach')]
+    ['assets/videos/dr-spm-commercial-v3.mp4','assets/videos/dr-spm-commercial-v3.jpg','Dr. SPM'],
+    ['assets/videos/recovery-patient-master.mp4','assets/videos/recovery-patient-commercial.jpg',label('Historias que enseñan','Stories that teach')]
   ];
-  const moments=[
-    {ms:2000,render:(i,start)=>'<div class="spmBurst spmBurstUI"'+attrs(i,start,2000)+'><b>'+label('Performance Map™','Performance Map™')+'</b><div class="spmShotBars"><i style="--w:84%"></i><i style="--w:62%"></i><i style="--w:48%"></i><i style="--w:76%"></i></div><p>'+label('Una lectura conectada de tu progreso','A connected view of your progress')+'</p></div>'},
-    {ms:4200,render:(i,start)=>'<div class="spmBurst"'+attrs(i,start,4200)+'><div class="spmEp"><small>'+label('CONTROL EYACULATORIO','EJACULATORY CONTROL')+'</small><h3>Start–Stop</h3><div class="spmEpTimer" data-countdown="30">00:30</div><div class="spmEpSteps"><span>'+label('Aumenta','Build')+'</span><span>STOP</span><span>'+label('Recupera','Recover')+'</span></div><div class="spmBurstCoach"><small>DAILY COACH</small><h3>'+label('Practica a tu ritmo','Practice at your pace')+'</h3><span>'+label('Tocar para pausar','Tap to pause')+'</span></div></div></div>'},
-    {ms:2200,render:(i,start)=>'<div class="spmBurst spmBurstProgress"'+attrs(i,start,2200)+'><b>'+label('28 días de progreso visible','28 days of visible progress')+'</b><div class="spmDayDots">'+Array.from({length:28},(_,n)=>'<i style="--i:'+n+'"></i>').join('')+'</div><div class="spmBurstChart"><i style="--h:35%"></i><i style="--h:52%"></i><i style="--h:68%"></i><i style="--h:84%"></i></div></div>'}
-  ];
-  // Alternate real program screens, demonstrations and animated practice moments.
+  const photo=(item)=>'<div class="spmBurstBackdrop" style="background-image:url(assets/commercial-cinema/'+item[0]+')"></div><img class="spmBurstFront" src="assets/commercial-cinema/'+item[0]+'" alt=""><span class="spmBurstLabel">'+label(item[1],item[2])+'</span>';
+  const video=(item)=>'<div class="spmBurstBackdrop" style="background-image:url('+item[1]+')"></div><img class="spmBurstVideoPoster" src="'+item[1]+'" alt=""><video class="spmBurstFront" src="'+item[0]+'" poster="'+item[1]+'" muted loop playsinline preload="auto"></video><span class="spmBurstLabel">'+item[2]+'</span>';
+  const opening='<div class="spmCinemaBrand"><div class="spmBrandOrbit"></div><small>SEXUAL PERFORMANCE MANAGEMENT</small><strong>SPM<span>28</span></strong><p>'+label('Tu próximo paso empieza contigo.','Your next step begins with you.')+'</p><div class="spmBrandTrace"><i></i><i></i><i></i></div></div>';
+  const bars='<div class="spmCinemaPanel"><small>'+label('TU PERFIL, CONECTADO','YOUR PROFILE, CONNECTED')+'</small><h3>Performance Map™</h3><div class="spmLiveBars">'+[label('Control','Control'),label('Confianza','Confidence'),label('Respuesta','Response'),label('Hábitos','Habits')].map(name=>'<div class="spmLiveBar"><span>'+name+'</span><i><em></em></i></div>').join('')+'</div><p>'+label('El punto de partida de tu ruta.','The starting point of your pathway.')+'</p></div>';
+  const timer='<div class="spmCinemaPanel spmCinemaTimer"><small>'+label('PRÁCTICA GUIADA','GUIDED PRACTICE')+'</small><h3>Start–Stop</h3><div class="spmEpTimer">00:30</div><div class="spmEpSteps"><span>'+label('Aumenta','Build')+'</span><span>STOP</span><span>'+label('Recupera','Recover')+'</span></div><div class="spmFilmTap">Ⅱ '+label('Pausa · respira · retoma','Pause · breathe · resume')+'</div></div>';
+  const dial='<div class="spmCinemaPanel spmCinemaDial"><small>'+label('EXCITACIÓN Y CONTROL','AROUSAL AND CONTROL')+'</small><h3>'+label('Reconoce tu ritmo','Recognize your rhythm')+'</h3><svg viewBox="0 0 240 145" role="img" aria-label="'+label('Velocímetro de excitación','Arousal gauge')+'"><defs><linearGradient id="spmDialGradient"><stop offset="0" stop-color="#54cfb0"/><stop offset=".6" stop-color="#e4c171"/><stop offset="1" stop-color="#e27b86"/></linearGradient></defs><path d="M24 120 A96 96 0 0 1 216 120" fill="none" stroke="url(#spmDialGradient)" stroke-width="14" stroke-linecap="round"/><path d="M42 120 A78 78 0 0 1 198 120" fill="none" stroke="#386068" stroke-width="1" stroke-dasharray="1 10"/><line class="spmDialNeedleSvg" x1="120" y1="120" x2="120" y2="42" stroke="#f1fff9" stroke-width="4" stroke-linecap="round" transform="rotate(-40 120 120)"/><circle cx="120" cy="120" r="9" fill="#90e6d1"/><circle cx="120" cy="120" r="3" fill="#093039"/></svg><div class="spmDialReadout"><span>4</span><small> / 10</small></div></div>';
+  const progress='<div class="spmCinemaPanel spmCinemaProgress"><small>'+label('UN PROPÓSITO CADA DÍA','A PURPOSE EVERY DAY')+'</small><h3>'+label('28 días para avanzar','28 days to move forward')+'</h3><div class="spmDayDots">'+Array.from({length:28},()=>'<i></i>').join('')+'</div><div class="spmBurstChart"><i></i><i></i><i></i><i></i></div></div>';
+  const pathway='<div class="spmCinemaPanel spmCinemaRoute"><small>'+label('TU PROGRAMA TOMA FORMA','YOUR PROGRAM TAKES SHAPE')+'</small><h3>'+label('Una ruta para ti','A pathway for you')+'</h3><div class="spmRouteSteps">'+[label('Entrena','Train'),label('Registra','Track'),label('Ajusta','Adjust'),label('Avanza','Advance')].map((name,n)=>'<div class="spmRouteStep"><b>0'+(n+1)+'</b>'+name+'</div>').join('')+'</div><p>'+label('Cada práctica conecta con tu siguiente paso.','Every practice connects to your next step.')+'</p></div>';
+  const brandMoment='<div class="spmCinemaFinal spmCinemaMid"><img class="spmFinalImage" src="assets/commercial-cinema/spm-new-beginning-v1.webp" alt=""><div class="spmFinalCopy"><small>'+label('TU SIGUIENTE PASO','YOUR NEXT STEP')+'</small><div class="spmFinalSeal">SPM</div><p class="spmFinalPromise">'+label('Programa<br>de 28 días','Your 28-day<br>program')+'</p><div class="spmFinalLine"></div><div class="spmFinalTags"><span>'+label('Una ruta para ti','A pathway for you')+'</span></div></div></div>';
+  const final='<div class="spmCinemaFinal"><img class="spmFinalImage" src="assets/commercial-cinema/spm-confident-moment-v3.webp" alt=""><div class="spmFinalCopy"><small>'+label('TU PROGRAMA ESTÁ LISTO','YOUR PROGRAM IS READY')+'</small><div class="spmFinalSeal">SPM <span>28</span></div><p class="spmFinalPromise">'+label('Disfruta el momento.<br>Confía en ti.','Enjoy the moment.<br>Trust yourself.')+'</p><div class="spmFinalLine"></div><div class="spmFinalTags"><span>'+label('Tu Día Uno empieza hoy','Your Day One starts today')+'</span></div></div></div>';
+  const moments=[{ms:1250,html:bars},{ms:1500,html:timer},{ms:1600,html:dial}];
+  // All 26 existing program images remain; restore the animated arousal gauge.
   const beatPlan=[
-    ['s',11],['s',15],['u',0],['s',4],['s',0],['s',19],['v',0],['s',23],
-    ['s',20],['s',29],['s',34],['u',1],['s',14],['s',21],['s',25],['s',7],
-    ['v',1],['s',9],['s',30],['u',2],['s',12],['s',31],['s',22],['s',3],
+    ['s',15],['s',11],['u',0],['s',4],['s',0],['s',19],['v',0],['s',23],
+    ['u',2],['s',20],['b',0],['s',29],['s',34],['u',1],['s',14],['s',21],['s',25],
+    ['s',7],['v',1],['s',9],['s',30],['s',12],['s',31],['s',22],['s',3],
     ['s',2],['s',16],['s',13],['s',6],['s',1],['s',18],['s',26]
   ];
-  const beatKey=beat=>beat[0]+':'+beat[1];
-  if(new Set(beatPlan.map(beatKey)).size!==beatPlan.length)throw new Error('Commercial reel contains a repeated visual beat');
   const photoCount=beatPlan.filter(beat=>beat[0]==='s').length;
-  const fixedMs=beatPlan.reduce((sum,beat)=>sum+(beat[0]==='v'?2200:beat[0]==='u'?moments[beat[1]].ms:0),0);
-  const photoMs=(timing.route-3600-320-fixedMs)/photoCount;
-  let reelTimeline=0;
-  const reelShots=beatPlan.map((beat,i)=>{
-    const type=beat[0],n=beat[1],start=reelTimeline;
-    let markup,slot;
-    if(type==='s'){slot=photoMs;const item=screens[n];markup=photo('assets/commercial-cinema/'+item[0],label(item[1],item[2]),i,start,slot)}
-    else if(type==='v'){slot=2200;const item=videos[n];markup=video(item[0],item[1],item[2],i,start,slot)}
-    else {const item=moments[n];slot=item.ms;markup=item.render(i,start)}
-    reelTimeline+=slot;
-    return markup;
+  const fixedMs=beatPlan.reduce((sum,beat)=>sum+(beat[0]==='v'?1500:beat[0]==='b'?1400:beat[0]==='u'?moments[beat[1]].ms:0),0);
+  const photoMs=(timing.route-timing.opening-fixedMs)/photoCount;
+  const showcase={title:label('Tu programa, por dentro.','Inside your program.'),sub:label('Ejercicios guiados, videos y herramientas para poner tu plan en práctica.','Guided exercises, videos and tools to put your plan into practice.')};
+  const scenes=[];
+  function addScene(key,html,start,end,copy=showcase){scenes.push({key,html,start,end,...copy})}
+  addScene('opening',opening,0,timing.opening,{title:label('Ya diste el primer paso.','You have taken the first step.'),sub:label('Ahora, empieza a trabajar en el cambio que buscas.','Now, start working toward the change you want.')});
+  let cursor=timing.opening;
+  beatPlan.forEach(([type,n])=>{
+    const slot=type==='s'?photoMs:type==='v'?1500:type==='b'?1400:moments[n].ms;
+    addScene(type+':'+n,type==='s'?photo(screens[n]):type==='v'?video(videos[n]):type==='b'?brandMoment:moments[n].html,cursor,cursor+slot);
+    cursor+=slot;
   });
-  const reelMs=reelTimeline+320;
-  const reel='<div class="spmBurstReel">'+reelShots.join('')+'</div>';
-  const scenes=es?[
-    {title:'Ya diste el primer paso.',sub:'Ahora sabes dónde estás. El siguiente paso es actuar.',visual:'<div class="spmFilmMark">SPM</div>',ms:1800},
-    {title:'Estamos preparando el tuyo.',sub:'Eso que quieres mejorar merece un plan.',visual:'<div class="spmFilmSignals"><span class="spmFilmChip">Control</span><span class="spmFilmChip">Confianza</span><span class="spmFilmChip">Respuesta</span><span class="spmFilmChip">Conexión</span></div>',ms:1800},
-    {title:'Esto es parte de lo que vas a encontrar en SPM.',sub:'Rutas para disfunción eréctil, eyaculación precoz, ansiedad de rendimiento y regulación sociosexual, con ejercicios, videos y seguimiento.',visual:reel,ms:reelMs},
-    {title:'Cada día tiene un propósito.',sub:'Un espacio para ti. Una guía para cada día. Un propósito en cada práctica.',visual:'<div class="spmFilmRoute"><span class="spmFilmChip">Entrenar</span><span class="spmFilmChip">Medir</span><span class="spmFilmChip">Ajustar</span><span class="spmFilmChip">Avanzar</span></div>',ms:timing.ready-timing.route},
-    {title:'Tu programa SPM está listo.',sub:'Actívalo por US$39 y comienza hoy tu Día Uno.',visual:'<div class="spmFilmTools"><span class="spmFilmChip">Performance Map™</span><span class="spmFilmChip">28 días</span><span class="spmFilmChip">Daily Coach</span></div>'}
-  ]:[
-    {title:'You have taken the first step.',sub:'Now you know where you stand. The next step is action.',visual:'<div class="spmFilmMark">SPM</div>',ms:1800},
-    {title:'We’re preparing yours.',sub:'What you want to improve deserves a plan.',visual:'<div class="spmFilmSignals"><span class="spmFilmChip">Control</span><span class="spmFilmChip">Confidence</span><span class="spmFilmChip">Response</span><span class="spmFilmChip">Connection</span></div>',ms:1800},
-    {title:'A look at what you’ll find inside SPM.',sub:'Pathways for erectile dysfunction, premature ejaculation, performance anxiety and sociosexual regulation, with exercises, videos and progress tracking.',visual:reel,ms:reelMs},
-    {title:'Every day has a purpose.',sub:'A space for you. A guide for each day. A purpose behind every practice.',visual:'<div class="spmFilmRoute"><span class="spmFilmChip">Train</span><span class="spmFilmChip">Track</span><span class="spmFilmChip">Adjust</span><span class="spmFilmChip">Advance</span></div>',ms:timing.ready-timing.route},
-    {title:'Your SPM program is ready.',sub:'Activate it for US$39 and start Day One today.',visual:'<div class="spmFilmTools"><span class="spmFilmChip">Performance Map™</span><span class="spmFilmChip">28 days</span><span class="spmFilmChip">Daily Coach</span></div>'}
-  ];
-  const x=shell(`<section class="spmJCinematic"><audio class="spmFilmNarration" src="${voiceSource}" preload="auto" aria-label="${label('Narración comercial en español','Commercial narration in English')}"></audio><button class="spmFilmAudio" type="button">🔊 ${label('Escuchar','Listen')}</button><span class="spmFilmAudioState" aria-live="polite"></span><button class="spmFilmPause" type="button" aria-pressed="false" hidden>Ⅱ ${label('Pausar','Pause')}</button><button class="spmFilmSkip" type="button">${label('Omitir','Skip')}</button><div class="spmFilmVisual"><div class="spmFilmStage"></div></div><div class="spmJStatus" aria-live="polite"></div><p class="spmJSub"></p><div class="spmJMeter"><i></i></div><button class="spmJBtn pri spmJFinalBtn" hidden>${label('Activar mi programa de 28 días','Activate my 28-day program')}</button></section>`,'spmJourneyCinema');
-  const visual=x.querySelector('.spmFilmVisual'),status=x.querySelector('.spmJStatus'),sub=x.querySelector('.spmJSub'),meter=x.querySelector('.spmJMeter i'),btn=x.querySelector('.spmJFinalBtn'),skip=x.querySelector('.spmFilmSkip'),pause=x.querySelector('.spmFilmPause'),audio=x.querySelector('.spmFilmAudio'),audioState=x.querySelector('.spmFilmAudioState');
-  const voice=x.querySelector('.spmFilmNarration');
+  const midpoint=timing.route+(timing.ready-timing.route)/2;
+  const purpose={title:label('Cada día tiene un propósito.','Every day has a purpose.'),sub:label('Un espacio para ti. Una guía para cada día.','A space for you. A guide for each day.')};
+  addScene('progress',progress,timing.route,midpoint,purpose);
+  addScene('pathway',pathway,midpoint,timing.ready,purpose);
+  addScene('ready',final,timing.ready,Infinity,{title:label('Tu programa SPM está listo.','Your SPM program is ready.'),sub:label('Actívalo por US$39 y comienza hoy tu Día Uno.','Activate it for US$39 and start Day One today.')});
+  const shots=scenes.map(s=>'<div class="spmBurst" data-scene="'+s.key+'" data-start="'+s.start+'" data-end="'+s.end+'" hidden aria-hidden="true">'+s.html+'</div>').join('');
+  const x=shell('<section class="spmJCinematic"><audio class="spmFilmNarration" src="'+voiceSource+'" preload="auto" aria-label="'+label('Narración comercial en español','Commercial narration in English')+'"></audio><div class="spmFilmControls"><button class="spmFilmAudio" type="button">🔊 '+label('Escuchar','Listen')+'</button><button class="spmFilmPause" type="button" aria-pressed="false" hidden>Ⅱ '+label('Pausar','Pause')+'</button><button class="spmFilmSkip" type="button">'+label('Omitir','Skip')+'</button></div><span class="spmFilmAudioState" aria-live="polite"></span><div class="spmFilmVisual"><div class="spmFilmStage"><div class="spmBurstReel paused">'+shots+'</div></div></div><div class="spmJStatus" aria-live="polite"></div><p class="spmJSub"></p><div class="spmJMeter"><i></i></div><button class="spmJBtn pri spmJFinalBtn" hidden>'+label('Activar mi programa de 28 días','Activate my 28-day program')+'</button></section>','spmJourneyCinema');
+  const reel=x.querySelector('.spmBurstReel'),status=x.querySelector('.spmJStatus'),sub=x.querySelector('.spmJSub'),meter=x.querySelector('.spmJMeter i'),btn=x.querySelector('.spmJFinalBtn'),skip=x.querySelector('.spmFilmSkip'),pause=x.querySelector('.spmFilmPause'),audio=x.querySelector('.spmFilmAudio'),audioState=x.querySelector('.spmFilmAudioState'),voice=x.querySelector('.spmFilmNarration');
+  const frames=[...reel.querySelectorAll('.spmBurst')],lowMotion=reduced();
   filmAudio=voice;
-  let i=0,done=false,started=false,paused=false,waiting=false,request=0;
+  let active=-1,started=false,paused=false,waiting=false,completed=false,request=0;
   const current=()=>layer===x&&filmAudio===voice;
-  function clearStep(){if(journeyTimer){clearTimeout(journeyTimer);journeyTimer=null}}
-  function scheduleStep(wait){journeyRemaining=wait;journeyDeadline=performance.now()+wait;journeyTimer=setTimeout(()=>{journeyTimer=null;journeyRemaining=0;if(current())step()},wait)}
-  function holdTimeline(){
-    if(journeyTimer){journeyRemaining=Math.max(0,journeyDeadline-performance.now());clearStep()}
-    if(visual.classList.contains('reel'))pauseReel(visual);
+  function animateFrame(frame,elapsed,duration){
+    if(lowMotion)return;
+    const phase=elapsed/1000;
+    frame.querySelectorAll('.spmLiveBar em').forEach((bar,n)=>bar.style.transform='scaleX('+(0.52+0.25*Math.sin(phase*4+n*1.4))+')');
+    const needle=frame.querySelector('.spmDialNeedleSvg');
+    if(needle){const value=4.5+2.8*Math.sin(phase*3.7-1.1);needle.setAttribute('transform','rotate('+(-90+value*18)+' 120 120)');frame.querySelector('.spmDialReadout span').textContent=String(Math.round(value))}
+    const clock=frame.querySelector('.spmEpTimer');
+    if(clock){clock.textContent='00:'+String(Math.max(0,30-Math.floor(elapsed/400))).padStart(2,'0');frame.querySelectorAll('.spmEpSteps span').forEach((step,n)=>step.classList.toggle('on',n===Math.floor(elapsed/480)%3))}
+    frame.querySelectorAll('.spmDayDots i').forEach((dot,n)=>dot.classList.toggle('on',n<Math.min(28,4+Math.floor(elapsed/65))));
+    frame.querySelectorAll('.spmBurstChart i').forEach((bar,n)=>bar.style.transform='scaleY('+(0.48+n*.1+.12*Math.sin(phase*4+n))+')');
+    frame.querySelectorAll('.spmRouteStep').forEach((step,n)=>step.classList.toggle('on',n<=Math.min(3,Math.floor(elapsed/(duration/4)))));
   }
-  function resumeTimeline(){
-    if(reelPausedAt)resumeReel(visual);
-    if(started&&!done&&!journeyTimer)scheduleStep(Math.max(0,journeyRemaining));
-  }
-  function finish(){if(done)return;done=true;meter.style.width='100%';btn.hidden=false;skip.hidden=true;if(!preview)track('cinematic_complete',{language:es?'es':'en'})}
-  function step(){
+  function pauseMedia(){frames[active]?.querySelectorAll('video').forEach(v=>v.pause());reel.classList.add('paused')}
+  function playMedia(){if(lowMotion)return;frames[active]?.querySelectorAll('video').forEach(v=>{v.muted=true;v.play().catch(()=>{})});reel.classList.remove('paused')}
+  function render(){
     if(!current())return;
-    stopReel();
-    const scene=scenes[i];
-    visual.classList.toggle('reel',scene.visual===reel);
-    visual.innerHTML='<div class="spmFilmStage">'+scene.visual+'</div>';
-    if(scene.visual===reel)startReel(visual);
-    status.textContent=scene.title;sub.textContent=scene.sub;
-    meter.style.width=Math.round(((i+1)/scenes.length)*100)+'%';
-    if(i===scenes.length-1){finish();return}
-    i++;scheduleStep(scene.ms||1800);
-  }
-  function showOpening(){
-    visual.classList.remove('reel');
-    visual.innerHTML='<div class="spmFilmStage">'+scenes[0].visual+'</div>';
-    status.textContent=scenes[0].title;sub.textContent=scenes[0].sub;
-    meter.style.width='0%';btn.hidden=true;skip.hidden=false;pause.hidden=true;
+    // The approved recording is the only clock. Buffering, pause and replay
+    // cannot drift the visual sequence or leave two scenes visible.
+    const time=Math.max(0,voice.currentTime*1000||0);
+    let next=scenes.findIndex(s=>time>=s.start&&time<s.end);
+    if(next<0)next=0;
+    if(active!==next){
+      if(active>=0){frames[active].hidden=true;frames[active].setAttribute('aria-hidden','true');frames[active].classList.remove('is-live');frames[active].querySelectorAll('video').forEach(v=>v.pause())}
+      active=next;
+      const frame=frames[active],scene=scenes[active];
+      frame.hidden=false;frame.setAttribute('aria-hidden','false');frame.classList.add('is-live');
+      status.textContent=scene.title;sub.textContent=scene.sub;
+      frame.querySelectorAll('video').forEach(v=>{v.currentTime=0;v.muted=true});
+      if(started&&!paused&&!waiting&&!voice.paused)playMedia();
+    }
+    const scene=scenes[active];
+    animateFrame(frames[active],time-scene.start,scene.end-scene.start);
+    const ready=time>=timing.ready;
+    btn.hidden=!ready;skip.hidden=ready;
+    meter.style.width=Math.min(100,time/timing.ready*100)+'%';
+    if(ready&&!completed){completed=true;if(!preview)track('cinematic_complete',{language:es?'es':'en'})}
   }
   function unavailable(){
     if(!current())return;
-    holdTimeline();waiting=true;
+    waiting=true;pauseMedia();
     audio.classList.remove('on');audio.textContent='🔊 '+label('Escuchar','Listen');
     audioState.textContent=label('Toca Escuchar para reproducir la narración en español.','Tap Listen to play the English narration.');
   }
   function playNarration(restart=false){
     if(!current())return;
     const token=++request;
-    if(restart){voice.pause();voice.currentTime=0;clearStep();stopReel();i=0;done=false;started=false;paused=false;waiting=false;showOpening()}
+    if(restart){voice.pause();pauseMedia();voice.currentTime=0;started=false;paused=false;waiting=false;completed=false;render()}
     audioState.textContent=label('Preparando audio…','Preparing audio…');
     voice.play().catch(()=>{if(current()&&token===request)unavailable()});
   }
   voice.onplaying=()=>{
     if(!current())return;
+    started=true;paused=false;waiting=false;
     audio.classList.add('on');audio.textContent='↻ '+label('Repetir','Replay');
     audioState.textContent=label('Voz masculina · Español','Male voice · English');
     pause.hidden=false;pause.setAttribute('aria-pressed','false');pause.textContent='Ⅱ '+label('Pausar','Pause');
-    if(!started){started=true;step()}else if(waiting||paused)resumeTimeline();
-    paused=false;waiting=false;
+    render();playMedia();
+    if(!reelTicker)reelTicker=setInterval(()=>{if(!paused&&!waiting)render()},40);
   };
-  voice.onwaiting=()=>{if(current()&&started&&!paused){holdTimeline();waiting=true}};
+  voice.ontimeupdate=()=>{if(started&&!paused&&!waiting)render()};
+  voice.onwaiting=()=>{if(current()&&started&&!paused){waiting=true;pauseMedia()}};
   voice.onerror=unavailable;
-  voice.onended=()=>{if(!current())return;audio.classList.remove('on');audio.textContent='↻ '+label('Repetir','Replay');pause.hidden=true};
+  voice.onended=()=>{if(!current())return;render();pauseMedia();if(reelTicker){clearInterval(reelTicker);reelTicker=null}audio.classList.remove('on');audio.textContent='↻ '+label('Repetir','Replay');pause.hidden=true};
   audio.onclick=()=>playNarration(true);
   pause.onclick=()=>{
     if(paused){playNarration();return}
-    holdTimeline();paused=true;voice.pause();
+    paused=true;voice.pause();pauseMedia();
     pause.setAttribute('aria-pressed','true');pause.textContent='▶ '+label('Reanudar','Resume');
   };
-  skip.onclick=()=>{if(!preview)track('cinematic_skip',{scene:i+1,language:es?'es':'en'});close()};
+  skip.onclick=()=>{if(!preview)track('cinematic_skip',{scene:active+1,language:es?'es':'en'});close()};
   btn.onclick=()=>{if(!preview)track('cinematic_result_click',{language:es?'es':'en'});close();if(preview)window.SPM_COMMERCIAL_GATE_PREVIEW?.open()};
-  // A direct play call retains the user's tap on iPhone. A blocked autoplay waits
-  // for Listen without starting the montage or falling back to another language.
-  showOpening();playNarration();
+  render();playNarration();
 }
 function count(){const q=$('#qCount')?.textContent||'';const m=q.match(/(\d+)\s*\/\s*(\d+)/);return m?Number(m[1]):0}
 function busy(){return !!document.querySelector('.spmRefresh,.spmJourney')}
