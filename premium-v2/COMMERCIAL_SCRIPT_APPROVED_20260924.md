@@ -99,3 +99,21 @@ A raster watermark edit was rejected by the image service. The completed impleme
 The user rejected the generic five tiles in the question-18 “Perfil en construcción” transition and requested colored bars that rise, fall and glow. The presentation-only `commercial-profile-visual-v1.js` enhancement replaces those tiles with five animated signal channels, matching colored paths and a central SPM wordmark. It preserves the existing area labels and ES/EN text selection. The motion illustrates profile construction; it does not show measured scores, percentages, clinical results or fabricated progress.
 
 The existing Continue handler, assessment triggers/state, Insights and the complete approved cinematic remain owned by the unchanged journey module. Continue is immediately usable. A pause/resume control and reduced-motion preference support are provided. The enhancement runs in the authorized commercial pilot only; no main/GitHub Pages changes.
+
+## Approved offer and requested playback / copy adjustments — 2026-09-24
+
+The user approved the visual offer page (“quedó fantabulosa”) and requested three focused adjustments: keep the film inside the closing page, interleave concise persuasive messages, and show a static full-program purchase card immediately below the film. Both offer buttons now say “Comenzar mi programa SPM” / “Start my SPM program”. The new card explicitly states US$39, one-time payment, complete 28-day program.
+
+`commercial-offer-v2.js` mounts the unchanged approved cinematic into the offer's player host synchronously. It remains part of the same page on natural completion, pause and replay; the last frame remains visible. Inline layout styles adapt its composition to the containing column. The separate approved cinematic entry point and source, scenes, audio, order and timing are unchanged. The standalone film CTA is replaced in the embedded presentation by the purchase card directly below. Stopping, removing the offer, changing language or starting payment releases the audio and restores the poster. Both purchase buttons use the same existing checkout and urgent-safety gate. Checkout remains internal test mode with no real charges.
+
+Three short brand messages are interleaved between images: understanding your signals and control, confidence and communication, and taking the first step with the full program. These are program copy, not attributed testimonials.
+
+### Reseñas: borradores editoriales pendientes de validar
+
+La usuaria informó que varios participantes de sus pruebas piloto consideran bueno el programa. No aportó sus palabras concretas ni confirmó resultados individuales. Por tanto, estas propuestas no se publican como testimonios, no llevan nombres, estrellas ni atribuciones y solo pueden utilizarse después de que cada participante confirme que describen fielmente su experiencia y autorice su publicación.
+
+1. **Control — borrador:** “Los ejercicios me ayudaron a reconocer cuándo estaba acelerando y a practicar con más conciencia de mi ritmo.”
+2. **Confianza — borrador:** “Tener una guía clara me ayudó a sentir menos presión y a trabajar mi confianza paso a paso.”
+3. **Conexión — borrador:** “El programa me ayudó a hablar con mi pareja con más tranquilidad y a entender mejor lo que necesitaba trabajar.”
+
+These are not approved participant statements or efficacy evidence. Preserve this status until actual participant confirmation is supplied. No testimonials are inserted into the live offer by this change.

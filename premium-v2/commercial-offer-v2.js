@@ -1,6 +1,7 @@
 (()=>{
 'use strict';
 const STYLE_ID='spmOfferV2CSS';
+let activeFilm=null;
 function addCSS(){
   if(document.getElementById(STYLE_ID))return;
   const style=document.createElement('style');style.id=STYLE_ID;
@@ -36,6 +37,42 @@ function addCSS(){
 .spmOfferPlay{position:absolute;top:35%;left:9%;height:48px;width:48px;border-radius:50%;display:grid;place-items:center;background:#a0ecd9;color:#06232a;font-size:17px;padding-left:3px;box-shadow:0 4px 28px #03181a70;transition:transform .2s}
 .spmOfferFilm:hover .spmOfferPlay{transform:scale(1.08)}
 .spmOfferFilmCaption{display:grid;gap:5px;padding:15px 17px;background:#0b2b32}.spmOfferFilmCaption b{font-size:15px}.spmOfferFilmCaption small{color:#8fc3bd;font-size:12px}
+.spmOfferPlayer{overflow-anchor:none;min-width:0}
+.spmOfferExplore>section{min-width:0}
+.spmOfferMessage{max-width:720px;margin:25px auto;text-align:center}
+.spmGateVisual .spmOfferMessage h2{margin:0 0 9px;color:#e8faf3;font-size:clamp(23px,3.4vw,32px);line-height:1.15;letter-spacing:-.035em}
+.spmOfferMessage p{max-width:570px;margin:0 auto;color:#aac8c7;font-size:15px;line-height:1.5}
+.spmOfferMessageConnection{margin:0 auto 30px}.spmOfferMessageFinal{margin:25px auto 15px}
+.spmOfferPurchase{margin-top:16px;padding:23px;border:1px solid #71c6ad70;border-radius:21px;background:linear-gradient(125deg,#163d3d,#0a252c)}
+.spmOfferPurchasePrice{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:14px 0 10px}.spmOfferPurchasePrice strong{color:#f1fff8;font-size:43px;line-height:1;letter-spacing:-.05em}.spmOfferPurchasePrice span{font-size:12px;font-weight:750;color:#a5e0d0;padding:6px 9px;border:1px solid #7ab29e55;border-radius:99px}
+.spmOfferPurchase p{margin:0 0 19px;color:#c3d9d5;font-size:13px;line-height:1.5}
+.spmOfferFilmError{color:#b4d6d1;font-size:13px;line-height:1.4}
+/* Reuse the approved film in this page; only its surrounding layout changes. */
+.spmGateVisual .spmOfferInlineFilm{position:relative;inset:auto;z-index:auto;display:block;overflow:hidden;padding:12px;border:1px solid #487d735c;border-radius:21px;background:#071e26;container-type:inline-size}
+.spmGateVisual .spmOfferInlineFilm .spmJCinematic{width:100%;margin:0}
+.spmGateVisual .spmOfferInlineFilm .spmFilmControls{gap:4px}.spmGateVisual .spmOfferInlineFilm .spmFilmControls button{min-height:42px;padding:8px 10px;font-size:11px}
+.spmGateVisual .spmOfferInlineFilm .spmFilmVisual{max-height:none;margin:10px 0 14px;border-radius:14px}
+.spmGateVisual .spmOfferInlineFilm .spmJStatus{font-size:20px;min-height:44px;line-height:1.1}
+.spmGateVisual .spmOfferInlineFilm .spmJSub{font-size:12px!important;min-height:54px;max-width:100%;margin-top:8px!important;line-height:1.45!important}
+.spmGateVisual .spmOfferInlineFilm .spmJMeter{margin:12px auto 3px}
+.spmGateVisual .spmOfferInlineFilm .spmJFinalBtn{display:none!important}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaBrand,.spmGateVisual .spmOfferInlineFilm .spmCinemaPanel,.spmGateVisual .spmOfferInlineFilm .spmCinemaFinal{padding:clamp(14px,5cqw,28px)}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaBrand>small,.spmGateVisual .spmOfferInlineFilm .spmCinemaPanel>small{font-size:clamp(8px,2.6cqw,11px)}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaBrand strong{font-size:clamp(48px,17cqw,80px);margin:12px 0 9px}.spmGateVisual .spmOfferInlineFilm .spmCinemaBrand strong span{padding:6px;margin-left:10px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaBrand p{font-size:clamp(12px,3.8cqw,16px)}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaPanel h3{font-size:clamp(17px,6cqw,25px);margin:6px 0 9px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaPanel p{font-size:clamp(10px,3.2cqw,13px)}
+.spmGateVisual .spmOfferInlineFilm .spmLiveBars{gap:8px;margin:4px 0 9px}.spmGateVisual .spmOfferInlineFilm .spmLiveBar{grid-template-columns:67px 1fr;gap:10px}.spmGateVisual .spmOfferInlineFilm .spmLiveBar span{font-size:10px}.spmGateVisual .spmOfferInlineFilm .spmLiveBar>i{height:7px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaDial{padding:10px 14px}.spmGateVisual .spmOfferInlineFilm .spmCinemaDial svg{width:70%;max-height:62%}.spmGateVisual .spmOfferInlineFilm .spmDialReadout{font-size:21px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaTimer .spmEpTimer{font-size:clamp(38px,13cqw,62px)}.spmGateVisual .spmOfferInlineFilm .spmCinemaTimer .spmEpSteps span{font-size:10px;padding:7px 4px}
+.spmGateVisual .spmOfferInlineFilm .spmFilmTap{margin-top:9px;font-size:10px;padding:5px 10px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaProgress .spmDayDots i{height:clamp(10px,4cqw,20px)}.spmGateVisual .spmOfferInlineFilm .spmCinemaProgress .spmBurstChart{height:clamp(30px,11cqw,55px);margin-top:10px}
+.spmGateVisual .spmOfferInlineFilm .spmCinemaRoute .spmRouteSteps{margin:10px 0;gap:6px}.spmGateVisual .spmOfferInlineFilm .spmRouteStep{padding:10px 3px 8px;font-size:10px;border-radius:10px}.spmGateVisual .spmOfferInlineFilm .spmRouteStep b{font-size:23px;margin-bottom:5px}
+.spmGateVisual .spmOfferInlineFilm .spmFinalCopy>small,.spmGateVisual .spmOfferInlineFilm .spmCinemaFinal:not(.spmCinemaMid) .spmFinalCopy>small{font-size:clamp(7px,2.2cqw,10px);letter-spacing:.09em}
+.spmGateVisual .spmOfferInlineFilm .spmFinalCopy .spmFinalSeal,.spmGateVisual .spmOfferInlineFilm .spmCinemaFinal:not(.spmCinemaMid) .spmFinalSeal{font-size:clamp(30px,11cqw,50px);margin:8px 0 10px}
+.spmGateVisual .spmOfferInlineFilm .spmFinalPromise,.spmGateVisual .spmOfferInlineFilm .spmCinemaFinal:not(.spmCinemaMid) .spmFinalPromise{font-size:clamp(16px,5.2cqw,24px)}
+.spmGateVisual .spmOfferInlineFilm .spmFinalCopy .spmFinalLine{margin:10px 0}.spmGateVisual .spmOfferInlineFilm .spmFinalCopy .spmFinalTags span{font-size:clamp(7px,2.5cqw,11px);padding:5px 6px}
+.spmGateVisual .spmOfferInlineFilm .spmBurstLabel{font-size:9px;left:8px;bottom:8px;padding:6px 8px;max-width:calc(100% - 16px)}
 .spmOfferTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:#03171d;border:1px solid #2c5056;border-radius:14px;margin-bottom:10px}
 .spmOfferTabs button{border:0;border-radius:10px;background:transparent;color:#98b8bb;padding:11px 5px;min-height:42px;font-size:13px;font-weight:800;cursor:pointer;touch-action:manipulation}
 .spmOfferTabs button[aria-selected=true]{background:#90e1ce;color:#06262d;box-shadow:0 3px 12px #0002}
@@ -71,11 +108,43 @@ function addCSS(){
 .spmGateVisual .spmGateInner{padding:20px 15px 18px}.spmGateVisual .spmGateHero{margin-top:22px}.spmOfferHeading{margin-bottom:20px}.spmGateVisual .spmOfferHeading .lead{font-size:14px;line-height:1.45}.spmOfferMood{border-radius:20px}.spmOfferMood figcaption{font-size:clamp(18px,5.5vw,30px);left:5%;max-width:36%}.spmOfferFacts{margin:13px 0 29px;font-size:11px}.spmOfferFacts span{padding:0 15px}.spmOfferFacts b{font-size:17px}.spmOfferExplore{grid-template-columns:1fr;gap:29px;margin-bottom:29px}.spmOfferExplore h2{font-size:22px;margin:8px 0 15px}.spmOfferFilmCaption{padding:12px 15px;display:flex;justify-content:space-between;align-items:center;gap:8px}.spmOfferFilmCaption b{font-size:13px}.spmOfferFilmCaption small{font-size:10px;white-space:nowrap}.spmOfferToolImage{height:215px}.spmOfferConnection{margin-bottom:20px}.spmOfferConnection figcaption{font-size:clamp(18px,5.4vw,27px);max-width:30%}.spmGateVisual .spmCTAWrap{grid-template-columns:1fr 1.3fr;gap:8px;padding:10px 10px;bottom:max(8px,env(safe-area-inset-bottom));border-radius:17px}.spmOfferPrice{padding-left:2px}.spmOfferPrice strong{font-size:25px}.spmOfferPrice span{font-size:9px}.spmGateVisual .spmCTA{font-size:13px;padding:13px 7px;line-height:1.2}.spmGateVisual .spmCTA span{padding-left:2px}.spmGateVisual .spmGateNote{font-size:10px;margin:15px 6px 19px}
 }
 @media(max-width:680px){.spmOfferBenefits{gap:7px;margin-top:14px}.spmOfferBenefits>div{padding:15px 5px;flex-direction:column;gap:10px;text-align:center;border-radius:14px}.spmOfferBenefits svg{width:25px;height:25px}.spmOfferBenefits span{font-size:12px}.spmOfferPracticeRow{grid-template-columns:1fr;gap:22px;margin-bottom:29px}.spmOfferCalendar{padding:20px 17px;border-radius:20px}.spmOfferCalendar h2,.spmOfferHope h2{font-size:25px}.spmOfferWeekButtons button{font-size:10px}.spmOfferCalendarFoot{font-size:10px}.spmOfferPracticeRow .spmOfferConnection{margin:0}.spmOfferHope{margin-bottom:22px}}
+@media(max-width:680px){.spmOfferMessage{margin:23px auto}.spmOfferMessage p{font-size:14px}.spmOfferPurchase{padding:19px 17px}.spmOfferPurchase .spmCTA{font-size:14px}.spmOfferPurchasePrice strong{font-size:39px}}
 @media(prefers-reduced-motion:reduce){.spmOfferPanel,.spmOfferWeekBars.is-current i{animation:none}.spmOfferPlay,.spmOfferFilm>img,.spmOfferWeekBars i{transition:none}}
 `;
   document.head.appendChild(style);
 }
+function releaseFilm(close=false,focus=false){
+  const session=activeFilm;
+  if(!session)return;
+  activeFilm=null;
+  const current=document.querySelector('.spmJourney');
+  if(close&&(!current||current===session.layer))window.SPM_COMMERCIAL_PREVIEW?.close();
+  session.poster.hidden=false;session.host.hidden=true;
+  if(focus&&session.poster.isConnected)session.poster.focus({preventScroll:true});
+}
+function playInlineFilm(gate){
+  const journey=window.SPM_COMMERCIAL_PREVIEW,poster=gate.querySelector('.spmOfferFilm'),host=gate.querySelector('.spmOfferFilmMount'),error=gate.querySelector('.spmOfferFilmError');
+  if(!journey?.cinematic){error.hidden=false;error.textContent=gate.dataset.language==='en'?'The video is loading. Please try again in a moment.':'El video se está preparando. Vuelve a intentarlo en un momento.';return}
+  releaseFilm(true);
+  const scrollTop=gate.scrollTop;
+  // The approved module remains the sole owner of scenes, timing and audio.
+  // Mount its existing node synchronously so no full-screen frame is painted.
+  journey.cinematic();
+  const layer=document.querySelector('body > .spmJourneyCinema');
+  if(!layer)return;
+  layer.classList.add('spmOfferInlineFilm');layer.setAttribute('role','region');layer.removeAttribute('aria-modal');
+  layer.setAttribute('aria-label',gate.dataset.language==='en'?'SPM program video':'Video del programa SPM');
+  activeFilm={gate,layer,poster,host};
+  host.appendChild(layer);host.hidden=false;poster.hidden=true;error.hidden=true;gate.scrollTop=scrollTop;
+  const stop=layer.querySelector('.spmFilmSkip');
+  stop.textContent=gate.dataset.language==='en'?'Stop':'Detener';
+  stop.onclick=()=>releaseFilm(true,true);
+  // The purchase card directly underneath replaces the standalone-film CTA.
+  layer.querySelector('.spmJFinalBtn').onclick=()=>gate.querySelector('.spmOfferPurchase .startPay')?.click();
+  layer.querySelector('.spmFilmAudio').focus({preventScroll:true});
+}
 function mount(){
+  if(activeFilm&&(!activeFilm.gate.isConnected||!activeFilm.layer.isConnected))releaseFilm(true);
   const gate=document.querySelector('.spmGateVisual');
   if(!gate||gate.dataset.offerBound==='1')return;
   addCSS();gate.dataset.offerBound='1';
@@ -101,9 +170,11 @@ function mount(){
     button.addEventListener('click',()=>selectWeek(index));
     button.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%weeks.length;else if(event.key==='ArrowLeft')next=(index+weeks.length-1)%weeks.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=weeks.length-1;else return;event.preventDefault();selectWeek(next,true)});
   });
-  gate.querySelector('.spmOfferFilm')?.addEventListener('click',()=>window.SPM_COMMERCIAL_PREVIEW?.cinematic());
+  gate.querySelector('.spmOfferFilm')?.addEventListener('click',()=>playInlineFilm(gate));
+  gate.addEventListener('click',event=>{if(event.target.closest('.startPay')&&activeFilm?.gate===gate)releaseFilm(true)},true);
 }
 const observer=new MutationObserver(mount);
 observer.observe(document.documentElement,{childList:true,subtree:true});
 mount();
+window.addEventListener('pagehide',()=>releaseFilm(true));
 })();
