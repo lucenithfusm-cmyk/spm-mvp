@@ -87,3 +87,9 @@ The user requested a thoughtful, disappointed adult man seated in bed, with an a
 The interactive graphic represents the actual 28-day duration in four seven-day blocks. Users can select each week; only its seven bars animate. This is a program calendar preview, not a graph of clinical efficacy, success rates or individual assessment results. No statistics, percentages or duration improvements are fabricated. Reduced-motion preferences stop the animation. The approved cinematic, recordings, Insights, clinical modules and payment test behavior remain unchanged. No HeyGen credits were used.
 
 The user then requested a more visibly annoyed partner. The revised v2 artwork changes the partner’s expression and gaze while preserving the seated man and scene. Use v2 for the offer review; v1 is superseded.
+
+## SPM branding on all final created artwork — 2026-09-24
+
+The user instructed that every created image must display the SPM logo. All future final visual assets and their displayed compositions must carry the established SPM wordmark without covering faces, controls or copy. For this offer, the reflective scene, the two-men couple image and the film thumbnail receive a crisp SPM brand layer in the page. The Spanish and English watch images already include SPM in the artwork. The generated cinematic scenes already display SPM within their approved composition. No registration symbol or new trademark-registration claim is added.
+
+A raster watermark edit was rejected by the image service. The completed implementation brands the website compositions using a separate text layer and preserves the original image files; it does not claim to have embedded a watermark into those original files. Any later standalone advertising export must include the SPM layer as part of that export.

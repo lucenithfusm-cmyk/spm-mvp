@@ -18,6 +18,8 @@ function addCSS(){
 .spmOfferMood{position:relative;margin:0;isolation:isolate;border:1px solid #8fe3d022;border-radius:26px;overflow:hidden;background:#0b282f}
 .spmOfferMood img{display:block;width:100%;height:auto;aspect-ratio:1586/992;object-fit:contain}
 .spmOfferMood:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#03232d80,transparent 42%);pointer-events:none}
+.spmGateVisual .spmArtworkBrand{position:absolute;left:clamp(12px,2vw,24px);top:clamp(12px,2vw,24px);z-index:3;display:block;padding:6px 9px;border:1px solid #c5eadc42;border-radius:8px;background:#06242bc4;color:#f0fff9;font:950 clamp(15px,2.3vw,25px)/1 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:-.065em;text-shadow:0 1px 5px #0003;pointer-events:none}
+.spmGateVisual .spmOfferFilm .spmArtworkBrand{left:12px;top:12px;font-size:18px}
 .spmOfferMood figcaption{position:absolute;left:5.5%;top:50%;transform:translateY(-50%);z-index:1;color:#f3fff8;font-size:clamp(18px,4.8vw,45px);line-height:1.08;letter-spacing:-.035em;font-weight:850;max-width:37%;text-shadow:0 1px 16px #05232a66}
 .spmOfferFacts{display:flex;align-items:center;justify-content:center;gap:0;margin:17px 0 38px;color:#a9c8c6;font-size:13px;font-weight:700}
 .spmOfferFacts span{padding:0 24px;text-align:center}.spmOfferFacts span+span{border-left:1px solid #2b5055}.spmOfferFacts b{color:#9de8d7;font-size:20px}
@@ -77,6 +79,8 @@ function mount(){
   const gate=document.querySelector('.spmGateVisual');
   if(!gate||gate.dataset.offerBound==='1')return;
   addCSS();gate.dataset.offerBound='1';
+  gate.querySelectorAll('.spmOfferReflection,.spmOfferConnection,.spmOfferFilm').forEach(artwork=>{const brand=document.createElement('span');brand.className='spmArtworkBrand';brand.textContent='SPM';brand.setAttribute('aria-hidden','true');artwork.appendChild(brand);artwork.dataset.spmBranded='overlay'});
+  gate.querySelector('.spmOfferTime')?.setAttribute('data-spm-branded','embedded');
   const tabs=[...gate.querySelectorAll('[role=tab]')],panels=[...gate.querySelectorAll('[role=tabpanel]')];
   function select(index,focus=false){
     tabs.forEach((tab,n)=>{tab.setAttribute('aria-selected',String(n===index));tab.tabIndex=n===index?0:-1;panels[n].hidden=n!==index});
