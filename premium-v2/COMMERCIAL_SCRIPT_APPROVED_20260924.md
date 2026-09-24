@@ -135,3 +135,9 @@ Se muestran como reseñas anónimas en dos tarjetas, después del bloque de vide
 ### Ubicación de las reseñas ajustada — 2026-09-24
 
 La usuaria marcó con un emoji el punto entre la imagen de la pareja y la del hombre mirando el reloj. Se mueve el bloque completo de las dos reseñas, sin duplicarlo ni cambiar su contenido, después de “Menos presión. Más espacio para conectar” y antes de “Tu siguiente paso empieza hoy”. Esta ubicación sustituye la ubicación previa después del bloque de video/oferta y herramientas, en ambos idiomas. Se conservan los estilos, el video aprobado, la oferta y los controles.
+
+### Visibilidad de la ruta para disfunción eréctil — 2026-09-24
+
+La usuaria considera que el cierre transmite un énfasis excesivo en eyaculación precoz y solicita un mensaje breve que también deje clara la ruta para disfunción eréctil. Se ajusta únicamente el primer mensaje intercalado, después de la imagen reflexiva y antes de los beneficios y del video, con traducción equivalente al inglés.
+
+Título: “Tu erección. Tu control. Tu confianza.” Texto: “SPM incluye rutas para disfunción eréctil y eyaculación precoz, con ejercicios, educación y seguimiento durante 28 días.” Describe las rutas y recursos existentes, sin añadir garantías ni resultados clínicos. Se conserva la presentación gráfica; el videoclip, las reseñas aprobadas y su ubicación no cambian.
