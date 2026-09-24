@@ -40,8 +40,8 @@ function addCSS(){
 .spmOfferTabs button{border:0;border-radius:10px;background:transparent;color:#98b8bb;padding:11px 5px;min-height:42px;font-size:13px;font-weight:800;cursor:pointer;touch-action:manipulation}
 .spmOfferTabs button[aria-selected=true]{background:#90e1ce;color:#06262d;box-shadow:0 3px 12px #0002}
 .spmOfferPanel{border-radius:20px;background:#0b262e;border:1px solid #2a525b;overflow:hidden;animation:spmOfferReveal .18s ease-out}
-.spmOfferToolImage{height:222px;background:radial-gradient(ellipse,#17404a,#06191f);padding:9px;display:grid;place-items:center}
-.spmOfferToolImage img{display:block;max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain;border-radius:8px}
+.spmOfferToolImage{position:relative;height:222px;background:radial-gradient(ellipse,#17404a,#06191f);overflow:hidden}
+.spmOfferToolImage img{position:absolute;inset:9px;display:block;width:calc(100% - 18px);height:calc(100% - 18px);max-width:none;max-height:none;object-fit:contain;border-radius:8px}
 .spmOfferToolCopy{padding:16px 18px;border-top:1px solid #204049}.spmOfferToolCopy h3{font-size:16px;margin:0 0 7px;color:#edf9f3}.spmOfferToolCopy p{font-size:13px;line-height:1.45;color:#a6c2c5;margin:0}
 .spmOfferConnection{margin:0}.spmOfferConnection figcaption{max-width:31%;font-size:clamp(18px,3vw,30px)}
 .spmOfferPracticeRow{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;margin:0 0 34px}
