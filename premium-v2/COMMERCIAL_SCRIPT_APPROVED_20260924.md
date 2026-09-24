@@ -204,3 +204,8 @@ La usuaria reporta que los participantes de las pruebas piloto no encuentran Con
 - Aplicado en español e inglés a las cuatro imágenes y sus audios existentes. No se regeneran recursos ni se utilizan créditos de HeyGen.
 
 Pruebas: ocho combinaciones Insight/idioma, avance al terminar audio, salida manual, controles de audio, gesto de desplazamiento, ausencia de preguntas omitidas, errores y bloqueo de reproducción, cancelación de temporizadores y eventos tardíos. Se verifica además la regresión del visor, del cierre y del video integrado aprobado.
+
+
+## Legibilidad de las respuestas — 2026-09-24
+
+La usuaria identifica en su captura que las opciones del cuestionario son pequeñas y tenues. Se ajustan los estilos exclusivamente dentro de `#quizCard`: texto de 1.0625 rem (17 px con la configuración habitual), peso 600, color claro de alto contraste y etiquetas que heredan esos valores. La opción seleccionada se distingue por fondo menta, texto oscuro y peso 700. El foco de teclado es visible y las respuestas largas pueden ocupar varias líneas. Se actualiza la versión de CSS de la entrada gratuita y de la entrada con cuenta. Las preguntas, respuestas y reglas de puntuación no se alteran.
