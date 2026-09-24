@@ -130,3 +130,8 @@ Textos españoles aprobados, conservados literalmente en el cierre:
 - **Confianza:** “Tener una guía clara me ayudó a sentir menos presión y a trabajar mi confianza paso a paso.”
 
 Se muestran como reseñas anónimas en dos tarjetas, después del bloque de video/oferta y herramientas, con traducciones equivalentes al inglés. No se añaden nombres, fotografías de supuestos participantes, estrellas, estadísticas, verificación independiente ni garantías de resultados. El pie indica que las experiencias son individuales y los resultados pueden variar. La confirmación procede de la usuaria; no se afirma haber entrevistado a los participantes. La presentación y reproducción aprobadas del videoclip, el precio y los botones de compra se conservan.
+
+
+### Ubicación de las reseñas ajustada — 2026-09-24
+
+La usuaria marcó con un emoji el punto entre la imagen de la pareja y la del hombre mirando el reloj. Se mueve el bloque completo de las dos reseñas, sin duplicarlo ni cambiar su contenido, después de “Menos presión. Más espacio para conectar” y antes de “Tu siguiente paso empieza hoy”. Esta ubicación sustituye la ubicación previa después del bloque de video/oferta y herramientas, en ambos idiomas. Se conservan los estilos, el video aprobado, la oferta y los controles.
