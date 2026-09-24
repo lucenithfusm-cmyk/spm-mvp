@@ -143,3 +143,18 @@ La usuaria considera que el cierre transmite un énfasis excesivo en eyaculació
 Título: “Tu erección. Tu control. Tu confianza.” Texto: “SPM incluye rutas para disfunción eréctil y eyaculación precoz, con ejercicios, educación y seguimiento durante 28 días.” Describe las rutas y recursos existentes, sin añadir garantías ni resultados clínicos. Se conserva la presentación gráfica; el videoclip, las reseñas aprobadas y su ubicación no cambian.
 
 La usuaria precisa que deben nombrarse las cuatro áreas para que el visitante entienda qué puede trabajar antes de comprar. El texto anterior se amplía a: “Una ruta para lo que necesitas trabajar.” / “SPM incluye rutas para control eyaculatorio y eyaculación precoz, disfunción eréctil, deseo sexual y confianza. Ejercicios, educación y seguimiento durante 28 días.” Las cuatro áreas se destacan en negrita en el mismo párrafo breve, con traducción equivalente al inglés. Esta formulación sustituye la propuesta anterior de dos áreas.
+
+### Alcance completo del programa en el cierre — 2026-09-24
+
+La usuaria precisa que el mensaje debe incluir todas las áreas del programa, con nombres claros y una presentación comercial cuidada. Se contrastan los motivos de `app.js`/`app-live.js`, los perfiles de `modules.js` y las rutas existentes. El mensaje anterior de cuatro áreas se sustituye por una sección breve, después de la primera imagen y antes del video, titulada “Una ruta para lo que tú necesitas.”
+
+Los seis bloques informativos, con equivalente en inglés, son:
+
+- Disfunción eréctil — Erección y firmeza.
+- Eyaculación precoz — Control eyaculatorio y manejo del ritmo.
+- Bajo deseo sexual — Deseo, excitación y sus facilitadores.
+- Ansiedad de rendimiento — Confianza y manejo de la presión.
+- Bienestar y conexión — Comunicación y disfrute en pareja.
+- Prevención y optimización — Hábitos protectores y mantenimiento.
+
+La introducción explica que SPM organiza el programa según el perfil, con rutas y herramientas para estas áreas. El pie indica “28 días de ejercicios, educación y seguimiento, con prioridades adaptadas a ti.” El perfil mixto se representa mediante esas prioridades adaptadas, sin presentarlo como otra condición. Se utiliza “bajo deseo sexual”, lenguaje coherente con el contenido existente; no se añade un diagnóstico de trastorno de deseo sexual hipoactivo ni una nueva ruta clínica. Las tarjetas son informativas, no controles de selección. Se conservan imágenes, reseñas y su ubicación, video, precio y comportamiento de pago.
