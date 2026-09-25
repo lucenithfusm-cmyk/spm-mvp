@@ -47,12 +47,12 @@ function showGate(preview=false){
     {topic:t('Confianza','Confidence'),quote:t('Tener una guía clara me ayudó a sentir menos presión y a trabajar mi confianza paso a paso.','Having clear guidance helped me feel less pressure and work on my confidence step by step.')}
   ];
   const areas=[
-    {title:t('Disfunción eréctil','Erectile dysfunction'),copy:t('Erección y firmeza.','Erection and firmness.')},
-    {title:t('Eyaculación precoz','Premature ejaculation'),copy:t('Control eyaculatorio y manejo del ritmo.','Ejaculatory control and pacing.')},
-    {title:t('Bajo deseo sexual','Low sexual desire'),copy:t('Deseo, excitación y sus facilitadores.','Desire, arousal and what supports them.')},
-    {title:t('Ansiedad de rendimiento','Performance anxiety'),copy:t('Confianza y manejo de la presión.','Confidence and managing pressure.')},
-    {title:t('Bienestar y conexión','Wellbeing and connection'),copy:t('Comunicación y disfrute en pareja.','Communication and shared enjoyment.')},
-    {title:t('Prevención y optimización','Prevention and optimization'),copy:t('Hábitos protectores y mantenimiento.','Protective habits and maintenance.')}
+    {title:t('Erección y firmeza','Erection and firmness'),copy:t('Firmeza y respuesta eréctil.','Firmness and erectile response.')},
+    {title:t('Control eyaculatorio y manejo del ritmo','Ejaculatory control and pacing'),copy:t('Control, ritmo y manejo de la excitación.','Control, pacing and arousal regulation.')},
+    {title:t('Deseo y excitación','Desire and arousal'),copy:t('Interés sexual, motivación y respuesta.','Sexual interest, motivation and response.')},
+    {title:t('Confianza y manejo de la presión','Confidence and managing pressure'),copy:t('Seguridad, tranquilidad y control durante la intimidad.','Confidence, calm and control during intimacy.')},
+    {title:t('Bienestar y conexión','Wellbeing and connection'),copy:t('Disfrute, comunicación y conexión.','Enjoyment, communication and connection.')},
+    {title:t('Optimización y mantenimiento','Optimization and maintenance'),copy:t('Hábitos para sostener tus avances.','Habits to support your progress.')}
   ];
   gate.innerHTML=`<main class="spmGateInner"><div class="spmGateTop"><i></i> SPM <span>28</span></div><section class="spmGateHero">
     <header class="spmOfferHeading"><div class="eyebrow">${t('TU SIGUIENTE PASO','YOUR NEXT STEP')}</div><h1>${t('Que un mal momento no decida el siguiente.','One difficult moment does not have to define the next.')}</h1><p class="lead">${t('Empieza a trabajar en tu control y tu confianza.','Start working on your control and confidence.')}</p></header>
