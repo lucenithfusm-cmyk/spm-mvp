@@ -11,13 +11,13 @@ function guestProgress(){guest?.progress?.({version:1,motives:[...S.motives],ans
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
- ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
+ ['confidence','Confianza / manejo de la presión'],['wellbeing','Bienestar y conexión'],['optimization','Optimización / mantenimiento']
 ];
 function msg(t,kind='good'){const el=(!$('authScreen').hidden?$('authStatus'):$('status')); if(!el)return; el.className='notice '+kind; el.textContent=t; el.hidden=false;}
 function hideMsg(){if($('status'))$('status').hidden=true;if($('authStatus'))$('authStatus').hidden=true}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.hidden=x.id!==id)}
 function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.panel===id));}
-function label(k){return (M.profiles?.[k]?.[guestEnglish()?'label_en':'label_es'])||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
+function label(k){return (M.profiles?.[k]?.[guestEnglish()?'label_en':'label_es'])||({erection:'Erección y firmeza',ejaculation:'Control eyaculatorio y manejo del ritmo',desire:'Deseo y excitación',confidence:'Confianza y manejo de la presión',wellbeing:'Bienestar y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
  if(guest){guest.ready(guestAPI);return}
  const {data:{session}}=await db.auth.getSession();
@@ -81,7 +81,7 @@ async function restore(){
 function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
- motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / performance anxiety',wellbeing:'Satisfaction and connection',optimization:'Optimization / prevention'}[id]||t):t}</b>`;fragment.appendChild(b)});
+ motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / managing pressure',wellbeing:'Satisfaction and connection',optimization:'Optimization / maintenance'}[id]||t):t}</b>`;fragment.appendChild(b)});
  g.replaceChildren(fragment);
 }
 function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives();guestProgress()}
