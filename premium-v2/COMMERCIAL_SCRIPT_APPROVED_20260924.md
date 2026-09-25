@@ -1,3 +1,6 @@
+> **REGULATORY SUPERSESSION — 2026-09-25**  
+> Este archivo conserva el historial de decisiones y copy aprobado durante el desarrollo comercial. Las referencias históricas a “disfunción eréctil”, “eyaculación precoz”, “bajo deseo sexual”, “ansiedad de rendimiento”, EHS u otra terminología clínica **no corresponden al copy vigente de SPM Performance & Wellness V1**. Para publicación, la Regulatory Build sustituye esas expresiones por: **Erección y firmeza; Control eyaculatorio y manejo del ritmo; Deseo y excitación; Confianza y manejo de la presión; Bienestar y conexión; Optimización y mantenimiento**, además de las métricas propietarias SPM. Se preservan aquí únicamente como trazabilidad histórica.
+
 # Commercial script approved — 2026-09-24
 
 The user approved the second commercial script in the conversation. Preserve the Spanish wording below. The English version is its translation.
