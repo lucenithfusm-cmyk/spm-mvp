@@ -63,7 +63,7 @@ function cinematic(preview=false){
     ['guided-videos.jpg','Biblioteca de videos guiados','Guided video library'],
     ['insight-blood-flow.jpg','SPM Insight · circulación','SPM Insight · blood flow'],
     ['medical-videos.jpg','Videos médicos','Medical videos'],
-    ['mental-performance-dark.jpg','Ansiedad de rendimiento','Performance anxiety'],
+    ['mental-performance-dark.jpg','Confianza y manejo de la presión','Confidence and managing pressure'],
     ['nutrition-unsaturated.jpg','Nutrición y respuesta','Nutrition and response'],
     ['pelvic-benefits.jpg','Beneficios del entrenamiento pélvico','Pelvic training benefits'],
     ['pelvic-contraction.jpg','Contracción pélvica','Pelvic contraction'],
