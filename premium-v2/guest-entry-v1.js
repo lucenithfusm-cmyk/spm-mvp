@@ -45,7 +45,7 @@ const priorities={
  erection:['Respuesta eréctil','Erectile response','Comprender tu respuesta eréctil y reconocer los hábitos y situaciones que la acompañan.','Understand your erectile response and recognize the habits and situations around it.'],
  ejaculation:['Control eyaculatorio','Ejaculatory control','Reconocer cómo aumenta tu excitación y trabajar la regulación de tu ritmo.','Recognize how your arousal rises and work on regulating your pace.'],
  desire:['Deseo y excitación','Desire and arousal','Identificar qué facilita tu deseo y qué puede estar frenándolo.','Identify what supports your desire and what may be holding it back.'],
- confidence:['Confianza y ansiedad de rendimiento','Confidence and performance anxiety','Trabajar la presión por rendir y la confianza durante la intimidad.','Work on performance pressure and confidence during intimacy.'],
+ confidence:['Confianza y manejo de la presión','Confidence and managing pressure','Trabajar la presión por rendir y fortalecer la confianza durante la intimidad.','Work on performance pressure and build confidence during intimacy.'],
  wellbeing:['Bienestar y conexión','Wellbeing and connection','Dar espacio a la comunicación, las sensaciones y el disfrute compartido.','Make room for communication, sensations and shared enjoyment.'],
  lifestyle:['Hábitos protectores y prevención','Protective habits and prevention','Priorizar los hábitos cotidianos que tienen mayor margen de trabajo en tu perfil.','Prioritize the everyday habits with the greatest room for work in your profile.']
 };
