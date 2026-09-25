@@ -76,8 +76,8 @@ La escena central utiliza una ráfaga de microdemostraciones de 1–2 segundos, 
 3. Una tarjeta fotográfica de movimiento o ejercicio.
 4. Velocímetro de excitación y movimiento de la aguja hacia la zona de atención.
 5. Entrenamiento guiado de piso pélvico.
-6. Seguimiento EHS 1–4.
-7. Historias guiadas con paciente y Dr. SPM como muestra del contenido, sin cambiar la voz narradora del entrenador SPM.
+6. Escala Visual de Firmeza SPM 0–4.
+7. Historias guiadas con usuario y Dr. SPM como muestra del contenido, sin cambiar la voz narradora del entrenador SPM.
 8. Calendario y registro de progreso del programa de 28 días.
 
 El montaje debe sentirse rápido y aspiracional, no como una demostración extensa. Ninguna microescena revela una lección completa: muestra variedad, interactividad y profundidad para aumentar el deseo de acceder al programa.
