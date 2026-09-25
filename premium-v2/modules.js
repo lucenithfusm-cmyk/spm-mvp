@@ -9,7 +9,7 @@ profiles:{
  erection:{label_es:'Rendimiento eréctil',label_en:'Erection performance'},
  ejaculation:{label_es:'Control eyaculatorio',label_en:'Ejaculatory control'},
  desire:{label_es:'Deseo y excitación',label_en:'Desire and arousal'},
- confidence:{label_es:'Confianza y ansiedad de desempeño',label_en:'Confidence and performance anxiety'},
+ confidence:{label_es:'Confianza y manejo de la presión',label_en:'Confidence and managing pressure'},
  wellbeing:{label_es:'Bienestar y conexión sexual',label_en:'Sexual wellbeing and connection'},
  lifestyle:{label_es:'Optimización y hábitos protectores',label_en:'Optimization and protective habits'},
  mixed:{label_es:'Perfil mixto',label_en:'Mixed profile'}
