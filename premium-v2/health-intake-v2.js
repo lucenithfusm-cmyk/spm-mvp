@@ -54,7 +54,7 @@ function educationText(h){
  if(h.h_urologic)parts.push('Las condiciones urológicas o prostáticas pueden modificar la experiencia sexual y deben mantenerse bajo seguimiento profesional.');
  if(!parts.length)parts.push('Algunas condiciones de salud pueden influir en la función sexual, por lo que su control forma parte del cuidado integral.');
  if(h.h_control_status==='uncontrolled'||h.h_control_status==='partial')parts.push('Como indicas que el control no es óptimo, SPM priorizará educación en hábitos saludables y te recordará mantener seguimiento médico.');
- parts.push('SPM no modifica tratamientos ni reemplaza una valoración médica. No suspendas medicamentos por tu cuenta.');
+ parts.push('SPM no modifica medicamentos ni reemplaza una valoración médica. No suspendas medicamentos por tu cuenta.');
  return parts.join(' ');
 }
 function speak(text){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.94;const vs=speechSynthesis.getVoices(),v=vs.find(x=>/es[-_]CO/i.test(x.lang))||vs.find(x=>/^es/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
