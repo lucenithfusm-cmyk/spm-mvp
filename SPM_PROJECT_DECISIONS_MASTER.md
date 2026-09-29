@@ -310,3 +310,20 @@ En producción, datos de salud deben usar almacenamiento autenticado y seguro; l
 ## 20. Regla de continuidad del proyecto
 
 Antes de realizar cambios grandes, consultar este documento y mantener coherencia con estas decisiones. Si una nueva decisión modifica una regla anterior, actualizar este archivo para que quede como fuente de verdad del producto.
+
+
+## 21. Voz oficial y arquitectura de audio SPM
+
+Voz oficial SPM para narración clínica masculina: **Lenny — Clear & Professional** (HeyGen).
+
+- Voice ID oficial: `050c403a43e047c796f8a6257ed2533e`.
+- Velocidad base recomendada: **0.95x**, ajustable solo si una pieza concreta lo requiere.
+- Cuando aparezca una figura masculina (Doctor SPM, entrenador masculino o avatar masculino), la voz debe ser masculina y preferentemente la voz oficial Lenny.
+- Nunca usar una voz femenina como fallback automático bajo una figura masculina.
+- Para producción, priorizar archivos de audio generados previamente con la voz oficial y almacenados como assets del producto; no depender de la voz TTS del navegador.
+- TTS del navegador puede usarse únicamente como apoyo de desarrollo/prototipo. Si no hay voz masculina identificable en una escena con figura masculina, debe permanecer en silencio y mostrar el texto/cue.
+- En cues funcionales sin figura masculina visible (por ejemplo Start–Stop o Stop–Squeeze), puede utilizarse otra voz si fuera necesario, incluso femenina, aunque se prefiere mantener Lenny cuando sea viable para reforzar consistencia de marca.
+- Todos los módulos nuevos deben heredar esta regla automáticamente; no se vuelve a escoger voz desde cero en cada programa.
+- Mantener IDs de audio estables y desacoplados de la UI para poder sustituir/regenerar archivos sin reescribir la lógica.
+
+Esta decisión sustituye cualquier selección automática de voz por dispositivo como estrategia de producción.
