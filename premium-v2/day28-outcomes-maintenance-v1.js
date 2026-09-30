@@ -2,10 +2,10 @@
 'use strict';
 const MAINT={
  title:'Tu siguiente etapa · Mantener y consolidar',
- intro:'Los 28 días completan una fase intensiva de aprendizaje. El progreso se consolida cuando las habilidades pasan a formar parte de tu rutina.',
+ intro:'Los 28 días completan el Ciclo Inicial SPM. A partir de aquí, el entrenamiento suele espaciarse a 2–3 sesiones por semana y se vuelve más específico según lo que funcionó, lo que aún necesita refuerzo y cualquier señal clínica relevante.',
  weeks:[
-  {name:'Semanas 1–4 · Consolidación',freq:'4 días por semana',items:['Habilidad principal de tu perfil · 10–15 min','Respiración/regulación · 5 min','Piso pélvico o control eyaculatorio, solo si corresponde a tu ruta · 3 días/semana','Actividad física y hábitos protectores · mantener objetivos personales','Registro breve semanal: control, confianza y respuesta']},
-  {name:'Semanas 5–8 · Autonomía',freq:'3 días por semana',items:['Habilidad principal · 10 min','Respiración/regulación antes de situaciones de presión','Piso pélvico/control según perfil · 2–3 días/semana','Aplicación gradual en contexto real sin convertirla en examen','Revisión quincenal de progreso']},
+  {name:'Semanas 1–4 · Consolidación',freq:'2–3 sesiones por semana',items:['Habilidad principal de tu perfil · 10–15 min','Respiración/regulación · 5 min','Piso pélvico o control eyaculatorio, solo si corresponde a tu ruta · frecuencia definida por SPM','Actividad física y hábitos protectores · mantener objetivos personales','Registro breve semanal: control, confianza y respuesta']},
+  {name:'Semanas 5–8 · Autonomía',freq:'2–3 sesiones por semana',items:['Habilidad principal · 10 min','Respiración/regulación antes de situaciones de presión','Piso pélvico/control según perfil · integrado dentro de las 2–3 sesiones semanales','Aplicación gradual en contexto real sin convertirla en examen','Revisión quincenal de progreso']},
   {name:'Desde la semana 9 · Mantenimiento',freq:'2–3 días por semana',items:['Mantén las técnicas que mejor resultado te dieron','Actividad física, sueño y salud cardiometabólica como base','Usa respiración/regulación cuando la necesites','Realiza una auto-revisión mensual','Si reaparecen dificultades persistentes, retoma una semana de consolidación o solicita valoración profesional']}
  ]
 };
