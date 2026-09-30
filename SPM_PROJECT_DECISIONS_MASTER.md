@@ -327,3 +327,13 @@ Voz oficial SPM para narración clínica masculina: **Lenny — Clear & Professi
 - Mantener IDs de audio estables y desacoplados de la UI para poder sustituir/regenerar archivos sin reescribir la lógica.
 
 Esta decisión sustituye cualquier selección automática de voz por dispositivo como estrategia de producción.
+
+
+## 22. Regla editorial de autoría y atribución
+
+SPM no debe utilizar citas, firmas, testimonios editoriales ni referencias de autoridad atribuidas a médicos, sexólogos, psicólogos u otros especialistas externos dentro de sus pantallas, módulos, videos, mockups o materiales comerciales.
+
+- No mostrar nombres propios de especialistas como respaldo del contenido educativo o clínico.
+- No usar frases atribuidas que puedan hacer pensar que un tercero desarrolló, co-creó, avala o posee derechos sobre SPM.
+- Las frases inspiradoras o educativas deben ser originales de SPM y mostrarse sin atribución personal, o identificadas únicamente como “SPM” / “Doctor SPM” cuando se trate de la identidad interna del producto.
+- Esta regla aplica a todos los módulos actuales y futuros y forma parte del QA editorial previo a publicación.
