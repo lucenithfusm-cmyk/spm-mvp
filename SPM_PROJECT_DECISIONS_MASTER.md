@@ -398,3 +398,24 @@ Cuando la técnica ya está aprendida y bien tolerada, SPM puede convertirla en 
 - En EP, piso pélvico, ansiedad u otras prácticas, la respiración puede ir integrada en la técnica y no necesita duplicarse como sesión completa.
 
 Principio SPM: primero aprender y validar la respiración; después automatizarla como herramienta de regulación.
+
+
+## 26. Respiración en ciclo inicial vs mantenimiento
+
+Durante el ciclo inicial de 28 días, SPM no debe convertir automáticamente la respiración diafragmática en una obligación diaria aunque el paciente ya conozca la técnica.
+
+### Ciclo inicial de 28 días
+- El objetivo principal es aprender, desaprender hábitos poco útiles, reconocer el cuerpo y adquirir habilidades.
+- La respiración puede integrarse antes de algunos entrenamientos cuando el paciente ya demostró buena técnica y tolerancia.
+- Su aparición debe ser selectiva y contextual, no necesariamente diaria.
+- Pacientes que dominan rápidamente la técnica pueden verla integrada antes que otros.
+- El motor debe respetar diferencias individuales de aprendizaje y no forzar una cronología rígida.
+
+### Mantenimiento (módulo futuro)
+- Si el paciente ya domina respiración, conciencia corporal, activación/relajación del piso pélvico y otras habilidades básicas, SPM puede integrar esas herramientas de forma más estable.
+- En mantenimiento pueden aparecer rutinas combinadas y progresiones más complejas.
+- La respiración puede convertirse entonces en una preparación habitual antes del entrenamiento o en una herramienta autónoma de regulación, según evaluación individual.
+- Piso pélvico, respiración, atención, regulación y habilidades sexuales pueden integrarse progresivamente en secuencias más avanzadas.
+- El acceso a progresiones depende de dominio técnico, tolerancia, adherencia y ausencia de señales clínicas que obliguen a simplificar o revisar.
+
+Principio SPM: el ciclo inicial enseña y construye habilidades; mantenimiento integra, automatiza y progresa.
