@@ -355,3 +355,22 @@ Reglas del motor diario:
 - Si aparece una señal de seguridad, las restricciones clínicas tienen prioridad sobre la variedad o la progresión.
 
 Objetivo de experiencia: los 28 días deben sentirse distintos y progresivos. Algunas habilidades pueden repetirse para consolidación, pero no debe sentirse que el Día 1, 2, 3 y 4 son el mismo entrenamiento con otro título.
+
+
+## 24. Repetición intencional y dosificación adaptativa
+
+Algunas habilidades SPM requieren repetición deliberada para consolidar aprendizaje conductual y motor. La repetición debe explicarse desde el inicio para que el usuario entienda que repetir una práctica no significa que el programa esté estancado.
+
+### Control eyaculatorio
+- Start–Stop, Stop–Squeeze y otras prácticas de regulación pueden repetirse hasta 3 veces por semana cuando control eyaculatorio es el foco principal y la carga global lo permite.
+- La explicación debe centrarse en adquirir destreza: reconocer antes el ascenso de excitación, identificar el momento previo al punto de no retorno, pausar con anticipación y recuperar control.
+- No prometer que la repetición garantiza prolongar tiempos; la meta es mejorar reconocimiento, regulación y control.
+- En perfiles mixtos con alta carga de entrenamiento (por ejemplo DE + EP + otros dominios intensivos), SPM puede reducir estas prácticas a 2 sesiones semanales y alternarlas con otros módulos.
+
+### Piso pélvico
+- Cuando corresponde clínicamente, SPM puede programar hasta 3 sesiones semanales para consolidar conciencia, coordinación, técnica y relajación completa.
+- En perfiles mixtos con alta carga, puede reducirse a 2 sesiones por semana.
+- Dolor, dificultad marcada para relajar, aumento de tensión o señales clínicas tienen prioridad: no aumentar frecuencia y priorizar relajación/revisión profesional.
+
+### Regla de experiencia
+Siempre que una actividad repetitiva vuelva a aparecer, SPM debe poder explicar por qué se repite y qué habilidad concreta está consolidando.
