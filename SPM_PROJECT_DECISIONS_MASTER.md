@@ -327,3 +327,39 @@ Voz oficial SPM para narración clínica masculina: **Lenny — Clear & Professi
 - Mantener IDs de audio estables y desacoplados de la UI para poder sustituir/regenerar archivos sin reescribir la lógica.
 
 Esta decisión sustituye cualquier selección automática de voz por dispositivo como estrategia de producción.
+
+
+## 22. Experiencia central del Ciclo Inicial
+
+Esta capa pertenece al núcleo de SPM y aplica a todas las rutas.
+
+### Bienvenida antes del Día 1
+Antes de mostrar la primera jornada, SPM debe explicar que:
+- el Ciclo Inicial dura 28 días;
+- SPM decide la ruta diaria según evaluación, Performance Map™, evolución, adherencia y seguridad;
+- los días pueden combinar respiración, piso pélvico, control eyaculatorio, ansiedad, focalización, recuperación, nutrición, movimiento u otras intervenciones;
+- el objetivo es aprender, practicar, medir y adaptar;
+- 28 días construyen una base y no equivalen a una cura ni al final del proceso;
+- la constancia importa más que la perfección.
+
+Mensaje central: **“Ya diste el primer paso. No necesitas hacerlo perfecto; necesitas hacerlo con constancia.”**
+
+La bienvenida debe aparecer antes del Día 1 y luego quedar accesible sin bloquear el uso cotidiano. Preparar un ID estable de audio para futura narración con la voz oficial SPM Lenny.
+
+### Hitos del Ciclo
+- **Día 7:** “Primera semana completada”. Mostrar adherencia/prácticas y reforzar que la repetición convierte una técnica en habilidad.
+- **Día 14:** checkpoint de mitad de ciclo. Comparar línea de base con datos acumulados de prácticas, checklists, Daily Coach y métricas del driver. Aclarar que dos semanas siguen siendo un periodo corto.
+- **Día 21:** “Tres semanas de constancia”. Mostrar qué se ha practicado/consolidado y qué requiere repetición.
+- **Día 28:** cierre del Ciclo Inicial. Felicitar, comparar línea de base vs evolución y decidir siguiente etapa.
+
+Los hitos deben sentirse premium y adultos, no como gamificación infantil.
+
+### Uso de datos
+Los hitos del Día 14 y Día 28 deben aprovechar, cuando existan: línea de base, micro-check-ins, checklists, adherencia, sesiones completadas, confianza, control, respuesta, ansiedad/tensión, satisfacción, métricas específicas del driver y nuevas banderas de seguridad. Las escalas estandarizadas se usarán solo cuando su versión y permisos estén resueltos.
+
+### Continuidad después del Día 28
+El Día 28 finaliza el Ciclo Inicial, no el entrenamiento. SPM debe decidir entre mantenimiento/progresión, segundo ciclo personalizado, revisión de adherencia/modificadores o recomendación de valoración profesional.
+
+El mantenimiento deja de ser diario por defecto y trabaja normalmente **2–3 sesiones por semana**, seleccionadas por SPM, reforzando debilidades, conservando habilidades útiles e introduciendo progresiones más avanzadas cuando corresponda.
+
+La continuidad debe presentarse como consecuencia de los datos y necesidades del usuario, no como un bloqueo artificial o un upsell automático.
