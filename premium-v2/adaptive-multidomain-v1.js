@@ -70,6 +70,14 @@ function breathingRitualUnlocked(){
 function breathingLearningPhase(day){
  return Number(day)<=14 && !breathingRitualUnlocked();
 }
+function breathingPrepAssigned(plan){
+ if(!breathingRitualUnlocked())return false;
+ const day=Number(plan?.day||currentDay()),slot=((day-1)%7)+1;
+ const relevant=(plan?.domains||[]).some(x=>['confidence','ejaculation','erection'].includes(x)) ||
+                (plan?.items||[]).some(x=>x.id==='shared.pelvic'||x.id==='shared.breathing');
+ const allowedSlots=day<=14?[2,5]:[2,4,6];
+ return relevant && allowedSlots.includes(slot);
+}
 
 function parseScores(){
  const out={};
@@ -175,11 +183,14 @@ function render(){
  const hero=$('#spmTodayHero');if(!hero)return;const plan=buildToday();
  let box=$('#spmMultidomainToday',hero);if(!box){box=document.createElement('div');box.id='spmMultidomainToday';hero.appendChild(box)}
  const unlocked=breathingRitualUnlocked();
- const breathBlock=unlocked
-  ? '<div class="spm-breath-prep"><b>Preparación SPM · 2–3 min</b><span>Antes de entrenar, realiza tu respiración de regulación ya aprendida y bien tolerada. Esta preparación no cuenta como una de tus actividades principales.</span></div>'
+ const prepAssigned=breathingPrepAssigned(plan);
+ const breathBlock=prepAssigned
+  ? '<div class="spm-breath-prep"><b>Preparación SPM · 2–3 min</b><span>Hoy SPM integra tu respiración de regulación antes de entrenar porque ya has demostrado buena técnica y tolerancia. Durante el ciclo inicial no tiene que aparecer todos los días.</span></div>'
   : breathingLearningPhase(plan.day)
-    ? '<div class="spm-breath-learning"><b>Respiración todavía en fase de aprendizaje</b><span>Durante las primeras dos semanas SPM puede asignarte sesiones específicas para aprender la técnica, comprobar que la haces correctamente y confirmar que no te produce mareo ni malestar. Cuando esté validada, se convertirá en tu ritual breve antes de entrenar.</span></div>'
-    : '<div class="spm-breath-learning"><b>Respiración pendiente de validación</b><span>El ritual previo se activará cuando SPM confirme técnica adecuada y buena tolerancia.</span></div>';
+    ? '<div class="spm-breath-learning"><b>Respiración todavía en fase de aprendizaje</b><span>Durante la primera y segunda semana SPM puede asignarte sesiones específicas para aprender la técnica, comprobar que la haces correctamente y confirmar que no te produce mareo ni malestar.</span></div>'
+    : unlocked
+      ? '<div class="spm-breath-learning"><b>Respiración disponible, pero hoy no es necesaria como preparación</b><span>SPM ya sabe que toleras bien la técnica y la integrará solo en los días en que aporte valor. La automatización más estable se reserva para mantenimiento según tu evolución.</span></div>'
+      : '<div class="spm-breath-learning"><b>Respiración pendiente de validación</b><span>SPM seguirá enseñándola y observando técnica y tolerancia antes de integrarla de forma automática.</span></div>';
  box.innerHTML=`<div class="spm-md-head"><div><div class="spm-today-kicker">RUTA ADAPTATIVA</div><h3>Hoy SPM combina lo que más necesitas trabajar.</h3><p>Tu driver principal guía el día, pero los déficits secundarios también aportan prácticas cuando son relevantes. No necesitas trabajarlo todo a la vez.</p></div><span class="spm-md-chip">${plan.domains.length} áreas activas</span></div>${breathBlock}<div class="spm-md-grid">${plan.items.map((x,i)=>cardHTML(x,i,plan)).join('')}</div>`;
  $$('.spm-md-start',box).forEach((b,i)=>b.onclick=()=>{
    const x=plan.items[i];localStorage.setItem('spm_today_assignment_v1',JSON.stringify({...x,day:plan.day,origin:'dailyPlan',assignedAt:new Date().toISOString()}));
