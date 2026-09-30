@@ -419,3 +419,20 @@ Durante el ciclo inicial de 28 días, SPM no debe convertir automáticamente la 
 - El acceso a progresiones depende de dominio técnico, tolerancia, adherencia y ausencia de señales clínicas que obliguen a simplificar o revisar.
 
 Principio SPM: el ciclo inicial enseña y construye habilidades; mantenimiento integra, automatiza y progresa.
+
+
+## 27. Ansiedad de rendimiento como modificador transversal
+
+SPM debe explorar ansiedad de rendimiento/confianza en todos los usuarios que consulten por una preocupación sexual principal (DE, EP, deseo o conexión), aunque no la hayan seleccionado como motivo principal.
+
+Reglas:
+- No asumir que todos tienen ansiedad clínicamente relevante; medirla.
+- Tratarla como modificador transversal que puede amplificar vigilancia, presión, evitación, temor a perder la respuesta sexual o pérdida de confianza.
+- Si el tamizaje es bajo, no sobrecargar el plan con intervenciones de ansiedad.
+- Si es moderado/alto o existe un patrón claro de presión/vigilancia/evitación, incorporar herramientas de confianza dentro del plan del driver principal.
+- En DE: conectar especialmente con miedo a perder firmeza, modo examen y Recuperación después de una caída.
+- En EP: conectar con anticipación, hipervigilancia, presión por control y regulación.
+- En bajo deseo: explorar si presión, evitación o experiencias negativas están actuando como frenos del deseo.
+- Revaluar en Día 14 y Día 28 para comprobar si la ansiedad/confianza cambia junto con la función sexual.
+
+Principio SPM: la ansiedad no sustituye al driver principal; puede modificarlo, mantenerlo o aparecer como consecuencia de los cambios sexuales.
