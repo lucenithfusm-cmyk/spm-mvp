@@ -436,3 +436,26 @@ Reglas:
 - Revaluar en Día 14 y Día 28 para comprobar si la ansiedad/confianza cambia junto con la función sexual.
 
 Principio SPM: la ansiedad no sustituye al driver principal; puede modificarlo, mantenerlo o aparecer como consecuencia de los cambios sexuales.
+
+
+## 28. Cadencia de evaluación y carga de cuestionarios
+
+La evaluación completa de SPM ocurre antes de iniciar el Día 1. El ciclo de 28 días no debe sentirse como una sucesión de cuestionarios.
+
+### Principios
+- Día 1 no repite la evaluación inicial. SPM confirma que el punto de partida ya está registrado y pasa a educación, video y primera práctica.
+- Los primeros días priorizan experiencia, actividades y comprensión de la ruta.
+- Las preguntas adicionales aparecen solo cuando pueden cambiar una decisión del plan.
+- Los módulos integrados desde “Hoy en SPM” no deben volver a ejecutar su evaluación completa. La evaluación completa de cada Lab se reserva para modo standalone/revisión interna (`origin="lab"`).
+- Dentro del plan se usan micro-checks de 1–3 preguntas como máximo cuando corresponda.
+- No más de un bloque de evaluación por día.
+- Deseo y Ansiedad/Confianza no se evalúan el mismo día.
+- Antes de un micro-check de dominio deben existir experiencias o prácticas suficientes para que la respuesta tenga sentido.
+- Día 14 y Día 28 son checkpoints centrales. No se apilan ese mismo día evaluaciones completas de Deseo, Ansiedad u otros módulos.
+- Si la información reciente ya es suficiente, SPM reutiliza esos datos en el checkpoint en lugar de volver a preguntar.
+- Los micro-checks se escalonan y se cancelan si coinciden con un checkpoint central o con otro bloque de evaluación.
+
+### Experiencia deseada
+El paciente debe sentir: “SPM ya me conoce y ahora me está entrenando”, no “pagué para responder formularios”.
+
+Principio SPM: preguntar menos, pero preguntar en el momento en que la respuesta pueda cambiar lo que hacemos después.
