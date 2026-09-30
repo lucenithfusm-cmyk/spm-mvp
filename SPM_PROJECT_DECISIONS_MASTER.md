@@ -337,3 +337,21 @@ SPM no debe utilizar citas, firmas, testimonios editoriales ni referencias de au
 - No usar frases atribuidas que puedan hacer pensar que un tercero desarrolló, co-creó, avala o posee derechos sobre SPM.
 - Las frases inspiradoras o educativas deben ser originales de SPM y mostrarse sin atribución personal, o identificadas únicamente como “SPM” / “Doctor SPM” cuando se trate de la identidad interna del producto.
 - Esta regla aplica a todos los módulos actuales y futuros y forma parte del QA editorial previo a publicación.
+
+
+## 23. Motor diario multidominio y variedad del Ciclo Inicial
+
+SPM no debe convertir el Performance Map™ en una ruta rígida de un solo dominio. El driver principal organiza la prioridad, pero los déficits secundarios, modificadores y fortalezas relevantes pueden aportar intervenciones al mismo día o a días alternos.
+
+Reglas del motor diario:
+- El paciente ve “Hoy en SPM” con un máximo habitual de 2–3 actividades relevantes.
+- Incluir normalmente: 1 actividad del driver principal, 1 actividad de un dominio secundario cuando sea material y 1 modificador/transversal o una tercera área asociada.
+- No asignar todas las áreas a la vez.
+- Evitar repetir exactamente la misma combinación en días consecutivos salvo que la repetición sea clínicamente intencional.
+- Respiración, piso pélvico, recuperación, nutrición, movimiento, ansiedad/confianza, deseo, focalización, comunicación y otros bloques son piezas reutilizables que el motor puede combinar según perfil.
+- Un paciente con EP principal y bajo deseo/ansiedad secundarios puede recibir control eyaculatorio como eje y, en días seleccionados, prácticas de deseo, regulación o confianza.
+- Un paciente con DE principal y ansiedad/bajo deseo secundarios puede alternar recuperación de firmeza, focalización, regulación, deseo responsivo, comunicación y hábitos.
+- En cuadros mixtos, la variedad debe sentirse personalizada, no aleatoria: cada actividad debe explicar por qué fue asignada y qué métrica se observará.
+- Si aparece una señal de seguridad, las restricciones clínicas tienen prioridad sobre la variedad o la progresión.
+
+Objetivo de experiencia: los 28 días deben sentirse distintos y progresivos. Algunas habilidades pueden repetirse para consolidación, pero no debe sentirse que el Día 1, 2, 3 y 4 son el mismo entrenamiento con otro título.
