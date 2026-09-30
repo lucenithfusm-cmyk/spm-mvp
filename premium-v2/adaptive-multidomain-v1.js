@@ -55,6 +55,22 @@ const REPETITION_NOTE={
  ejaculation:'Este entrenamiento se repite de forma intencional. La destreza aparece con práctica suficiente: reconocer antes el aumento de excitación, pausar con anticipación y recuperar control.',
  pelvic:'El piso pélvico se entrena por repetición de buena calidad. La meta es mejorar conciencia, coordinación, técnica y relajación completa.'
 };
+const BREATHING_COMPETENCY_KEY='spm_breathing_competency_v1';
+function breathingCompetency(){
+ try{return JSON.parse(localStorage.getItem(BREATHING_COMPETENCY_KEY)||'{}')}catch(_){return{}}
+}
+function breathingRitualUnlocked(){
+ const s=breathingCompetency();
+ return s.educationCompleted===true &&
+        s.techniqueCorrect===true &&
+        s.tolerates===true &&
+        s.dizziness!==true &&
+        s.discomfort!==true;
+}
+function breathingLearningPhase(day){
+ return Number(day)<=14 && !breathingRitualUnlocked();
+}
+
 function parseScores(){
  const out={};
  $$('.domain').forEach(d=>{
@@ -158,7 +174,13 @@ function cardHTML(x,i,plan){
 function render(){
  const hero=$('#spmTodayHero');if(!hero)return;const plan=buildToday();
  let box=$('#spmMultidomainToday',hero);if(!box){box=document.createElement('div');box.id='spmMultidomainToday';hero.appendChild(box)}
- box.innerHTML=`<div class="spm-md-head"><div><div class="spm-today-kicker">RUTA ADAPTATIVA</div><h3>Hoy SPM combina lo que más necesitas trabajar.</h3><p>Tu driver principal guía el día, pero los déficits secundarios también aportan prácticas cuando son relevantes. No necesitas trabajarlo todo a la vez.</p></div><span class="spm-md-chip">${plan.domains.length} áreas activas</span></div><div class="spm-md-grid">${plan.items.map((x,i)=>cardHTML(x,i,plan)).join('')}</div>`;
+ const unlocked=breathingRitualUnlocked();
+ const breathBlock=unlocked
+  ? '<div class="spm-breath-prep"><b>Preparación SPM · 2–3 min</b><span>Antes de entrenar, realiza tu respiración de regulación ya aprendida y bien tolerada. Esta preparación no cuenta como una de tus actividades principales.</span></div>'
+  : breathingLearningPhase(plan.day)
+    ? '<div class="spm-breath-learning"><b>Respiración todavía en fase de aprendizaje</b><span>Durante las primeras dos semanas SPM puede asignarte sesiones específicas para aprender la técnica, comprobar que la haces correctamente y confirmar que no te produce mareo ni malestar. Cuando esté validada, se convertirá en tu ritual breve antes de entrenar.</span></div>'
+    : '<div class="spm-breath-learning"><b>Respiración pendiente de validación</b><span>El ritual previo se activará cuando SPM confirme técnica adecuada y buena tolerancia.</span></div>';
+ box.innerHTML=`<div class="spm-md-head"><div><div class="spm-today-kicker">RUTA ADAPTATIVA</div><h3>Hoy SPM combina lo que más necesitas trabajar.</h3><p>Tu driver principal guía el día, pero los déficits secundarios también aportan prácticas cuando son relevantes. No necesitas trabajarlo todo a la vez.</p></div><span class="spm-md-chip">${plan.domains.length} áreas activas</span></div>${breathBlock}<div class="spm-md-grid">${plan.items.map((x,i)=>cardHTML(x,i,plan)).join('')}</div>`;
  $$('.spm-md-start',box).forEach((b,i)=>b.onclick=()=>{
    const x=plan.items[i];localStorage.setItem('spm_today_assignment_v1',JSON.stringify({...x,day:plan.day,origin:'dailyPlan',assignedAt:new Date().toISOString()}));
    window.dispatchEvent(new CustomEvent('spm:open-assigned-practice',{detail:{...x,day:plan.day,origin:'dailyPlan'}}));
@@ -179,7 +201,7 @@ document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.pha
 window.addEventListener('spm:adaptation',()=>setTimeout(refresh,180));
 document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,1300),{once:true});setTimeout(refresh,2100);
 const st=document.createElement('style');st.textContent=`
-.spm-md-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.spm-md-head h3{margin:3px 0 5px}.spm-md-head p{margin:0;color:var(--muted);line-height:1.45}.spm-md-chip{white-space:nowrap;padding:6px 9px;border:1px solid rgba(120,225,196,.35);border-radius:999px;color:#78e1c4;font-size:11px;font-weight:900}.spm-md-grid{display:grid;gap:9px;margin-top:12px}.spm-md-task{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.spm-md-num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#1e766e;color:#fff;font-weight:900}.spm-md-task small{color:#78e1c4;text-transform:uppercase;font-size:9px;font-weight:900;letter-spacing:.08em}.spm-md-task h4{margin:2px 0 4px}.spm-md-task p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}.spm-md-dose{margin-top:8px;padding:9px 10px;border-left:3px solid #f0c776;background:rgba(240,199,118,.07);border-radius:10px;font-size:11px;line-height:1.4}.spm-md-dose b,.spm-md-dose span{display:block}.spm-md-dose b{color:#f0c776;margin-bottom:3px}.spm-md-dose span{color:#d9e5e3}.spm-md-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.spm-md-meta span,.spm-md-domains span{font-size:10px;padding:4px 7px;border-radius:999px;background:rgba(120,225,196,.08);color:#bfeadd}.spm-md-domains{margin:0 0 12px;padding:10px;border-radius:12px;background:rgba(120,225,196,.06)}.spm-md-domains b{display:block;margin-bottom:7px}.spm-md-domains span{display:inline-block;margin:2px 4px 2px 0}@media(max-width:720px){.spm-md-head{flex-direction:column}.spm-md-task{grid-template-columns:32px 1fr}.spm-md-task .spm-md-start{grid-column:1/-1;width:100%}}`;
+.spm-md-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.spm-breath-prep,.spm-breath-learning{margin:12px 0;padding:11px 12px;border-radius:13px;line-height:1.45}.spm-breath-prep{background:rgba(120,225,196,.07);border:1px solid rgba(120,225,196,.28)}.spm-breath-learning{background:rgba(240,199,118,.06);border:1px solid rgba(240,199,118,.24)}.spm-breath-prep b,.spm-breath-prep span,.spm-breath-learning b,.spm-breath-learning span{display:block}.spm-breath-prep b{color:#78e1c4}.spm-breath-learning b{color:#f0c776}.spm-breath-prep span,.spm-breath-learning span{margin-top:3px;font-size:12px;color:#d9e5e3}.spm-md-head h3{margin:3px 0 5px}.spm-md-head p{margin:0;color:var(--muted);line-height:1.45}.spm-md-chip{white-space:nowrap;padding:6px 9px;border:1px solid rgba(120,225,196,.35);border-radius:999px;color:#78e1c4;font-size:11px;font-weight:900}.spm-md-grid{display:grid;gap:9px;margin-top:12px}.spm-md-task{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.spm-md-num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#1e766e;color:#fff;font-weight:900}.spm-md-task small{color:#78e1c4;text-transform:uppercase;font-size:9px;font-weight:900;letter-spacing:.08em}.spm-md-task h4{margin:2px 0 4px}.spm-md-task p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}.spm-md-dose{margin-top:8px;padding:9px 10px;border-left:3px solid #f0c776;background:rgba(240,199,118,.07);border-radius:10px;font-size:11px;line-height:1.4}.spm-md-dose b,.spm-md-dose span{display:block}.spm-md-dose b{color:#f0c776;margin-bottom:3px}.spm-md-dose span{color:#d9e5e3}.spm-md-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.spm-md-meta span,.spm-md-domains span{font-size:10px;padding:4px 7px;border-radius:999px;background:rgba(120,225,196,.08);color:#bfeadd}.spm-md-domains{margin:0 0 12px;padding:10px;border-radius:12px;background:rgba(120,225,196,.06)}.spm-md-domains b{display:block;margin-bottom:7px}.spm-md-domains span{display:inline-block;margin:2px 4px 2px 0}@media(max-width:720px){.spm-md-head{flex-direction:column}.spm-md-task{grid-template-columns:32px 1fr}.spm-md-task .spm-md-start{grid-column:1/-1;width:100%}}`;
 document.head.appendChild(st);
 window.SPM_MULTIDOMAIN_ENGINE_V1={buildToday,refresh};
 })();
