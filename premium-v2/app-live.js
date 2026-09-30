@@ -113,6 +113,7 @@ function scoreMap(){
 async function finishAssessment(){
  S.map=scoreMap();msg('Guardando tu evaluación y creando el plan…','good');
  const now=new Date().toISOString();
+ try{localStorage.setItem('spm_initial_assessment_snapshot_v1',JSON.stringify({version:'v1',date:now,motives:[...S.motives],answers:{...S.answers},map:JSON.parse(JSON.stringify(S.map))}));}catch(_){}
  const {data:a,error:ae}=await db.from('assessments').insert({user_id:S.user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:now}).select().single();
  if(ae){msg('No pudimos guardar la evaluación: '+ae.message,'danger');return}S.assessmentId=a.id;
  const safety=S.map.urgent.length?'urgent':S.map.review.length?'review':'none', flags=[...S.map.urgent,...S.map.review];
