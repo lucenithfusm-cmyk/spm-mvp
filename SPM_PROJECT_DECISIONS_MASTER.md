@@ -374,3 +374,27 @@ Algunas habilidades SPM requieren repetición deliberada para consolidar aprendi
 
 ### Regla de experiencia
 Siempre que una actividad repetitiva vuelva a aparecer, SPM debe poder explicar por qué se repite y qué habilidad concreta está consolidando.
+
+
+## 25. Respiración: aprendizaje primero, ritual diario después
+
+La respiración diafragmática no se convierte en ritual diario automático desde el Día 1.
+
+### Fase de aprendizaje (aprox. Días 1–14)
+- SPM distribuye sesiones educativas y prácticas específicas de respiración durante la primera y segunda semana.
+- El objetivo es enseñar técnica, conciencia corporal y regulación, no exigir una rutina perfecta desde el inicio.
+- Antes de convertirla en preparación diaria, SPM debe comprobar:
+  - educación completada;
+  - técnica adecuada;
+  - buena tolerancia;
+  - ausencia de mareo;
+  - ausencia de malestar relevante.
+- Si aparece mareo o malestar, no se activa el ritual diario; se ajusta la práctica o se suspende hasta reevaluación.
+
+### Fase de integración
+Cuando la técnica ya está aprendida y bien tolerada, SPM puede convertirla en una preparación breve de 2–3 minutos antes de “Hoy en SPM”.
+- No cuenta como una de las 2–3 actividades principales del día.
+- Funciona como regulación previa al entrenamiento.
+- En EP, piso pélvico, ansiedad u otras prácticas, la respiración puede ir integrada en la técnica y no necesita duplicarse como sesión completa.
+
+Principio SPM: primero aprender y validar la respiración; después automatizarla como herramienta de regulación.
