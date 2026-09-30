@@ -64,15 +64,33 @@ function phaseFor(day){return Math.max(1,Math.min(4,Math.ceil(day/7)))}
 function currentPrimary(){
  const t=$('#profileTitle')?.textContent?.trim()||'';return LABEL_TO_DOMAIN[t]||'lifestyle';
 }
+function desireSignals(){
+ try{
+  const p=JSON.parse(localStorage.getItem('spm_desire_profile_v1')||localStorage.getItem('spm_desire_profile')||'{}');
+  const out=[];
+  if(Number(p.desireBaseline)<=5 || p.fantasiesTrend==='decreased' || p.fantasiesTrend==='disminuyeron')out.push('desire');
+  const brakes=[...(p.brakes||[]),...(p.moodEnergySignals||[])].join(' ').toLowerCase();
+  if(/presi|ansiedad|estrés|stress|miedo|vigil/.test(brakes))out.push('confidence');
+  const rel=p.relationshipScores||{};
+  if([rel.communication,rel.closeness,rel.satisfaction,rel.connection].some(v=>Number.isFinite(Number(v))&&Number(v)<=5))out.push('wellbeing');
+  return out;
+ }catch(_){return[]}
+}
 function chooseDomains(scores,primary){
  const arr=Object.entries(scores).sort((a,b)=>a[1]-b[1]);
  const selected=[primary];
- for(const [k,v] of arr){if(k===primary)continue;if(selected.length>=3)break;const pv=scores[primary];if(v<=60 || (Number.isFinite(pv)&&v-pv<=18))selected.push(k)}
- return [...new Set(selected)];
+ for(const k of desireSignals()){if(!selected.includes(k))selected.push(k)}
+ for(const [k,v] of arr){if(k===primary||selected.includes(k))continue;if(selected.length>=3)break;const pv=scores[primary];if(v<=60 || (Number.isFinite(pv)&&v-pv<=18))selected.push(k)}
+ return [...new Set(selected)].slice(0,3);
+}
+function recentIds(){
+ try{return JSON.parse(localStorage.getItem('spm_multidomain_history_v1')||'[]').slice(-6).map(x=>x.id)}catch(_){return[]}
 }
 function pickFor(domain,phase,day,offset=0){
  const list=(CAT[domain]||[]).filter(x=>x.phase.includes(phase));if(!list.length)return null;
- return list[(day+offset)%list.length];
+ const recent=recentIds(),start=(day+offset)%list.length;
+ for(let i=0;i<list.length;i++){const x=list[(start+i)%list.length];if(!recent.includes(x.id))return x}
+ return list[start];
 }
 function sharedPick(phase,day,domains){
  const preferred=domains.includes('confidence')?'shared.breathing':domains.includes('erection')?'shared.recovery':domains.includes('ejaculation')?'shared.breathing':'shared.pelvic';
@@ -84,8 +102,18 @@ function buildToday(){
  const items=[];
  const p=pickFor(primary,phase,day,0);if(p)items.push({...p,domain:primary,role:'driver principal'});
  if(domains[1]){const s=pickFor(domains[1],phase,day,1);if(s)items.push({...s,domain:domains[1],role:'driver secundario'})}
- const sh=sharedPick(phase,day,domains);if(sh&&!items.some(x=>x.id===sh.id))items.push({...sh,domain:'shared',role:'modificador'});
- return {day,phase,primary,domains,scores,items:items.slice(0,3)};
+ if(domains[2] && day%2===1){
+   const t=pickFor(domains[2],phase,day,2);if(t&&!items.some(x=>x.id===t.id))items.push({...t,domain:domains[2],role:'área asociada'});
+ }else{
+   const sh=sharedPick(phase,day,domains);if(sh&&!items.some(x=>x.id===sh.id))items.push({...sh,domain:'shared',role:'modificador'});
+ }
+ const finalItems=items.slice(0,3);
+ try{
+   const hist=JSON.parse(localStorage.getItem('spm_multidomain_history_v1')||'[]');
+   const next=[...hist.filter(x=>x.day!==day),...finalItems.map(x=>({day,id:x.id,domain:x.domain}))].slice(-24);
+   localStorage.setItem('spm_multidomain_history_v1',JSON.stringify(next));
+ }catch(_){}
+ return {day,phase,primary,domains,scores,items:finalItems};
 }
 function cardHTML(x,i){return `<article class="spm-md-task" data-practice="${x.id}"><div class="spm-md-num">${i+1}</div><div><small>${x.role}</small><h4>${x.title}</h4><p>${x.why}</p><div class="spm-md-meta"><span>Mediremos: ${x.metric}</span><span>Origen: Hoy en SPM</span></div></div><button type="button" class="btn pri spm-md-start">Comenzar</button></article>`}
 function render(){
