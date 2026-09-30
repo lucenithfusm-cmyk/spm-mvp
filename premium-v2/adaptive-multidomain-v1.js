@@ -51,6 +51,10 @@ const SHARED=[
  {id:'shared.pelvic',title:'Piso pélvico inteligente',why:'Coordinar y relajar antes de fortalecer cuando corresponda.',metric:'facilidad para relajar',phase:[1,2,3,4]},
  {id:'shared.recovery',title:'Recuperación después de una caída',why:'Evitar que una fluctuación se convierta en un ciclo de presión.',metric:'recuperación y confianza',phase:[2,3,4]}
 ];
+const REPETITION_NOTE={
+ ejaculation:'Este entrenamiento se repite de forma intencional. La destreza aparece con práctica suficiente: reconocer antes el aumento de excitación, pausar con anticipación y recuperar control.',
+ pelvic:'El piso pélvico se entrena por repetición de buena calidad. La meta es mejorar conciencia, coordinación, técnica y relajación completa.'
+};
 function parseScores(){
  const out={};
  $$('.domain').forEach(d=>{
@@ -92,17 +96,43 @@ function pickFor(domain,phase,day,offset=0){
  for(let i=0;i<list.length;i++){const x=list[(start+i)%list.length];if(!recent.includes(x.id))return x}
  return list[start];
 }
+function intensiveMixed(domains){
+ return (domains.includes('erection')&&domains.includes('ejaculation')) || domains.filter(x=>['erection','ejaculation','desire','confidence'].includes(x)).length>=3;
+}
+function weeklyTarget(kind,domains){
+ if(kind==='ejaculation'||kind==='pelvic')return intensiveMixed(domains)?2:3;
+ return 7;
+}
+function weekAssignments(day){
+ try{
+  const week=Math.ceil(day/7),hist=JSON.parse(localStorage.getItem('spm_multidomain_history_v1')||'[]');
+  return hist.filter(x=>Number(x.day)!==day&&Math.ceil(Number(x.day||0)/7)===week);
+ }catch(_){return[]}
+}
+function atWeeklyLimit(kind,day,domains){
+ const hist=weekAssignments(day),limit=weeklyTarget(kind,domains);
+ if(kind==='ejaculation')return hist.filter(x=>x.domain==='ejaculation').length>=limit;
+ if(kind==='pelvic')return hist.filter(x=>x.id==='shared.pelvic').length>=limit;
+ return false;
+}
 function sharedPick(phase,day,domains){
  const preferred=domains.includes('confidence')?'shared.breathing':domains.includes('erection')?'shared.recovery':domains.includes('ejaculation')?'shared.breathing':'shared.pelvic';
- const valid=SHARED.filter(x=>x.phase.includes(phase));
+ const valid=SHARED.filter(x=>x.phase.includes(phase)&&!(x.id==='shared.pelvic'&&atWeeklyLimit('pelvic',day,domains)));
+ if(!valid.length)return null;
  return valid.find(x=>x.id===preferred)||valid[day%valid.length]||null;
 }
 function buildToday(){
  const day=currentDay(),phase=phaseFor(day),scores=parseScores(),primary=currentPrimary(),domains=chooseDomains(scores,primary);
  const items=[];
- const p=pickFor(primary,phase,day,0);if(p)items.push({...p,domain:primary,role:'driver principal'});
- if(domains[1]){const s=pickFor(domains[1],phase,day,1);if(s)items.push({...s,domain:domains[1],role:'driver secundario'})}
- if(domains[2] && day%2===1){
+ const canUseDomain=(domain)=>!(domain==='ejaculation'&&atWeeklyLimit('ejaculation',day,domains));
+ let p=canUseDomain(primary)?pickFor(primary,phase,day,0):null;
+ if(p)items.push({...p,domain:primary,role:'driver principal'});
+ else if(primary==='ejaculation'){
+   const alt=pickFor('confidence',phase,day,0)||sharedPick(phase,day,domains);
+   if(alt)items.push({...alt,domain:alt.id?.startsWith('shared.')?'shared':'confidence',role:'regulación complementaria',doseAdjusted:true});
+ }
+ if(domains[1]&&canUseDomain(domains[1])){const s=pickFor(domains[1],phase,day,1);if(s)items.push({...s,domain:domains[1],role:'driver secundario'})}
+ if(domains[2]&&day%2===1&&canUseDomain(domains[2])){
    const t=pickFor(domains[2],phase,day,2);if(t&&!items.some(x=>x.id===t.id))items.push({...t,domain:domains[2],role:'área asociada'});
  }else{
    const sh=sharedPick(phase,day,domains);if(sh&&!items.some(x=>x.id===sh.id))items.push({...sh,domain:'shared',role:'modificador'});
@@ -115,11 +145,20 @@ function buildToday(){
  }catch(_){}
  return {day,phase,primary,domains,scores,items:finalItems};
 }
-function cardHTML(x,i){return `<article class="spm-md-task" data-practice="${x.id}"><div class="spm-md-num">${i+1}</div><div><small>${x.role}</small><h4>${x.title}</h4><p>${x.why}</p><div class="spm-md-meta"><span>Mediremos: ${x.metric}</span><span>Origen: Hoy en SPM</span></div></div><button type="button" class="btn pri spm-md-start">Comenzar</button></article>`}
+function doseNote(x,plan){
+ if(x.domain==='ejaculation')return REPETITION_NOTE.ejaculation+' SPM puede programarlo hasta '+weeklyTarget('ejaculation',plan.domains)+' veces por semana según la carga total de tu plan.';
+ if(x.id==='shared.pelvic')return REPETITION_NOTE.pelvic+' SPM puede programarlo hasta '+weeklyTarget('pelvic',plan.domains)+' veces por semana según la carga total de tu plan.';
+ if(x.doseAdjusted)return 'Hoy SPM reduce una práctica repetitiva porque tu plan ya integra varias áreas. Menos volumen, misma intención de aprendizaje.';
+ return '';
+}
+function cardHTML(x,i,plan){
+ const note=doseNote(x,plan);
+ return `<article class="spm-md-task" data-practice="${x.id}"><div class="spm-md-num">${i+1}</div><div><small>${x.role}</small><h4>${x.title}</h4><p>${x.why}</p>${note?`<div class="spm-md-dose"><b>Por qué puede repetirse</b><span>${note}</span></div>`:''}<div class="spm-md-meta"><span>Mediremos: ${x.metric}</span><span>Origen: Hoy en SPM</span></div></div><button type="button" class="btn pri spm-md-start">Comenzar</button></article>`;
+}
 function render(){
  const hero=$('#spmTodayHero');if(!hero)return;const plan=buildToday();
  let box=$('#spmMultidomainToday',hero);if(!box){box=document.createElement('div');box.id='spmMultidomainToday';hero.appendChild(box)}
- box.innerHTML=`<div class="spm-md-head"><div><div class="spm-today-kicker">RUTA ADAPTATIVA</div><h3>Hoy SPM combina lo que más necesitas trabajar.</h3><p>Tu driver principal guía el día, pero los déficits secundarios también aportan prácticas cuando son relevantes. No necesitas trabajarlo todo a la vez.</p></div><span class="spm-md-chip">${plan.domains.length} áreas activas</span></div><div class="spm-md-grid">${plan.items.map(cardHTML).join('')}</div>`;
+ box.innerHTML=`<div class="spm-md-head"><div><div class="spm-today-kicker">RUTA ADAPTATIVA</div><h3>Hoy SPM combina lo que más necesitas trabajar.</h3><p>Tu driver principal guía el día, pero los déficits secundarios también aportan prácticas cuando son relevantes. No necesitas trabajarlo todo a la vez.</p></div><span class="spm-md-chip">${plan.domains.length} áreas activas</span></div><div class="spm-md-grid">${plan.items.map((x,i)=>cardHTML(x,i,plan)).join('')}</div>`;
  $$('.spm-md-start',box).forEach((b,i)=>b.onclick=()=>{
    const x=plan.items[i];localStorage.setItem('spm_today_assignment_v1',JSON.stringify({...x,day:plan.day,origin:'dailyPlan',assignedAt:new Date().toISOString()}));
    window.dispatchEvent(new CustomEvent('spm:open-assigned-practice',{detail:{...x,day:plan.day,origin:'dailyPlan'}}));
@@ -140,7 +179,7 @@ document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.pha
 window.addEventListener('spm:adaptation',()=>setTimeout(refresh,180));
 document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,1300),{once:true});setTimeout(refresh,2100);
 const st=document.createElement('style');st.textContent=`
-.spm-md-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.spm-md-head h3{margin:3px 0 5px}.spm-md-head p{margin:0;color:var(--muted);line-height:1.45}.spm-md-chip{white-space:nowrap;padding:6px 9px;border:1px solid rgba(120,225,196,.35);border-radius:999px;color:#78e1c4;font-size:11px;font-weight:900}.spm-md-grid{display:grid;gap:9px;margin-top:12px}.spm-md-task{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.spm-md-num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#1e766e;color:#fff;font-weight:900}.spm-md-task small{color:#78e1c4;text-transform:uppercase;font-size:9px;font-weight:900;letter-spacing:.08em}.spm-md-task h4{margin:2px 0 4px}.spm-md-task p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}.spm-md-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.spm-md-meta span,.spm-md-domains span{font-size:10px;padding:4px 7px;border-radius:999px;background:rgba(120,225,196,.08);color:#bfeadd}.spm-md-domains{margin:0 0 12px;padding:10px;border-radius:12px;background:rgba(120,225,196,.06)}.spm-md-domains b{display:block;margin-bottom:7px}.spm-md-domains span{display:inline-block;margin:2px 4px 2px 0}@media(max-width:720px){.spm-md-head{flex-direction:column}.spm-md-task{grid-template-columns:32px 1fr}.spm-md-task .spm-md-start{grid-column:1/-1;width:100%}}`;
+.spm-md-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.spm-md-head h3{margin:3px 0 5px}.spm-md-head p{margin:0;color:var(--muted);line-height:1.45}.spm-md-chip{white-space:nowrap;padding:6px 9px;border:1px solid rgba(120,225,196,.35);border-radius:999px;color:#78e1c4;font-size:11px;font-weight:900}.spm-md-grid{display:grid;gap:9px;margin-top:12px}.spm-md-task{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}.spm-md-num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#1e766e;color:#fff;font-weight:900}.spm-md-task small{color:#78e1c4;text-transform:uppercase;font-size:9px;font-weight:900;letter-spacing:.08em}.spm-md-task h4{margin:2px 0 4px}.spm-md-task p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}.spm-md-dose{margin-top:8px;padding:9px 10px;border-left:3px solid #f0c776;background:rgba(240,199,118,.07);border-radius:10px;font-size:11px;line-height:1.4}.spm-md-dose b,.spm-md-dose span{display:block}.spm-md-dose b{color:#f0c776;margin-bottom:3px}.spm-md-dose span{color:#d9e5e3}.spm-md-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.spm-md-meta span,.spm-md-domains span{font-size:10px;padding:4px 7px;border-radius:999px;background:rgba(120,225,196,.08);color:#bfeadd}.spm-md-domains{margin:0 0 12px;padding:10px;border-radius:12px;background:rgba(120,225,196,.06)}.spm-md-domains b{display:block;margin-bottom:7px}.spm-md-domains span{display:inline-block;margin:2px 4px 2px 0}@media(max-width:720px){.spm-md-head{flex-direction:column}.spm-md-task{grid-template-columns:32px 1fr}.spm-md-task .spm-md-start{grid-column:1/-1;width:100%}}`;
 document.head.appendChild(st);
 window.SPM_MULTIDOMAIN_ENGINE_V1={buildToday,refresh};
 })();
