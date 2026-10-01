@@ -5,7 +5,7 @@ const puppeteer=require('puppeteer-core'),assert=require('assert');
  const errors=[];
  async function load(viewport){
   const page=await browser.newPage();await page.setViewport(viewport);
-  page.on('pageerror',e=>errors.push('pageerror:'+e.message));page.on('console',m=>{if(m.type()==='error')errors.push('console:'+m.text())});
+  page.on('pageerror',e=>errors.push('pageerror:'+e.message));page.on('response',r=>{if(r.status()>=400&&!/favicon\.ico(?:\?|$)/.test(r.url()))errors.push('http '+r.status()+':'+r.url())});
   await page.goto('http://127.0.0.1:4173/premium-v2/de-review.html',{waitUntil:'networkidle0'});
   await page.waitForSelector('#dayGrid .dayCard');
   assert.equal(await page.$$eval('#dayGrid .dayCard',x=>x.length),28,'must render 28 DE interventions');
