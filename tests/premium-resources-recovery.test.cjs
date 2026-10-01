@@ -1,7 +1,8 @@
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const root=path.join(__dirname,'..','premium-v2'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
-const files=['spm-resources-content.js','spm-resources.css','spm-resources.js','spm-visual-cards-staging-v4.js','recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js','spm-inline-video-player.js'];
-for(const f of files){assert(fs.existsSync(path.join(root,f)),f+' missing');assert.doesNotThrow(()=>new Function(read(f)),f+' must parse');}
+const jsFiles=['spm-resources-content.js','spm-resources.js','spm-visual-cards-staging-v4.js','recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js','spm-inline-video-player.js'];
+for(const f of jsFiles){assert(fs.existsSync(path.join(root,f)),f+' missing');assert.doesNotThrow(()=>new Function(read(f)),f+' must parse');}
+assert(fs.existsSync(path.join(root,'spm-resources.css')),'spm-resources.css missing');
 const nutrition=['01-plato-spm.jpg','02-verduras.jpg','03-frutas.jpg','04-proteinas-saludables.jpg','05-legumbres-e-integrales.jpg','06-grasas-insaturadas.jpg','07-alimentos-y-bebidas-a-limitar.jpg'];
 for(const f of nutrition)assert(fs.existsSync(path.join(root,'assets/nutrition/cards-v1',f)),'nutrition asset missing '+f);
 const activity=['01-caminata-cardio-moderado.jpg','02-entrenamiento-fuerza.jpg','03-movilidad-flexibilidad.jpg','04-actividad-en-el-agua.jpg','05-bailar-y-moverte.jpg','06-piso-pelvico-kegel.jpg'];
