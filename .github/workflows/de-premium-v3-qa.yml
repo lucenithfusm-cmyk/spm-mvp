@@ -13,3 +13,11 @@ jobs:
           node-version: 22
       - name: Validate DE Premium V3
         run: node tests/de-premium-v3.test.cjs
+      - name: Install browser test harness
+        run: npm install --no-save puppeteer-core@24
+      - name: Start local staging server
+        run: python3 -m http.server 4173 >/tmp/de-server.log 2>&1 &
+      - name: Validate mobile and desktop DE experience
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: node tests/de-premium-browser.cjs
