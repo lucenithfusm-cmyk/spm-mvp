@@ -16,7 +16,10 @@ const AUDIO={
  partner:'assets/audio/recovery-patient-partner-es.mp3?v=20260921r22',
  next:'assets/audio/recovery-patient-next-es.mp3?v=20260921r22'
 };
+let pendingScenario='';
 function scenario(root){
+ const explicit=root?.dataset?.spmPatientScenario||pendingScenario;
+ if(AUDIO[explicit])return explicit;
  const s=(root.querySelector('.spm-v4-head h3')?.textContent||'').toLowerCase();
  if(s.includes('preservativo')||s.includes('condom'))return'condom';
  if(s.includes('antes de penetrar')||s.includes('before penetration'))return'before';
@@ -60,6 +63,7 @@ function hydrate(){
   });
  });
 }
+document.addEventListener('click',e=>{const b=e.target.closest?.('[data-scenario]');if(b&&AUDIO[b.dataset.scenario]){pendingScenario=b.dataset.scenario;setTimeout(run,0);setTimeout(run,90)}},true);
 const style=document.createElement('style');
 style.textContent='.spm-v4-card.patient .spm-v4-visual>img{display:none!important}.spm-v4-visual video.spm-patient-master,.spm-v4-card.doctor .spm-v4-visual>video{width:100%;height:100%;object-fit:cover;display:block;background:#0b2026}';
 document.head.appendChild(style);
