@@ -1,0 +1,23 @@
+name: DE Premium V3 QA
+on:
+  push:
+    branches: [ "feat/de-premium-final" ]
+  workflow_dispatch:
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate DE Premium V3
+        run: node tests/de-premium-v3.test.cjs
+      - name: Install browser test harness
+        run: npm install --no-save puppeteer-core@24
+      - name: Start local staging server
+        run: python3 -m http.server 4173 >/tmp/de-server.log 2>&1 &
+      - name: Validate mobile and desktop DE experience
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: node tests/de-premium-browser.cjs
