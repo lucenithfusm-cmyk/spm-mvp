@@ -459,3 +459,56 @@ La evaluación completa de SPM ocurre antes de iniciar el Día 1. El ciclo de 28
 El paciente debe sentir: “SPM ya me conoce y ahora me está entrenando”, no “pagué para responder formularios”.
 
 Principio SPM: preguntar menos, pero preguntar en el momento en que la respuesta pueda cambiar lo que hacemos después.
+
+
+## 29. Labs transversales: Sensate Focus, Conexión y Sueño
+
+SPM incorpora tres recursos transversales adicionales. Ninguno es un programa independiente de 28 días; son bibliotecas/intervenciones que el motor central asigna cuando aportan valor.
+
+### Sensate Focus
+- Recurso práctico, no cuestionario.
+- Se asigna especialmente ante presión/vigilancia, deseo responsivo, baja conexión, miedo a perder firmeza o necesidad de reconexión sensorial.
+- Prioriza contacto, presencia, curiosidad y reducción de meta.
+- Puede tener niveles I/II y versión individual de presencia corporal.
+- Se conecta con Recuperación después de una caída, Deseo, Ansiedad/Confianza, DE, EP y Conexión.
+- Debe medir presencia, presión, disfrute y utilidad para decidir repetir, progresar o reducir presión.
+
+### Conexión y pareja
+- Módulo Premium orientado a ejecución: recomendaciones, mini-retos, guiones y actividades.
+- No debe empezar con evaluación extensa.
+- Trabaja comunicación, cercanía, afecto no sexual, romance, novedad, ambiente, preferencias y fantasías con consentimiento.
+- Las actividades en pareja solo se asignan si el usuario desea involucrar a la pareja y existe una base segura para hacerlo.
+- Ante miedo, coerción, control o violencia no se recomiendan ejercicios conjuntos; se prioriza seguridad y apoyo profesional.
+
+### Sueño
+- Módulo breve de hábitos y recomendaciones prácticas.
+- No diagnostica trastornos del sueño ni prescribe tratamientos.
+- Incluye regularidad, rutina nocturna, pantallas/luz, ambiente, cafeína/alcohol, cena/líquidos, movimiento/luz diurna, siestas y manejo de despertares.
+- Debe señalar cuándo conviene evaluación profesional por ronquido fuerte frecuente, pausas respiratorias observadas/jadeos, somnolencia diurna marcada, insomnio persistente u otros síntomas relevantes.
+- Respiración se usa solo si la técnica ya está aprendida y bien tolerada.
+
+## 30. Recomendación diaria rotativa de bienestar
+
+Además de las 2–3 actividades clínicas/prácticas principales de “Hoy en SPM”, el programa muestra UNA recomendación breve de bienestar. No cuenta como actividad principal y no debe aumentar la carga del usuario.
+
+Secuencia fija de categorías:
+- Día 1: Nutrición
+- Día 2: Movimiento
+- Día 3: Sueño
+- Día 4: Nutrición
+- Día 5: Movimiento
+- Día 6: Sueño
+- y así sucesivamente durante el ciclo.
+
+Dentro de cada categoría, el consejo cambia cada vez que vuelve a aparecer para evitar sensación de repetición.
+
+Reglas:
+- Debe ser accionable, breve y segura.
+- No presentar un alimento, ejercicio o hábito como tratamiento directo de una disfunción sexual.
+- Nutrición: variedad, proteína según necesidades individuales, vegetales/frutas, hidratación, reducción razonable de ultraprocesados y hábitos cardioprotectores.
+- Movimiento: sumar actividad gradual según tolerancia; no imponer intensidad a personas con limitaciones o señales de seguridad.
+- Sueño: recomendaciones de hábitos y ambiente, no tratamiento médico.
+- Cada tarjeta incluye acceso permanente a su biblioteca: Nutrición SPM, Movimiento SPM o Sueño SPM.
+- El motor puede omitir o adaptar un consejo si existe una restricción clínica o contextual.
+
+Principio SPM: una recomendación pequeña y aplicable al día, sin competir con el entrenamiento principal.
