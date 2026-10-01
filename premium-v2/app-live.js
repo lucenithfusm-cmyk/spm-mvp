@@ -5,6 +5,15 @@ const db=window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+// Shared resource integration surface. Resource records never modify scores or daily completion.
+window.SPM_RESOURCE_CONTEXT=()=>{
+ if(!S.user||!S.planId||!S.map)return null;
+ return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
+};
+window.SPM_RESOURCE_RECORDS={
+ async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
+ async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
+};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
  ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
@@ -69,7 +78,7 @@ async function restore(){
  ]);
  if(a){S.motives=a.motives||[];S.answers=a.answers||{}}
  if(m){S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]}}
- S.completed=new Set((c||[]).map(x=>x.day_number));S.checkins=d||[];
+ S.completed=new Set((c||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=d||[];
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
 }
