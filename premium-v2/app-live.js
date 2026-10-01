@@ -7,7 +7,10 @@ const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 // Shared resource integration surface. Resource records never modify scores or daily completion.
 window.SPM_RESOURCE_CONTEXT=()=>{
- if(!S.user||!S.planId||!S.map)return null;
+ if(!S.user)return null;
+ const r=window.SPM_RESTORED_CONTEXT;
+ if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Number(r.plan.current_day)||1,answers:r.assessment?.answers||{},motives:r.assessment?.motives||[],primary:r.map?.primary_domain,safety:r.map?.safety_level||'none',flags:r.map?.safety_flags||[],completed:[...(r.done||[])],checkins:r.checkins||[]};
+ if(!S.planId||!S.map)return null;
  return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
 };
 window.SPM_RESOURCE_RECORDS={
