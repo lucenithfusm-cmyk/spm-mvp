@@ -13,6 +13,17 @@ await p.click('[data-sr-close]');
 await p.click('[data-open="movement"]');await p.waitForSelector('.sr-dialog[open]');await p.select('#srEnergy','moderate');await p.waitForFunction(()=>document.querySelector('.spm-activity-v4'));
 const srcs=await p.evaluate(()=>({walk:document.querySelector('[data-activity="walk"] .spm-activity-v4')?.getAttribute('src'),bike:document.querySelector('[data-activity="bike"] .spm-activity-v4')?.getAttribute('src')}));
 assert(srcs.walk&&srcs.bike&&srcs.walk!==srcs.bike,'bike repeats walking image');assert(srcs.bike.includes('07-bicicleta-premium.svg'),'bike final asset missing');await p.$eval('[data-activity="bike"]',e=>e.scrollIntoView({block:'center'}));await p.click('[data-activity="bike"]');await p.waitForSelector('#srActivityDetail .sr-card');const bikeText=await p.$eval('#srActivityDetail',e=>e.textContent);assert(/sillín/i.test(bikeText)&&/entumecimiento perineal/i.test(bikeText),'bike safety detail missing');await p.click('[data-sr-close]');
+
+// Wellness library navigation
+await p.click('#openWellnessLibrary');await p.waitForSelector('.spm-wellness-modal[open]');assert.equal(await p.$eval('.spm-wellness-card',x=>x.length),3,'wellness library must show Nutrition Movement Sleep');
+await p.click('[data-wellness-open="nutrition"]');await p.waitForSelector('.sr-dialog[open]');assert(/Biblioteca Bienestar/.test(await p.$eval('.sr-module-nav',e=>e.textContent)),'nutrition module back to wellness missing');
+await p.click('[data-food="protein"]');await p.waitForSelector('#srFoodDetail .sr-nut-detail');assert(/Volver a Nutrición/.test(await p.$eval('#srFoodDetail .sr-detail-back',e=>e.textContent)),'nutrition detail back missing');
+await p.click('#srFoodDetail [data-sr-module-home]');await p.waitForSelector('.spm-plate-premium');assert(!await p.$('#srFoodDetail .sr-nut-detail'),'nutrition detail did not return to module home');
+await p.click('[data-sr-exit]');await p.waitForSelector('.spm-wellness-modal[open]');assert(/Bienestar/.test(await p.$eval('#spmWellnessTitle',e=>e.textContent)),'nutrition did not return to wellness library');
+await p.click('[data-wellness-open="movement"]');await p.waitForSelector('.sr-dialog[open]');await p.select('#srEnergy','moderate');await p.$eval('[data-activity="bike"]',e=>e.scrollIntoView({block:'center'}));await p.click('[data-activity="bike"]');await p.waitForSelector('#srActivityDetail .sr-card');assert(/Volver a Movimiento/.test(await p.$eval('#srActivityDetail .sr-detail-back',e=>e.textContent)),'movement detail back missing');
+await p.click('#srActivityDetail [data-sr-module-home]');assert(!await p.$('#srActivityDetail .sr-card'),'movement detail did not return to module home');
+await p.click('[data-sr-exit]');await p.waitForSelector('.spm-wellness-modal[open]');await p.click('[data-wellness-close]');
+
 // Wellness buttons open correct resource
 await p.click('[data-day="1"]');await p.click('#spmWellnessOpen');await p.waitForSelector('.sr-dialog[open]');assert(/Plato SPM/.test(await p.$eval('.sr-dialog',e=>e.textContent)),'day 1 did not open nutrition');await p.click('[data-sr-close]');
 await p.click('[data-day="2"]');await p.click('#spmWellnessOpen');await p.waitForSelector('.sr-dialog[open]');assert(/Movimiento y Rendimiento/.test(await p.$eval('.sr-dialog',e=>e.textContent)),'day 2 did not open movement');await p.click('[data-sr-close]');
