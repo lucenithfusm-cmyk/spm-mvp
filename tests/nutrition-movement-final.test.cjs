@@ -17,5 +17,5 @@ assert(H.includes('OASIS DE BIENESTAR')&&H.includes('tone-nutrition')&&H.include
 assert(S.includes('slNightVisual')&&S.includes('const ICON=')&&S.includes('const TONE='),'Sleep visual Oasis layer missing');
 assert(W.includes("const ORDER=['nutrition','movement','sleep']"),'wellness rotation must be Nutrition Movement Sleep');
 assert(W.includes('spm-wellness-tip-icon')&&W.includes('data-category'),'daily Wellness visual state missing');
-for(const s of ['spm-nutrition-premium-images-v1.js?v=20261001-oasis1','sleep-library-v1.js?v=20261001-oasis1','wellness-library-v1.js?v=20261001-oasis1','wellness-daily-tip-v1.js?v=20261001-oasis1'])assert(L.includes(s),'live cache wiring missing '+s);
+for(const s of ['spm-nutrition-premium-images-v1.js?v=20261002-wellness-final','sleep-library-v1.js?v=20261002-wellness-final','wellness-library-v1.js?v=20261002-wellness-final','wellness-daily-tip-v1.js?v=20261002-wellness-final'])assert(L.includes(s),'live cache wiring missing '+s);
 console.log('Wellness Oasis static QA OK');
