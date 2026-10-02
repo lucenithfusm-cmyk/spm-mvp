@@ -5,6 +5,29 @@ const db=window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+window.SPM_RESTORE_AUTHORITY_V3=true;
+const restoreState={running:false,complete:false,hasPlan:false};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function restoreOverlay(show=true,text='Restaurando tu programa SPM…'){
+ let el=$('spmRestoreOverlay');
+ if(show&&!el){
+  el=document.createElement('div');el.id='spmRestoreOverlay';el.setAttribute('aria-live','polite');
+  el.innerHTML='<div class="spmRestoreCard"><div class="spmRestoreSpinner" aria-hidden="true"></div><b></b><p>Estamos recuperando tu evaluación, Performance Map y avance guardado.</p></div>';
+  const st=document.createElement('style');st.id='spmRestoreOverlayCSS';st.textContent='#spmRestoreOverlay{position:fixed;inset:0;z-index:65000;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 35%,rgba(117,223,196,.12),transparent 34%),#041015;color:#eef8f6}.spmRestoreCard{width:min(430px,92vw);padding:25px;border:1px solid #31545c;border-radius:22px;background:linear-gradient(145deg,#0a2530,#07161c);text-align:center;box-shadow:0 28px 80px #0008}.spmRestoreSpinner{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;border:3px solid #31515a;border-top-color:#78dfc5;animation:spmRestoreSpin .9s linear infinite}.spmRestoreCard b{display:block;font-size:20px}.spmRestoreCard p{margin:8px 0 0;color:#a9bec0;line-height:1.5}@keyframes spmRestoreSpin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spmRestoreSpinner{animation:none}}';
+  document.head.appendChild(st);document.body.appendChild(el);
+ }
+ if(el){const b=el.querySelector('b');if(b)b.textContent=text;el.hidden=!show;}
+}
+async function withRetry(task,attempts=3){
+ let lastError=null;
+ for(let i=0;i<attempts;i++){
+  const result=await task();
+  if(!result?.error)return result;
+  lastError=result.error;
+  if(i<attempts-1)await wait(300*(i+1));
+ }
+ throw lastError||new Error('No fue posible recuperar los datos guardados.');
+}
 // Shared resource integration surface. Resource records never modify scores or daily completion.
 window.SPM_RESOURCE_CONTEXT=()=>{
  if(!S.user)return null;
@@ -66,26 +89,65 @@ async function finishRecovery(){
  msg('Contraseña actualizada correctamente. Ya puedes continuar con SPM.','good');
 }
 async function enterApp(){
- show('appScreen'); $('who').textContent=S.user.email||'Usuario'; renderMotives(); await ensureProfile(); await restore(); renderMotives();
+ show('appScreen');$('who').textContent=S.user.email||'Usuario';renderMotives();restoreOverlay(true);
+ try{
+  await ensureProfile();
+  const restored=await restore();
+  if(!restored&&!restoreState.hasPlan)renderMotives();
+ }catch(error){
+  console.error('SPM authoritative restore',error);
+  msg('No pudimos terminar de restaurar tu programa. Tus datos siguen guardados; vuelve a intentar en unos segundos.','warn');
+ }finally{restoreOverlay(false);}
 }
-async function ensureProfile(){await db.from('profiles').upsert({id:S.user.id,alias:(S.user.email||'usuario').split('@')[0],locale:'es'},{onConflict:'id'})}
+async function ensureProfile(){
+ const {error}=await db.from('profiles').upsert({id:S.user.id,alias:(S.user.email||'usuario').split('@')[0],locale:'es'},{onConflict:'id'});
+ if(error)console.warn('SPM profile sync',error);
+}
 async function restore(){
- const {data:plans}=await db.from('plans').select('*').eq('user_id',S.user.id).eq('status','active').order('created_at',{ascending:false}).limit(1);
- if(!plans?.length){resetForAssessment();return}
- const p=plans[0];S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
- const [{data:a},{data:m},{data:c},{data:d}]=await Promise.all([
-   db.from('assessments').select('*').eq('id',S.assessmentId).maybeSingle(),
-   db.from('performance_maps').select('*').eq('id',S.mapId).maybeSingle(),
-   db.from('activity_completions').select('*').eq('plan_id',S.planId),
-   db.from('daily_checkins').select('*').eq('plan_id',S.planId).order('day_number')
- ]);
- if(a){S.motives=a.motives||[];S.answers=a.answers||{}}
- if(m){S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]}}
- S.completed=new Set((c||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=d||[];
- ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
- nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
+ if(restoreState.running)return restoreState.hasPlan;
+ restoreState.running=true;
+ try{
+  const {data:plans}=await withRetry(()=>db.from('plans').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}));
+  if(!plans?.length){restoreState.complete=true;restoreState.hasPlan=false;resetForAssessment(true);return false}
+  const ranked=[...plans].sort((a,b)=>{
+   const active=(b.status==='active')-(a.status==='active');
+   if(active)return active;
+   const day=(Number(b.current_day)||1)-(Number(a.current_day)||1);
+   if(day)return day;
+   return new Date(b.created_at)-new Date(a.created_at);
+  });
+  let p=null,a=null,m=null;
+  for(const candidate of ranked){
+   if(!candidate.assessment_id||!candidate.performance_map_id)continue;
+   const [ar,mr]=await Promise.all([
+    withRetry(()=>db.from('assessments').select('*').eq('id',candidate.assessment_id).eq('user_id',S.user.id).maybeSingle()),
+    withRetry(()=>db.from('performance_maps').select('*').eq('id',candidate.performance_map_id).eq('user_id',S.user.id).maybeSingle())
+   ]);
+   if(ar.data&&mr.data){p=candidate;a=ar.data;m=mr.data;break}
+  }
+  if(!p)throw new Error('Se encontró tu cuenta, pero no un conjunto completo de evaluación, Performance Map y plan.');
+  S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
+  const [cr,dr]=await Promise.all([
+   withRetry(()=>db.from('activity_completions').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId)),
+   withRetry(()=>db.from('daily_checkins').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId).order('day_number'))
+  ]);
+  S.motives=a.motives||[];S.answers=a.answers||{};
+  S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
+  S.completed=new Set((cr.data||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=dr.data||[];
+  restoreState.complete=true;restoreState.hasPlan=true;
+  window.SPM_RESTORE_COMPLETE=true;
+  window.SPM_RESTORED_CONTEXT={db,uid:S.user.id,session:null,plan:p,assessment:a,map:m,done:S.completed,checkins:S.checkins};
+  ['ageCard','motiveCard','quizCard'].forEach(id=>{if($(id))$(id).hidden=true});
+  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>{if($(id))$(id).disabled=false});
+  S.phase=Math.max(1,Math.min(4,Math.ceil((Number(p.current_day)||1)/7)));
+  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg(`Tu Performance Map fue restaurado. Tu programa continúa en el día ${Number(p.current_day)||1}.`,'good');
+  return true;
+ }finally{restoreState.running=false;}
 }
-function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function resetForAssessment(force=false){
+ if(!force&&(restoreState.running||restoreState.hasPlan||window.SPM_RESTORED_CONTEXT?.plan?.id))return;
+ S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;
+}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
  motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${t}</b>`;fragment.appendChild(b)});
@@ -187,7 +249,7 @@ function renderProgress(){
  const chart=$('chart');chart.innerHTML='';S.checkins.slice(-14).forEach(x=>{const c=document.createElement('div');c.className='col';c.style.height=`${Math.max(8,(Number(x.confidence)||0)*10)}%`;c.dataset.v=`D${x.day_number}: ${x.confidence}`;chart.appendChild(c)});
  $('savedState').textContent=S.planId?'Guardado en la nube ✓':'Aún sin plan';
 }
-async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
+async function signOut(){await db.auth.signOut();S.user=null;restoreState.running=false;restoreState.complete=false;restoreState.hasPlan=false;window.SPM_RESTORE_COMPLETE=false;window.SPM_RESTORED_CONTEXT=null;show('authScreen');resetForAssessment(true);}
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive]');if(button&&motiveGrid.contains(button))selectMotive(button.dataset.motive)});
@@ -195,6 +257,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg('Selecciona al menos un motivo.','warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?'Escribe una respuesta para continuar.':'Selecciona una respuesta.','warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
- document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
+ document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{restoreState.hasPlan=false;window.SPM_RESTORED_CONTEXT=null;resetForAssessment(true);hideMsg()};boot();
 });
 })();
