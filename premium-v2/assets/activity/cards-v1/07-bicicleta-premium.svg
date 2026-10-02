@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
+<title id="t">Bicicleta SPM</title><desc id="d">Tarjeta Premium de ciclismo y rendimiento</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061820"/><stop offset=".56" stop-color="#0b3038"/><stop offset="1" stop-color="#07151b"/></linearGradient>
+ <radialGradient id="glow" cx=".68" cy=".25" r=".8"><stop stop-color="#59d3c0" stop-opacity=".28"/><stop offset="1" stop-color="#59d3c0" stop-opacity="0"/></radialGradient>
+ <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#173943"/><stop offset="1" stop-color="#071318"/></linearGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1200" height="800" rx="44" fill="url(#bg)"/><rect width="1200" height="800" rx="44" fill="url(#glow)"/>
+<circle cx="910" cy="130" r="160" fill="#72dec6" opacity=".06" filter="url(#soft)"/>
+<path d="M0 620C230 545 420 585 610 560C835 530 1020 570 1200 515V800H0Z" fill="url(#road)"/>
+<path d="M0 648C255 584 420 620 614 590C835 555 1030 602 1200 550" fill="none" stroke="#78dfc5" stroke-opacity=".24" stroke-width="8"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="430" cy="574" r="128" stroke="#9ce8d8" stroke-width="22"/><circle cx="817" cy="574" r="128" stroke="#9ce8d8" stroke-width="22"/>
+ <path d="M430 574L553 382L682 574H430M682 574L817 574L726 393M553 382H698M553 382L657 471" stroke="#d6f4ec" stroke-width="25"/>
+ <path d="M708 379L762 352M530 356L477 356" stroke="#d6f4ec" stroke-width="21"/>
+ <circle cx="657" cy="471" r="19" stroke="#78dfc5" stroke-width="12"/>
+</g>
+<g>
+ <circle cx="616" cy="180" r="64" fill="#c98963"/><path d="M556 174C560 99 678 91 690 176C657 145 598 144 556 174Z" fill="#162a31"/>
+ <path d="M606 247L552 366L640 422L716 326L667 247Z" fill="#1f8791"/><path d="M585 270L554 363M653 269L704 326" stroke="#8ee2d2" stroke-width="28" stroke-linecap="round"/>
+ <path d="M557 363L496 456M640 421L693 518" stroke="#253c43" stroke-width="32" stroke-linecap="round"/>
+ <path d="M494 456L435 506M693 518L762 543" stroke="#101d22" stroke-width="25" stroke-linecap="round"/>
+</g>
+<g transform="translate(70 66)">
+ <text x="0" y="0" dominant-baseline="hanging" fill="#f3faf8" font-family="Arial,Helvetica,sans-serif" font-size="58" font-weight="800">Bicicleta</text>
+ <text x="0" y="78" dominant-baseline="hanging" fill="#8fe3d0" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="700" letter-spacing="3">MOVIMIENTO · SPM PREMIUM</text>
+ <text x="0" y="128" dominant-baseline="hanging" fill="#bfd3d4" font-family="Arial,Helvetica,sans-serif" font-size="28">Cardio de bajo impacto · ritmo sostenible</text>
+</g>
+<g transform="translate(865 68)"><circle cx="88" cy="88" r="76" fill="#09242a" stroke="#78dfc5" stroke-width="4"/><text x="88" y="80" text-anchor="middle" fill="#f1faf8" font-family="Arial" font-size="42" font-weight="800">SPM</text><text x="88" y="112" text-anchor="middle" fill="#78dfc5" font-family="Arial" font-size="17" font-weight="700">PREMIUM</text></g>
+</svg>
