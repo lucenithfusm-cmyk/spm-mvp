@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><title>SPM Restore QA</title><style>.screen[hidden]{display:none!important}.panel{display:none}.panel.on{display:block}.appBoot[hidden]{display:none!important}.appBoot{position:fixed;inset:0;background:#000;color:#fff;z-index:999}</style></head><body>
+<section id="authScreen" class="screen" hidden>
+<input id="email"><input id="password"><button id="authBtn"></button><button id="signupBtn"></button><button id="forgotBtn"></button><div id="authStatus"></div>
+</section>
+<section id="appScreen" class="screen" hidden>
+<div id="appBoot" class="appBoot" hidden><span id="appBootText"></span></div>
+<span id="who"></span><span id="savedState"></span><button id="logoutBtn"></button><div id="status" hidden></div>
+<button id="navMap" class="navbtn" data-panel="map" disabled></button><button id="navPlan" class="navbtn" data-panel="plan" disabled></button><button id="navCoach" class="navbtn" data-panel="coach" disabled></button><button id="navProgress" class="navbtn" data-panel="progressPanel" disabled></button><button id="newAssessment" class="navbtn"></button>
+<section id="intake" class="panel on"><div id="ageCard"></div><div id="motiveCard" hidden><div id="motiveGrid"></div><button id="motiveNext"></button></div><div id="quizCard" hidden><span id="qCount"></span><i id="prog"></i><span id="qSection"></span><div id="qbox"></div><button id="qBack"></button><button id="qNext"></button></div><button data-age="1"></button></section>
+<section id="map" class="panel"><div id="safetyBox"></div><div id="scoreRing"></div><span id="scoreValue"></span><h2 id="profileTitle"></h2><p id="profileExplain"></p><div id="domainGrid"></div><div id="whyList"></div><button id="goPlan"></button></section>
+<section id="plan" class="panel"><div id="phaseTabs"></div><div id="weekIntro"></div><div id="dayGrid"></div></section>
+<section id="coach" class="panel"><select id="coachDay"></select><input id="sleep" value="6"><input id="stress" value="5"><input id="confidence" value="6"><input id="desire" value="6"><input id="outcome" value="6"><select id="sexualActivity"><option value="0"></option></select><select id="completed"><option value="1"></option></select><select id="newFlag"><option value="0"></option></select><textarea id="note"></textarea><button id="coachSave"></button><div id="coachDecision"></div></section>
+<section id="progressPanel" class="panel"><b id="stChecks"></b><b id="stAdh"></b><b id="stConf"></b><b id="stOutcome"></b><b id="stDecision"></b><div id="chart"></div></section>
+</section>
+<script>
+window.ENGINE={assessment:{questions:[]}};
+window.SPM_MODULES={
+ profiles:{erection:{label_es:'Rendimiento eréctil'},ejaculation:{label_es:'Control eyaculatorio'}},
+ phases:[{id:1,name_es:'Preparar',intro_es:'Inicio',days:[1,2,3,4,5,6,7]}],
+ days:[{d:1,title_es:'Día uno',learn_es:'Aprender',practice_es:'Practicar',measure_es:'Medir',apply_es:'Aplicar',complete_es:'Completar'}]
+};
+const user={id:'u1',email:'de@test.local'};
+const data={
+ plans:[
+  {id:'broken-active',user_id:'u1',status:'active',assessment_id:'missing-a',performance_map_id:'missing-m',current_day:1,created_at:'2026-10-02T10:00:00Z'},
+  {id:'good-plan',user_id:'u1',status:'completed',assessment_id:'a1',performance_map_id:'m1',route_key:'erection',current_day:11,created_at:'2026-09-20T10:00:00Z'}
+ ],
+ assessments:{a1:{id:'a1',motives:['erection'],answers:{q:1}}},
+ maps:{m1:{id:'m1',primary_domain:'erection',secondary_domain:'confidence',spm_score:72,domain_scores:{erection:62,confidence:70},safety_level:'none',safety_flags:[]}},
+ completions:[{plan_id:'good-plan',day_number:1,module_key:'daily_practice'}],
+ checkins:[{plan_id:'good-plan',day_number:1,confidence:6,outcome:6,decision_code:'maintain'}]
+};
+function builder(table){
+ let filters={};
+ const api={
+  select(){return api},insert(){return api},upsert(){return Promise.resolve({data:null,error:null})},update(){return api},
+  eq(k,v){filters[k]=v;return api},like(){return api},order(){return api},limit(){return api},
+  maybeSingle(){
+   if(table==='assessments')return Promise.resolve({data:data.assessments[filters.id]||null,error:null});
+   if(table==='performance_maps')return Promise.resolve({data:data.maps[filters.id]||null,error:null});
+   return Promise.resolve({data:null,error:null});
+  },
+  then(resolve,reject){
+   let out=[];
+   if(table==='plans')out=data.plans.filter(x=>!filters.user_id||x.user_id===filters.user_id);
+   if(table==='activity_completions')out=data.completions.filter(x=>!filters.plan_id||x.plan_id===filters.plan_id);
+   if(table==='daily_checkins')out=data.checkins.filter(x=>!filters.plan_id||x.plan_id===filters.plan_id);
+   return Promise.resolve({data:out,error:null}).then(resolve,reject);
+  }
+ };
+ return api;
+}
+window.supabase={createClient(){return{
+ auth:{
+  getSession:async()=>({data:{session:{user}},error:null}),
+  onAuthStateChange(){return{data:{subscription:{unsubscribe(){}}}}},
+  signInWithPassword:async()=>({data:{user,session:{user}},error:null}),
+  signUp:async()=>({data:{user,session:{user}},error:null}),signOut:async()=>({error:null}),
+  resetPasswordForEmail:async()=>({error:null}),updateUser:async()=>({error:null})
+ },
+ from:builder
+}}};
+</script>
+<script src="/premium-v2/app-live.js?v=restore-qa"></script>
+</body></html>

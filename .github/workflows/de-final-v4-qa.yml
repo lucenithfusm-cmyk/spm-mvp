@@ -1,0 +1,27 @@
+name: DE Final V4 QA
+on:
+  push:
+    branches: [ "feat/erectile-dysfunction-final-v4" ]
+  workflow_dispatch:
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate authoritative DE architecture
+        run: |
+          node tests/de-final-v4.test.cjs
+          node tests/de-auth-restore.test.cjs
+      - name: Install browser QA
+        run: npm install --no-save puppeteer-core@24
+      - name: Start local review
+        run: python3 -m http.server 4173 >/tmp/de-final-v4.log 2>&1 &
+      - name: Validate 28-day DE Premium flow
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: |
+          node tests/de-final-v4-browser.cjs
+          node tests/de-auth-restore-browser.cjs

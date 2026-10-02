@@ -1,0 +1,18 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');
+const root=path.join(__dirname,'..','premium-v2'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
+for(const f of ['erectile-function-route.js','erectile-function-premium.js','erectile-platform-v2.js','erectile-guided-v3.js','erectile-final-v4.js'])assert.doesNotThrow(()=>new Function(read(f)),f+' must parse');
+const route=read('erectile-function-route.js'),v4=read('erectile-final-v4.js'),live=read('live.html'),videos=read('spm-video-library.js');
+const days={
+1:['PREPARAR','Línea de base: EHS + IIEF-5','baseline'],2:['PREPARAR','Comprende tu respuesta eréctil','education'],3:['PREPARAR','Regulación autonómica','regulation'],4:['PREPARAR','Piso pélvico: reconocer antes de entrenar','pelvic'],5:['PREPARAR','Mapa de estímulos facilitadores e inhibidores','stimuli'],6:['PREPARAR','Ansiedad de rendimiento','anxiety'],7:['PREPARAR','Revisión de Semana 1','review'],
+8:['ACTIVAR','Activación y condiciones favorables','activation'],9:['ACTIVAR','Movimiento y salud vascular','aerobic'],10:['ACTIVAR','Piso pélvico guiado','pelvic'],11:['ACTIVAR','Sueño, estrés y recuperación','habits'],12:['ACTIVAR','Preparación mental antes del encuentro','preencounter'],13:['ACTIVAR','Reducir la vigilancia de la erección','attention'],14:['ACTIVAR','Revisión de Semana 2 + EHS','review'],
+15:['APLICAR','Foco sensorial','sensate'],16:['APLICAR','Aplicar sin convertirlo en examen','application'],17:['APLICAR','Exposición gradual','exposure'],18:['APLICAR','Comunicación con la pareja','partner'],19:['APLICAR','Regulación durante intimidad','regulation'],20:['APLICAR','Recuperación ante una fluctuación','recovery'],21:['APLICAR','Revisión de Semana 3 + EHS','review'],
+22:['CONSOLIDAR','Tus herramientas que mejor funcionan','toolkit'],23:['CONSOLIDAR','Flexibilidad eréctil','flexibility'],24:['CONSOLIDAR','Preparación preencuentro','preencounter'],25:['CONSOLIDAR','Práctica integrada','application'],26:['CONSOLIDAR','Preparar el siguiente ciclo','next'],27:['CONSOLIDAR','Resumen de evolución','summary'],28:['CONSOLIDAR','Reevaluación final: EHS + IIEF-5','final']};
+for(const [d,[phase,title,type]] of Object.entries(days)){const needle=d+":['"+phase+"','"+title+"','"+type+"']";assert(route.includes(needle),'authoritative DE day changed: '+d+' '+title)}
+assert(!live.includes('erectile-library-v3.js'),'alternate DE map must not load');
+assert(!live.includes('erectile-central-v3.js'),'alternate DE central layer must not load');
+for(const s of ['erectile-function-route.js?v=20261002-de4','erectile-function-premium.js?v=20261002-de4','erectile-guided-v3.js?v=20261002-de4','erectile-final-v4.js?v=20261002-de4'])assert(live.includes(s),'live missing '+s);
+for(const [d,k] of [[4,'pelvic'],[8,'wellness'],[9,'movement'],[10,'pelvic'],[11,'sleep'],[20,'recovery']])assert(v4.includes(d+":{kind:'"+k+"'"),'central reuse missing day '+d);
+assert(v4.includes("window.SPM_RESOURCES.open('recovery'")&&v4.includes("window.SPM_RESOURCES.open('movement'")&&v4.includes('SPM_SLEEP_LIBRARY_V1')&&v4.includes('SPM_WELLNESS_LIBRARY_V1'),'SPM Central bridges incomplete');
+assert(v4.includes('spm_de_result_v4'),'DE V4 result contract missing');
+for(const f of ['dr-spm-vascular-content.mp4','dr-spm-metabolic-content.mp4','dr-spm-medications-content.mp4','dr-spm-performance-anxiety-content.mp4'])assert(videos.includes(f),'Doctor SPM final video missing '+f);
+console.log('DE Final V4 static QA OK: one 28-day map, Premium V4, SPM Central reuse and Doctor SPM.');
