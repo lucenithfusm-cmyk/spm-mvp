@@ -15,7 +15,7 @@ const srcs=await p.evaluate(()=>({walk:document.querySelector('[data-activity="w
 assert(srcs.walk&&srcs.bike&&srcs.walk!==srcs.bike,'bike repeats walking image');assert(srcs.bike.includes('07-bicicleta-premium.svg'),'bike final asset missing');await p.$eval('[data-activity="bike"]',e=>e.scrollIntoView({block:'center'}));await p.click('[data-activity="bike"]');await p.waitForSelector('#srActivityDetail .sr-card');const bikeText=await p.$eval('#srActivityDetail',e=>e.textContent);assert(/sillín/i.test(bikeText)&&/entumecimiento perineal/i.test(bikeText),'bike safety detail missing');await p.click('[data-sr-close]');
 
 // Wellness library navigation
-await p.click('#openWellnessLibrary');await p.waitForSelector('.spm-wellness-modal[open]');assert.equal(await p.$eval('.spm-wellness-card',x=>x.length),3,'wellness library must show Nutrition Movement Sleep');
+await p.click('#openWellnessLibrary');await p.waitForSelector('.spm-wellness-modal[open]');assert.equal(await p.$$eval('.spm-wellness-card',x=>x.length),3,'wellness library must show Nutrition Movement Sleep');
 await p.click('[data-wellness-open="nutrition"]');await p.waitForSelector('.sr-dialog[open]');assert(/Biblioteca Bienestar/.test(await p.$eval('.sr-module-nav',e=>e.textContent)),'nutrition module back to wellness missing');
 await p.click('[data-food="protein"]');await p.waitForSelector('#srFoodDetail .sr-nut-detail');assert(/Volver a Nutrición/.test(await p.$eval('#srFoodDetail .sr-detail-back',e=>e.textContent)),'nutrition detail back missing');
 await p.click('#srFoodDetail [data-sr-module-home]');await p.waitForSelector('.spm-plate-premium');assert(!await p.$('#srFoodDetail .sr-nut-detail'),'nutrition detail did not return to module home');
