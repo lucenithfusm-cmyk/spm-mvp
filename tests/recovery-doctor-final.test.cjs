@@ -1,0 +1,9 @@
+const fs=require('fs'),path=require('path'),assert=require('assert');const root=path.join(__dirname,'..','premium-v2');const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+for(const f of ['recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js','spm-inline-video-player.js','spm-video-library.js','erectile-platform-v2.js'])assert.doesNotThrow(()=>new Function(read(f)),f+' parse');
+for(const id of ['condom','before','during','early','urge','partner','next'])assert(read('spm-resources-content.js').includes("id:'"+id+"'"),'missing scenario '+id);
+for(const id of ['before','condom','during','early','next','partner','urge'])assert(fs.existsSync(path.join(root,'assets/audio/recovery-patient-'+id+'-es.mp3')),'missing audio '+id);
+assert(fs.existsSync(path.join(root,'assets/videos/recovery-patient-master.mp4')),'missing patient master');
+for(const k of ['vascular','metabolic','medications','performance-anxiety']){assert(fs.existsSync(path.join(root,'assets/videos/dr-spm-'+k+'-content.mp4')),'missing content video '+k);assert(!fs.existsSync(path.join(root,'assets/videos/dr-spm-'+k+'.mp4')),'obsolete white-band duplicate still present '+k);}
+const lib=read('spm-video-library.js'),plat=read('erectile-platform-v2.js');for(const k of ['vascular','metabolic','medications','performance-anxiety']){assert(lib.includes('dr-spm-'+k+'-content.mp4'),'library not content video '+k);assert(plat.includes('dr-spm-'+k+'-content.mp4'),'DE platform not content video '+k);}
+const live=read('live.html');for(const s of ['recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js'])assert(live.includes(s),'live missing '+s);
+console.log('Recovery + Doctor SPM static QA OK');
