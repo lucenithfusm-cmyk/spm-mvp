@@ -5,6 +5,7 @@ const db=window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+let enteringApp=false;
 // Shared resource integration surface. Resource records never modify scores or daily completion.
 window.SPM_RESOURCE_CONTEXT=()=>{
  if(!S.user)return null;
@@ -24,14 +25,19 @@ const motiveDefs=[
 function msg(t,kind='good'){const el=(!$('authScreen').hidden?$('authStatus'):$('status')); if(!el)return; el.className='notice '+kind; el.textContent=t; el.hidden=false;}
 function hideMsg(){if($('status'))$('status').hidden=true;if($('authStatus'))$('authStatus').hidden=true}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.hidden=x.id!==id)}
+function showBoot(text='Cargando…'){const el=$('appBoot');if(!el)return;const t=$('appBootText');if(t)t.textContent=text;el.hidden=false}
+function hideBoot(){const el=$('appBoot');if(el)el.hidden=true}
 function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.panel===id));}
 function label(k){return (M.profiles?.[k]?.label_es)||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
- const {data:{session}}=await db.auth.getSession();
- if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
- db.auth.onAuthStateChange(async(event,session)=>{
+ try{
+   const {data:{session},error}=await db.auth.getSession();if(error)throw error;
+   if(session?.user){S.user=session.user;await enterApp()}else show('authScreen');
+ }catch(e){console.error('SPM boot',e);show('authScreen');msg('No pudimos validar tu sesión. Intenta recargar la página.','warn')}
+ db.auth.onAuthStateChange((event,session)=>{
    if(event==='PASSWORD_RECOVERY'){show('authScreen');setTimeout(finishRecovery,100);return}
-   if(session?.user&&!S.user){S.user=session.user;await enterApp()}
+   if(session?.user&&!S.user){S.user=session.user;setTimeout(()=>enterApp(),0)}
+   if(event==='SIGNED_OUT'){S.user=null;show('authScreen')}
  });
 }
 async function sign(mode){
@@ -66,24 +72,66 @@ async function finishRecovery(){
  msg('Contraseña actualizada correctamente. Ya puedes continuar con SPM.','good');
 }
 async function enterApp(){
- show('appScreen'); $('who').textContent=S.user.email||'Usuario'; renderMotives(); await ensureProfile(); await restore(); renderMotives();
+ if(enteringApp)return;enteringApp=true;
+ show('appScreen');showBoot('Restaurando tu programa SPM…');$('who').textContent=S.user.email||'Usuario';
+ try{
+   await ensureProfile();
+   const restored=await restore();
+   renderMotives();
+   if(restored)msg('Tu progreso anterior se cargó correctamente.','good');
+ }catch(e){
+   console.error('SPM enterApp restore',e);
+   msg('No pudimos terminar de cargar tu programa. Tus datos siguen guardados. Intenta recargar esta página.','warn');
+ }finally{
+   hideBoot();enteringApp=false;
+ }
 }
 async function ensureProfile(){await db.from('profiles').upsert({id:S.user.id,alias:(S.user.email||'usuario').split('@')[0],locale:'es'},{onConflict:'id'})}
+function rankPlans(plans){
+ return [...(plans||[])].sort((a,b)=>{
+   const active=(b.status==='active')-(a.status==='active');if(active)return active;
+   const current=(Number(b.current_day)||1)-(Number(a.current_day)||1);if(current)return current;
+   return new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0);
+ });
+}
 async function restore(){
- const {data:plans}=await db.from('plans').select('*').eq('user_id',S.user.id).eq('status','active').order('created_at',{ascending:false}).limit(1);
- if(!plans?.length){resetForAssessment();return}
- const p=plans[0];S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
- const [{data:a},{data:m},{data:c},{data:d}]=await Promise.all([
-   db.from('assessments').select('*').eq('id',S.assessmentId).maybeSingle(),
-   db.from('performance_maps').select('*').eq('id',S.mapId).maybeSingle(),
-   db.from('activity_completions').select('*').eq('plan_id',S.planId),
-   db.from('daily_checkins').select('*').eq('plan_id',S.planId).order('day_number')
+ document.documentElement.dataset.spmRestoreState='loading';
+ const {data:plans,error:plansError}=await db.from('plans').select('*').eq('user_id',S.user.id);
+ if(plansError)throw plansError;
+ if(!plans?.length){
+   document.documentElement.dataset.spmRestoreState='no-plan';
+   resetForAssessment();return false;
+ }
+ const ranked=rankPlans(plans);
+ let chosen=null,a=null,m=null;
+ for(const p of ranked){
+   if(!p.assessment_id||!p.performance_map_id)continue;
+   const [ar,mr]=await Promise.all([
+     db.from('assessments').select('*').eq('id',p.assessment_id).maybeSingle(),
+     db.from('performance_maps').select('*').eq('id',p.performance_map_id).maybeSingle()
+   ]);
+   if(!ar.error&&!mr.error&&ar.data&&mr.data){chosen=p;a=ar.data;m=mr.data;break}
+ }
+ if(!chosen){
+   document.documentElement.dataset.spmRestoreState='incomplete-plan';
+   throw new Error('Hay planes guardados, pero ninguno tiene evaluación y Performance Map completos.');
+ }
+ const [{data:completions,error:ce},{data:checkins,error:de}]=await Promise.all([
+   db.from('activity_completions').select('*').eq('plan_id',chosen.id),
+   db.from('daily_checkins').select('*').eq('plan_id',chosen.id).order('day_number')
  ]);
- if(a){S.motives=a.motives||[];S.answers=a.answers||{}}
- if(m){S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]}}
- S.completed=new Set((c||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=d||[];
- ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
- nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
+ if(ce)throw ce;if(de)throw de;
+ S.planId=chosen.id;S.assessmentId=chosen.assessment_id;S.mapId=chosen.performance_map_id;
+ S.motives=a.motives||[];S.answers=a.answers||{};
+ S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
+ S.completed=new Set((completions||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));
+ S.checkins=checkins||[];
+ window.SPM_RESTORED_CONTEXT={uid:S.user.id,plan:chosen,assessment:a,map:m,done:S.completed,checkins:S.checkins};
+ ['navMap','navPlan','navCoach','navProgress'].forEach(id=>{if($(id))$(id).disabled=false});
+ renderMap();renderPlan();populateCoach();renderProgress();
+ nav('map');
+ document.documentElement.dataset.spmRestoreState='restored';
+ return true;
 }
 function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
