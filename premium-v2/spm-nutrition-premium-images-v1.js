@@ -1,23 +1,25 @@
 (()=>{'use strict';
-if(window.SPM_NUTRITION_PREMIUM_IMAGES_V1)return;window.SPM_NUTRITION_PREMIUM_IMAGES_V1=true;
-const MASTER='/premium-v2/assets/nutrition/spm-nutrition-master.webp?v=20260915n2';
-const FATS='/premium-v2/assets/nutrition/spm-nutrition-fats.webp?v=20260915n2';
-const pos={plate:'0% 0%',vegetables:'50% 0%',fruit:'100% 0%',protein:'0% 100%',pulses:'50% 100%',limit:'100% 100%'};
+if(window.SPM_NUTRITION_PREMIUM_IMAGES_V2)return;window.SPM_NUTRITION_PREMIUM_IMAGES_V2=true;
+const PLATE='assets/nutrition/plato-spm-final.webp?v=20261001-oasis1';
 const lang=()=>window.SPM_LANGUAGE?.get?.()||window.SPM_LANG||'es';
 const t=(es,en)=>lang()==='en'?en:es;
-function crop(id,alt){const d=document.createElement('div');d.className='spm-food-premium-crop';d.dataset.foodArt=id;d.setAttribute('role','img');d.setAttribute('aria-label',alt||'');if(id==='fats'){d.style.backgroundImage=`url("${FATS}")`;d.style.backgroundSize='cover';d.style.backgroundPosition='center';}else{d.style.backgroundImage=`url("${MASTER}")`;d.style.backgroundSize='300% 200%';d.style.backgroundPosition=pos[id]||'50% 0%';}return d;}
-function replaceFoodArt(){document.querySelectorAll('.sr-dialog [data-food]').forEach(b=>{const id=b.dataset.food;if(!id)return;const old=b.querySelector('.spm-food-photo,.sr-food-art,.spm-food-premium-crop');if(old&&!old.classList.contains('spm-food-premium-crop'))old.replaceWith(crop(id,b.textContent.trim()));});document.querySelectorAll('#srFoodDetail .sr-card').forEach(card=>{let id='';const h=(card.querySelector('h3')?.textContent||'').toLowerCase();if(/verd|veget/.test(h))id='vegetables';else if(/frut|fruit/.test(h))id='fruit';else if(/prote|protein/.test(h))id='protein';else if(/legum|integral|pulse|grain/.test(h))id='pulses';else if(/grasa|fat/.test(h))id='fats';else if(/limit/.test(h))id='limit';if(!id)return;const old=card.querySelector('.spm-food-photo,.sr-food-art,.spm-food-premium-crop');if(old&&!old.classList.contains('spm-food-premium-crop'))old.replaceWith(crop(id,card.querySelector('h3')?.textContent));});}
-function plate(){const host=document.querySelector('.sr-dialog .sr-plate');if(!host||host.dataset.spmPlateN2)return;host.dataset.spmPlateN2='1';host.dataset.premiumPlate='1';host.innerHTML=`<div class="spm-plate-title">${t('Plato SPM · proporción orientativa','SPM Plate · practical guide')}</div><div class="spm-plate-premium" role="img" aria-label="${t('Plato SPM: media porción de verduras, un cuarto de proteína y un cuarto de leguminosas o carbohidratos integrales','SPM Plate: half vegetables, one quarter protein and one quarter pulses or whole grains')}"><button type="button" data-food="vegetables" class="veg" aria-label="${t('½ verduras','½ vegetables')}"></button><button type="button" data-food="pulses" class="carb" aria-label="${t('¼ leguminosas o carbohidratos integrales','¼ pulses or whole grains')}"></button><button type="button" data-food="protein" class="pro" aria-label="${t('¼ proteína','¼ protein')}"></button></div>`;}
-function scan(){plate();replaceFoodArt();}
-const st=document.createElement('style');st.id='spmNutritionPremiumImagesV1CSS';st.textContent=`
-.spm-food-premium-crop{width:100%;height:170px;border-radius:16px;display:block;margin:0 0 10px;background-repeat:no-repeat;background-color:#0b1f26;box-shadow:0 12px 26px rgba(0,0,0,.28);overflow:hidden}
-button[data-food]>.spm-food-premium-crop{height:150px;margin-bottom:10px}
-.spm-plate-premium{position:relative;width:100%;aspect-ratio:1/1;max-height:390px;border-radius:22px;background-image:url('${MASTER}');background-size:300% 200%;background-position:0% 0%;background-repeat:no-repeat;box-shadow:0 14px 30px rgba(0,0,0,.32);overflow:hidden;border:1px solid #35545c}
-.spm-plate-premium button{position:absolute!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-height:0!important;box-shadow:none!important;opacity:.001;z-index:2}
-.spm-plate-premium .veg{left:0;top:0;width:52%;height:100%}.spm-plate-premium .carb{right:0;top:0;width:48%;height:50%}.spm-plate-premium .pro{right:0;bottom:0;width:48%;height:50%}
-.spm-plate-premium button:focus-visible{opacity:1;outline:3px solid #8fe3d0;outline-offset:-4px;background:rgba(143,227,208,.12)!important}
-@media(max-width:600px){.spm-food-premium-crop{height:160px}button[data-food]>.spm-food-premium-crop{height:145px}.spm-plate-premium{max-height:none}}
+function plate(){
+ const host=document.querySelector('.sr-dialog .sr-plate');
+ if(!host||host.dataset.spmPlateFinal==='1')return;
+ host.dataset.spmPlateFinal='1';
+ host.innerHTML=`<figure class="spm-plate-final"><img src="${PLATE}" alt="${t('Plato SPM: media porción de verduras, un cuarto de leguminosas o carbohidratos integrales y un cuarto de proteína','SPM Plate: half vegetables, one quarter pulses or whole-grain carbohydrates and one quarter protein')}" decoding="async"><figcaption>${t('Toca una sección del plato para explorar','Tap a section of the plate to explore')}</figcaption><button type="button" data-food="vegetables" class="hot veg" aria-label="${t('Explorar verduras','Explore vegetables')}"></button><button type="button" data-food="pulses" class="hot carb" aria-label="${t('Explorar leguminosas e integrales','Explore pulses and whole grains')}"></button><button type="button" data-food="protein" class="hot pro" aria-label="${t('Explorar proteínas','Explore protein')}"></button></figure>`;
+}
+function scan(){plate()}
+const st=document.createElement('style');st.id='spmNutritionPremiumImagesV2CSS';st.textContent=`
+.spm-plate-final{position:relative;margin:0 0 16px;border:1px solid rgba(112,221,194,.34);border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#0b2028,#07151a);box-shadow:0 18px 42px rgba(0,0,0,.34)}
+.spm-plate-final img{display:block;width:100%;height:auto;object-fit:contain;background:#07151a}
+.spm-plate-final figcaption{position:absolute;left:14px;bottom:12px;z-index:3;padding:7px 10px;border-radius:999px;background:rgba(3,17,22,.84);backdrop-filter:blur(8px);color:#dff8f1;font-size:11px;font-weight:850;border:1px solid rgba(122,223,198,.28)}
+.spm-plate-final .hot{position:absolute!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-height:0!important;box-shadow:none!important;opacity:.001;z-index:2}
+.spm-plate-final .veg{left:0;top:21%;width:51%;height:62%}.spm-plate-final .carb{right:0;top:21%;width:49%;height:31%}.spm-plate-final .pro{right:0;top:52%;width:49%;height:31%}
+.spm-plate-final .hot:focus-visible{opacity:1;outline:3px solid #8fe3d0;outline-offset:-5px;background:rgba(143,227,208,.12)!important}
+@media(max-width:600px){.spm-plate-final{border-radius:18px}.spm-plate-final figcaption{left:9px;bottom:8px;right:9px;text-align:center}}
 `;document.head.appendChild(st);
-const mo=new MutationObserver(()=>scan());mo.observe(document.documentElement,{subtree:true,childList:true});
-document.addEventListener('click',e=>{const hot=e.target.closest('.spm-plate-premium [data-food]');if(hot){e.preventDefault();const id=hot.dataset.food;const target=[...document.querySelectorAll('.sr-dialog .sr-grid [data-food]')].find(b=>b.dataset.food===id);target?.click();return;}if(e.target.closest('[data-food]'))setTimeout(scan,0)},true);window.addEventListener('spm:languagechange',()=>setTimeout(scan,0));setTimeout(scan,0);setTimeout(scan,300);
+new MutationObserver(scan).observe(document.documentElement,{subtree:true,childList:true});
+document.addEventListener('click',e=>{const hot=e.target.closest?.('.spm-plate-final [data-food]');if(!hot)return;e.preventDefault();const target=[...document.querySelectorAll('.sr-dialog .sr-grid [data-food]')].find(b=>b.dataset.food===hot.dataset.food);target?.click()},true);
+window.addEventListener('spm:languagechange',()=>setTimeout(scan,0));setTimeout(scan,0);setTimeout(scan,250);
 })();
