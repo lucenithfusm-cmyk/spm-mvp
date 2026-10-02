@@ -127,13 +127,9 @@ async function restore(){
   }
   if(!p)throw new Error('Se encontró tu cuenta, pero no un conjunto completo de evaluación, Performance Map y plan.');
   S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
-  const [cr,dr]=await Promise.all([
-   withRetry(()=>db.from('activity_completions').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId)),
-   withRetry(()=>db.from('daily_checkins').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId).order('day_number'))
-  ]);
   S.motives=a.motives||[];S.answers=a.answers||{};
   S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
-  S.completed=new Set((cr.data||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));S.checkins=dr.data||[];
+  S.completed=new Set();S.checkins=[];
   restoreState.complete=true;restoreState.hasPlan=true;
   window.SPM_RESTORE_COMPLETE=true;
   window.SPM_RESTORED_CONTEXT={db,uid:S.user.id,session:null,plan:p,assessment:a,map:m,done:S.completed,checkins:S.checkins};
@@ -141,8 +137,26 @@ async function restore(){
   ['navMap','navPlan','navCoach','navProgress'].forEach(id=>{if($(id))$(id).disabled=false});
   S.phase=Math.max(1,Math.min(4,Math.ceil((Number(p.current_day)||1)/7)));
   nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg(`Tu Performance Map fue restaurado. Tu programa continúa en el día ${Number(p.current_day)||1}.`,'good');
+  hydrateProgressInBackground(p).catch(error=>console.warn('SPM progress hydration',error));
   return true;
  }finally{restoreState.running=false;}
+}
+async function hydrateProgressInBackground(plan){
+ const timeout=(promise,ms)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))]);
+ try{
+  const cr=await timeout(db.from('activity_completions').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId),5000);
+  if(!cr.error)S.completed=new Set((cr.data||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));
+ }catch(error){console.warn('SPM activity hydration delayed',error)}
+ try{
+  const dr=await timeout(db.from('daily_checkins').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId).order('day_number'),5000);
+  if(!dr.error)S.checkins=dr.data||[];
+ }catch(error){console.warn('SPM check-in hydration delayed',error)}
+ if(window.SPM_RESTORED_CONTEXT?.plan?.id===plan.id){
+  window.SPM_RESTORED_CONTEXT.done=S.completed;
+  window.SPM_RESTORED_CONTEXT.checkins=S.checkins;
+ }
+ renderPlan();populateCoach();renderProgress();
+ window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
 }
 function resetForAssessment(force=false){
  if(!force&&(restoreState.running||restoreState.hasPlan||window.SPM_RESTORED_CONTEXT?.plan?.id))return;
