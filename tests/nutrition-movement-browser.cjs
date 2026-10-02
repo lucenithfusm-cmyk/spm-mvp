@@ -9,7 +9,7 @@ assert.deepEqual(cats,Array.from({length:28},(_,i)=>['nutrition','movement','sle
 // Nutrition: exact approved Plato SPM.
 await p.click('[data-open="nutrition"]');await p.waitForSelector('.sr-dialog[open]');await p.waitForSelector('.spm-plate-final img');
 const plate=await p.$eval('.spm-plate-final img',x=>({src:x.getAttribute('src'),w:x.naturalWidth,h:x.naturalHeight}));
-assert(plate.src.includes('plato-spm-final.webp'),'wrong Plato SPM asset');assert(plate.w>300&&plate.h>280,'Plato SPM did not load at useful resolution');
+assert(plate.src.includes('plato-spm-final.jpg'),'wrong Plato SPM asset');assert(plate.w>300&&plate.h>280,'Plato SPM did not load at useful resolution');
 assert.equal(await p.$$eval('.spm-plate-final .hot',x=>x.length),3,'Plato SPM hotspots missing');
 for(const id of ['vegetables','fruit','protein','pulses','fats','limit']){
  await p.$eval('.sr-nut-grid [data-food="'+id+'"]',e=>{e.scrollIntoView({block:'center'});e.click()});
@@ -22,7 +22,7 @@ await p.click('[data-sr-close]');
 // Movement remains exactly six approved cards.
 await p.click('[data-open="movement"]');await p.waitForSelector('.sr-dialog[open]');await p.select('#srEnergy','moderate');await p.waitForFunction(()=>document.querySelectorAll('.spm-activity-v4').length===6);
 assert.deepEqual(await p.$$eval('[data-activity]',xs=>xs.map(x=>x.dataset.activity)),['walk','strength','mobility','kegel','swim','dance']);
-assert.equal(new Set(await p.$$eval('.spm-activity-v4',xs=>xs.map(x=>x.getAttribute('src')))).size,6,'Movement visuals must be unique');await p.click('[data-sr-close]');
+assert.equal(new Set(await p.$eval('.spm-activity-v4',xs=>xs.map(x=>x.getAttribute('src')))).size,6,'Movement visuals must be unique');for(const id of ['walk','strength','mobility','kegel','swim','dance']){await p.$eval('[data-activity="'+id+'"]',e=>{e.scrollIntoView({block:'center'});e.click()});await p.waitForSelector('#srActivityDetail .sr-move-detail-visual img');const v=await p.$eval('#srActivityDetail .sr-move-detail-visual img',x=>({pos:getComputedStyle(x).objectPosition,fit:getComputedStyle(x).objectFit,w:x.naturalWidth,h:x.naturalHeight}));assert.equal(v.pos,'50% 50%','Movement detail not centered '+id);assert.equal(v.fit,'cover','Movement detail fit changed '+id);assert(v.w>0&&v.h>0,'Movement detail image missing '+id);await p.$eval('#srActivityDetail [data-sr-module-home]',e=>e.click());await p.waitForFunction(()=>!document.querySelector('#srActivityDetail .sr-card'));}await p.click('[data-sr-close]');
 // Oasis home.
 await p.click('#openWellnessLibrary');await p.waitForSelector('.spm-wellness-modal[open]');assert.equal(await p.$$eval('.spm-wellness-card',x=>x.length),3);assert(/OASIS DE BIENESTAR/.test(await p.$eval('.spm-wellness-head',e=>e.textContent)),'Oasis header missing');for(const tone of ['nutrition','movement','sleep'])assert(await p.$('.tone-'+tone),'Oasis tone missing '+tone);
 await p.click('[data-wellness-open="sleep"]');await p.waitForSelector('.slModal[open]');assert(await p.$('.slNightVisual'),'Sleep night visual missing');assert.equal(await p.$$eval('.slCats button',x=>x.length),11,'Sleep categories incomplete');assert.equal(await p.$$eval('.slCats .slCatIcon',x=>x.length),11,'Sleep icons missing');
