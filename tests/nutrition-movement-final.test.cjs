@@ -3,11 +3,11 @@ const root=path.join(__dirname,'..','premium-v2'),read=f=>fs.readFileSync(path.j
 const js=['spm-resources-content.js','spm-resources.js','spm-visual-cards-staging-v4.js','spm-nutrition-premium-images-v1.js','wellness-daily-tip-v1.js','wellness-library-v1.js','sleep-library-v1.js'];
 for(const f of js)assert.doesNotThrow(()=>new Function(read(f)),f+' parse');
 const C=read('spm-resources-content.js'),R=read('spm-resources.js'),V=read('spm-visual-cards-staging-v4.js'),N=read('spm-nutrition-premium-images-v1.js'),W=read('wellness-daily-tip-v1.js'),H=read('wellness-library-v1.js'),S=read('sleep-library-v1.js'),L=read('live.html');
-assert(fs.existsSync(path.join(root,'assets/nutrition/plato-spm-final.webp')),'approved Plato SPM asset missing');
-assert(N.includes("plato-spm-final.webp"),'Plato renderer is not using approved final asset');
+assert(fs.existsSync(path.join(root,'assets/nutrition/plato-spm-final.jpg')),'approved Plato SPM asset missing');
+assert(N.includes("plato-spm-final.jpg"),'Plato renderer is not using approved final asset');
 assert(N.includes('spm-plate-final'),'final Plato component missing');
 for(const id of ['vegetables','fruit','protein','pulses','fats','limit'])assert(C.includes("id:'"+id+"'"),'missing food '+id);
-assert(R.includes('sr-nut-mid')&&R.includes('sr-nut-chips')&&R.includes('Idea para hoy'),'Oasis Nutrition detail composition missing');
+assert(R.includes('sr-nut-mid')&&R.includes('sr-nut-chips')&&R.includes('Idea para hoy'),'Oasis Nutrition detail composition missing');assert(R.includes('sr-move-detail-visual')&&R.includes('object-position:center center'),'centered Movement detail visual missing');
 assert(R.includes("NUT_VISUAL={vegetables:")&&R.includes("limit:'assets/nutrition/cards-v1/07-alimentos-y-bebidas-a-limitar.jpg'"),'Nutrition mid-image mapping incomplete');
 assert(V.includes(".sr-nut-grid button[data-food]"),'visual loader should only decorate Nutrition home cards');
 assert(!V.includes("document.querySelectorAll('.sr-dialog button[data-food]')"),'legacy broad Nutrition loader still touches Plato/details');
