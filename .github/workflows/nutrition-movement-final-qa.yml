@@ -1,4 +1,4 @@
-name: Nutrition Movement Final QA
+name: Wellness Oasis Final QA
 on:
   push:
     branches: [ "feat/nutrition-movement-final" ]
@@ -11,13 +11,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate Nutrition Movement structure
+      - name: Validate Wellness Oasis structure
         run: node tests/nutrition-movement-final.test.cjs
       - name: Install browser QA
         run: npm install --no-save puppeteer-core@24
       - name: Start local review
         run: python3 -m http.server 4173 >/tmp/nmqa.log 2>&1 &
-      - name: Validate responsive Nutrition Movement
+      - name: Validate responsive Wellness Oasis
         env:
           CHROME_BIN: /usr/bin/google-chrome
         run: node tests/nutrition-movement-browser.cjs
