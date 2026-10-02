@@ -1,5 +1,6 @@
 (()=>{
 'use strict';
+if(window.SPM_RESTORE_AUTHORITY_V3)return;
 if(window.SPM_RESTORE_RESCUE_V2)return;window.SPM_RESTORE_RESCUE_V2=true;
 const SB_URL='https://jogirmziqjlsttbbarcx.supabase.co',SB_KEY='sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf',$=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let running=false,restored=false,CTX=null;
