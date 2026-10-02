@@ -1,6 +1,6 @@
 (()=>{'use strict';
 if(window.SPM_NUTRITION_PREMIUM_IMAGES_V2)return;window.SPM_NUTRITION_PREMIUM_IMAGES_V2=true;
-const PLATE='assets/nutrition/plato-spm-final.webp?v=20261001-oasis1';
+const PLATE='assets/nutrition/plato-spm-final.jpg?v=20261002-wellness-final';
 const lang=()=>window.SPM_LANGUAGE?.get?.()||window.SPM_LANG||'es';
 const t=(es,en)=>lang()==='en'?en:es;
 function plate(){
