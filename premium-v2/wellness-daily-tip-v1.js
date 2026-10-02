@@ -38,20 +38,20 @@ const TIPS={
 };
 const ORDER=['nutrition','movement','sleep'];
 const META={
- nutrition:{label:'Nutrición',resourceId:'wellness.nutrition'},
- movement:{label:'Movimiento',resourceId:'wellness.movement'},
- sleep:{label:'Sueño',resourceId:'wellness.sleep'}
+ nutrition:{label:'Nutrición',resourceId:'wellness.nutrition',icon:'🥗'},
+ movement:{label:'Movimiento',resourceId:'wellness.movement',icon:'⚡'},
+ sleep:{label:'Sueño',resourceId:'wellness.sleep',icon:'🌙'}
 };
 function day(){return Number(window.SPM_CURRENT_DAY||document.documentElement.dataset.spmCurrentDay||1)||1}
 function tipFor(d=day()){
  const cat=ORDER[(d-1)%3],round=Math.floor((d-1)/3),list=TIPS[cat],tip=list[round%list.length];
- return {...tip,category:cat,label:META[cat].label,resourceId:META[cat].resourceId,day:d};
+ return {...tip,category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:d};
 }
 function render(){
  const hero=document.getElementById('spmTodayHero');if(!hero)return;
  const tip=tipFor();let box=document.getElementById('spmWellnessTip');
  if(!box){box=document.createElement('section');box.id='spmWellnessTip';box.className='spm-wellness-tip';hero.appendChild(box)}
- box.innerHTML='<div class="spm-wellness-kicker">RECOMENDACIÓN DE BIENESTAR · '+tip.label.toUpperCase()+'</div><h3>'+tip.title+'</h3><p>'+tip.body+'</p><div class="spm-wellness-actions"><span>Consejo breve · '+tip.label+' reaparece cada 3 días</span><div class="spm-wellness-buttons"><button type="button" class="btn sec" id="spmWellnessOpen">'+tip.cta+'</button><button type="button" class="btn sec" id="spmWellnessLibrary">Biblioteca Bienestar</button></div></div>';
+ box.dataset.category=tip.category;box.innerHTML='<div class="spm-wellness-tip-top"><div class="spm-wellness-tip-icon" aria-hidden="true">'+tip.icon+'</div><div><div class="spm-wellness-kicker">RECOMENDACIÓN DE BIENESTAR · '+tip.label.toUpperCase()+'</div><h3>'+tip.title+'</h3></div></div><p>'+tip.body+'</p><div class="spm-wellness-actions"><span>Una acción breve · '+tip.label+' reaparece cada 3 días</span><div class="spm-wellness-buttons"><button type="button" class="btn sec" id="spmWellnessOpen">'+tip.cta+'</button><button type="button" class="btn sec ghost" id="spmWellnessLibrary">Biblioteca Bienestar</button></div></div>';
  const btn=document.getElementById('spmWellnessOpen');
  if(btn)btn.onclick=()=>{if(tip.category==='nutrition'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('nutrition',tip.day,{origin:'dailyPlan'});if(tip.category==='movement'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('movement',tip.day,{origin:'dailyPlan'});if(tip.category==='sleep'&&window.SPM_SLEEP_LIBRARY_V1?.open)return window.SPM_SLEEP_LIBRARY_V1.open({origin:'dailyPlan',tip:tip.sleepTipId});window.dispatchEvent(new CustomEvent('spm:open-wellness-library',{detail:{resourceId:tip.resourceId,origin:'dailyPlan',day:tip.day}}));};document.getElementById('spmWellnessLibrary')?.addEventListener('click',()=>window.SPM_WELLNESS_LIBRARY_V1?.open?.({origin:'dailyPlan'}));
  try{localStorage.setItem('spm_wellness_tip_today_v1',JSON.stringify({...tip,shownAt:new Date().toISOString()}))}catch(_){}
@@ -59,6 +59,6 @@ function render(){
 document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.phaseBtn,.doneBtn'))setTimeout(render,280)});
 document.addEventListener('DOMContentLoaded',()=>setTimeout(render,1400),{once:true});
 setTimeout(render,2200);
-const css=document.createElement('style');css.textContent='.spm-wellness-tip{margin-top:12px;padding:14px 15px;border:1px solid rgba(240,199,118,.24);border-radius:15px;background:linear-gradient(145deg,rgba(240,199,118,.07),rgba(255,255,255,.02))}.spm-wellness-kicker{font-size:10px;font-weight:950;letter-spacing:.12em;color:#f0c776}.spm-wellness-tip h3{margin:5px 0}.spm-wellness-tip p{margin:0;color:var(--muted);line-height:1.5}.spm-wellness-actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:11px}.spm-wellness-actions span{font-size:11px;color:#b8c9c6}.spm-wellness-buttons{display:flex;gap:8px;flex-wrap:wrap}.spm-wellness-actions .btn{white-space:nowrap}@media(max-width:650px){.spm-wellness-actions{align-items:stretch;flex-direction:column}.spm-wellness-actions .btn{width:100%}}';document.head.appendChild(css);
+const css=document.createElement('style');css.textContent='.spm-wellness-tip{--well:#78dfc5;--wellText:#052018;position:relative;overflow:hidden;margin-top:12px;padding:15px 16px;border:1px solid color-mix(in srgb,var(--well) 28%,transparent);border-radius:18px;background:radial-gradient(circle at 92% 0,color-mix(in srgb,var(--well) 13%,transparent),transparent 38%),linear-gradient(145deg,rgba(11,31,38,.96),rgba(6,18,22,.96));box-shadow:0 14px 32px rgba(0,0,0,.18);transition:.22s ease}.spm-wellness-tip[data-category="movement"]{--well:#67cfe4;--wellText:#06202a}.spm-wellness-tip[data-category="sleep"]{--well:#b1a6ee;--wellText:#151327}.spm-wellness-tip:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--well) 48%,transparent)}.spm-wellness-tip-top{display:flex;gap:11px;align-items:center}.spm-wellness-tip-icon{width:44px;height:44px;flex:0 0 auto;display:grid;place-items:center;border-radius:14px;background:color-mix(in srgb,var(--well) 12%,#0d2228);border:1px solid color-mix(in srgb,var(--well) 24%,transparent);font-size:22px}.spm-wellness-kicker{font-size:10px;font-weight:950;letter-spacing:.12em;color:var(--well)}.spm-wellness-tip h3{margin:4px 0 0}.spm-wellness-tip>p{margin:10px 0 0;color:var(--muted);line-height:1.5}.spm-wellness-actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:12px}.spm-wellness-actions span{font-size:11px;color:#b8c9c6}.spm-wellness-buttons{display:flex;gap:8px;flex-wrap:wrap}.spm-wellness-actions .btn{white-space:nowrap;border-color:color-mix(in srgb,var(--well) 30%,transparent)!important;background:var(--well)!important;color:var(--wellText)!important}.spm-wellness-actions .btn.ghost{background:#102a32!important;color:#eaf4f3!important;border-color:#31515a!important}@media(max-width:650px){.spm-wellness-actions{align-items:stretch;flex-direction:column}.spm-wellness-actions .btn{width:100%}}@media(prefers-reduced-motion:reduce){.spm-wellness-tip{transition:none!important}.spm-wellness-tip:hover{transform:none}}';document.head.appendChild(css);
 window.SPM_WELLNESS_DAILY_TIP_V1={tipFor,TIPS,ORDER,render};
 })();
