@@ -53,7 +53,7 @@ function render(){
  if(!box){box=document.createElement('section');box.id='spmWellnessTip';box.className='spm-wellness-tip';hero.appendChild(box)}
  box.innerHTML='<div class="spm-wellness-kicker">RECOMENDACIÓN DE BIENESTAR · '+tip.label.toUpperCase()+'</div><h3>'+tip.title+'</h3><p>'+tip.body+'</p><div class="spm-wellness-actions"><span>Consejo breve · no cuenta como actividad principal</span><button type="button" class="btn sec" id="spmWellnessOpen">'+tip.cta+'</button></div>';
  const btn=document.getElementById('spmWellnessOpen');
- if(btn)btn.onclick=()=>{if(tip.category==='nutrition'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('nutrition',tip.day);if(tip.category==='movement'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('movement',tip.day);window.dispatchEvent(new CustomEvent('spm:open-wellness-library',{detail:{resourceId:tip.resourceId,origin:'dailyPlan',day:tip.day}}));};
+ if(btn)btn.onclick=()=>{if(tip.category==='nutrition'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('nutrition',tip.day,{origin:'dailyPlan'});if(tip.category==='movement'&&window.SPM_RESOURCES?.open)return window.SPM_RESOURCES.open('movement',tip.day,{origin:'dailyPlan'});window.dispatchEvent(new CustomEvent('spm:open-wellness-library',{detail:{resourceId:tip.resourceId,origin:'dailyPlan',day:tip.day}}));};
  try{localStorage.setItem('spm_wellness_tip_today_v1',JSON.stringify({...tip,shownAt:new Date().toISOString()}))}catch(_){}
 }
 document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.phaseBtn,.doneBtn'))setTimeout(render,280)});
