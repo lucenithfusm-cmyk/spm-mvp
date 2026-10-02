@@ -7,7 +7,7 @@ assert(fs.existsSync(path.join(root,'assets/nutrition/plato-spm-final.jpg')),'ap
 assert(N.includes("plato-spm-final.jpg"),'Plato renderer is not using approved final asset');
 assert(N.includes('spm-plate-final')&&N.includes('spm-plate-host'),'final Plato component/layout missing');
 for(const id of ['vegetables','fruit','protein','pulses','fats','limit'])assert(C.includes("id:'"+id+"'"),'missing food '+id);
-assert(R.includes('sr-nut-mid')&&R.includes('sr-nut-chips')&&R.includes('Idea para hoy'),'Oasis Nutrition detail composition missing');assert(R.includes('sr-detail-screen'),'true Wellness detail-screen navigation missing');assert(R.includes('sr-move-detail-visual')&&R.includes('object-fit:contain')&&R.includes('object-position:center center'),'complete centered Movement detail visual missing');
+assert(R.includes('sr-nut-mid')&&R.includes('sr-nut-chips')&&R.includes('Idea para hoy'),'Oasis Nutrition detail composition missing');assert(R.includes('sr-module-home-screen')&&R.includes('#srFoodDetail')&&R.includes('#srActivityDetail'),'explicit Wellness home/detail navigation missing');assert(R.includes('sr-move-detail-visual')&&R.includes('object-fit:contain')&&R.includes('object-position:center center'),'complete centered Movement detail visual missing');
 assert(R.includes("NUT_VISUAL={vegetables:")&&R.includes("limit:'assets/nutrition/cards-v1/07-alimentos-y-bebidas-a-limitar.jpg'"),'Nutrition mid-image mapping incomplete');
 assert(V.includes(".sr-nut-grid button[data-food]"),'visual loader should only decorate Nutrition home cards');
 assert(!V.includes("document.querySelectorAll('.sr-dialog button[data-food]')"),'legacy broad Nutrition loader still touches Plato/details');
@@ -17,5 +17,5 @@ assert(H.includes('OASIS DE BIENESTAR')&&H.includes('tone-nutrition')&&H.include
 assert(S.includes('slNightVisual')&&S.includes('const ICON=')&&S.includes('const TONE='),'Sleep visual Oasis layer missing');
 assert(W.includes("const ORDER=['nutrition','movement','sleep']"),'wellness rotation must be Nutrition Movement Sleep');
 assert(W.includes('spm-wellness-tip-icon')&&W.includes('data-category'),'daily Wellness visual state missing');
-for(const s of ['spm-nutrition-premium-images-v1.js?v=20261002-wellness-nav2','sleep-library-v1.js?v=20261002-wellness-nav2','wellness-library-v1.js?v=20261002-wellness-nav2','wellness-daily-tip-v1.js?v=20261002-wellness-nav2'])assert(L.includes(s),'live cache wiring missing '+s);
+for(const s of ['spm-nutrition-premium-images-v1.js?v=20261002-wellness-nav3','sleep-library-v1.js?v=20261002-wellness-nav3','wellness-library-v1.js?v=20261002-wellness-nav3','wellness-daily-tip-v1.js?v=20261002-wellness-nav3'])assert(L.includes(s),'live cache wiring missing '+s);
 console.log('Wellness Oasis static QA OK');
