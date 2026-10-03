@@ -42,6 +42,24 @@ window.SPM_RESOURCE_RECORDS={
  async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
  async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
 };
+// The educational Lab saves its own state. It never completes a calendar day.
+window.SPM_PELVIC_RECORDS={
+ async read(expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:pelvic_lab_state').order('completed_at',{ascending:false});
+  if(error)throw error;
+  return data?.[0]?.metadata?.state||{};
+ },
+ async save(state,expectedScope,day){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  if(!Number.isInteger(day)||day<1||day>28||!window.SPM_PELVIC_LAB?.validState(state))throw new Error('Invalid pelvic record');
+  const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:pelvic_lab_state',metadata:{source:'pelvic-floor-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
+  if(error)throw error;
+  return {ok:true};
+ }
+};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
  ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
@@ -55,6 +73,7 @@ async function boot(){
  const {data:{session}}=await db.auth.getSession();
  if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
  db.auth.onAuthStateChange(async(event,session)=>{
+   window.dispatchEvent(new CustomEvent('spm:session-change',{detail:{userId:session?.user?.id||null}}));
    if(event==='PASSWORD_RECOVERY'){show('authScreen');setTimeout(finishRecovery,100);return}
    if(session?.user&&!S.user){S.user=session.user;await enterApp()}
  });

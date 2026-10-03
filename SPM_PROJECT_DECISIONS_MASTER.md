@@ -337,3 +337,13 @@ SPM no debe utilizar citas, firmas, testimonios editoriales ni referencias de au
 - No usar frases atribuidas que puedan hacer pensar que un tercero desarrolló, co-creó, avala o posee derechos sobre SPM.
 - Las frases inspiradoras o educativas deben ser originales de SPM y mostrarse sin atribución personal, o identificadas únicamente como “SPM” / “Doctor SPM” cuando se trate de la identidad interna del producto.
 - Esta regla aplica a todos los módulos actuales y futuros y forma parte del QA editorial previo a publicación.
+
+## Pelvic Floor Lab aprobado — 3 de octubre de 2026 (UTC)
+
+La directora clínica aprobó el contenido educativo, conciencia muscular, respiración, interactividad, imágenes y estética del Pelvic Floor Lab de Lovable. Solicitó activar los audios y llevarlo a SPM Central conservando esa experiencia.
+
+Se mantienen dos recursos complementarios: **Pelvic Floor Lab (conciencia y relajación)** y el **entrenamiento pélvico existente con su calendario de 28 días**. El Lab no crea otro calendario ni sustituye el entrenamiento actual; registrar una práctica educativa no completa automáticamente el día del programa.
+
+La integración conserva los 16 pasos y las imágenes originales. Usa 26 audios oficiales Lenny (16 explicaciones y 10 indicaciones breves). Se conserva la velocidad de narración generada a 0.95x; las indicaciones breves caben dentro de sus fases sin alterar los tiempos aprobados.
+
+El avance del Lab se guarda por usuario, plan y día mediante la sesión de SPM y las políticas RLS existentes. Los controles de simulación y edición de dosificación de la revisión de Lovable no forman parte de la interfaz del paciente en Central. La publicación definitiva se registra después de superar la revisión de integración y el control de aprobación aplicable a la rama principal.

@@ -1,0 +1,22 @@
+name: Pelvic Floor Lab integration QA
+on:
+  push:
+    branches: ["feat/pelvic-floor-lab-audio"]
+  pull_request:
+    paths: ["labs/pelvic-floor/**", "premium-v2/**", "tests/pelvic-lab-*", ".github/workflows/pelvic-lab-qa.yml"]
+jobs:
+  pelvic-lab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - run: npm run typecheck --prefix labs/pelvic-floor && npm run build --prefix labs/pelvic-floor
+      - run: git diff --exit-code -- premium-v2/pelvic-floor-lab
+      - run: npm install --prefix /tmp/spm-pelvic-qa jsdom@26.1.0 --no-audit --no-fund
+      - run: node tests/pelvic-lab-bridge.test.cjs && node tests/pelvic-lab-audio.test.cjs && node tests/movement-safety.test.cjs && node tests/returning-user-restore.test.cjs
+        env:
+          NODE_PATH: /tmp/spm-pelvic-qa/node_modules
+          SPM_QA_ALL_LAYERS: "1"
