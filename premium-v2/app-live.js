@@ -78,6 +78,23 @@ window.SPM_DESIRE_RECORDS={
   return {ok:true};
  }
 };
+window.SPM_SENSATE_RECORDS={
+ async read(expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:sensate_lab_state').order('completed_at',{ascending:false});
+  if(error)throw error;
+  return data?.[0]?.metadata?.state||{};
+ },
+ async save(state,expectedScope,day){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  if(!Number.isInteger(day)||day<1||day>28||!window.SPM_SENSATE_LAB?.validState(state))throw new Error('Invalid sensate record');
+  const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:sensate_lab_state',metadata:{source:'sensate-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
+  if(error)throw error;
+  return {ok:true};
+ }
+};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
  ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
