@@ -114,7 +114,7 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
   );
 }
 
-export function SensateLab({ initialOrigin }: { initialOrigin: Origin }) {
+export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialOrigin: Origin; practiceAllowed?: boolean }) {
   const [step, setStep] = useState(0);
   const [origin, setOrigin] = useState<Origin>(initialOrigin);
   const [practiceId, setPracticeId] = useState('sf-focus-1');
@@ -131,8 +131,8 @@ export function SensateLab({ initialOrigin }: { initialOrigin: Origin }) {
   const [notice, setNotice] = useState('');
   const loaded = useRef(false);
   const pendingRecord = useRef<string | null>(null);
-  const g1 = useGuide(G1, step === 5);
-  const g2 = useGuide(G2, step === 8);
+  const g1 = useGuide(G1, step === 5 && practiceAllowed);
+  const g2 = useGuide(G2, step === 8 && practiceAllowed);
 
   useEffect(() => {
     try {
@@ -252,7 +252,7 @@ export function SensateLab({ initialOrigin }: { initialOrigin: Origin }) {
         <Why />
       </>
     ),
-    5: (<><h2>Guía interactiva I</h2><Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} /></>),
+    5: (<><h2>Guía interactiva I</h2>{!practiceAllowed ? <p className="sf-warn">Puedes consultar el contenido. La guía práctica está en pausa mientras se revisa la alerta de tu programa.</p> : <Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} />}</>),
     6: (
       <>
         <h2>Cierre I</h2>
@@ -277,7 +277,7 @@ export function SensateLab({ initialOrigin }: { initialOrigin: Origin }) {
         <button className="sf-btn ghost" onClick={() => setPracticeId('sf-focus-2')}>{practiceId === 'sf-focus-2' ? '✓ Registrando Focus II' : 'Registrar esta sesión como Focus II'}</button>
       </>
     ),
-    8: (<><h2>Guía interactiva II</h2><Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} /></>),
+    8: (<><h2>Guía interactiva II</h2>{!practiceAllowed ? <p className="sf-warn">Puedes consultar el contenido. La guía práctica está en pausa mientras se revisa la alerta de tu programa.</p> : <Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} />}</>),
     9: (
       <>
         <h2>Cuando cambia la firmeza</h2>
