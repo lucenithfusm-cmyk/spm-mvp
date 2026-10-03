@@ -3,7 +3,7 @@ on:
   push:
     branches: ["fix/performance-map-render-loop-v4"]
   pull_request:
-    paths: ["premium-v2/**", "tests/returning-user-*", ".github/workflows/returning-user-restore-qa.yml"]
+    paths: ["premium-v2/**", "tests/returning-user-*", "tests/movement-safety.test.cjs", ".github/workflows/returning-user-restore-qa.yml"]
 jobs:
   restore:
     runs-on: ubuntu-latest
@@ -19,3 +19,7 @@ jobs:
           NODE_PATH: /tmp/spm-restore-qa/node_modules
           SPM_QA_ALL_LAYERS: "1"
         run: node tests/returning-user-restore.test.cjs
+      - name: Verify movement educational access and safety gates
+        env:
+          NODE_PATH: /tmp/spm-restore-qa/node_modules
+        run: node tests/movement-safety.test.cjs
