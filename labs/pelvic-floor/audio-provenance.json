@@ -1,0 +1,210 @@
+[
+  {
+    "id": "pf.s01.welcome",
+    "text": "Aquí no venimos a apretar más. Venimos a sentir, soltar y coordinar. La fuerza llega después.",
+    "duration": 7.57551,
+    "sourceDuration": 7.549387755102041,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s01.welcome.mp3"
+  },
+  {
+    "id": "pf.s02.map",
+    "text": "En muchos hombres el reto es el exceso de tensión, no la falta de fuerza. Por eso miramos las cuatro.",
+    "duration": 7.88898,
+    "sourceDuration": 7.862857142857143,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s02.map.mp3"
+  },
+  {
+    "id": "pf.s03.awareness",
+    "text": "Si sientes que empujas hacia abajo o aprietas las nalgas, para. Busca un movimiento pequeño, hacia adentro y arriba.",
+    "duration": 8.724898,
+    "sourceDuration": 8.698775510204081,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s03.awareness.mp3"
+  },
+  {
+    "id": "pf.s04.breath",
+    "text": "Deja que la inhalación abra la base de la pelvis. No hagas nada más que notar.",
+    "duration": 5.773061,
+    "sourceDuration": 5.746938775510204,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s04.breath.mp3"
+  },
+  {
+    "id": "pf.s05.relax",
+    "text": "Sé honesto con este chequeo. Si algo aplica, tu ruta empieza por soltar, no por apretar.",
+    "duration": 6.661224,
+    "sourceDuration": 6.635102040816326,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s05.relax.mp3"
+  },
+  {
+    "id": "pf.s06.technique",
+    "text": "Trabaja suave o moderado, nunca al máximo. Revisa mandíbula, abdomen y glúteos.",
+    "duration": 7.209796,
+    "sourceDuration": 7.183673469387755,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s06.technique.mp3"
+  },
+  {
+    "id": "pf.s07.guided",
+    "text": "Contrae suave, sostén sin apnea y suelta por completo antes de la siguiente repetición.",
+    "duration": 6.817959,
+    "sourceDuration": 6.791836734693877,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s07.guided.mp3"
+  },
+  {
+    "id": "pf.s08.coordination",
+    "text": "La respiración marca el ritmo. Si pierdes la sincronía, vuelve solo a respirar.",
+    "duration": 6.086531,
+    "sourceDuration": 6.060408163265306,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s08.coordination.mp3"
+  },
+  {
+    "id": "pf.s09.fine",
+    "text": "En las rápidas, contrae y suelta como un parpadeo. Sin acumular tensión.",
+    "duration": 6.060408,
+    "sourceDuration": 6.034285714285715,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s09.fine.mp3"
+  },
+  {
+    "id": "pf.s10.transfer",
+    "text": "Más no es mejor. El objetivo es elegir cuándo activar y, sobre todo, saber soltar.",
+    "duration": 7.836735,
+    "sourceDuration": 7.81061224489796,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s10.transfer.mp3"
+  },
+  {
+    "id": "pf.s11.overload",
+    "text": "Si aparece alguna de estas señales, detén el fortalecimiento y vuelve a la relajación.",
+    "duration": 6.452245,
+    "sourceDuration": 6.426122448979592,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s11.overload.mp3"
+  },
+  {
+    "id": "pf.s12.library",
+    "text": "Elige según lo que necesites hoy: soltar, coordinar o activar.",
+    "duration": 6.582857,
+    "sourceDuration": 6.556734693877551,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s12.library.mp3"
+  },
+  {
+    "id": "pf.s13.plan",
+    "text": "Avanzas cuando la etapa sale limpia y cómoda. Repetir o volver a soltar también es progresar.",
+    "duration": 7.340408,
+    "sourceDuration": 7.314285714285714,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s13.plan.mp3"
+  },
+  {
+    "id": "pf.s14.progress",
+    "text": "Treinta segundos de honestidad valen más que cien repeticiones.",
+    "duration": 4.780408,
+    "sourceDuration": 4.7542857142857144,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s14.progress.mp3"
+  },
+  {
+    "id": "pf.s15.safety",
+    "text": "Consultar a tiempo es parte del entrenamiento, no un fracaso.",
+    "duration": 4.884898,
+    "sourceDuration": 4.858775510204081,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s15.safety.mp3"
+  },
+  {
+    "id": "pf.s16.close",
+    "text": "Vuelve al plan mañana. Poco, bien hecho y con relajación completa.",
+    "duration": 5.407347,
+    "sourceDuration": 5.381224489795918,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.s16.close.mp3"
+  },
+  {
+    "id": "pf.cue.percibe",
+    "text": "Percibe.",
+    "duration": 0.940408,
+    "sourceDuration": 1.3322448979591837,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.percibe.mp3"
+  },
+  {
+    "id": "pf.cue.respira",
+    "text": "Respira.",
+    "duration": 1.07102,
+    "sourceDuration": 1.3583673469387756,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.respira.mp3"
+  },
+  {
+    "id": "pf.cue.suelta",
+    "text": "Suelta.",
+    "duration": 1.018776,
+    "sourceDuration": 0.9926530612244898,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.suelta.mp3"
+  },
+  {
+    "id": "pf.cue.exhala-eleva",
+    "text": "Exhala y eleva.",
+    "duration": 1.410612,
+    "sourceDuration": 1.7763265306122449,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.exhala-eleva.mp3"
+  },
+  {
+    "id": "pf.cue.inhala-suelta",
+    "text": "Inhala y suelta.",
+    "duration": 1.541224,
+    "sourceDuration": 1.906938775510204,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.inhala-suelta.mp3"
+  },
+  {
+    "id": "pf.cue.rapida",
+    "text": "Contrae.",
+    "duration": 0.809796,
+    "sourceDuration": 1.0971428571428572,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.rapida.mp3"
+  },
+  {
+    "id": "pf.cue.suelta-rapida",
+    "text": "Suelta.",
+    "duration": 1.018776,
+    "sourceDuration": 0.9926530612244898,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.suelta-rapida.mp3"
+  },
+  {
+    "id": "pf.cue.contrae",
+    "text": "Contrae suave.",
+    "duration": 1.227755,
+    "sourceDuration": 1.5151020408163265,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.contrae.mp3"
+  },
+  {
+    "id": "pf.cue.sosten",
+    "text": "Sostén.",
+    "duration": 1.044898,
+    "sourceDuration": 1.253877551020408,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.sosten.mp3"
+  },
+  {
+    "id": "pf.cue.suelta-total",
+    "text": "Suelta por completo.",
+    "duration": 1.619592,
+    "sourceDuration": 1.8808163265306121,
+    "voiceId": "050c403a43e047c796f8a6257ed2533e",
+    "src": "audio/pf/pf.cue.suelta-total.mp3"
+  }
+]

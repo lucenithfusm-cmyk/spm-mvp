@@ -40,7 +40,7 @@ function openToday(scroll=false){selectPhaseOnce();setTimeout(()=>highlightToday
 function sync({open=false}={}){
  if(syncing)return;syncing=true;
  try{
-  const c=calendarDay(),f=visibleCompletedFloor();currentDay=clamp(Math.max(c,f));const s=loadState()||{};if(currentDay>(s.day||1)){s.day=currentDay;saveState(s)}
+  const c=calendarDay(),f=visibleCompletedFloor(),saved=Number(window.SPM_RESOURCE_CONTEXT?.()?.day)||1;currentDay=clamp(Math.max(c,f,saved));const s=loadState()||{};if(currentDay>(s.day||1)){s.day=currentDay;saveState(s)}
   window.SPM_CURRENT_DAY=currentDay;document.documentElement.dataset.spmCurrentDay=String(currentDay);renderHero();
   if(open)openToday(false);
  }finally{syncing=false}
@@ -52,6 +52,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('.phaseBtn'))setTimeout(()=>highlightToday(false),180);
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync({open:false})});
+window.addEventListener('spm:resourcecontext',()=>sync({open:false}));
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>sync({open:false}),800),{once:true});
 setTimeout(()=>sync({open:false}),1500);
 })();
