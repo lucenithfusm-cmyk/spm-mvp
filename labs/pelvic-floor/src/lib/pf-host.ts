@@ -9,7 +9,9 @@ type Host = {
 };
 function resolveHost(): Host | null {
   try {
-    if (window.parent === window || window.parent.location.origin !== window.location.origin) return null;
+    if (window.parent === window) return null;
+    // Access itself is protected by the browser's same-origin policy. A srcdoc
+    // review frame inherits its parent's origin, although location.origin is null.
     return (window.parent as Window & { SPM_PELVIC_LAB_HOST?: Host }).SPM_PELVIC_LAB_HOST ?? null;
   } catch { return null; }
 }

@@ -20,6 +20,10 @@ function audioHarness(){
  const api=moduleAt('src/lib/pf-audio.ts',{window:{},Audio:FakeAudio,document:{body:{appendChild(){}}}});
  return {api,elements,defer(){let resolve;defer={promise:new Promise(r=>resolve=r)};return resolve}};
 }
+test('the authenticated bridge works in an inherited-origin frame and rejects cross-origin access',()=>{
+ const bridge={getState:()=>({})};assert.equal(moduleAt('src/lib/pf-host.ts',{window:{parent:{location:{origin:'null'},SPM_PELVIC_LAB_HOST:bridge},location:{origin:'https://spm.test'}}}).host,bridge);
+ const parent={};Object.defineProperty(parent,'SPM_PELVIC_LAB_HOST',{get(){throw Error('SecurityError')}});assert.equal(moduleAt('src/lib/pf-host.ts',{window:{parent}}).host,null);
+});
 test('narration and phase cues reuse one player at the rendered speed',async()=>{
  const h=audioHarness();assert.equal(await h.api.playAudio('pf.s01.welcome'),true);const a=h.elements[0];a.currentTime=2;
  h.api.pauseAudio();assert.equal(a.paused,true);await h.api.resumeAudio();assert.equal(a.currentTime,2);
