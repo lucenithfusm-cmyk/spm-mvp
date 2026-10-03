@@ -9,6 +9,8 @@ const tick=()=>new Promise(r=>setTimeout(r,25));
 async function harness(patch={},adaptation){
  const dom=new JSDOM('<main id="plan"></main>',{url:'https://spm.test',runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,c={userId:'qa-user',planId:'qa-plan',day:12,answers:{},checkins:[],safety:'none',flags:[],...patch},saved=[];
+ const observers=[],NativeObserver=w.MutationObserver;
+ w.MutationObserver=class extends NativeObserver{constructor(cb){super(cb);observers.push(this)}};
  w.IntersectionObserver=class{observe(){}unobserve(){}disconnect(){}};
  w.HTMLElement.prototype.scrollTo=function(){};
  w.HTMLDialogElement.prototype.showModal=function(){this.open=true};
@@ -16,10 +18,10 @@ async function harness(patch={},adaptation){
  w.SPM_RESOURCE_CONTEXT=()=>c;
  w.SPM_RESOURCE_RECORDS={read:async()=>[],save:async r=>saved.push(r)};
  if(adaptation)w.localStorage.setItem('spm_adaptation_state',JSON.stringify(adaptation));
- for(const file of ['spm-resources-content.js','spm-resources.js'])w.eval(fs.readFileSync(path.join(root,file),'utf8'));
+ for(const file of ['spm-resources-content.js','spm-resources.js','spm-visual-cards-staging-v4.js'])w.eval(fs.readFileSync(path.join(root,file),'utf8'));
  w.SPM_RESOURCES.refresh();await tick();
- w.SPM_RESOURCES.open('movement',12,{origin:'wellnessLibrary'});
- return {w,c,saved,d:w.document,close:()=>w.close()};
+ w.SPM_RESOURCES.open('movement',12,{origin:'wellnessLibrary'});await tick();
+ return {w,c,saved,d:w.document,close:()=>{observers.forEach(o=>o.disconnect());w.close()}};
 }
 const restrictedCases=[
  ['urgent assessment',{safety:'urgent',flags:['s_cardiac']}],
@@ -38,6 +40,7 @@ for(const [name,patch,adaptation] of restrictedCases)test(name+' retains educati
  try{
   assert.equal(h.w.SPM_RESOURCES.restricted(h.c),true);
   assert.equal(h.d.querySelectorAll('[data-activity]').length,6);
+  assert.equal(h.d.querySelectorAll('[data-activity] img').length,0,'Illustrated instructions must not bypass the safety state');
   assert.ok(h.d.querySelector('[data-movement-safety] details summary'));
   assert.equal(h.d.querySelector('#srEnergy'),null);
   for(const a of h.w.SPM_RESOURCE_CONTENT.activities){
@@ -47,6 +50,7 @@ for(const [name,patch,adaptation] of restrictedCases)test(name+' retains educati
    assert.ok(detail.textContent.includes(a.benefit.es));
    assert.ok(!detail.textContent.includes(a.dose.es));
    assert.equal(detail.querySelector('#srMoveSave'),null);
+   assert.equal(detail.querySelector('img'),null,'Do not expose exercise instructions embedded in an image');
    detail.querySelector('[data-sr-module-home]').click();
    assert.equal(detail.hidden,true);
   }
