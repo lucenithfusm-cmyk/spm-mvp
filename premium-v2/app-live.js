@@ -34,9 +34,9 @@ async function withRetry(task,attempts=3){
 window.SPM_RESOURCE_CONTEXT=()=>{
  if(!S.user)return null;
  const r=window.SPM_RESTORED_CONTEXT;
- if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Number(r.plan.current_day)||1,answers:r.assessment?.answers||{},motives:r.assessment?.motives||[],primary:r.map?.primary_domain,safety:r.map?.safety_level||'none',flags:r.map?.safety_flags||[],completed:[...(r.done||[])],checkins:r.checkins||[]};
+ if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Number(r.plan.current_day)||1,answers:r.assessment?.answers||{},motives:r.assessment?.motives||[],primary:r.map?.primary_domain,secondary:r.map?.secondary_domain,safety:r.map?.safety_level||'none',flags:r.map?.safety_flags||[],completed:[...(r.done||[])],checkins:r.checkins||[]};
  if(!S.planId||!S.map)return null;
- return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
+ return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,secondary:S.map.secondary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
 };
 window.SPM_RESOURCE_RECORDS={
  async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
@@ -56,6 +56,24 @@ window.SPM_PELVIC_RECORDS={
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   if(!Number.isInteger(day)||day<1||day>28||!window.SPM_PELVIC_LAB?.validState(state))throw new Error('Invalid pelvic record');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:pelvic_lab_state',metadata:{source:'pelvic-floor-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
+  if(error)throw error;
+  return {ok:true};
+ }
+};
+// Desire uses the same authenticated, RLS-protected resource persistence.
+window.SPM_DESIRE_RECORDS={
+ async read(expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:desire_lab_state').order('completed_at',{ascending:false});
+  if(error)throw error;
+  return data?.[0]?.metadata?.state||{};
+ },
+ async save(state,expectedScope,day){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
+  if(!Number.isInteger(day)||day<1||day>28||!window.SPM_DESIRE_LAB?.validState(state))throw new Error('Invalid desire record');
+  const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:desire_lab_state',metadata:{source:'desire-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
   if(error)throw error;
   return {ok:true};
  }
