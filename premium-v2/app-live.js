@@ -10,11 +10,13 @@ const restoreState={running:false,complete:false,hasPlan:false};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 function restoreOverlay(show=true,text='Restaurando tu programa SPM…'){
  let el=$('spmRestoreOverlay');
+ // Removing the overlay avoids author display:grid overriding the hidden attribute.
+ if(!show){el?.remove();return;}
  if(show&&!el){
   el=document.createElement('div');el.id='spmRestoreOverlay';el.setAttribute('aria-live','polite');
   el.innerHTML='<div class="spmRestoreCard"><div class="spmRestoreSpinner" aria-hidden="true"></div><b></b><p>Estamos recuperando tu evaluación, Performance Map y avance guardado.</p></div>';
   const st=document.createElement('style');st.id='spmRestoreOverlayCSS';st.textContent='#spmRestoreOverlay{position:fixed;inset:0;z-index:65000;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 35%,rgba(117,223,196,.12),transparent 34%),#041015;color:#eef8f6}.spmRestoreCard{width:min(430px,92vw);padding:25px;border:1px solid #31545c;border-radius:22px;background:linear-gradient(145deg,#0a2530,#07161c);text-align:center;box-shadow:0 28px 80px #0008}.spmRestoreSpinner{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;border:3px solid #31515a;border-top-color:#78dfc5;animation:spmRestoreSpin .9s linear infinite}.spmRestoreCard b{display:block;font-size:20px}.spmRestoreCard p{margin:8px 0 0;color:#a9bec0;line-height:1.5}@keyframes spmRestoreSpin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.spmRestoreSpinner{animation:none}}';
-  document.head.appendChild(st);document.body.appendChild(el);
+  if(!$('spmRestoreOverlayCSS'))document.head.appendChild(st);document.body.appendChild(el);
  }
  if(el){const b=el.querySelector('b');if(b)b.textContent=text;el.hidden=!show;}
 }
@@ -91,9 +93,10 @@ async function finishRecovery(){
 async function enterApp(){
  show('appScreen');$('who').textContent=S.user.email||'Usuario';renderMotives();restoreOverlay(true);
  try{
-  await ensureProfile();
   const restored=await restore();
-  if(!restored&&!restoreState.hasPlan)renderMotives();
+  // Existing programs can render without waiting for a secondary profile write.
+  if(restored)ensureProfile().catch(error=>console.warn('SPM profile sync delayed',error));
+  else if(!restoreState.hasPlan){await ensureProfile();renderMotives();}
  }catch(error){
   console.error('SPM authoritative restore',error);
   msg('No pudimos terminar de restaurar tu programa. Tus datos siguen guardados; vuelve a intentar en unos segundos.','warn');
