@@ -16,3 +16,10 @@ test('result has no debug JSON; failed save retries without duplicating records'
  const records=JSON.parse(state['spm-sensate-records']);expect(records).toHaveLength(1);expect(records[0].day).toBe(18);expect(records[0].completed).toBe(false);
  await act(async()=>root.unmount());el.remove();
 });
+test('review allows educational screens while keeping guided practice paused',async()=>{
+ window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+ const el=document.createElement('div');document.body.append(el);const root=createRoot(el);
+ state['spm-sensate-state']=JSON.stringify({step:0});await act(async()=>root.render(<SensateLab initialOrigin="lab" practiceAllowed={false}/>));expect(el.textContent).toContain('Más sensación.');
+ for(let i=0;i<5;i++)await act(async()=>Array.from(el.querySelectorAll('button')).find(b=>b.textContent==='Siguiente →')!.click());
+ expect(el.textContent).toContain('La guía práctica está en pausa');expect(el.textContent).not.toContain('Iniciar guía');await act(async()=>root.unmount());el.remove();
+});
