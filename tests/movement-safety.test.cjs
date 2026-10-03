@@ -40,7 +40,8 @@ for(const [name,patch,adaptation] of restrictedCases)test(name+' retains educati
  try{
   assert.equal(h.w.SPM_RESOURCES.restricted(h.c),true);
   assert.equal(h.d.querySelectorAll('[data-activity]').length,6);
-  assert.equal(h.d.querySelectorAll('[data-activity] img').length,0,'Illustrated instructions must not bypass the safety state');
+  assert.equal(h.d.querySelectorAll('[data-activity] .sr-move-education-visual img').length,6,'Keep all six approved Premium photographs in the restricted state');
+  assert.equal(h.d.querySelectorAll('[data-activity] > svg').length,0,'Never fall back to prototype drawings because of a safety flag');
   assert.ok(h.d.querySelector('[data-movement-safety] details summary'));
   assert.equal(h.d.querySelector('#srEnergy'),null);
   for(const a of h.w.SPM_RESOURCE_CONTENT.activities){
@@ -50,7 +51,8 @@ for(const [name,patch,adaptation] of restrictedCases)test(name+' retains educati
    assert.ok(detail.textContent.includes(a.benefit.es));
    assert.ok(!detail.textContent.includes(a.dose.es));
    assert.equal(detail.querySelector('#srMoveSave'),null);
-   assert.equal(detail.querySelector('img'),null,'Do not expose exercise instructions embedded in an image');
+   assert.ok(detail.querySelector('.sr-move-education-visual img'),'Keep the Premium photo within the educational viewport');
+   assert.ok(detail.querySelector('.sr-move-education-visual').style.getPropertyValue('--sr-photo-ratio'),'The viewport must crop out the embedded instructions');
    detail.querySelector('[data-sr-module-home]').click();
    assert.equal(detail.hidden,true);
   }
@@ -94,5 +96,23 @@ test('return from a restricted library keeps the wellness origin',async()=>{
   let returns=0;h.w.addEventListener('spm:open-wellness-library',()=>returns++);
   h.d.querySelector('[data-sr-exit]').click();
   assert.equal(returns,1);assert.equal(h.d.querySelector('dialog'),null);
+ }finally{h.close()}
+});
+
+for(const primary of ['erection','ejaculation'])for(const safety of ['none','review'])test(`${primary} uses the same Premium assets with ${safety} safety`,async()=>{
+ const h=await harness({primary,safety});
+ try{
+  const expected={walk:'01-caminata-cardio-moderado.jpg',strength:'02-entrenamiento-fuerza.jpg',mobility:'03-movilidad-flexibilidad.jpg',kegel:'06-piso-pelvico-kegel.jpg',swim:'04-actividad-en-el-agua.jpg',dance:'05-bailar-y-moverte.jpg'};
+  for(const [id,file] of Object.entries(expected)){
+   const card=h.d.querySelector(`[data-activity="${id}"]`);
+   assert.ok(card.querySelector('img').getAttribute('src').includes('assets/activity/cards-v1/'+file));
+   assert.equal(card.querySelector('svg'),null);
+   card.click();
+   const detail=h.d.querySelector('#srActivityDetail');
+   assert.ok(detail.querySelector('img').getAttribute('src').includes(file));
+   assert.equal(!!detail.querySelector('.sr-move-education-visual'),safety!=='none');
+   assert.equal(!!detail.querySelector('#srMoveSave'),safety==='none');
+   detail.querySelector('[data-sr-module-home]').click();
+  }
  }finally{h.close()}
 });
