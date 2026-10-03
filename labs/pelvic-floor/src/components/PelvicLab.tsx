@@ -140,7 +140,10 @@ function useSequence(phases: Phase[], reps: number, onDone?: () => void) {
   const toggle = () => {
     if (playing) { stopAudio(); setPlaying(false); return; }
     // The first play call runs synchronously inside the user's tap (including iOS).
-    setAudioErr(false); cue(phases[ref.current.idx]!.audioId); setPlaying(true);
+    setAudioErr(false);
+    const currentPhase = phases[ref.current.idx]!;
+    if (ref.current.left >= currentPhase.sec) cue(currentPhase.audioId);
+    setPlaying(true);
   };
   const phase = phases[idx] ?? phases[0]!;
   const state: FloorState = !playing && !done && idx === 0 && left === phase.sec ? 'rest' : done ? 'rest' : phase.state;
