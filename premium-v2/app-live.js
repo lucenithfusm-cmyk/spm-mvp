@@ -7,8 +7,12 @@ const $=id=>document.getElementById(id);
 const guest=window.SPM_GUEST_ENTRY||null;
 const guestEnglish=()=>!!guest&&window.SPM_LANGUAGE?.get?.()==='en';
 const guestText=(es,en)=>guestEnglish()?en:es;
-function guestProgress(){guest?.progress?.({version:1,motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
-const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+const LEGAL_VERSION='co-2026-10-06-v1';
+const TERMS_VERSION='co-2026-10-06-v1';
+const PRIVACY_VERSION='co-2026-10-06-v1';
+const CONSENT_VERSION='co-2026-10-06-v1';
+function guestProgress(){guest?.progress?.({version:1,motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('legalCard')?.hidden?'legal':!$('motiveCard').hidden?'motives':'questions'});}
+const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[],resumeStage:null,legalReceipt:null};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
  ['confidence','Confianza / manejo de la presión'],['wellbeing','Bienestar y conexión'],['optimization','Optimización / mantenimiento']
@@ -78,7 +82,26 @@ async function restore(){
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
 }
-function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];S.resumeStage=null;S.legalReceipt=null;nav('intake');$('ageCard').hidden=false;if($('legalCard'))$('legalCard').hidden=true;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function validLegalReceipt(receipt){return !!(receipt?.consentReceiptId&&receipt?.guestId&&receipt?.legalVersion===LEGAL_VERSION)}
+function uuid(){return globalThis.crypto?.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx').replace(/[xy]/g,ch=>{const n=Math.random()*16|0,v=ch==='x'?n:(n&3|8);return v.toString(16)})}
+async function recordLegalConsent(){
+ const terms=$('acceptTerms'),sensitive=$('acceptSensitive');
+ if(!terms?.checked||!sensitive?.checked){msg(guestText('Para continuar con la evaluación personalizada debes aceptar los Términos/Privacidad y autorizar por separado el tratamiento de datos sensibles.','To continue with the personalized assessment, accept Terms/Privacy and separately authorize sensitive-data processing.'),'warn');return false}
+ hideMsg();const btn=$('legalContinue');if(btn){btn.disabled=true;btn.textContent=guestText('Guardando consentimiento…','Saving consent…')}
+ const receiptId=uuid(),guestId=S.legalReceipt?.guestId||uuid(),acceptedAt=new Date().toISOString();
+ const payload={id:receiptId,user_id:S.user?.id||null,guest_id:guestId,age_confirmed:true,terms_accepted:true,sensitive_data_accepted:true,terms_version:TERMS_VERSION,privacy_version:PRIVACY_VERSION,consent_version:CONSENT_VERSION,locale:guestEnglish()?'en':'es',source:'free_assessment',accepted_at:acceptedAt};
+ const {error}=await db.from('consent_receipts').insert(payload);
+ if(btn){btn.disabled=false;btn.textContent=guestText('Aceptar y continuar','Accept and continue')}
+ if(error){msg(guestText('No pudimos registrar tu consentimiento. No recopilaremos respuestas sensibles hasta completar este paso. Inténtalo nuevamente.','We could not record your consent. We will not collect sensitive answers until this step is completed. Please try again.'),'danger');return false}
+ S.legalReceipt={consentReceiptId:receiptId,guestId,legalVersion:LEGAL_VERSION,acceptedAt};guest?.receipt?.(S.legalReceipt);return true;
+}
+function enterPostConsent(){
+ $('ageCard').hidden=true;if($('legalCard'))$('legalCard').hidden=true;
+ if(S.resumeStage==='questions'&&S.queue.length){$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()}
+ else{$('quizCard').hidden=true;renderMotives();$('motiveCard').hidden=false}
+ guestProgress();
+}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
  motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / managing pressure',wellbeing:'Satisfaction and connection',optimization:'Optimization / maintenance'}[id]||t):t}</b>`;fragment.appendChild(b)});
@@ -185,17 +208,17 @@ function renderProgress(){
 async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
 // The free-entry page opts in. Existing signed-in pages keep their original flow.
 const guestAPI=guest?{
- start(saved){
-  resetForAssessment();hideMsg();show('appScreen');
+ start(saved,receipt){
+  resetForAssessment();hideMsg();show('appScreen');S.legalReceipt=validLegalReceipt(receipt)?receipt:null;
   if(saved?.version===1){
    S.motives=(saved.motives||[]).filter(k=>motiveDefs.some(([id])=>id===k));
    const ids=new Set(E.assessment.questions.map(q=>q.id));
    S.answers=Object.fromEntries(Object.entries(saved.answers||{}).filter(([k])=>ids.has(k)));
    if(S.motives.length)buildQueue();clearHiddenAnswers();
-   S.qi=Math.max(0,Math.min(Number(saved.qi)||0,S.queue.length));
-   if(saved.stage==='result'&&S.queue.length&&visibleQueue().every(q=>S.answers[q.id]!==undefined&&S.answers[q.id]!==null&&(q.type!=='text'||String(S.answers[q.id]).trim()))){renderMotives();finishAssessment();return}
-   if(saved.stage==='questions'&&S.queue.length){$('ageCard').hidden=true;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()}
-   else if(saved.stage==='motives'){$('ageCard').hidden=true;$('motiveCard').hidden=false}
+   S.qi=Math.max(0,Math.min(Number(saved.qi)||0,S.queue.length));S.resumeStage=saved.stage==='questions'?'questions':saved.stage==='motives'?'motives':null;
+   if(S.legalReceipt&&saved.stage==='result'&&S.queue.length&&visibleQueue().every(q=>S.answers[q.id]!==undefined&&S.answers[q.id]!==null&&(q.type!=='text'||String(S.answers[q.id]).trim()))){renderMotives();finishAssessment();return}
+   if(S.legalReceipt&&saved.stage==='questions'&&S.queue.length){$('ageCard').hidden=true;if($('legalCard'))$('legalCard').hidden=true;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ();guestProgress();return}
+   if(S.legalReceipt&&saved.stage==='motives'){$('ageCard').hidden=true;if($('legalCard'))$('legalCard').hidden=true;$('motiveCard').hidden=false;renderMotives();guestProgress();return}
   }
   renderMotives();guestProgress();
  },
@@ -206,11 +229,11 @@ const guestAPI=guest?{
  async save(receipt={}){
   if(!S.map||S.map.urgent.length)throw new Error(guestText('Revisa primero tu orientación de seguridad.','Review your safety guidance first.'));
   const {data,error}=await db.auth.getUser();if(error||!data?.user)throw new Error(guestText('Confirma tu correo e inicia sesión para guardar la evaluación.','Confirm your email and sign in to save your assessment.'));
-  const user=data.user;const r=receipt.userId===user.id?{...receipt}:{userId:user.id};
+  const user=data.user;const r={...receipt,userId:user.id};
   const {error:profileError}=await db.from('profiles').upsert({id:user.id,alias:(user.email||'usuario').split('@')[0],locale:guestEnglish()?'en':'es'},{onConflict:'id'});
   if(profileError)throw profileError;
   if(!r.assessmentId){
-   const {data:a,error:e}=await db.from('assessments').insert({user_id:user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:new Date().toISOString()}).select().single();
+   const {data:a,error:e}=await db.from('assessments').insert({user_id:user.id,status:'completed',motives:S.motives,answers:S.answers,consent_receipt_id:r.consentReceiptId||null,completed_at:new Date().toISOString()}).select().single();
    if(e)throw e;r.assessmentId=a.id;guest.receipt(r);
   }
   if(!r.mapId){
@@ -224,7 +247,8 @@ const guestAPI=guest?{
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive]');if(button&&motiveGrid.contains(button))selectMotive(button.dataset.motive)});
- document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false;guestProgress()}else msg('SPM está diseñado para mayores de 18 años.','warn')});
+ document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){hideMsg();$('ageCard').hidden=true;if(validLegalReceipt(S.legalReceipt)){enterPostConsent()}else{if($('legalCard'))$('legalCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;guestProgress()}}else msg(guestText('SPM está diseñado exclusivamente para mayores de 18 años.','SPM is designed exclusively for adults aged 18 or older.'),'warn')});
+ if($('legalContinue'))$('legalContinue').onclick=async()=>{if(await recordLegalConsent())enterPostConsent()};
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Selecciona al menos un motivo.','Choose at least one reason.'),'warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
