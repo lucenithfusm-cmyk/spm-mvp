@@ -38,7 +38,7 @@ function saveProgress(value){
  if(expire())return;
  const changed=JSON.stringify(draft)!==JSON.stringify(value);
  const answersChanged=draft&&JSON.stringify([draft.motives,draft.answers])!==JSON.stringify([value.motives,value.answers]);
- const now=Date.now();const priorReceipt=record?.receipt||null;const retainedReceipt=answersChanged&&priorReceipt?{consentReceiptId:priorReceipt.consentReceiptId||null,guestId:priorReceipt.guestId||null}:priorReceipt;record={version:2,savedAt:changed||!record?now:record.savedAt,expiresAt:changed||!record?now+RETENTION_MS:record.expiresAt,draft:value,receipt:retainedReceipt};
+ const now=Date.now();const priorReceipt=record?.receipt||null;const retainedReceipt=answersChanged&&priorReceipt?{consentReceiptId:priorReceipt.consentReceiptId||null,guestId:priorReceipt.guestId||null,legalVersion:priorReceipt.legalVersion||null,acceptedAt:priorReceipt.acceptedAt||null}:priorReceipt;record={version:2,savedAt:changed||!record?now:record.savedAt,expiresAt:changed||!record?now+RETENTION_MS:record.expiresAt,draft:value,receipt:retainedReceipt};
  draft=value;persist();
 }
 const priorities={
