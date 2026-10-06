@@ -55,14 +55,24 @@ INVIMA: a sanitary registration is not assumed merely because SPM is software. D
 
 All are bilingual ES/EN and linked from the public website footer.
 
-## 5. Sensitive-data consent — MUST BECOME OPERATIONAL
-Before processing health or sexual-life information for personalization:
-- Present a separate, explicit opt-in.
-- Link to Privacy Policy and Sensitive Data Authorization.
-- State that the information is sensitive and that the user is not obliged to provide it.
-- Record user/account, timestamp, text/policy version and consent source.
-- Do not pre-check the box.
-- Define behavior if the user refuses consent (e.g. cannot generate personalized map/program, but can still view public educational resources).
+## 5. Sensitive-data consent — IMPLEMENTED IN feat/legal-colombia-v1
+Implemented in the free assessment flow:
+- 18+ eligibility gate remains the first step.
+- Separate Terms/Privacy acceptance.
+- Separate explicit opt-in for sensitive health/sexual-life data.
+- Links to Privacy Policy and Sensitive Data Authorization.
+- The user is told sensitive answers are optional.
+- No personalized sensitive assessment begins until consent is recorded successfully.
+- Consent receipt records timestamp, language and legal-policy versions.
+- Refusal leaves public educational resources available.
+- Checkboxes are not pre-selected.
+
+Technical evidence:
+- public.consent_receipts table with RLS.
+- assessments.consent_receipt_id links saved assessments to the consent evidence.
+- Current legal version: co-2026-10-06-v1.
+
+Status: code/database integration complete on review branch; mobile/desktop browser QA is still required before production.
 
 ## 6. Data-protection safeguards
 - Keep sexual/health answers out of advertising pixels and remarketing payloads.
@@ -115,8 +125,9 @@ LEGAL GATE:
 - [ ] RUT/NIT/activity confirmed
 - [ ] Tax/invoicing status confirmed
 - [ ] PQR channel operational
-- [ ] Sensitive-data consent integrated into actual assessment flow
-- [ ] Consent version logging tested
+- [x] Sensitive-data consent integrated into actual assessment flow (review branch)
+- [x] Consent version persistence implemented in database
+- [ ] Browser QA: verify consent insertion/version logging end-to-end on mobile and desktop
 - [ ] Checkout legal acceptance and immediate-activation language tested
 - [ ] Cookies/tracking inventory audited
 - [ ] No intimate data reaches ad/marketing tools
