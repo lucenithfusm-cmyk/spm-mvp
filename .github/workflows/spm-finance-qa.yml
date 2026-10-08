@@ -1,0 +1,25 @@
+name: SPM Private Finance QA
+on:
+  push:
+    branches:
+      - feat/spm-private-finance-ledger-v1
+  pull_request:
+    paths:
+      - 'finance-admin/**'
+      - 'tests/spm-finance-core.test.cjs'
+      - '.github/workflows/spm-finance-qa.yml'
+jobs:
+  accounting-core:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run finance regression tests
+        run: node --test tests/spm-finance-core.test.cjs
+      - name: Check no secrets or live schema mutation in proposed UI
+        run: |
+          ! grep -E 'service_role|sb_secret_|sk_(live|test)_' finance-admin/index.html
