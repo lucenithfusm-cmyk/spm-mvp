@@ -1,0 +1,24 @@
+name: SPM Website Private Finance QA
+on:
+  push:
+    branches: [feat/spm-public-website-private-admin-20261008]
+  pull_request:
+    paths:
+      - 'public-web/admin/**'
+      - 'internal-finance/**'
+      - 'tests/spm-public-web-finance.test.cjs'
+      - '.github/workflows/spm-website-finance-qa.yml'
+jobs:
+  secure-finance-ui:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/spm-public-web-finance.test.cjs
+      - name: Verify no server secrets in public admin UI
+        run: |
+          ! grep -E 'service_role|sb_secret_|sk_(live|test)_' public-web/admin/index.html
