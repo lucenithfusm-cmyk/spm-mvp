@@ -1,0 +1,63 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Artículos gratuitos de SPM Digital Wellness sobre bienestar sexual masculino, mitos y realidades, confianza, deseo y hábitos.">
+<title>Artículos y recursos — SPM Digital Wellness</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#e9f8f2;background:#07191c}
+*{box-sizing:border-box}body{margin:0;line-height:1.7}.wrap{width:min(940px,92%);margin:auto}
+.top{background:#07191ce9;border-bottom:1px solid #254d4c;padding:18px 0;position:sticky;top:0;z-index:2}
+.top>.wrap{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.brand{font-weight:850;letter-spacing:.04em}.brand b{color:#83dfc9}a{color:#8be4cf;text-decoration:none}
+.hero{padding:45px 0 18px}h1{font-size:clamp(27px,5vw,42px);line-height:1.14}h2{font-size:22px}
+.muted{color:#b7ccc7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:20px 0 40px}
+.card{background:#0d282e;border:1px solid #264c4c;border-radius:18px;padding:20px}
+.card a{font-weight:700}.card img{max-width:100%;width:100%;height:180px;object-fit:cover;border-radius:12px}
+.card small,.tag{color:#ade3d4}.article{background:#0d2629;border:1px solid #31595a;padding:clamp(20px,5vw,40px);border-radius:20px;margin:28px 0 60px}
+.article p{white-space:pre-line;margin:1.15em 0}.article img{max-width:100%;border-radius:12px}.article h1{margin-top:8px}
+.video{display:inline-block;background:#8de2cd;color:#062a24;padding:8px 14px;border-radius:10px;margin-top:12px;font-weight:700}
+footer{padding:25px 0;border-top:1px solid #274b4d;color:#a9c8c2;font-size:13px}
+[hidden]{display:none!important}.status{min-height:30px}
+</style></head><body>
+<header class="top"><div class="wrap"><div class="brand"><b>SPM</b> DIGITAL WELLNESS</div><a href="./index.html">← Volver a inicio</a></div></header>
+<main class="wrap">
+<section class="hero"><span class="tag">Centro de contenidos SPM</span><h1>Educación, mitos y realidades, bienestar.</h1>
+<p class="muted">Información general para adultos. Las publicaciones no equivalen a diagnóstico, tratamiento ni consejo médico individual.</p></section>
+<section id="listing"><h2>Publicaciones</h2><p id="notice" class="muted status">Cargando contenidos…</p><div id="items" class="grid"></div></section>
+<section id="article" class="article" hidden><a href="./contenidos.html">← Todos los contenidos</a><small id="articleMeta" class="tag"></small>
+<h1 id="articleTitle"></h1><img id="articleCover" alt="" hidden><p id="articleSummary" class="muted"></p><div id="articleText"></div>
+<a id="articleVideo" target="_blank" rel="noopener noreferrer" class="video" hidden>Ver video educativo ↗</a></section>
+</main><footer><div class="wrap">SPM Digital Wellness · Educación y bienestar sexual masculino · <a href="./privacy.html">Privacidad</a></div></footer>
+<script type="module">
+import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://jogirmziqjlsttbbarcx.supabase.co','sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf');
+const $=id=>document.getElementById(id);const slug=new URLSearchParams(location.search).get('articulo');
+const label={educacion:'Educación',mitos:'Mitos y realidades',bienestar:'Bienestar',novedades:'Novedades'};
+function safeUrl(s){try{const u=new URL(s);return u.protocol==='https:'?u.href:null}catch{return null}}
+function card(p){
+ const el=document.createElement('article');el.className='card';
+ if(safeUrl(p.cover_url)){const img=document.createElement('img');img.src=p.cover_url;img.alt='Portada de '+p.title;img.loading='lazy';el.appendChild(img);}
+ const cat=document.createElement('small');cat.textContent=label[p.category]||p.category;el.append(cat);
+ const h=document.createElement('h2');const a=document.createElement('a');a.href='?articulo='+encodeURIComponent(p.slug);a.textContent=p.title;h.appendChild(a);el.appendChild(h);
+ const text=document.createElement('p');text.textContent=p.summary;el.appendChild(text);return el;
+}
+async function start(){
+ if(slug && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug))return;
+ const q=slug?db.from('spm_site_posts').select('title,slug,summary,content,category,locale,cover_url,video_url,published_at').eq('status','published').eq('slug',slug).lte('published_at',new Date().toISOString()).maybeSingle()
+ :db.from('spm_site_posts').select('title,slug,summary,category,locale,cover_url,published_at').eq('status','published').lte('published_at',new Date().toISOString()).order('published_at',{ascending:false}).limit(60);
+ const r=await q;
+ if(r.error){$('notice').textContent='Las publicaciones estarán disponibles próximamente.';return;}
+ if(slug){
+  $('listing').hidden=true;$('article').hidden=false;
+  if(!r.data){$('articleTitle').textContent='Publicación no encontrada';return;}
+  const p=r.data;$('articleMeta').textContent=label[p.category]||p.category;
+  $('articleTitle').textContent=p.title;$('articleSummary').textContent=p.summary;
+  document.title=p.title+' | SPM Digital Wellness';
+  const u=safeUrl(p.cover_url);if(u){$('articleCover').src=u;$('articleCover').hidden=false;$('articleCover').alt='Portada del artículo';}
+  const body=$('articleText');for(const text of String(p.content||'').split(/\n\s*\n/)){if(text.trim()){const para=document.createElement('p');para.textContent=text.trim();body.appendChild(para);}}
+  const video=safeUrl(p.video_url);if(video){$('articleVideo').href=video;$('articleVideo').hidden=false;}
+ }else{
+  const data=(r.data||[]).filter(x=>x.locale==='es');$('notice').textContent=data.length?'Artículos publicados: '+data.length:'Pronto encontrarás nuevas publicaciones. Mientras tanto, visita nuestro centro de recursos.';
+  for(const p of data)$('items').appendChild(card(p));
+ }
+}
+start().catch(()=>{$('notice').textContent='Las publicaciones estarán disponibles próximamente.';});
+</script></body></html>
