@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SPM Central · Finanzas privadas</title>
+<style>
+:root{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark;color:#e8f7f3;background:#06161a}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.11em;color:#78dfc5}.muted{color:#9db4b2;font-size:13px}
+h1{font-size:clamp(23px,4vw,34px);margin:8px 0}h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;color:#bbe2d9;margin:0 0 8px}
+.card,.kpi{background:#0d2528;border:1px solid #244747;border-radius:18px;padding:18px}
+.card{margin:16px 0}.note{border-left:3px solid #67cdb3;padding:10px 13px;background:#133134;font-size:14px;line-height:1.5;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi b{font-size:24px;display:block;margin:7px 0;color:#e7fff7}.kpi small{font-size:12px;color:#b1c9c4}
+.inline{display:flex;gap:10px;align-items:end;flex-wrap:wrap}label{font-size:13px;color:#bdd8d2;display:flex;gap:6px;flex-direction:column}
+input,select,button{font:inherit;border-radius:9px;padding:10px 12px}
+input,select{color:#f0fcf9;background:#10292e;border:1px solid #3a6464;min-width:0}
+input[type=number]{width:135px}input[type=date]{max-width:185px}
+button{background:#78dfc5;border:1px solid #78dfc5;color:#002825;font-weight:700;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
+button.secondary{background:transparent;color:#bceee1;border-color:#4b7e73}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid #244747}th{color:#a4cfbf}
+.scroll{overflow:auto}form{display:grid;gap:12px;max-width:680px}
+[data-hide]{display:none!important}
+.status{font-size:13px;min-height:22px;color:#d4f6e9}.error{color:#ffd0c6}
+ul{line-height:1.65;margin:8px 0;padding-left:22px}.small{font-size:12px;color:#a3c4ba}
+footer{font-size:12px;color:#9bbab1;margin-top:32px}
+</style></head>
+<body><div class="wrap">
+<header><div><div class="brand">SPM DIGITAL WELLNESS</div><h1>Finanzas privadas</h1><div class="muted">Panel exclusivo de la propietaria · Proyecto de integración</div></div><button id="signOut" class="secondary" data-hide>Cerrar sesión</button></header>
+<div class="note"><b>Contabilidad operativa, no facturación electrónica.</b> Las ventas deben llegar únicamente desde confirmaciones verificadas de Wompi. El dinero recibido en el banco se concilia por separado. Este panel no modifica precios ni activa compras.</div>
+<section id="login" class="card"><h2>Acceso de administración</h2>
+<p class="muted">Solo una cuenta autorizada en Supabase puede ver información financiera. No utilices tu cuenta de usuario de prueba para administrar ventas.</p>
+<form id="loginForm"><label>Correo de administración<input id="email" type="email" required autocomplete="username"></label>
+<label>Contraseña<input id="password" type="password" required autocomplete="current-password"></label>
+<button type="submit">Ingresar</button></form></section>
+<main id="dashboard" data-hide>
+<section class="card"><div class="inline" style="justify-content:space-between"><div><h2>Resumen financiero</h2><div class="muted">Las cifras reflejan únicamente registros cargados y conciliados; no equivalen a una declaración tributaria.</div></div>
+<label>Año<select id="year"></select></label></div>
+<div class="grid" style="margin-top:16px">
+ <div class="kpi"><small>Ventas brutas</small><b id="gross">—</b><small>Pedidos aprobados del año</small></div>
+ <div class="kpi"><small>Reembolsos</small><b id="refunds">—</b><small>Restan a las ventas netas</small></div>
+ <div class="kpi"><small>Comisiones del procesador</small><b id="fees">—</b><small>Sin descontarlas dos veces</small></div>
+ <div class="kpi"><small>Desembolsos bancarios</small><b id="payouts">—</b><small>Registrados y conciliados</small></div>
+ <div class="kpi"><small>Gastos del proyecto</small><b id="expenses">—</b><small>Sin retiros personales</small></div>
+ <div class="kpi"><small>Retiros de la titular</small><b id="draws">—</b><small>No son nómina ni gastos operativos</small></div>
+ <div class="kpi"><small>Saldo bancario estimado</small><b id="balance">—</b><small>Solo movimientos del año, sin saldo inicial</small></div>
+ <div class="kpi"><small>Disponible después de reservas</small><b id="available">—</b><small>Estimación; confirmar contra extracto</small></div>
+</div><div class="note" id="reconciliation"></div></section>
+<section class="card"><h2>Reservas y retiro personal planificado</h2>
+<p class="muted">La reserva separa dinero para reembolsos y reinversión, pero no es un gasto deducible ni un movimiento de banco. El retiro personal no se registra como salario.</p>
+<form id="settingsForm" class="inline">
+<label>Reserva para reembolsos (%)<input id="reserveRefund" type="number" min="0" max="100" step=".5" value="0" required></label>
+<label>Reserva para crecimiento (%)<input id="reserveGrowth" type="number" min="0" max="100" step=".5" value="0" required></label>
+<label>Meta de retiro mensual (COP)<input id="withdrawalTarget" type="number" min="0" step="1000" value="0" required></label>
+<button type="submit">Guardar metas</button></form>
+<div class="grid" style="margin-top:12px"><div class="kpi"><small>Reserva de reembolsos</small><b id="reserveR">—</b></div><div class="kpi"><small>Reserva de reinversión</small><b id="reserveG">—</b></div></div></section>
+<section class="card"><h2>Registrar un movimiento</h2><p class="muted">Registra desembolsos de Wompi desde el extracto, gastos, aportes y retiros. Los pagos de clientes NO se registran manualmente como ventas: llegarán desde el backend verificado.</p>
+<form id="movementForm"><div class="inline">
+<label>Fecha<input type="date" id="movementDate" required></label>
+<label>Tipo<select id="kind" required>
+<option value="wompi_payout">Abono de Wompi al banco</option><option value="business_expense">Gasto de SPM</option><option value="owner_draw">Retiro personal de la titular</option><option value="owner_contribution">Aporte de la titular</option><option value="bank_fee">Comisión bancaria</option><option value="refund_from_bank">Reembolso pagado desde banco</option><option value="correction_credit">Corrección a favor (con soporte)</option><option value="correction_debit">Corrección en contra (con soporte)</option></select></label>
+<label>Importe COP<input type="number" id="amount" required min="1" step="1"></label></div>
+<label>Concepto<input id="description" maxlength="600" required placeholder="Ej.: Desembolso Wompi del 15 de octubre"></label>
+<label>Referencia bancaria / comprobante (opcional)<input id="reference" maxlength="200" placeholder="Número de movimiento"></label>
+<button type="submit">Guardar movimiento</button></form></section>
+<section class="card"><div class="inline" style="justify-content:space-between"><h2>Movimientos registrados</h2><button type="button" class="secondary" id="export">Exportar CSV</button></div>
+<div class="scroll"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Monto</th><th>Referencia</th><th>Concepto</th></tr></thead><tbody id="movementRows"></tbody></table></div>
+</section>
+<section class="card"><h2>Ventas registradas por la pasarela</h2><div class="scroll"><table><thead><tr><th>Fecha</th><th>Estado</th><th>Bruto</th><th>Reembolso</th><th>Comisión</th><th>Referencia</th></tr></thead><tbody id="saleRows"></tbody></table></div></section>
+</main><p id="status" class="status" role="status"></p>
+<footer>SPM Central · Información financiera privada · Datos mínimos de pago, sin información clínica o sexual · Integración de Wompi pendiente.</footer>
+</div>
+<script src="./ledger-core.js"></script>
+<script type="module">
+import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://jogirmziqjlsttbbarcx.supabase.co','sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf');
+const $=id=>document.getElementById(id),core=window.SPM_FINANCE_CORE;
+const state={sales:[],movements:[],settings:{},year:new Date().getFullYear(),authorized:false};
+const setStatus=(s,error=false)=>{$('status').textContent=s;$('status').classList.toggle('error',error)};
+const show=ok=>{$('login').toggleAttribute('data-hide',ok);$('dashboard').toggleAttribute('data-hide',!ok);$('signOut').toggleAttribute('data-hide',!ok)};
+const money=x=>core.fmt(x),textCell=(tr,val)=>{const td=document.createElement('td');td.textContent=val??'';tr.appendChild(td)};
+const nowCol=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+function summary(){
+ const x=core.summarize(state.sales,state.movements,state.settings,state.year);
+ const f={gross:x.gross,refunds:x.refunds,fees:x.processorFees,payouts:x.payouts,expenses:x.expenses,
+ draws:x.withdrawals,balance:x.bankCash,available:x.availableAfterReserves,reserveR:x.refundReserve,reserveG:x.growthReserve};
+ for(const[k,v]of Object.entries(f))$(k).textContent=money(v);
+ $('reconciliation').textContent='Ventas netas: '+money(x.netSales)+' · Pendiente de conciliar contra desembolsos y extractos: '+money(x.payoutNotReconciled)+'. Las transferencias entre cuentas personales no son nuevas ventas. El saldo mostrado no incluye el saldo inicial de otros años.';
+ for(const [id,data] of [['movementRows',state.movements.filter(v=>String(v.movement_date).startsWith(String(state.year)))],['saleRows',state.sales.filter(v=>core.colombiaYear(v.purchased_at||v.created_at)===state.year)]]){
+  const parent=$(id);parent.replaceChildren();if(!data.length){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=id==='movementRows'?5:6;td.textContent='Aún no hay registros';tr.appendChild(td);parent.appendChild(tr);continue}
+  for(const v of data){const tr=document.createElement('tr');
+   if(id==='movementRows')for(const cell of [v.movement_date,v.category,money(v.amount_cop),v.external_reference,v.description])textCell(tr,cell);
+   else for(const cell of [v.purchased_at?.slice(0,10),v.payment_status,money(v.amount_gross_cop),money(v.refund_cop),money(v.fee_cop),v.order_reference||v.provider_payment_id])textCell(tr,cell);
+   parent.appendChild(tr);
+  }
+ }
+}
+async function load(){
+ const [sales,movements,settings]=await Promise.all([
+  db.from('spm_finance_sales').select('*').order('created_at',{ascending:false}).limit(1000),
+  db.from('spm_finance_movements').select('*').order('movement_date',{ascending:false}).limit(1000),
+  db.from('spm_finance_settings').select('*').eq('id','spm').single()]);
+ for(const r of [sales,movements,settings])if(r.error)throw r.error;
+ state.sales=sales.data;state.movements=movements.data;state.settings=settings.data;
+ $('reserveRefund').value=state.settings.reserve_refund_pct;$('reserveGrowth').value=state.settings.reserve_growth_pct;
+ $('withdrawalTarget').value=state.settings.withdrawal_target_cop;
+ summary();
+ if(sales.data.length===1000||movements.data.length===1000)setStatus('Aviso: consulta limitada a los 1.000 registros más recientes. No uses estos totales para cierre tributario hasta implementar paginación completa.',true);
+ else setStatus('Resumen actualizado. Conciliar con los extractos bancarios y de Wompi.');
+}
+async function refreshAuth(){
+ const{data:{user}}=await db.auth.getUser();
+ if(!user){state.authorized=false;show(false);return;}
+ const check=await db.rpc('spm_is_finance_admin');
+ if(check.error||check.data!==true){state.authorized=false;show(false);setStatus('Esta cuenta no está autorizada para finanzas de SPM.',true);return}
+ state.authorized=true;show(true);
+ try{await load()}catch(e){setStatus('Módulo financiero aún no habilitado en Supabase: '+e.message,true)}
+}
+$('loginForm').onsubmit=async e=>{e.preventDefault();setStatus('Ingresando…');
+ const{error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
+ $('password').value='';if(error)setStatus(error.message,true);else await refreshAuth()};
+$('signOut').onclick=async()=>{await db.auth.signOut();state.authorized=false;state.sales=[];state.movements=[];show(false);setStatus('Sesión cerrada')};
+$('year').onchange=()=>{state.year=Number($('year').value);summary()};
+$('settingsForm').onsubmit=async e=>{e.preventDefault();if(!state.authorized)return;
+ const r=Number($('reserveRefund').value),g=Number($('reserveGrowth').value),w=Number($('withdrawalTarget').value);
+ if(!Number.isFinite(r)||!Number.isFinite(g)||r<0||g<0||r+g>100||!Number.isSafeInteger(w)||w<0){setStatus('Porcentajes inválidos o superiores al 100 %.',true);return;}
+ const {error}=await db.from('spm_finance_settings').update({reserve_refund_pct:r,reserve_growth_pct:g,withdrawal_target_cop:w,updated_at:new Date().toISOString()}).eq('id','spm');
+ if(error)setStatus(error.message,true);else{setStatus('Metas guardadas. No generan transferencias bancarias.');await load()}
+};
+$('movementForm').onsubmit=async e=>{e.preventDefault();if(!state.authorized)return;
+ const amount=Number($('amount').value);
+ if(!Number.isSafeInteger(amount)||amount<1){setStatus('Ingresa un importe positivo en pesos enteros.',true);return;}
+ if($('kind').value==='owner_draw' && amount>core.summarize(state.sales,state.movements,state.settings,state.year).availableAfterReserves){
+   setStatus('El retiro supera el saldo estimado después de las reservas; concilia el banco antes de anotarlo.',true);return;
+ }
+ const payload={movement_date:$('movementDate').value,category:$('kind').value,
+ amount_cop:amount,description:$('description').value.trim(),external_reference:$('reference').value.trim()||null};
+ const {error}=await db.from('spm_finance_movements').insert(payload);
+ if(error)setStatus(error.message,true);else{$('amount').value='';$('description').value='';$('reference').value='';await load();setStatus('Movimiento agregado. Los registros son inmutables; los errores se corrigen con un asiento compensatorio.')}
+};
+$('export').onclick=()=>{if(!state.authorized)return;
+ const rows=[
+  ...state.sales.filter(v=>core.colombiaYear(v.purchased_at||v.created_at)===state.year).map(v=>({date:v.purchased_at||v.created_at,type:'venta '+v.payment_status,ref:v.order_reference||v.provider_payment_id,amount:v.amount_gross_cop,description:'Reembolso: '+v.refund_cop+' / comisión: '+v.fee_cop})),
+  ...state.movements.filter(v=>v.movement_date.startsWith(String(state.year))).map(v=>({date:v.movement_date,type:v.category,ref:v.external_reference,amount:v.amount_cop,description:v.description}))
+ ];
+ const blob=new Blob([core.csv(rows)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='SPM-finanzas-'+state.year+'.csv';a.click();URL.revokeObjectURL(url);
+};
+const y=new Date().getFullYear();for(let n=y;n>=y-4;n--){const opt=document.createElement('option');opt.value=n;opt.textContent=n;$('year').appendChild(opt);}
+$('movementDate').value=nowCol();show(false);refreshAuth().catch(e=>setStatus(e.message,true));
+</script></body></html>
