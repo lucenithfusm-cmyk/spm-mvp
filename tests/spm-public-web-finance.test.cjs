@@ -68,7 +68,7 @@ test('migration forbids client-side finance-sale inserts and disallows self-regi
 test('private finance is outside the public SPM navigation and has independent authorization',()=>{
  const web=fs.readFileSync(path.join(__dirname,'../public-web/index.html'),'utf8');
  const admin=fs.readFileSync(path.join(__dirname,'../public-web/admin/index.html'),'utf8');
- assert.doesNotMatch(web,/href\\s*=\\s*["'][^"']*\\/admin\\//i);
+ assert.doesNotMatch(web,/href\s*=\s*["'][^"']*\/admin\//i);
  assert.doesNotMatch(web,/spm_finance_sales|spm_finance_movements/);
  assert.match(admin,/noindex,nofollow,noarchive/);
  assert.match(admin,/spm_is_finance_admin/);
