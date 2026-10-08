@@ -1,0 +1,117 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
+<title>SPM Digital Wellness · Editor privado</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#e8f7f3;background:#07191c}
+*{box-sizing:border-box}body{margin:0}.wrap{max-width:1080px;margin:auto;padding:22px}
+header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #1f4c4c;padding-bottom:15px}
+h1{margin:8px 0;font-size:clamp(23px,4vw,32px)}h2{font-size:19px;margin:0 0 10px}
+small,.muted{color:#acc8c4}.card{background:#102c30;border:1px solid #2e5855;border-radius:18px;padding:18px;margin:18px 0}
+input,textarea,select{background:#081f22;border:1px solid #47746e;border-radius:9px;color:#fff;font:inherit;padding:10px;width:100%}
+textarea{min-height:185px;resize:vertical}button{font:inherit;border:0;border-radius:9px;background:#8ee8d2;color:#062722;font-weight:700;padding:10px 16px;cursor:pointer}
+button.secondary{background:transparent;color:#b9eadd;border:1px solid #558c80}button:disabled{opacity:.45}
+label{font-size:13px;display:block;margin:12px 0 7px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+a{color:#94e8d5}ul{padding-left:18px;line-height:1.8}li{margin:8px 0}button{margin-top:8px}
+.tag{font-size:11px;color:#b3f0e0;background:#205450;border-radius:12px;padding:3px 8px;margin-left:8px}
+#status{min-height:30px;font-size:13px;color:#b8e3d8}.error{color:#ffb9a6!important}
+[hidden]{display:none!important}.notice{border-left:3px solid #70d5be;background:#194143;padding:12px 15px;border-radius:5px;line-height:1.5}
+p{line-height:1.6}footer{margin:30px 0;color:#99bcb6;font-size:12px}
+</style></head><body><div class="wrap">
+<header><div><small>SPM DIGITAL WELLNESS · ADMINISTRACIÓN</small><h1>Editor de contenidos</h1><p class="muted">Publica artículos educativos, mitos y realidades, novedades y recursos</p></div><div><a href="./index.html" style="margin-right:12px">Finanzas privadas</a><button class="secondary" id="logout" hidden>Cerrar sesión</button></div></header>
+<p class="notice">Área reservada a la propietaria. El contenido permanece como borrador hasta que presiones «Publicar». La información financiera se gestiona en una sección separada y nunca aparece en el sitio público.</p>
+<section class="card" id="signin"><h2>Acceso seguro</h2><form id="loginForm">
+<label for="email">Correo de administración</label><input id="email" type="email" required autocomplete="username">
+<label for="password">Contraseña</label><input id="password" type="password" required autocomplete="current-password">
+<button>Ingresar</button></form></section>
+<main id="main" hidden>
+<div class="grid">
+<section class="card"><h2>Mis publicaciones</h2>
+<p class="muted">Selecciona una publicación para editarla; los artículos en borrador no aparecen en Google ni en la web pública.</p>
+<button id="new" class="secondary" type="button">+ Crear publicación</button><ul id="articles"></ul></section>
+<section class="card"><h2 id="formTitle">Nueva publicación</h2>
+<form id="postForm">
+<label for="title">Título</label><input id="title" maxlength="180" minlength="5" required placeholder="Ej.: Manejar la presión sin convertirla en examen">
+<label for="slug">Enlace corto (sin espacios ni tildes)</label><input id="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" required minlength="3" maxlength="120" placeholder="manejar-la-presion">
+<label for="category">Sección</label><select id="category"><option value="educacion">Educación</option><option value="mitos">Mitos y realidades</option><option value="bienestar">Bienestar</option><option value="novedades">Novedades</option></select>
+<label for="locale">Idioma</label><select id="locale"><option value="es">Español</option><option value="en">Inglés</option></select>
+<label for="summary">Resumen para la lista</label><textarea id="summary" style="min-height:80px" maxlength="500" placeholder="En dos o tres frases explica para quién es el recurso"></textarea>
+<label for="body">Contenido (texto separado en párrafos)</label><textarea id="body" maxlength="16000" placeholder="Escribe aquí el artículo. Deja una línea en blanco para separar párrafos." required></textarea>
+<label for="cover">Portada (URL HTTPS de imagen)</label><input id="cover" type="url" placeholder="https://...jpg">
+<label for="file">O subir una imagen nueva (JPG, PNG, WEBP; máx. 8 MB)</label><input id="file" type="file" accept="image/jpeg,image/png,image/webp">
+<button type="button" id="upload" class="secondary">Subir imagen</button>
+<label for="video">Video educativo (URL HTTPS; se abrirá como enlace)</label><input id="video" type="url" placeholder="https://...">
+<div class="grid"><button type="button" class="secondary" id="save">Guardar borrador</button><button type="button" id="publish">Publicar</button></div>
+<button type="button" class="secondary" id="archive">Retirar de publicación</button>
+</form></section>
+</div><p>Vista pública de artículos: <a href="../contenidos.html" target="_blank" rel="noopener noreferrer">Centro de contenidos SPM ↗</a></p></main>
+<p id="status" role="status"></p><footer>La edición y la publicación solo funcionan después de autorizar tu cuenta y activar el módulo editorial seguro en Supabase.</footer>
+</div>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://jogirmziqjlsttbbarcx.supabase.co','sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf');
+const $=id=>document.getElementById(id);
+const status=(msg,error=false)=>{$('status').textContent=msg;$('status').classList.toggle('error',error)};
+let user=null,posts=[],selected=null;
+function setAuthed(on){$('signin').hidden=on;$('main').hidden=!on;$('logout').hidden=!on;}
+function slugify(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,120);}
+function fill(p){
+ selected=p?.id||null;
+ for(const[k,v]of Object.entries({title:p?.title||'',slug:p?.slug||'',category:p?.category||'educacion',locale:p?.locale||'es',summary:p?.summary||'',body:p?.content||'',cover:p?.cover_url||'',video:p?.video_url||''}))$(k).value=v;
+ $('formTitle').textContent=p?'Editar: '+p.title:'Nueva publicación';
+ $('archive').disabled=!selected||p?.status==='archived';
+ $('publish').textContent=p?.status==='published'?'Actualizar publicación':'Publicar';
+}
+function renderList(){
+ $('articles').replaceChildren();
+ for(const p of posts){
+  const li=document.createElement('li'),b=document.createElement('button');
+  b.type='button';b.className='secondary';b.textContent=p.title;b.onclick=()=>fill(p);
+  const s=document.createElement('span');s.className='tag';s.textContent=p.status==='published'?'Publicado':p.status==='archived'?'Archivado':'Borrador';
+  li.append(b,s);$('articles').append(li);
+ }
+}
+async function requireEditor(){
+ const x=await db.auth.getUser();user=x.data?.user||null;
+ if(!user){setAuthed(false);return;}
+ const y=await db.rpc('spm_is_site_editor');
+ if(y.error||y.data!==true){setAuthed(false);status('Esta cuenta no tiene permisos para publicar contenidos de SPM.',true);return;}
+ setAuthed(true);await load();
+}
+async function load(){
+ const res=await db.from('spm_site_posts').select('id,title,slug,summary,content,category,locale,cover_url,video_url,status,published_at').order('updated_at',{ascending:false}).limit(200);
+ if(res.error){status('El CMS aún no está habilitado: '+res.error.message,true);return;}
+ posts=res.data||[];renderList();if(selected){const p=posts.find(x=>x.id===selected);if(p)fill(p);}
+ status('Editor listo. Solo los contenidos publicados se ven en la web.');
+}
+async function save(nextStatus){
+ if(!user)return;
+ const title=$('title').value.trim(),slug=$('slug').value.trim(),body=$('body').value.trim();
+ if(title.length<5||!/^([a-z0-9]+)(-[a-z0-9]+)*$/.test(slug)||body.length<5){status('Completa título, enlace corto y contenido antes de guardar.',true);return;}
+ const post=posts.find(x=>x.id===selected);
+ const data={title,slug,content:body,summary:$('summary').value.trim(),category:$('category').value,locale:$('locale').value,cover_url:$('cover').value.trim()||null,video_url:$('video').value.trim()||null,status:nextStatus,updated_at:new Date().toISOString(),published_at:nextStatus==='published'?(post?.published_at||new Date().toISOString()):null};
+ for(const key of ['cover_url','video_url'])if(data[key]&&!/^https:\/\//.test(data[key])){status('Las imágenes y videos deben usar direcciones HTTPS.',true);return;}
+ let res;if(selected)res=await db.from('spm_site_posts').update(data).eq('id',selected).select('id').single();
+ else res=await db.from('spm_site_posts').insert({...data,created_by:user.id}).select('id').single();
+ if(res.error){status(res.error.message,true);return;}
+ selected=res.data.id;await load();status(nextStatus==='published'?'Publicado correctamente':'Borrador guardado');
+}
+$('loginForm').onsubmit=async e=>{e.preventDefault();status('Validando credenciales…');
+ const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});$('password').value='';
+ if(error){status(error.message,true);return;}await requireEditor();}
+$('logout').onclick=async()=>{await db.auth.signOut();user=null;posts=[];selected=null;setAuthed(false);status('Sesión cerrada.')};
+$('title').addEventListener('blur',()=>{if(!selected&&!$('slug').value)$('slug').value=slugify($('title').value)});
+$('new').onclick=()=>fill(null);
+$('save').onclick=()=>save('draft');
+$('publish').onclick=()=>save('published');
+$('archive').onclick=()=>{if(!selected)return;save('archived')};
+$('upload').onclick=async()=>{
+ if(!user){status('Inicia sesión antes de subir imágenes.',true);return;}
+ const file=$('file').files?.[0];if(!file){status('Selecciona una imagen.',true);return;}
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8388608){status('La imagen debe ser JPG, PNG o WEBP y pesar menos de 8 MB.',true);return;}
+ const extension=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'})[file.type],key=crypto.randomUUID()+'.'+extension;
+ const res=await db.storage.from('spm-site-images').upload(key,file,{contentType:file.type,upsert:false});
+ if(res.error){status('Error de carga: '+res.error.message,true);return;}
+ const p=db.storage.from('spm-site-images').getPublicUrl(key);
+ $('cover').value=p.data.publicUrl;status('Imagen cargada. Guarda o publica el artículo para utilizarla.');
+};
+fill(null);setAuthed(false);requireEditor().catch(e=>status(e.message,true));
+</script></body></html>

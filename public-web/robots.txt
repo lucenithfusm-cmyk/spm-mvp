@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# sitemap.xml will be generated when the permanent domain is established.
