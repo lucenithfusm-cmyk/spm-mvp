@@ -1,0 +1,9 @@
+# SPM institutional website only. The patient program is NOT deployed from this site.
+[build]
+  publish = "public-web"
+  command = ""
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# The official/custom domain and Google sitemap are configured after the site is deployed.
