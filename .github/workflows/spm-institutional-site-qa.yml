@@ -1,0 +1,22 @@
+name: SPM Institutional Site QA
+on:
+  push:
+    branches: [feat/spm-public-website-private-admin-20261008, site/spm-public-v1]
+  pull_request:
+    paths:
+      - 'public-web/**'
+      - 'internal-site/**'
+      - 'internal-finance/**'
+      - 'tests/spm-institutional-site.test.cjs'
+      - 'netlify.toml'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/spm-institutional-site.test.cjs tests/spm-public-web-finance.test.cjs
