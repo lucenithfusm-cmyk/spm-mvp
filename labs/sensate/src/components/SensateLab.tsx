@@ -1,3 +1,4 @@
+import { ProgramVideos } from './ProgramVideos';
 import { useEffect, useRef, useState } from 'react';
 import trainer from '../../../pelvic-floor/src/assets/spm-trainer.jpg';
 import { centralStorage, centralContext, host } from '../lib/central';
@@ -354,6 +355,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
             {notice && <p className="sf-small">{notice}</p>}
           </div>
         )}
+        {[0, 12, 13].includes(step) && <ProgramVideos key={step} route="sensate" />}
       </main>
       <footer className="sf-foot">
         <button onClick={() => go(step - 1)} disabled={step === 0}>← Anterior</button>

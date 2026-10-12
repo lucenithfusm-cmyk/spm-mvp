@@ -1,3 +1,4 @@
+import { ProgramVideos } from './ProgramVideos';
 import { DoctorDesireVideo } from './DoctorDesireVideo';
 import { centralStorage, centralContext } from '@/lib/central';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
@@ -443,6 +444,7 @@ export function DesireLab() {
         )}
         {view !== 1 && <h2 className="dz-h">{heading}</h2>}
         <section className="dz-body" key={String(view)}>{(view === 1 || view === 20) && <DoctorDesireVideo />}{body}</section>
+        {(view === 1 || view === 20) && <ProgramVideos key={String(view)} route="desire" />}
       </main>
       {origin === 'lab' && typeof view === 'number' && (
         <nav className="dz-foot" aria-label="Navegación del laboratorio">
