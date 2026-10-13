@@ -1,5 +1,6 @@
-export type CentralContext = { day: number; origin: string; restriction: 'none' | 'review' | 'urgent' };
-type Host = { flush: () => Promise<void>; close: () => Promise<boolean>; openControl: () => Promise<void>; getState: () => Record<string, string>; write: (key: string, value: string) => boolean; getContext: () => CentralContext };
+export type DailyActivity = { id: string; day: number; title: string; summary: string; steps: number[]; minutes: number; practiceId?: string; optionalProgression?: boolean };
+export type CentralContext = { launchStep?: number | null; mode?: "daily" | "library"; activity?: DailyActivity | null; day: number; origin: string; restriction: 'none' | 'review' | 'urgent' };
+type Host = { openLibrary: () => Promise<boolean>; flush: () => Promise<void>; close: () => Promise<boolean>; openControl: () => Promise<void>; getState: () => Record<string, string>; write: (key: string, value: string) => boolean; getContext: () => CentralContext };
 declare global { interface Window { SPM_BREATHING_LAB_HOST?: Host } }
 export function host(): Host | undefined {
   try { return window.parent !== window ? window.parent.SPM_BREATHING_LAB_HOST : undefined; } catch { return undefined; }

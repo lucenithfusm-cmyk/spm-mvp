@@ -1,5 +1,5 @@
-import { centralStorage, centralContext } from '@/lib/central';
-import { useCallback, useEffect, useState } from 'react';
+import { centralStorage, centralContext, host } from '@/lib/central';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Menu, X, Volume2, VolumeX, ShieldAlert, Wind, HeartPulse, Library, CalendarDays, Activity, Sparkles, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import trainer from '@/assets/spm-trainer.jpg';
@@ -16,7 +16,11 @@ const COMPETENCY_KEY = 'spm_breathing_competency_v1';
 function read<T>(k: string, f: T): T { try { const v = centralStorage.getItem(k); return v ? (JSON.parse(v) as T) : f; } catch { return f; } }
 
 export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: boolean }) {
-  const [step, setStep] = useState(0);
+  const context = centralContext();
+  const daily = context.mode === 'daily';
+  const assignment = context.activity;
+  const assignedSteps = assignment?.steps || [];
+  const [step, setStep] = useState(daily ? assignedSteps[0] ?? 0 : 0);
   const [origin, setOrigin] = useState<'library' | null>(null);
   const [menu, setMenu] = useState(false);
   const [noHold, setNoHold] = useState(false);
@@ -33,15 +37,15 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
   }, []);
 
   useEffect(() => {
-    const s = read(K.step, 0);
-    setStep(typeof s === 'number' && s >= 0 && s < screens.length ? s : 0);
-    setOrigin(read(K.origin, null)); setNoHold(read(K.noHold, false));
+    const s = context.launchStep ?? read(K.step, 0);
+    if (!daily) setStep(typeof s === 'number' && s >= 0 && s < screens.length ? s : 0);
+    setOrigin(daily ? null : read(K.origin, null)); setNoHold(read(K.noHold, false));
     setSessions(read(K.sessions, [])); setPlanDone(read(K.plan, []));
     const savedCompetency = read<Partial<Competency>>(COMPETENCY_KEY, {});
     setCompetency({ technique: savedCompetency.technique === true, tolerance: savedCompetency.tolerance === true });
     setLoaded(true);
   }, []);
-  useEffect(() => { if (!loaded) return; centralStorage.setItem(K.step, JSON.stringify(step)); centralStorage.setItem(K.origin, JSON.stringify(origin)); }, [step, origin, loaded]);
+  useEffect(() => { if (!loaded || daily) return; centralStorage.setItem(K.step, JSON.stringify(step)); centralStorage.setItem(K.origin, JSON.stringify(origin)); }, [step, origin, loaded]);
   useEffect(() => { if (loaded) centralStorage.setItem(K.noHold, JSON.stringify(noHold)); }, [noHold, loaded]);
   useEffect(() => { if (loaded) centralStorage.setItem(K.sessions, JSON.stringify(sessions)); }, [sessions, loaded]);
   useEffect(() => { if (loaded) centralStorage.setItem(K.plan, JSON.stringify(planDone)); }, [planDone, loaded]);
@@ -53,27 +57,32 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
     setOrigin(fromLibrary ? 'library' : null); setMenu(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const save = (s: Session) => setSessions((prev) => [{ ...s, day: centralContext().day }, ...prev].slice(0, 60));
+  const save = async (s: Session) => {
+    const next = [{ ...s, day: context.day }, ...sessions.filter(x => !s.id || x.id !== s.id)].slice(0, 60);
+    centralStorage.setItem(K.sessions, JSON.stringify(next));setSessions(next);await host()?.flush();
+  };
   const scr = screens[step] ?? screens[0];
   const pct = ((step + 1) / screens.length) * 100;
   const practice = (id: string, extra: Partial<React.ComponentProps<typeof BreathPacer>> = {}) => (
-    !practiceAllowed ? <div className="bl-note" role="status">Tu programa requiere revisión antes de iniciar prácticas. Puedes consultar la explicación y las recomendaciones de seguridad.</div> : <PracticeBlock key={`${step}-${id}`} id={id} noHold={noHold} setNoHold={setNoHold} onSave={save} goSafety={() => go(16)} {...extra} />
+    !practiceAllowed || (daily && assignment?.day !== context.day) ? <div className="bl-note" role="status">Tu programa requiere revisión antes de iniciar prácticas. Puedes consultar la explicación y las recomendaciones de seguridad.</div> : <PracticeBlock key={`${step}-${id}`} id={id} noHold={noHold} setNoHold={setNoHold} onSave={save} goSafety={() => go(16)} {...extra} />
   );
 
+  if (daily && !assignment) return <main className="bl-main"><h1 className="bl-h1">Hoy no tienes una sesión de respiración asignada</h1><p className="bl-p">Continúa con las actividades de tu día. La biblioteca sigue disponible para consultar este recurso.</p><button className="bl-btn teal" onClick={() => host()?.close()}>Volver a Hoy</button><button className="bl-btn ghost" onClick={() => host()?.openLibrary()}>Consultar biblioteca</button></main>;
+  const dailyIndex = assignedSteps.indexOf(step);
   return (
     <div className="bl-shell">
-      <div className="bl-central-day">Día {centralContext().day} de 28 · Tu programa SPM</div>
+      <div className="bl-central-day">Día {daily ? assignment?.day : context.day} de 28 · {daily ? "Actividad asignada" : "Biblioteca SPM"}</div>
       <header className="bl-top">
-        <button className="bl-brand" onClick={() => go(0)} aria-label="Inicio">
+        <button className="bl-brand" onClick={() => go(daily ? assignedSteps[0] : 0)} aria-label="Inicio">
           <span className="bl-mark"><Wind size={17} /></span>
           <span className="bl-brand-text">SPM <b>Breathing Lab</b><small>REGULACIÓN AUTONÓMICA</small></span>
         </button>
         <div className="bl-top-right">
           <Button variant="ghost" size="icon" className="bl-icon" aria-label={audio.muted ? 'Activar audio' : 'Silenciar audio'} title={audio.muted ? 'Activar audio' : 'Silenciar audio'} aria-pressed={audio.muted} onClick={() => setAudioMuted(!audio.muted)}>{audio.muted ? <VolumeX size={19} /> : <Volume2 size={19} />}</Button>
-          <span className="bl-counter">{String(step + 1).padStart(2, '0')}<i>/</i>{screens.length}</span>
-          <button className="bl-icon" onClick={() => setMenu(true)} aria-label="Abrir índice"><Menu size={21} /></button>
+          <span className="bl-counter">{daily ? Math.max(0,dailyIndex)+1 : String(step + 1).padStart(2, '0')}<i>/</i>{daily ? assignedSteps.length : screens.length}</span>
+          {!daily && <button className="bl-icon" onClick={() => setMenu(true)} aria-label="Abrir índice"><Menu size={21} /></button>}
         </div>
-        <div className="bl-progress"><span style={{ width: `${pct}%` }} /></div>
+        <div className="bl-progress"><span style={{ width: `${daily ? (Math.max(0,dailyIndex)+1)/assignedSteps.length*100 : pct}%` }} /></div>
       </header>
       {audio.error && <p className="bl-audio-error" role="alert">{audio.error}</p>}
 
@@ -89,6 +98,7 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
       )}
 
       <main className="bl-main" key={step}>
+        {daily && assignment && <section className="bl-note teal" data-daily-assignment><b>{assignment.title} · {assignment.minutes} min</b><p>{assignment.summary}</p>{assignment.day !== context.day && <p>Consulta del día {assignment.day}. Tu día actual es {context.day}; la práctica está deshabilitada.</p>}</section>}
         {origin === 'library' && (
           <button className="bl-back-lib" onClick={() => go(13)}><ArrowLeft size={16} /> Volver a la biblioteca</button>
         )}
@@ -101,7 +111,7 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
         {step === 1 && <Compare />}
         {step === 2 && <Locate onPractice={() => go(4)} />}
         {step === 3 && (<><DemoVideo /><ul className="bl-bullets"><li>Espalda apoyada, hombros sueltos.</li><li>Inhala por la nariz: el abdomen avanza, el pecho casi quieto.</li><li>Exhala lento por nariz o labios entreabiertos.</li><li>Sin esfuerzo ni ruido: suave es suficiente.</li></ul></>)}
-        {step === 4 && practice('core-426', { showBelly: true, cycles: 5 })}
+        {step === 4 && practice('core-426', { showBelly: true, cycles: 5, lockNoHold: daily && assignment?.day === 3 })}
         {step === 5 && <HandFeedback>{practice('hand-feedback', { showBelly: true, cycles: 5 })}</HandFeedback>}
         {step === 6 && <Relax />}
         {step === 7 && (<><p className="bl-p">Con una exhalación más larga que la inhalación, el sistema nervioso tiende a pasar a un modo de calma. No hace falta respirar profundo: basta con respirar lento.</p><DemoVideo kind="regulation" />{practice('downregulate', { durationSec: 60 })}</>)}
@@ -117,11 +127,16 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
         {step === 17 && <Closing onLibrary={() => go(13)} onPlan={() => go(14)} />}
       </main>
 
-      <footer className="bl-foot">
+      {daily ? <footer className="bl-foot">
+        <button className="bl-btn ghost" onClick={() => dailyIndex>0 ? go(assignedSteps[dailyIndex-1]) : host()?.close()}>Atrás</button>
+        <span>Actividad de hoy</span>
+        <button className="bl-btn teal" onClick={() => dailyIndex<assignedSteps.length-1 ? go(assignedSteps[dailyIndex+1]) : host()?.close()}>{dailyIndex<assignedSteps.length-1 ? 'Continuar' : 'Volver a Hoy'}</button>
+      </footer> : <>      <footer className="bl-foot">
         <button className="bl-btn ghost" onClick={() => go(step - 1)} disabled={step === 0}><ArrowLeft size={16} /> Atrás</button>
         <span>{scr.kicker}</span>
         <button className="bl-btn teal" onClick={() => go(step + 1)} disabled={step === screens.length - 1}>Siguiente <ArrowRight size={16} /></button>
-      </footer>
+      </footer></>}
+      {daily && <div className="bl-daily-library"><button className="bl-link" onClick={() => host()?.openLibrary()}>Consultar biblioteca completa</button><p>Consultar esta actividad no completa automáticamente el día.</p></div>}
     </div>
   );
 }
@@ -146,12 +161,15 @@ function Trainer({ n, text }: { n: number; text: string }) {
   );
 }
 
-function PracticeBlock({ id, noHold, setNoHold, onSave, goSafety, ...rest }: { id: string; noHold: boolean; setNoHold: (v: boolean) => void; onSave: (s: Session) => void; goSafety: () => void } & Partial<React.ComponentProps<typeof BreathPacer>>) {
+function PracticeBlock({ id, noHold, setNoHold, onSave, goSafety, ...rest }: { id: string; noHold: boolean; setNoHold: (v: boolean) => void; onSave: (s: Session) => Promise<void>; goSafety: () => void } & Partial<React.ComponentProps<typeof BreathPacer>>) {
+  const recordId = useRef<string | null>(null);
   const [secs, setSecs] = useState(0);
   const [comfort, setComfort] = useState(4);
   const [dizzy, setDizzy] = useState(false);
   const [saved, setSaved] = useState(false);
-  const finish = useCallback((s: number) => { setSecs(s); setSaved(false); }, []);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const finish = useCallback((s: number) => { recordId.current = null; setSecs(s); setSaved(false); }, []);
   return (
     <section className="bl-practice">
       <BreathPacer pattern={PATTERN_426} noHold={noHold} onNoHold={setNoHold} onFinish={finish} {...rest} />
@@ -166,9 +184,10 @@ function PracticeBlock({ id, noHold, setNoHold, onSave, goSafety, ...rest }: { i
           {dizzy && (
             <div className="bl-note warn"><ShieldAlert size={16} /> Detente y respira normal. Prueba el modo <b>sin pausa</b> y con menos intensidad. <button className="bl-link" onClick={goSafety}>Ver señales de seguridad</button></div>
           )}
-          <button className="bl-btn teal wide" disabled={saved} onClick={() => { onSave({ date: new Date().toISOString(), practice: id, seconds: secs, comfort, dizzy, noHold }); setSaved(true); if (dizzy) setNoHold(true); }}>
-            {saved ? (<><Check size={16} /> Guardado en este dispositivo</>) : 'Guardar registro'}
+          <button className="bl-btn teal wide" disabled={saved || saving} onClick={async () => { setSaving(true);setError('');recordId.current ||= crypto.randomUUID();try { await onSave({ id: recordId.current, date: new Date().toISOString(), practice: id, seconds: secs, comfort, dizzy, noHold: noHold || !!rest.lockNoHold }); setSaved(true); if (dizzy) setNoHold(true); } catch {setError('No se pudo guardar. Reintenta antes de salir.');} finally {setSaving(false);} }}>
+            {saved ? (<><Check size={16} /> Guardado en tu programa</>) : saving ? 'Guardando…' : 'Guardar registro'}
           </button>
+          {error && <p role="alert">{error}</p>}
         </div>
       )}
     </section>

@@ -22,7 +22,7 @@ function visibleCompletedFloor(){
 function phaseFor(day){return Math.ceil(clamp(day)/7)}
 function renderHero(){
  const panel=$('#plan');if(!panel)return;let hero=$('#spmTodayHero',panel);if(!hero){hero=document.createElement('div');hero.id='spmTodayHero';hero.className='card spm-today-hero';panel.prepend(hero)}
- const day=M.days?.find(x=>x.d===currentDay)||{},items=A[currentDay]||[];
+ const day=M.days?.find(x=>x.d===currentDay)||{},items=window.SPM_DAILY_AGENDA_ITEMS?.(currentDay)||A[currentDay]||[];
  hero.innerHTML=`<div class="spm-today-kicker">HOY · DÍA ${currentDay} DE 28</div><h2>${day.title_es||'Tu entrenamiento de hoy'}</h2><p>${day.learn_es||'Continúa con la práctica asignada a tu etapa actual.'}</p><div class="spm-today-list">${items.map((x,i)=>`<div><b>${i+1}</b><span>${x}</span></div>`).join('')}</div><button type="button" class="btn pri" id="spmGoToday">Abrir actividades de hoy</button>`;
  $('#spmGoToday',hero)?.addEventListener('click',()=>openToday(true));
 }
@@ -40,7 +40,7 @@ function openToday(scroll=false){selectPhaseOnce();setTimeout(()=>highlightToday
 function sync({open=false}={}){
  if(syncing)return;syncing=true;
  try{
-  const c=calendarDay(),f=visibleCompletedFloor(),saved=Number(window.SPM_RESOURCE_CONTEXT?.()?.day)||1;currentDay=clamp(Math.max(c,f,saved));const s=loadState()||{};if(currentDay>(s.day||1)){s.day=currentDay;saveState(s)}
+  const c=calendarDay(),f=visibleCompletedFloor(),saved=Number(window.SPM_RESOURCE_CONTEXT?.()?.day)||1;currentDay=clamp(window.SPM_RESOURCE_CONTEXT?.()?saved:Math.max(c,f));const s=loadState()||{};if(currentDay>(s.day||1)){s.day=currentDay;saveState(s)}
   window.SPM_CURRENT_DAY=currentDay;document.documentElement.dataset.spmCurrentDay=String(currentDay);renderHero();
   if(open)openToday(false);
  }finally{syncing=false}

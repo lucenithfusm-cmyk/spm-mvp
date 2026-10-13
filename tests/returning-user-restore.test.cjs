@@ -38,7 +38,7 @@ async function harness(primary='erection',options={}){
  const plan={id:'qa-plan',user_id:user.id,assessment_id:'qa-assessment',performance_map_id:'qa-map',status:'active',current_day:12,created_at:'2026-09-20T00:00:00Z'};
  const rows={plans:[plan],assessments:{id:plan.assessment_id,user_id:user.id,motives:[primary],answers:{}},performance_maps:{id:plan.performance_map_id,user_id:user.id,domain_scores:{erection:40,ejaculation:80,confidence:55},primary_domain:primary,spm_score:65,safety_level:'none',safety_flags:[]},activity_completions:[],daily_checkins:[],profiles:null};
  const db={auth:{getSession:async()=>({data:{session:{user}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from(table){
-  const query={};for(const name of ['select','eq','order','maybeSingle','upsert','like'])query[name]=()=>query;
+  const query={};for(const name of ['select','eq','order','maybeSingle','upsert','like','update','insert'])query[name]=()=>query;
   query.then=(resolve,reject)=>{
    requests.push(table);
    if(options.hangTable===table)return new Promise(()=>{}).then(resolve,reject);
@@ -83,5 +83,17 @@ test('a stalled profile sync does not block a restored program',async()=>{
   assert.equal(h.w.document.querySelector('#scoreValue').textContent,'65');
   assert.equal(h.w.document.querySelector('#spmRestoreOverlay'),null);
   assert.equal(h.w.SPM_CURRENT_DAY,12);
+ }finally{h.close()}
+});
+
+test('completing the current practice advances the restored daily assignment immediately',async()=>{
+ const h=await harness('desire');
+ try{
+  assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,12);
+  await h.w.SPM_SAVE_MODULE({day:12,moduleKey:'qa-daily-practice'});
+  assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,13);
+  assert.equal(h.w.SPM_CURRENT_DAY,13);
+  assert.match(h.w.document.querySelector('#spmTodayHero').textContent,/DÍA 13 DE 28/);
+  assert.deepEqual(h.consoleErrors,[]);
  }finally{h.close()}
 });

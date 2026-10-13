@@ -164,3 +164,4 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
 
 
 .bl-central-day{text-align:center;padding:8px;background:#133b40;color:#d4ece7;font-size:12px}.bl-days button:disabled{opacity:.5;cursor:default}.bl-days button[aria-current="date"]{outline:2px solid #d8ba75;outline-offset:3px}
+.bl-daily-library{padding:12px 20px 96px;text-align:center;font-size:12px;color:var(--muted-foreground)}.bl-daily-library p{margin:6px 0}.bl-anatomy-status{padding:8px;font-size:12px;color:var(--spm-gold)}
