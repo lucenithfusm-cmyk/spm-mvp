@@ -1,0 +1,25 @@
+name: Preserve approved breathing clip
+on:
+  push:
+    branches: ["feat/breathing-lab-central-20261012"]
+    paths: [".github/workflows/breathing-source-media.yml"]
+permissions:
+  contents: write
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve exact approved anatomical clip
+        run: |
+          curl --fail --location --retry 3 --silent --show-error 'https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/fae56f27-8fe4-4a71-99fb-766bf9de4aa5/respiracion-anatomica.mp4' -o labs/breathing/public/media/respiracion-anatomica.mp4
+          echo '3327941596553722277f41dd7120373f57ca660c04ab6d9cea7d6fefc145b012  labs/breathing/public/media/respiracion-anatomica.mp4' | sha256sum --check
+          cp labs/breathing/public/media/respiracion-anatomica.mp4 premium-v2/breathing-lab/media/respiracion-anatomica.mp4
+      - name: Commit approved source and remove temporary importer
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/breathing-source-media.yml
+          git add labs/breathing/public/media/respiracion-anatomica.mp4 premium-v2/breathing-lab/media/respiracion-anatomica.mp4
+          git commit -m 'Preserve exact approved anatomical breathing video'
+          git push origin HEAD:feat/breathing-lab-central-20261012
