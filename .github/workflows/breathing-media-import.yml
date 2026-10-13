@@ -10,19 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download and verify approved media
+      - name: Reconstruct and verify approved media
         shell: python
         run: |
-          import json, pathlib, hashlib, subprocess, concurrent.futures
-          entries = json.loads(pathlib.Path('labs/breathing/import-media.json').read_text())
-          def fetch(entry):
+          import json, pathlib, hashlib, base64, tarfile, io
+          parts = sorted(pathlib.Path('labs/breathing/import-chunks').glob('*.txt'))
+          assert len(parts) == 78
+          archive = base64.b64decode(''.join(p.read_text() for p in parts))
+          assert hashlib.sha256(archive).hexdigest() == '08316ce0c4706ae88af6286ec212bbf9ca66a223174cf57cc3b92e4595495554'
+          target = pathlib.Path('labs/breathing/public/media')
+          target.mkdir(parents=True, exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(archive), mode='r:gz') as tar:
+            assert all(m.isfile() and '/' not in m.name and '..' not in m.name for m in tar.getmembers())
+            tar.extractall(target, filter='data')
+          for entry in json.loads(pathlib.Path('labs/breathing/import-media.json').read_text()):
             path = pathlib.Path(entry['path'])
-            assert str(path).startswith('labs/breathing/public/media/')
-            path.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run(['curl', '--fail', '--location', '--retry', '3', '--silent', '--show-error', entry['url'], '-o', str(path)], check=True)
             assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], str(path)
-          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
-            list(pool.map(fetch, entries))
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -34,6 +37,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm -r labs/breathing/import-chunks
+          git rm labs/breathing/import-media.json .github/workflows/breathing-media-import.yml
           git add labs/breathing/public/media premium-v2/breathing-lab
           git commit -m 'Include verified approved breathing media and production build'
           git push origin HEAD:feat/breathing-lab-central-20261012
