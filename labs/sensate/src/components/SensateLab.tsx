@@ -116,9 +116,16 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
 }
 
 export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialOrigin: Origin; practiceAllowed?: boolean }) {
-  const [step, setStep] = useState(0);
+  const context = centralContext();
+  const daily = context.mode === 'daily';
+  const assignment = context.activity;
+  const [dailySteps, setDailySteps] = useState(assignment?.steps || []);
+  const [bothReady, setBothReady] = useState(false);
+  const [solo, setSolo] = useState(assignment?.practiceId === 'sf-solo' || assignment?.practiceId === 'sf-communication');
+  const [progressEligible] = useState(() => {try {const records=JSON.parse(centralStorage.getItem(REC_KEY)||'[]');return Array.isArray(records)&&records.some(r=>r?.practiceId==='sf-focus-1'&&r.completed===true&&r.partnerComfort>=6&&r.pressureAfter<=3&&r.recommendation==='progress');}catch{return false;}});
+  const [step, setStep] = useState(daily ? assignment?.steps[0] ?? 0 : 0);
   const [origin, setOrigin] = useState<Origin>(initialOrigin);
-  const [practiceId, setPracticeId] = useState('sf-focus-1');
+  const [practiceId, setPracticeId] = useState(daily ? assignment?.practiceId || 'sf-solo' : 'sf-focus-1');
   const [presenceBefore, setPB] = useState(5);
   const [pressureBefore, setPrB] = useState(5);
   const [presenceAfter, setPA] = useState(5);
@@ -132,18 +139,19 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
   const [notice, setNotice] = useState('');
   const loaded = useRef(false);
   const pendingRecord = useRef<string | null>(null);
-  const g1 = useGuide(G1, step === 5 && practiceAllowed);
-  const g2 = useGuide(G2, step === 8 && practiceAllowed);
+  const allowed = practiceAllowed && (!daily || assignment?.day === context.day);
+  const g1 = useGuide(G1, step === 5 && allowed && (!daily || bothReady));
+  const g2 = useGuide(G2, step === 8 && allowed && (!daily || bothReady));
 
   useEffect(() => {
     try {
       const s = JSON.parse(centralStorage.getItem(KEY) || 'null');
-      if (s && initialOrigin === 'lab') { setStep(s.step ?? 0); setPB(s.pb ?? 5); setPrB(s.prb ?? 5); setIntr(s.intr ?? 0); setStimuli(s.st ?? []); }
+      if (s && !daily && initialOrigin === 'lab') { setStep(s.step ?? 0); setPB(s.pb ?? 5); setPrB(s.prb ?? 5); setIntr(s.intr ?? 0); setStimuli(s.st ?? []); }
     } catch { /* ignore */ }
     loaded.current = true;
   }, [initialOrigin]);
   useEffect(() => {
-    if (loaded.current) centralStorage.setItem(KEY, JSON.stringify({ step, pb: presenceBefore, prb: pressureBefore, intr: intrusions, st: stimuli }));
+    if (loaded.current && !daily) centralStorage.setItem(KEY, JSON.stringify({ step, pb: presenceBefore, prb: pressureBefore, intr: intrusions, st: stimuli }));
   }, [step, presenceBefore, pressureBefore, intrusions, stimuli]);
   useEffect(() => { window.scrollTo({ top: 0 }); }, [step]);
 
@@ -158,11 +166,12 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
   };
 
   const record = {
-    practiceId, completed: practiceId === 'sf-focus-2' ? g2.done : g1.done,
+    practiceId, completed: practiceId === 'sf-focus-2' ? g2.done : practiceId === 'sf-focus-1' ? g1.done : daily && allowed && step === dailySteps.at(-1),
     presenceBefore, presenceAfter, pressureBefore, pressureAfter, enjoyment,
     monitoringIntrusions: intrusions, partnerComfort, usefulStimuli: stimuli, recommendation,
   };
   const save = async () => {
+    if (!allowed || (daily && !record.completed)) {setNotice('Completa la actividad asignada antes de registrar el cierre.');return false;}
     try {
     const all = JSON.parse(centralStorage.getItem(REC_KEY) || '[]');
     pendingRecord.current ||= crypto.randomUUID();
@@ -253,10 +262,10 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
         <Why />
       </>
     ),
-    5: (<><h2>Guía interactiva I</h2>{!practiceAllowed ? <p className="sf-warn">Puedes consultar el contenido. La guía práctica está en pausa mientras se revisa la alerta de tu programa.</p> : <Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} />}</>),
+    5: (<><h2>Guía interactiva I</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} />}</>),
     6: (
       <>
-        <h2>Cierre I</h2>
+        <h2>{practiceId === 'sf-focus-2' ? 'Cierre II' : 'Cierre I'}</h2>
         <div className="sf-panel">
           <Slider label="Presencia" value={presenceAfter} onChange={setPA} low="Disperso" high="Presente" />
           <Slider label="Presión" value={pressureAfter} onChange={setPrA} low="Ninguna" high="Mucha" />
@@ -278,7 +287,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
         <button className="sf-btn ghost" onClick={() => setPracticeId('sf-focus-2')}>{practiceId === 'sf-focus-2' ? '✓ Registrando Focus II' : 'Registrar esta sesión como Focus II'}</button>
       </>
     ),
-    8: (<><h2>Guía interactiva II</h2>{!practiceAllowed ? <p className="sf-warn">Puedes consultar el contenido. La guía práctica está en pausa mientras se revisa la alerta de tu programa.</p> : <Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} />}</>),
+    8: (<><h2>Guía interactiva II</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} />}</>),
     9: (
       <>
         <h2>Cuando cambia la firmeza</h2>
@@ -336,32 +345,48 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
     ),
   };
 
+  const dailyIndex=dailySteps.indexOf(step);
   const finishLabel = origin === 'dailyPlan' ? '← Volver a Hoy' : origin === 'library' ? '← Volver a Biblioteca' : null;
 
+  if(daily && !assignment)return <main className="sf-main">
+<h1>Hoy no tienes focalización asignada</h1><p>Continúa con las actividades de tu día. Puedes consultar la biblioteca cuando lo necesites.</p><button className="sf-btn gold" onClick={()=>host()?.close()}>Volver a Hoy</button><button className="sf-btn ghost" onClick={()=>host()?.openLibrary()}>Consultar biblioteca</button></main>;
   return (
     <div className="sf-shell">
       <header className="sf-top">
         <span className="sf-brand"><i>S</i>SPM <small>SENSATE FOCUS</small></span>
-        <span className="sf-count">{step + 1}<i>/</i>{STEPS.length}</span>
+        <span className="sf-count">{daily ? dailyIndex+1 : step+1}<i>/</i>{daily ? dailySteps.length : STEPS.length}</span>
       </header>
-      <div className="sf-progress"><span style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} /></div>
+      <div className="sf-progress"><span style={{ width: `${(daily ? (dailyIndex+1)/dailySteps.length : (step+1)/STEPS.length) * 100}%` }} /></div>
       <main className="sf-main">
+        {daily && assignment && <section className="sf-panel" data-daily-assignment><span className="sf-eyebrow">Día {assignment.day} de 28 · Actividad asignada</span><h2>{assignment.title} · {solo && assignment.practiceId==='sf-focus-1' ? 3 : assignment.minutes} min</h2><p>{assignment.summary}</p>{assignment.day!==context.day&&<p>Solo consulta. Tu día actual es {context.day}.</p>}
+        {assignment.practiceId==='sf-focus-1' && <>
+          <button className="sf-btn ghost" onClick={()=>{g1.reset();g2.reset();setSolo(true);setBothReady(false);setPracticeId('sf-solo');setDailySteps([2,3]);go(2);}}>Elegir preparación individual</button>
+          {solo && <button className="sf-btn ghost" onClick={()=>{setSolo(false);setPracticeId('sf-focus-1');setDailySteps(assignment.steps);go(assignment.steps[0]);}}>Elegir práctica en pareja</button>}
+          {!solo && <label className="sf-check"><input type="checkbox" checked={bothReady} onChange={e=>setBothReady(e.target.checked)}/>Ambos deseamos participar hoy y podemos parar en cualquier momento.</label>}
+          {!solo && assignment.optionalProgression && progressEligible && bothReady && <button className="sf-btn ghost" onClick={()=>{g1.reset();g2.reset();setPracticeId('sf-focus-2');setDailySteps([2,3,7,8,6]);go(2);}}>Elegir Focus II · progresión opcional</button>}
+          {!solo && assignment.optionalProgression && !progressEligible && <p>Hoy repetimos Focus I. Antes de progresar necesitamos un registro previo de práctica cómoda y sin presión elevada.</p>}
+        </>}
+        </section>}
         <span className="sf-eyebrow">{String(step + 1).padStart(2, '0')} · {STEPS[step]}</span>
         {screens[step]}
         {notice && <p role="status" className="sf-small">{notice}</p>}
-        {finishLabel && (
+        {!daily && finishLabel && (
           <div className="sf-return">
             <button className="sf-btn gold" onClick={finishReturn}>Finalizar · {finishLabel}</button>
             {notice && <p className="sf-small">{notice}</p>}
           </div>
         )}
-        {[0, 12, 13].includes(step) && <ProgramVideos key={step} route="sensate" />}
+        {!daily && [0, 12, 13].includes(step) && <ProgramVideos key={step} route="sensate" />}
       </main>
-      <footer className="sf-foot">
+      {daily ? <footer className="sf-foot">
+        <button onClick={()=>dailyIndex>0?go(dailySteps[dailyIndex-1]):host()?.close()}>← Atrás</button><span>Actividad de hoy</span>
+        <button disabled={(step===5&&!g1.done||step===8&&!g2.done)&&allowed} onClick={()=>dailyIndex<dailySteps.length-1?go(dailySteps[dailyIndex+1]):allowed?finishReturn():host()?.close()}>{dailyIndex<dailySteps.length-1?'Continuar →':allowed?'Guardar y volver a Hoy':'Volver a Hoy'}</button>
+      </footer> : <>      <footer className="sf-foot">
         <button onClick={() => go(step - 1)} disabled={step === 0}>← Anterior</button>
         <span>{STEPS[step]}</span>
         <button onClick={() => go(step + 1)} disabled={step === STEPS.length - 1}>Siguiente →</button>
-      </footer>
+      </footer></>}
+      {daily && <div className="sf-daily-library"><button className="sf-btn ghost" onClick={()=>host()?.openLibrary()}>Consultar biblioteca completa</button><p>El registro de esta actividad no completa automáticamente el día.</p></div>}
     </div>
   );
 }

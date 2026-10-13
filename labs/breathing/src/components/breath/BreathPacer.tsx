@@ -28,8 +28,6 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
   const [visual, setVisual] = useState(true);
-  const [visualFailed, setVisualFailed] = useState(false);
-  const failVisual = useCallback(() => { setVisualFailed(true); setVisual(false); }, []);
   const elapsedRef = useRef(0);
   const runningRef = useRef(false);
   const lastPhase = useRef<Phase | null>(null);
@@ -89,6 +87,7 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
   const start = () => {
     if (document.hidden) return;
     claimPlayback(owner.current); stopAudio();
+    window.dispatchEvent(new Event('spm:breath-start'));
     const elapsed = done ? 0 : elapsedRef.current;
     if (done) { elapsedRef.current = 0; setElapsedMs(0); setDone(false); }
     runningRef.current = true; setRunning(true);
@@ -109,10 +108,9 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
     <div className="bl-pacer" data-phase={done ? 'done' : started ? cur.phase : 'idle'} data-running={running}>
       <div className="bl-pacer-heading"><span><Wind size={15} /> RITMO RESPIRATORIO</span><b>{p.inhale}·{p.hold ? `${p.hold}·` : ''}{p.exhale}</b></div>
       <div className="bl-visual-modes" role="group" aria-label="Indicación visual">
-        <Button variant={visual ? 'spmGold' : 'outline'} aria-pressed={visual} disabled={visualFailed} onClick={() => setVisual(true)}>Guía visual</Button>
+        <Button variant={visual ? 'spmGold' : 'outline'} aria-pressed={visual} onClick={() => setVisual(true)}>Guía visual</Button>
         <Button variant={!visual ? 'spmGold' : 'outline'} aria-pressed={!visual} onClick={() => setVisual(false)}>Círculo</Button>
       </div>
-      {visualFailed && <p className="bl-muted" role="status">La guía anatómica no está disponible. Sigue el círculo.</p>}
       <div className={`bl-pacer-stage${visual ? ' with-anatomy' : ''}`}>
         <div className="bl-halo-wrap" style={style}>
           <div className="bl-halo-glow" /><div className="bl-halo" />
@@ -124,7 +122,7 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
             {done ? <><Check size={30} /><strong>Hecho</strong></> : started ? <><strong>{LABEL[cur.phase]}</strong><span className="bl-count" role="timer" aria-label={`${LABEL[cur.phase]} ${cur.left} segundos`}>{cur.left}</span><span className="bl-sub">segundos</span></> : <><strong>LISTO</strong><span className="bl-count">{p.inhale}</span><span className="bl-sub">{p.inhale}·{p.hold ? `${p.hold}·` : ''}{p.exhale}</span></>}
           </div>
         </div>
-        {visual ? <AnatomyGuide phase={cur.phase} progress={cur.progress} active={started && !done} onFailure={failVisual} /> : showBelly && <BellyFigure scale={scale} running={running} />}
+        {visual ? <AnatomyGuide phase={cur.phase} progress={cur.progress} active={started && !done} /> : showBelly && <BellyFigure scale={scale} running={running} />}
       </div>
       <p className="bl-hint" aria-live="polite">{done ? 'Respira normal unos segundos antes de levantarte.' : started ? HINT[cur.phase] : 'Pulsa iniciar y sigue el círculo.'}</p>
       <div className="bl-phase-labels">

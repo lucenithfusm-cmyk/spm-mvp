@@ -11,7 +11,7 @@ const assert=require('node:assert/strict');
   await page.goto('http://127.0.0.1:4173/premium-v2/__program-video-review.html');
   const before=await page.evaluate(()=>JSON.stringify(testContext));
   for(const lab of ['sensate','desire']){
-   await page.evaluate(lab=>window[lab==='sensate'?'SPM_SENSATE_LAB':'SPM_DESIRE_LAB'].open({origin:'erectile'}),lab);
+   await page.evaluate(lab=>window[lab==='sensate'?'SPM_SENSATE_LAB':'SPM_DESIRE_LAB'].open({origin:'library'}),lab);
    const iframe=page.locator(`.spm-${lab}-modal iframe`),frame=await (await iframe.elementHandle()).contentFrame();
    if(lab==='desire')await frame.getByRole('button',{name:'Biblioteca',exact:true}).first().click();
    await frame.waitForSelector(`[data-program-videos="${lab}"] video`);

@@ -2,13 +2,13 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const {JSDOM}=require('../labs/desire/node_modules/jsdom');
+const {JSDOM}=require('../labs/sensate/node_modules/jsdom');
 const source=fs.readFileSync(path.join(__dirname,'../premium-v2/sensate-lab-bridge-v1.js'),'utf8');
 function harness(extra={}){
  const dom=new JSDOM('<section id="plan"><div class="dayCard"></div></section><button id="logoutBtn">Salir</button>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window;w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  let c={userId:'qa',planId:'p1',day:12,safety:'none',flags:[],checkins:[],primary:'erection',secondary:'desire',motives:['erection','desire'],...extra};const writes=[];
- w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_SENSATE_RECORDS={read:async()=>({}),save:async(state,scope,day)=>writes.push({state,scope,day})};w.eval(source);
+ w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_SENSATE_RECORDS={read:async()=>({}),save:async(state,scope,day)=>writes.push({state,scope,day})};w.eval(fs.readFileSync(path.join(__dirname,'../premium-v2/daily-support-plan-v1.js'),'utf8'));w.eval(source);
  return {w,writes,context:()=>c,setContext:next=>{c=next},async close(){await w.SPM_SENSATE_LAB.close();w.close();}};
 }
 test('DE + deseo and EP + deseo link to the module using the active Central day',async()=>{

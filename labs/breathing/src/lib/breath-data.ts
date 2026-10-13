@@ -70,5 +70,5 @@ export const plan: PlanDay[] = Array.from({ length: 28 }, (_, i) => {
   return { day: d, rest, task: d === 28 ? 'Revisión de técnica y tolerancia; sesión opcional' : rest ? 'Descanso sugerido: respira normal, sin práctica' : weekTask[w] ?? '' };
 });
 
-export type Session = { day?: number; date: string; practice: string; seconds: number; comfort: number; dizzy: boolean; noHold: boolean };
+export type Session = { id?: string; day?: number; date: string; practice: string; seconds: number; comfort: number; dizzy: boolean; noHold: boolean };
 export type Competency = { technique: boolean; tolerance: boolean };

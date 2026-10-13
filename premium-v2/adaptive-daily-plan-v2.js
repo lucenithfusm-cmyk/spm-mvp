@@ -1,14 +1,18 @@
 (()=>{
 'use strict';
-const agenda={
+const baseAgenda={
 1:['Línea de base SPM','Respiración de regulación','Guía de bienestar integral'],2:['Respiración 4/6','Mapa de contexto sexual','Bienestar: sueño y estrés'],3:['Respiración guiada','Conciencia corporal','Guía de bienestar integral'],4:['Respiración de regulación','Atención sin examen','Relajación corporal'],5:['Mapa de facilitadores e inhibidores','Respiración breve','Bienestar integral'],6:['Piso pélvico · identificación y relajación','Respiración diafragmática','Registro de sensaciones'],7:['Revisión semanal','Respiración breve','Objetivo de bienestar para Semana 2'],8:['Habilidad principal según tu perfil','Respiración de regulación','Bienestar integral'],9:['Escala de excitación 0–10','Respiración lenta','Registro de control'],10:['Habilidad principal · progresión','Respiración diafragmática','Microacción cardiometabólica'],11:['Protocolo de recuperación','Respiración de regulación','Confianza sexual'],12:['Entrenamiento dirigido por perfil','Piso pélvico si corresponde','Bienestar integral'],13:['Confianza basada en evidencia','Respiración breve','Registro de progreso'],14:['Revisión semanal','Recuperación activa','Objetivo de bienestar para Semana 3'],15:['Transferencia gradual','Respiración de regulación','Preparación mental'],16:['Focalización sensorial I','Respiración diafragmática','Bienestar integral'],17:['Control de ritmo / Start–Stop si corresponde','Respiración breve','Guía cardioprotectora'],18:['Comunicación que reduce presión','Regulación respiratoria','Bienestar mental'],19:['Focalización sensorial II','Piso pélvico si corresponde','Registro de presencia'],20:['Plan para una experiencia sexual','Respiración de regulación','Hábitos protectores'],21:['Revisión semanal','Práctica principal del perfil','Recuperación y bienestar'],22:['Consolidación de habilidad principal','Respiración breve','Registro de confianza'],23:['Flexibilidad ante variaciones','Regulación corporal','Bienestar integral'],24:['Práctica dirigida por perfil','Piso pélvico o control eyaculatorio según ruta','Respiración'],25:['Aplicación en contexto real','Respiración de regulación','Confianza y presencia'],26:['Repetición de la técnica más útil','Recuperación activa','Hábitos protectores'],27:['Preparación para reevaluación','Práctica breve favorita','Bienestar integral'],28:['Reevaluación SPM','Comparación de progreso','Plan de continuidad']
 };
+// Keep the main curriculum and wellness tasks; breathing/focalization come from one schedule.
+const agenda=Object.fromEntries(Object.entries(baseAgenda).map(([day,items])=>[day,items.filter(x=>!/respira|focaliza|regulaci[oó]n corporal/i.test(x))]));
+function itemsFor(day){const c=window.SPM_RESOURCE_CONTEXT?.();return [...(agenda[day]||[]),...(window.SPM_DAILY_SUPPORT?.assignments(Number(day),c)||[]).map(x=>x.title+' · '+x.minutes+' min')];}
+window.SPM_DAILY_AGENDA_ITEMS=itemsFor;
 function decorate(){
  const grid=document.getElementById('dayGrid');if(!grid)return;
  grid.querySelectorAll('.dayCard').forEach(card=>{
-  const d=Number(card.querySelector('.dayNum')?.textContent||0);if(!d||card.querySelector('.spm-agenda'))return;
-  const box=document.createElement('div');box.className='spm-agenda';
-  box.innerHTML=`<div class="spm-agenda-title">Tu agenda del día</div>${(agenda[d]||[]).map((x,i)=>`<div class="spm-agenda-item"><b>${i+1}</b><span>${x}</span></div>`).join('')}`;
+  const d=Number(card.querySelector('.dayNum')?.textContent||0);if(!d)return;const items=itemsFor(d),signature=JSON.stringify(items);if(card.querySelector('.spm-agenda')?.dataset.signature===signature)return;card.querySelector('.spm-agenda')?.remove();
+  const box=document.createElement('div');box.className='spm-agenda';box.dataset.signature=signature;
+  box.innerHTML=`<div class="spm-agenda-title">Tu agenda del día</div>${items.map((x,i)=>`<div class="spm-agenda-item"><b>${i+1}</b><span>${x}</span></div>`).join('')}`;
   const body=card.querySelector('.dayBody');if(body)body.insertBefore(box,body.firstChild);
  });
 }
@@ -16,6 +20,7 @@ const css=document.createElement('style');css.textContent=`.spm-agenda{margin:0 
 document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.phaseBtn,.doneBtn'))setTimeout(decorate,220)});
 document.addEventListener('DOMContentLoaded',()=>setTimeout(decorate,900),{once:true});
 setTimeout(decorate,1600);
+window.addEventListener('spm:resourcecontext',decorate);
 window.SPM_DAILY_AGENDA_V2=agenda;
 window.SPM_DECORATE_DAILY_AGENDA=decorate;
 })();
