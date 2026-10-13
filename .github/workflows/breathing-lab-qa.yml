@@ -12,6 +12,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: cd labs/breathing && sha256sum --check media-sha256.txt
       - run: npm run typecheck --prefix labs/breathing && npm run build --prefix labs/breathing
       - run: git diff --exit-code -- premium-v2/breathing-lab
       - run: npx --prefix labs/breathing vitest run --root labs/breathing
