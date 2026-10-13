@@ -32,8 +32,9 @@ async function open(opts={}){
  const c=ctx();if(!c)return false;
  scope=scopeOf(c);day=Math.min(28,Math.max(1,Number(c.day)||1));origin=['erectile','ejaculation','dailyPlan'].includes(opts.origin)?opts.origin:'library';state={};dirty=saved=0;
  lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-desire-modal';modal.setAttribute('aria-label','Deseo SPM');
- modal.innerHTML='<header><button type="button" data-desire-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':'mi programa')+'</button><span role="status" data-desire-status>Cargando tu progreso…</span><button type="button" data-desire-retry hidden>Reintentar guardado</button></header><main></main>';
+ modal.innerHTML='<header><button type="button" data-desire-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':'mi programa')+'</button><button type="button" data-desire-breathing>Respiración diafragmática</button><span role="status" data-desire-status>Cargando tu progreso…</span><button type="button" data-desire-retry hidden>Reintentar guardado</button></header><main></main>';
  document.body.appendChild(modal);modal.showModal();modal.querySelector('[data-desire-close]').onclick=close;modal.querySelector('[data-desire-retry]').onclick=()=>flush().catch(()=>{});modal.addEventListener('cancel',e=>{e.preventDefault();close();});
+ modal.querySelector('[data-desire-breathing]').onclick=async()=>{if(await close())window.SPM_BREATHING_LAB?.open({origin:'desire',returnToDesire:true});};
  const token=++generation,captured=scope;
  let lastRestriction=restriction(c);
  watch=setInterval(()=>{const current=ctx();if(scopeOf(current)!==scope || Number(current?.day || 1)!==day){dispose();return;}const r=restriction(current);if(lastRestriction!==r){lastRestriction=r;notify();}},300);

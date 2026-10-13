@@ -1,0 +1,208 @@
+{
+  "voice": "Lenny — Clear & Professional",
+  "voiceId": "050c403a43e047c796f8a6257ed2533e",
+  "provider": "HeyGen",
+  "generationSpeed": 0.95,
+  "playbackRate": 1,
+  "provenance": "22 audios aprobados y suministrados por la usuaria el 2026-10-12. Conversión WAV a MP3 sin reemplazar la voz ni modificar el ritmo.",
+  "entries": [
+    {
+      "id": "screen.01",
+      "text": "Cuando la respiración se vuelve lenta y baja, el cuerpo recibe una señal de calma. Aquí aprenderás a usarla a tu favor, sin forzar nada.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=b5852296-5bd8-4648-a1ca-d23f9ff1caf8.wav",
+      "approvedDurationSec": 10.422857142857143,
+      "url": "./media/screen.01.mp3",
+      "assetPointer": "src/assets/audio/screen.01.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.02",
+      "text": "Respirar solo con el pecho suele acompañar la tensión. Llevar el aire hacia el abdomen permite que el diafragma trabaje y la exhalación se alargue.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=80047e2f-e317-42f9-8da9-aa1c7401b882.wav",
+      "approvedDurationSec": 9.299591836734693,
+      "url": "./media/screen.02.mp3",
+      "assetPointer": "src/assets/audio/screen.02.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.03",
+      "text": "Pon una mano en el pecho y otra en el abdomen. Respira normal, sin corregir. Solo observa cuál se mueve más.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=6cb2de44-b8b5-472a-a9d2-4f46539c35b0.wav",
+      "approvedDurationSec": 8.359183673469389,
+      "url": "./media/screen.03.mp3",
+      "assetPointer": "src/assets/audio/screen.03.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.04",
+      "text": "Observa el ritmo: el abdomen se expande al inhalar y vuelve suave al exhalar. Hombros y pecho casi quietos.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=4aaaa733-7b08-483d-ac80-dc77772f9095.wav",
+      "approvedDurationSec": 9.482448979591837,
+      "url": "./media/screen.04.mp3",
+      "assetPointer": "src/assets/audio/screen.04.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.05",
+      "text": "Vamos juntos: inhala cuatro, pausa dos, exhala seis. Si la pausa te incomoda, quítala. Nunca fuerces el aire.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=02b564ff-b33e-43c7-bc83-b1c6ff4d9236.wav",
+      "approvedDurationSec": 8.986122448979591,
+      "url": "./media/screen.05.mp3",
+      "assetPointer": "src/assets/audio/screen.05.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.06",
+      "text": "Tu mano es el mejor sensor. Al inhalar debería subir suavemente; al exhalar, bajar sin empujar.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=319979ac-afd8-4db6-8f3a-7ce986250982.wav",
+      "approvedDurationSec": 7.549387755102041,
+      "url": "./media/screen.06.mp3",
+      "assetPointer": "src/assets/audio/screen.06.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.07",
+      "text": "Separa ligeramente los dientes, deja caer los hombros y afloja el abdomen. La tensión se suelta en la exhalación.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=04b30a51-316f-4535-97e6-da2e3d8dbb08.wav",
+      "approvedDurationSec": 7.993469387755102,
+      "url": "./media/screen.07.mp3",
+      "assetPointer": "src/assets/audio/screen.07.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.08",
+      "text": "Cuando notes nervios o intensidad alta, alarga la exhalación. Un minuto basta para empezar a notar el cambio.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=43bd9402-765f-4a27-9452-0eb3fb395d79.wav",
+      "approvedDurationSec": 7.993469387755102,
+      "url": "./media/screen.08.mp3",
+      "assetPointer": "src/assets/audio/screen.08.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.09",
+      "text": "Si la activación sube rápido, detén el estímulo, respira bajo y lento, y espera a que baje antes de continuar.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=a47fc2b7-bcbe-4a94-bf9b-c2b45a7aef2c.wav",
+      "approvedDurationSec": 8.489795918367347,
+      "url": "./media/screen.09.mp3",
+      "assetPointer": "src/assets/audio/screen.09.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.10",
+      "text": "Al exhalar, imagina que el piso pélvico se ablanda y desciende. No empujes: solo suelta.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=e3a72f58-5584-47e2-8a87-194ea1544f7a.wav",
+      "approvedDurationSec": 7.497142857142857,
+      "url": "./media/screen.10.mp3",
+      "assetPointer": "src/assets/audio/screen.10.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.11",
+      "text": "Tres respiraciones lentas, sin pausa. Úsala cuando necesites volver al centro en menos de un minuto.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=0821475b-402c-4a56-b379-7e5140959954.wav",
+      "approvedDurationSec": 7.444897959183673,
+      "url": "./media/screen.11.mp3",
+      "assetPointer": "src/assets/audio/screen.11.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.12",
+      "text": "Dos minutos bastan para practicar esta habilidad en los días elegidos. Siéntate cómodo y sigue el círculo.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=cad8529c-ea10-4f50-96a2-b1bdc323a49e.wav",
+      "approvedDurationSec": 7.732244897959184,
+      "url": "./media/screen.12.mp3",
+      "assetPointer": "src/assets/audio/screen.12.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.13",
+      "text": "Cinco minutos para una regulación más profunda. Si te distraes, vuelve al ritmo sin juzgarte.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=ce673c09-45f2-46a8-815b-a9bd32c70832.wav",
+      "approvedDurationSec": 7.366530612244898,
+      "url": "./media/screen.13.mp3",
+      "assetPointer": "src/assets/audio/screen.13.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.14",
+      "text": "Elige la práctica que necesitas en este momento. Siempre puedes volver aquí.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=1ceb4dbf-e4bd-4557-b044-112fd5ec1e0f.wav",
+      "approvedDurationSec": 5.0416326530612245,
+      "url": "./media/screen.14.mp3",
+      "assetPointer": "src/assets/audio/screen.14.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.15",
+      "text": "Estos 28 días son para aprender, sentir y ajustar la técnica; no para convertirla en un ritual diario. Tu ritmo depende de tu evolución.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=00082add-3be0-462c-b182-e6ea1a0a4466.wav",
+      "approvedDurationSec": 10.762448979591836,
+      "url": "./media/screen.15.mp3",
+      "assetPointer": "src/assets/audio/screen.15.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.16",
+      "text": "Registra cómo te sientes después de cada sesión. Así verás tu evolución.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=49fa8967-76e4-4f00-b781-8f49177f128f.wav",
+      "approvedDurationSec": 5.642448979591837,
+      "url": "./media/screen.16.mp3",
+      "assetPointer": "src/assets/audio/screen.16.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.17",
+      "text": "Respirar lento debe sentirse cómodo. Si aparece mareo o malestar, detente y respira normal.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=01f84e68-76b6-47c7-bc53-f6a18568b61a.wav",
+      "approvedDurationSec": 8.359183673469389,
+      "url": "./media/screen.17.mp3",
+      "assetPointer": "src/assets/audio/screen.17.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "screen.18",
+      "text": "Cuando domines la técnica y la toleres bien, quedará disponible para integración según tu evolución y el plan asignado por SPM, no como obligación diaria.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=607ad212-cf9e-4c47-95d3-ab7f047a850d.wav",
+      "approvedDurationSec": 10.81469387755102,
+      "url": "./media/screen.18.mp3",
+      "assetPointer": "src/assets/audio/screen.18.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "cue.inhale",
+      "text": "Inhala lentamente.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=b52bc615-aa0e-47f6-addc-b0538819c176.wav",
+      "approvedDurationSec": 1.9853061224489796,
+      "url": "./media/cue.inhale.mp3",
+      "assetPointer": "src/assets/audio/cue.inhale.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "cue.hold",
+      "text": "Pausa suave.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=9d9fcc20-6b98-403a-bae4-f653543d0263.wav",
+      "approvedDurationSec": 1.3583673469387756,
+      "url": "./media/cue.hold.mp3",
+      "assetPointer": "src/assets/audio/cue.hold.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "cue.exhale",
+      "text": "Exhala lentamente.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=b197d7a3-8c48-43eb-988a-17899fcb0dc3.wav",
+      "approvedDurationSec": 2.3771428571428572,
+      "url": "./media/cue.exhale.mp3",
+      "assetPointer": "src/assets/audio/cue.exhale.mp3.asset.json",
+      "format": "mp3"
+    },
+    {
+      "id": "cue.done",
+      "text": "Práctica terminada. Respira normal.",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=8e9599d9-5209-4ac0-abab-f6c24894514d.wav",
+      "approvedDurationSec": 3.239183673469388,
+      "url": "./media/cue.done.mp3",
+      "assetPointer": "src/assets/audio/cue.done.mp3.asset.json",
+      "format": "mp3"
+    }
+  ]
+}
