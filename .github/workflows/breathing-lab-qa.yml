@@ -1,0 +1,18 @@
+name: Breathing Lab integration QA
+on:
+  pull_request:
+    paths: ["labs/breathing/**", "premium-v2/breathing-lab/**", "premium-v2/breathing-lab-bridge-v1.js", "premium-v2/app-live.js", "tests/breathing-lab-*", ".github/workflows/breathing-lab-qa.yml"]
+  workflow_dispatch:
+jobs:
+  breathing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: npm run typecheck --prefix labs/breathing && npm run build --prefix labs/breathing
+      - run: git diff --exit-code -- premium-v2/breathing-lab
+      - run: npx --prefix labs/breathing vitest run --root labs/breathing
+      - run: node --test tests/breathing-lab-bridge.test.cjs

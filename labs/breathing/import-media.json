@@ -1,0 +1,147 @@
+[
+  {
+    "path": "labs/breathing/public/media/respiracion-toracica-premium.jpg",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/5c180e9c-1119-4ef4-a8de-3d3885bf9507/respiracion-toracica-premium.jpg",
+    "sha256": "0d925d7f4c6095ca204a5ad77eddd43e7da242ae875c5cdab961edc638bbeeee"
+  },
+  {
+    "path": "labs/breathing/public/media/respiracion-anatomica.mp4",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/fae56f27-8fe4-4a71-99fb-766bf9de4aa5/respiracion-anatomica.mp4",
+    "sha256": "209cc2e6d91c290637871f075adc7ab2fd0428520660d5cf47fda35f8708711a"
+  },
+  {
+    "path": "labs/breathing/public/media/SPM_Respiracion_Lenny_Audio_Corregido.mp4",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/a9bf0a52-9e94-4d92-9773-08177843efe6/SPM_Respiracion_Lenny_Audio_Corregido.mp4",
+    "sha256": "ab9923166f030aedacef4d83acfcc1ce62a26ebcac025534e8f0adc16ee55e6b"
+  },
+  {
+    "path": "labs/breathing/public/media/spm-final-demo-poster.jpg",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/c28fce03-c64b-4048-8ecc-20f068bbe303/spm-final-demo-poster.jpg",
+    "sha256": "1116dc8c467913d8156f3f26c0dd4ca1ee9f0d1e58a8a806bd93956a7b509b6a"
+  },
+  {
+    "path": "labs/breathing/public/media/respiracion-anatomica-muted.webm",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/fe8f31cc-4286-497b-a15c-134fe4b6a533/respiracion-anatomica-muted.webm",
+    "sha256": "21239b6886ce789bafa42b38ef7848eb8309c6ad6cc56be94c544cecb187d538"
+  },
+  {
+    "path": "labs/breathing/public/media/anatomy-poster.jpg",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/463d9484-3540-4ca6-b8fc-c432275a3547/anatomy-poster.jpg",
+    "sha256": "7b00732224525ec89d487a05b87508f169a93dd28ce291b8951708d9f4d4be74"
+  },
+  {
+    "path": "labs/breathing/public/media/respiracion-diafragmatica-premium.jpg",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/039e5eea-181d-46d7-9988-d70ab2277564/respiracion-diafragmatica-premium.jpg",
+    "sha256": "e95da18d96a1b17df4a590b32da4470e41bc170110d041fa0f89dd64543360a1"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.04.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/982cd338-6679-43dd-9818-20e3a8b2a6bf/screen.04.mp3",
+    "sha256": "9a4b4ec18a424728b7d92fac497cb328f1c53abf584b1d4c410abf8eff26b815"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.02.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/c5a084be-d569-43e0-88e1-6011890b9f4c/screen.02.mp3",
+    "sha256": "5304e4a07b4acc1d9508d5fb77e2de5de31e75dc8353e7f4dc95df8137ae6447"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.18.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/a2cfff27-c69b-48e2-a82f-693dd1df9b3a/screen.18.mp3",
+    "sha256": "8f68e65865d6274eafe25cd289f1777a31be1f16683351f3476913247d2c9e37"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.15.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/e6cdf2ed-08ef-4f57-8604-6a99f0a960d3/screen.15.mp3",
+    "sha256": "b04503ad518ba12aaaef4dfecfd8f6dced4a1a8da5b5a66eb667d85c84999537"
+  },
+  {
+    "path": "labs/breathing/public/media/cue.done.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/65dc73ad-aaf8-426a-a457-3fec91156603/cue.done.mp3",
+    "sha256": "cabd9cb5e40a2adf6d06df7f64a316be05a70955be1e47c65b1263d59ab9e51a"
+  },
+  {
+    "path": "labs/breathing/public/media/cue.inhale.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/a3048fee-cd7c-4460-9468-a88c3f2f38ea/cue.inhale.mp3",
+    "sha256": "57efd7731fdf1b05b09ba075053b07aebd1c3ab45ea2a27b167e0c87a404d4f5"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.11.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/399d5798-5f0c-4fea-9a45-4f63ef15e8ed/screen.11.mp3",
+    "sha256": "8bdb93ec26eb1eb011abd37ad76bc6c92e03ca73f869b090b942a8b8cede81aa"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.12.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/bcb4f5d0-4a37-43d2-ae73-3f42bf0e552c/screen.12.mp3",
+    "sha256": "e8af1f768dd27e3c3dbe603f7da8a85e319daa025996de80f4c8ec8da222bbf7"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.05.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/a8b391bd-504f-4167-bc9b-7cbfb8913041/screen.05.mp3",
+    "sha256": "be34c15f795bcc18341b499b0643d53bc2dd4226ed4832e3f663afed2f4cc515"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.06.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/cd874dc4-81a9-4729-817d-23b1815fbd18/screen.06.mp3",
+    "sha256": "aed05825e7da93b3c6773a81f5c5ec8791c4983471a6971a9dbaac0497455973"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.13.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/f580498b-ef3e-4ab2-b694-f625a8b3b7b1/screen.13.mp3",
+    "sha256": "e806d7c49ec11db7d1bf52b0b2b27e50df976e77f0ba85f83b470fe028213706"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.09.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/bd534661-dd24-4955-87c8-575e859dff6d/screen.09.mp3",
+    "sha256": "6fee6239819b3cb5163f694797e6d022dd40a4dabd8596a004b85fbb2f944743"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.03.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/9a632233-ddc6-493c-8039-0c84e85a59e0/screen.03.mp3",
+    "sha256": "13727ad08a39dbbd994d4bee6baf065587af2a19705c090bb55c7a5b908ce84f"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.07.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/b9b2f5e7-d9bf-4c99-8aa9-590081c84639/screen.07.mp3",
+    "sha256": "06af743d96bf5bd52d3b746fa5dae8d386a6cdd425f5e7de3913e014f4d7ff45"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.10.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/251a0847-50e8-4472-aea1-1c532f6887b4/screen.10.mp3",
+    "sha256": "cfca8dfa2fb79f2a9f822c771f4b2aa3eae9beedbb1d5b647de62e846d7da72d"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.14.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/6a85f5f7-fa50-4da5-babf-722edc77f101/screen.14.mp3",
+    "sha256": "b1f50f9e4541b3d06eca462fb934a4b48974271c882c54dfac37354cd089c757"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.01.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/31759109-4a13-4fc4-b8d7-56aa4c3487eb/screen.01.mp3",
+    "sha256": "f3e85b72e2f04499f694d39af8942f4c2b2d7d9fab4a8586c8bc89dfea6c0627"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.16.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/3465db89-5082-44d7-8266-58e888e56e79/screen.16.mp3",
+    "sha256": "bf5ccea91ec5a572f83c1c205c08e407ef7df1a71f10056f7f8701c21cd97b60"
+  },
+  {
+    "path": "labs/breathing/public/media/cue.hold.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/13dbd734-3e9f-4ea1-9667-d119caef70f9/cue.hold.mp3",
+    "sha256": "ffa74b3882071c00a42a1b8b88c565f0f698353d928b3a5c39af1659939227db"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.08.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/9cd74ff7-0486-4ca8-b2ca-8ef526817687/screen.08.mp3",
+    "sha256": "df2e965ceb70f580e1255f8e25e49af79c9720d4285b48444e0d2c665bf5e2ce"
+  },
+  {
+    "path": "labs/breathing/public/media/cue.exhale.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/aacc1451-5afb-4581-8f43-cff07a9a2772/cue.exhale.mp3",
+    "sha256": "5604d0fc1425c4469e09c9e3a1a434ab11f815de715a4dff5cfa1f7d19c38474"
+  },
+  {
+    "path": "labs/breathing/public/media/screen.17.mp3",
+    "url": "https://id-preview--3da52db4-91f8-4863-b5da-797c969e1a20.lovable.app/__l5e/assets-v1/0acf14bc-d62b-4d50-a6cd-d09c46cd7260/screen.17.mp3",
+    "sha256": "a137a747972d01aba9b50c70e85e3b83354345c6a55e2eda8cc9f7bfa7005ed2"
+  }
+]
