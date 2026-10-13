@@ -49,13 +49,22 @@ function mount(){
  scheduled=false;const plan=document.getElementById('plan'),c=ctx();if(!plan||!c)return;
  let box=document.getElementById('spmDesireLabEntry');if(!box){box=document.createElement('section');box.id='spmDesireLabEntry';box.className='card';box.innerHTML='<span>SPM · DESEO</span><h3>Conoce y explora tu deseo</h3><p data-desire-reason></p><button type="button" class="btn sec">Abrir programa de Deseo</button>';plan.appendChild(box);box.querySelector('button').onclick=()=>open({origin:'library'});}
  const text=relevant(c)?'Apoyo para tu ruta: trabaja el deseo junto a tu programa principal, conservando el mismo día y progreso.':'Explora los recursos de deseo cuando los necesites.';const p=box.querySelector('p');if(p.textContent!==text)p.textContent=text;
- plan.querySelectorAll('.dayCard').forEach(card=>{const existing=card.querySelector('[data-desire-daily]');if(!relevant(c)){existing?.remove();return;}if(existing)return;const b=document.createElement('button');b.type='button';b.className='btn sec';b.dataset.desireDaily='1';b.textContent='Deseo · apoyo para hoy';b.onclick=()=>open({origin:c.primary==='erection'?'erectile':c.primary==='ejaculation'?'ejaculation':'dailyPlan'});card.appendChild(b);});
+ // A secondary interest is a library resource, not an assignment on every day.
+ // The primary Desire route already owns its 28-day curriculum inside the Lab.
+ plan.querySelectorAll('.dayCard').forEach(card=>{
+  const existing=card.querySelector('[data-desire-daily]'),d=Number(card.querySelector('.dayNum')?.textContent),body=card.querySelector('.dayBody');
+  if(c.primary!=='desire'||d!==Number(c.day)||!body){existing?.remove();return;}
+  const b=existing||document.createElement('button');b.type='button';b.className='btn sec';b.dataset.desireDaily='1';
+  const label='Práctica de deseo · Día '+d;if(b.textContent!==label)b.textContent=label;
+  b.onclick=()=>open({origin:'dailyPlan'});if(b.parentElement!==body)body.appendChild(b);
+ });
 }
 function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(mount);}}
 new MutationObserver(schedule).observe(document.getElementById('plan')||document.body,{subtree:true,childList:true});
 window.addEventListener('spm:open-lab',e=>{if(['desire','low-desire','desire-activation','deseo'].includes(e.detail?.lab))open(e.detail||{});});
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#newAssessment')&&modal)dispose();},true);
 window.addEventListener('spm:session-change',()=>{if(modal&&scopeOf(ctx())!==scope)dispose();schedule();});
+window.addEventListener('spm:resourcecontext',schedule);
 const style=document.createElement('style');style.textContent='.spm-desire-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-desire-modal[open]{display:flex;flex-direction:column}.spm-desire-modal::backdrop{background:#020a10ed}.spm-desire-modal>header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-desire-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-desire-modal>header span{font-size:12px;color:#a3d3c7}.spm-desire-modal>main{flex:1;min-height:0}.spm-desire-modal iframe{width:100%;height:100%;border:0}#spmDesireLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-desire-daily]{margin-top:12px}';document.head.appendChild(style);
 window.SPM_DESIRE_LAB={open,close,flush,validState,relevant,restriction};schedule();
 })();

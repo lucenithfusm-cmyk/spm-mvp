@@ -2,7 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const {JSDOM}=require('../labs/desire/node_modules/jsdom');
+const {JSDOM}=require('../labs/breathing/node_modules/jsdom');
 const source=fs.readFileSync(path.join(__dirname,'../premium-v2/desire-lab-bridge-v1.js'),'utf8');
 function harness(extra={}){
  const dom=new JSDOM('<section id="plan"><div class="dayCard"></div></section><button id="logoutBtn">Salir</button>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true});
@@ -12,7 +12,7 @@ function harness(extra={}){
  return {w,writes,context:()=>c,setContext:next=>{c=next},async close(){await w.SPM_DESIRE_LAB.close();w.close();}};
 }
 test('DE + deseo and EP + deseo link to the module using the active Central day',async()=>{
- for(const primary of ['erection','ejaculation']){const h=harness({primary});try{assert.equal(h.w.SPM_DESIRE_LAB.relevant(h.context()),true);await new Promise(r=>setTimeout(r,30));assert.ok(h.w.document.querySelector('[data-desire-daily]'));await h.w.SPM_DESIRE_LAB.open({origin:primary==='erection'?'erectile':'ejaculation',day:27});assert.equal(h.w.SPM_DESIRE_LAB_HOST.getContext().day,12);assert.match(h.w.document.querySelector('iframe').src,/origin=dailyPlan/);}finally{await h.close();}}
+ for(const primary of ['erection','ejaculation']){const h=harness({primary});try{assert.equal(h.w.SPM_DESIRE_LAB.relevant(h.context()),true);await new Promise(r=>setTimeout(r,30));assert.equal(h.w.document.querySelector('[data-desire-daily]'),null);assert.ok(h.w.document.querySelector('#spmDesireLabEntry button'));await h.w.SPM_DESIRE_LAB.open({origin:primary==='erection'?'erectile':'ejaculation',day:27});assert.equal(h.w.SPM_DESIRE_LAB_HOST.getContext().day,12);assert.match(h.w.document.querySelector('iframe').src,/origin=dailyPlan/);}finally{await h.close();}}
 });
 test('a standalone primary Desire route is relevant; unrelated profiles remain optional',async()=>{const h=harness();try{assert.equal(h.w.SPM_DESIRE_LAB.relevant({primary:'desire'}),true);assert.equal(h.w.SPM_DESIRE_LAB.relevant({primary:'erection'}),false);}finally{await h.close();}});
 test('module state is saved under the active user/plan and never browser local storage',async()=>{const h=harness();try{await h.w.SPM_DESIRE_LAB.open();assert.equal(h.w.SPM_DESIRE_LAB_HOST.write('spm-desire-state','{"zones":["neck"]}'),true);await h.w.SPM_DESIRE_LAB.flush();assert.equal(h.writes[0].scope,'qa:p1');assert.equal(h.writes[0].day,12);assert.equal(h.w.localStorage.length,0);assert.equal(h.writes[0].state['spm-desire-state'],'{"zones":["neck"]}');}finally{await h.close();}});
