@@ -2,7 +2,7 @@
 (()=>{
  const config=window.SPM_QA_CONFIG||{primary:'erection',day:12};
  const user={id:'qa-user',email:'qa@example.test'};
- const initial={plans:[{id:'qa-plan',user_id:user.id,assessment_id:'qa-assessment',performance_map_id:'qa-map',status:'active',current_day:config.day,created_at:'2026-09-20T00:00:00Z'}],assessments:[{id:'qa-assessment',user_id:user.id,motives:[config.primary,'desire'],answers:{}}],performance_maps:[{id:'qa-map',user_id:user.id,primary_domain:config.primary,secondary_domain:'desire',domain_scores:{erection:40,ejaculation:80,desire:70,confidence:55,wellbeing:75,lifestyle:70},spm_score:65,safety_level:'none',safety_flags:[]}],activity_completions:[],daily_checkins:[],profiles:[]};
+ const initial={plans:[{id:'qa-plan',user_id:user.id,assessment_id:'qa-assessment',performance_map_id:'qa-map',status:'active',current_day:config.day,created_at:'2026-09-20T00:00:00Z'}],assessments:[{id:'qa-assessment',user_id:user.id,motives:[config.primary,'desire'],answers:{}}],performance_maps:[{id:'qa-map',user_id:user.id,primary_domain:config.primary,secondary_domain:'desire',domain_scores:{erection:40,ejaculation:80,desire:70,confidence:55,wellbeing:75,lifestyle:70},spm_score:65,safety_level:config.safety||'none',safety_flags:config.flags||[]}],activity_completions:[],daily_checkins:[],profiles:[]};
  const rows=JSON.parse(sessionStorage.getItem('spm-qa-rows')||'null')||initial;
  const qa=window.SPM_QA={rows,writes:[],failNext:false};
  const db={auth:{getSession:async()=>({data:{session:{user}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from(table){

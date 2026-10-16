@@ -50,7 +50,7 @@ const fixture=fs.readFileSync(path.join(__dirname,'support/daily-fixture.js'),'u
   // Generic days have a real response form, with persisted responses and no automatic advance.
   const p=await pageFor('confidence',2);await p.locator('[data-daily-open="main"]').click();await p.locator('[name=reflection]').fill('Reconocí mis contextos y mi patrón.');await p.locator('[name=measure]').fill('No evaluable');await p.locator('[name=confirmed]').check();await p.locator('#spmDailyWorkspace button[type=submit]').click();await p.locator('[data-activity="main"] .spm-daily-saved').waitFor();assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),2);checks++;
   await p.reload();await p.locator('#map.on').waitFor();await p.locator('#goPlan').click();await p.locator('#spmGoToday').click();await p.locator('[data-daily-open="main"]').click();assert.equal(await p.locator('[name=reflection]').inputValue(),'Reconocí mis contextos y mi patrón.');checks++;
-  await p.evaluate(()=>{SPM_RESTORED_CONTEXT.map.safety_level='review';dispatchEvent(new Event('spm:resourcecontext'));});assert.equal(await p.locator('[data-daily-open="main"]').isDisabled(),true);checks++;
+  await p.evaluate(()=>{SPM_RESTORED_CONTEXT.map.safety_level='urgent';dispatchEvent(new Event('spm:resourcecontext'));});assert.equal(await p.locator('[data-activity="main"] .spm-daily-paused').count(),1);checks++;
   const before=await p.evaluate(()=>SPM_QA.writes.length);assert.equal(await p.evaluate(async()=>{try{await SPM_DAILY_PRACTICE.saveActivity('main');return false;}catch{return true;}}),true);assert.equal(await p.evaluate(()=>SPM_QA.writes.length),before);checks+=2;
   await p.close();
   // Day 28 remains capped and records closure only once.

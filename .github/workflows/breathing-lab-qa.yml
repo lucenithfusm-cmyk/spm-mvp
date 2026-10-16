@@ -31,3 +31,4 @@ jobs:
           node tests/breathing-lab-browser.cjs
           node tests/daily-entry-browser.cjs
           node tests/daily-practice-browser.cjs
+          node tests/daily-safety-calendar-browser.cjs

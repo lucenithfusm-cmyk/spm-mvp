@@ -51,7 +51,7 @@ window.SPM_DAILY_RECORDS={
   const c=window.SPM_RESOURCE_CONTEXT();
   if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
   if(!/^[a-z0-9-]{1,60}$/.test(id)||!metadata||JSON.stringify(metadata).length>25000)throw Error('Invalid activity');
-  if(window.SPM_DAILY_PRACTICE?.restricted(c))throw Error('Practice paused');
+  if(window.SPM_DAILY_PRACTICE?.restricted(c,id))throw Error('Practice paused');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:daily_activity:'+id,metadata,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
   if(error)throw error;
   return {ok:true};
@@ -319,7 +319,8 @@ function renderPlan(){
  c.innerHTML=`<div class="dayTop"><div class="dayNum">${day.d}</div><div><h4>${day.title_es}</h4><p>${(day.learn_es||'').slice(0,105)}…</p></div><span class="tag">${done?'Completado ✓':label(S.map.primary)}</span></div><div class="dayBody"><div class="lessonFlow"><div class="lesson"><b>Aprender</b><p>${day.learn_es||''}</p></div><div class="lesson"><b>Practicar</b><p>${day.practice_es||'Practica la habilidad principal del día sin convertirla en una prueba de desempeño.'}</p></div><div class="lesson"><b>Medir</b><p>${day.measure_es||'Registra tu experiencia de 0 a 10.'}</p></div><div class="lesson"><b>Aplicar</b><p>${day.apply_es||'Aplica la habilidad en un contexto seguro y sin presión.'}</p></div><div class="lesson"><b>Completar</b><p>${day.complete_es||'Marca la práctica al finalizar.'}</p></div></div><div class="interactive"><button class="btn pri doneBtn">${done?'Completado ✓':'Marcar práctica como completada'}</button></div></div>`;
  c.querySelector('.dayTop').onclick=()=>c.classList.toggle('open');c.querySelector('.doneBtn').onclick=()=>completeDay(day.d,c).catch(e=>msg(e.message,'danger'));g.appendChild(c)});
 }
-async function completeDay(day,card){
+async function completeDay(day,card,verifiedDaily=false){
+ if(window.SPM_DAILY_PRACTICE&&!verifiedDaily){window.SPM_DAILY_PRACTICE.open();return {ok:false,pending:true};}
  if(!S.planId||!S.user)throw Error('No hay un plan activo.');
  const uid=S.user.id,pid=S.planId;
  const {error}=await db.from('activity_completions').upsert({user_id:uid,plan_id:pid,day_number:day,module_key:'daily_practice',metadata:{source:'premium-v2-live'}},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;
@@ -337,14 +338,21 @@ window.SPM_COMPLETE_DAILY_PRACTICE=async(day,expectedScope)=>{
  const c=window.SPM_RESOURCE_CONTEXT();
  if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
  if(window.SPM_DAILY_PRACTICE?.restricted(c))throw Error('Practice paused');
+ const required=window.SPM_DAILY_PRACTICE?.assignments(c).filter(a=>!a.optional)||[];
+ const records=await window.SPM_DAILY_RECORDS.read(expectedScope,day);
+ if(!required.length||required.some(a=>window.SPM_DAILY_PRACTICE.restricted(c,a)||records[a.id]?.completed!==true||(records[a.id]?.activityKind&&records[a.id].activityKind!==a.kind)))throw Error('Daily activities pending');
+ const latest=window.SPM_RESOURCE_CONTEXT();
+ if(!latest||expectedScope!==latest.userId+':'+latest.planId||Number(latest.day)!==day||required.some(a=>window.SPM_DAILY_PRACTICE.restricted(latest,a)))throw Error('Program changed');
  const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent)===day);
- return completeDay(day,card);
+ return completeDay(day,card,true);
 };
 window.SPM_SAVE_MODULE=async function({day,moduleKey,metricValue=null,metadata={}}){
  if(!S.planId||!S.user)throw new Error('No hay un plan activo para guardar esta práctica.');
  const payload={user_id:S.user.id,plan_id:S.planId,day_number:day,module_key:moduleKey,metric_value:metricValue,metadata:{...metadata,source:'premium-v2-live'},completed_at:new Date().toISOString()};
+ if(window.SPM_DAILY_PRACTICE)payload.module_key='resource:library:'+moduleKey;
  const {error}=await db.from('activity_completions').upsert(payload,{onConflict:'plan_id,day_number,module_key'});
  if(error)throw error;
+ if(window.SPM_DAILY_PRACTICE){msg('Práctica guardada. Completa tu jornada desde Hoy.','good');return {ok:true};}
  S.completed.add(day);
  const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent||0)===day);
  if(card){const done=card.querySelector('.doneBtn'),tag=card.querySelector('.tag');if(done)done.textContent='Completado ✓';if(tag)tag.textContent='Completado ✓'}

@@ -5,7 +5,31 @@ const $=s=>document?.querySelector(s),ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?`${c.userId}:${c.planId}`:'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let current='',view='entry',records={},loaded=false,loadError=false,generation=0,active=null;
-function restricted(c){return !c||c.safety!=='none'||c.flags?.length>0||c.checkins?.some(x=>x.new_safety_flag);}
+// A recommendation for review is not a blanket ban on educational work.
+// Keep the existing clinical flags; never clear them or change an assessment here.
+function safety(c){
+ if(!c)return 'unavailable';
+ const questions=window.ENGINE?.assessment?.questions||[];
+ if(c.safety==='urgent'||questions.some(q=>q.safety==='urgent'&&(c.flags?.includes(q.id)||c.answers?.[q.id]===true)))return 'urgent';
+ return (c.safety&&c.safety!=='none')||c.flags?.length||c.checkins?.some(x=>x.new_safety_flag===true)?'review':'none';
+}
+const educational=new Set(['baseline','context','checklist','review','progress','reassessment','script','planner','priorities','reframe','ifthen']);
+function restricted(c,id){
+ const level=safety(c);if(level==='unavailable'||level==='urgent')return true;
+ if(!id)return false;
+ const a=typeof id==='string'?assignments(c).find(x=>x.id===id):id;if(!a)return true;
+ if(a.kind==='wellness'&&a.tip.category==='movement'&&window.SPM_RESOURCES?.restricted?.(c)!==false)return true;
+ if(level==='none')return false;
+ return !(a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&educational.has(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement'));
+}
+function safetyNotice(c){
+ const level=safety(c);if(level==='none')return '';
+ const flags=Array.isArray(c?.flags)?c.flags:[],questions=window.ENGINE?.assessment?.questions||[];
+ const reasons=flags.map(id=>questions.find(q=>q.id===id)?.prompt_es||'Una respuesta de tu evaluación requiere revisión profesional.');
+ if(c?.checkins?.some(x=>x.new_safety_flag===true))reasons.push('En un seguimiento de este programa registraste una nueva señal de seguridad.');
+ if(!reasons.length)reasons.push('Tu evaluación guardada indica que conviene una revisión profesional.');
+ return `<aside class="notice ${level==='urgent'?'danger':'warn'}" data-daily-safety><b>${level==='urgent'?'Señal que requiere atención médica antes de practicar':'Revisión profesional recomendada'}</b><p>${level==='urgent'?'Las prácticas siguen en pausa. Consulta la indicación de tu Performance Map; la biblioteca educativa está disponible.':'Puedes abrir las revisiones, registros educativos y hábitos permitidos. Solo se pausan las prácticas que requieren aclarar esta señal.'}</p><details><summary>¿Por qué aparece este aviso?</summary><ul>${reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><p>Este aviso viene de tus respuestas guardadas, no de una restricción de acceso a la página.</p></details><button type="button" class="btn sec" data-daily-safety-map>Ver mi Performance Map</button> <button type="button" class="btn sec" data-daily-library>Biblioteca completa</button></aside>`;
+}
 function assignments(c=ctx()){
  if(!c||!Number.isInteger(Number(c.day))||c.day<1||c.day>28)return [];
  const day=Number(c.day),base=window.SPM_MODULES?.days?.find(x=>x.d===day);
@@ -29,8 +53,22 @@ function assignments(c=ctx()){
   else main={...main,kind:'confidence',title:'Confianza y atención · práctica de hoy',summary:'Abre la práctica interactiva de confianza y registra cómo respondes.'};
  }
  if(main.kind==='worksheet'){const resource={pelvic:'pelvic',arousal:'response',steps:'recovery',confidence:'confidence'}[base.interaction];if(resource)main={...main,kind:resource};}
- return [main,...support];
+ // The route-specific main lesson must not swallow the transverse curriculum.
+ // Reuse its original days and omit a second copy when the main lesson covers it.
+ const transverse={6:'pelvic',11:'recovery',13:'confidence',18:'worksheet',25:'recovery'}[day];
+ const deTool=c.primary==='erection'?window.SPM_DE_LIBRARY?.days?.()[day]?.tool:null;
+ const alreadyCovered=main.kind===transverse||(main.kind==='erection'&&['pelvic','recovery','confidence','partner','ifthen'].includes(deTool));
+ if(transverse&&!alreadyCovered&&['erection','ejaculation','desire'].includes(main.kind))support.push({id:`support-${transverse}`,kind:transverse,title:base.title_es,summary:base.practice_es,lesson:base});
+ // The approved agenda offers pelvic work conditionally on 12/19/24;
+ // day 24 uses the scheduled control session for the ejaculation route.
+ if([12,19,24].includes(day)&&!(day===24&&c.primary==='ejaculation'))support.push({id:'support-pelvic',kind:'pelvic',title:'Piso pélvico · conciencia y relajación',summary:'Abre la práctica breve adaptada a tu perfil. Sigue la indicación del laboratorio; no añadas fortalecimiento por tu cuenta.',optional:true,optionalLabel:'APOYO SEGÚN TU PERFIL · OPCIONAL'});
+ // Review/checkpoint days stay light, including when a non-urgent flag is present.
+ if(safety(c)==='review'&&[7,14,21,28].includes(day)&&main.kind!=='ep-checkpoint')main={id:'main',kind:'worksheet',title:base.title_es,summary:base.practice_es,lesson:base};
+ const tip=window.SPM_WELLNESS_DAILY_TIP_V1?.tipFor(day);
+ const wellness=tip?[{id:`wellness-${tip.category}`,kind:'wellness',title:`${tip.label} · ${tip.title}`,summary:tip.body,tip,optional:true}]:[];
+ return [main,...support,...wellness];
 }
+function recordComplete(a){const r=records[a.id];return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind);}
 function focus(el){if(!el)return;el.tabIndex=-1;el.style.scrollMarginTop=(Math.ceil($('.top')?.getBoundingClientRect().height||0)+16)+'px';el.scrollIntoView({behavior:'instant',block:'start'});el.focus({preventScroll:true});}
 function status(text,error=false){const el=$('#spmDailyStatus');if(el){el.textContent=text;el.classList.toggle('error',error);}}
 function layout(){
@@ -45,16 +83,29 @@ function layout(){
 }
 function render(){
  layout();const host=$('#spmDailySession'),c=ctx();if(!host)return;if(!c){host.replaceChildren();return;}
- const tip=window.SPM_WELLNESS_DAILY_TIP_V1?.tipFor(Number(c.day));
- const items=assignments(c),done=items.filter(a=>records[a.id]?.completed===true).length,paused=restricted(c);
- const signature=JSON.stringify([current,c.primary,c.secondary,c.safety,c.flags,c.checkins?.some(x=>x.new_safety_flag),loaded,loadError,records,c.completed]);
+ const items=assignments(c),required=items.filter(a=>!a.optional),done=required.filter(recordComplete).length;
+ const paused=restricted(c),pending=required.some(a=>restricted(c,a));
+ const signature=JSON.stringify([current,c.primary,c.secondary,c.safety,c.flags,c.checkins,items.map(a=>[a.id,restricted(c,a)]),loaded,loadError,records,c.completed]);
  if(host.dataset.signature===signature)return;host.dataset.signature=signature;
- host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Estas son tus actividades de hoy</h2><p>Abre cada actividad y vuelve aquí al terminar. ${done} de ${items.length} registradas.</p>${paused?'<p class="notice warn">La práctica está en pausa por la indicación de seguridad de tu programa. Puedes consultar el contenido educativo en la Biblioteca.</p>':''}<div class="spm-daily-activities">${items.map((a,i)=>`<article class="spm-daily-activity" data-activity="${esc(a.id)}"><span class="spm-daily-number">${i+1}</span><div><small>${i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'}${a.minutes?' · '+a.minutes+' min':''}</small><h3>${esc(a.title)}</h3><p>${esc(a.summary)}</p><div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}" ${paused?'disabled':''}>${records[a.id]?.completed?'Volver a abrir':'Abrir actividad'} →</button>${records[a.id]?.completed?'<span class="spm-daily-saved">Registrada ✓</span>':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${paused||!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`).join('')}</div><div id="spmDailyWorkspace"></div>${tip?`<aside class="spm-daily-work"><small>BIENESTAR · ${esc(tip.label)} · OPCIONAL</small><h3>${esc(tip.title)}</h3><p>${esc(tip.body)}</p></aside>`:''}<div class="spm-daily-footer"><button type="button" class="btn pri" id="spmDailyComplete" ${paused||!loaded||done!==items.length||!items.length||c.completed?.includes(Number(c.day))?'disabled':''}>${c.completed?.includes(Number(c.day))?'Día completado ✓':`Completar día ${c.day}`}</button><button type="button" class="btn sec" id="spmDailyCoach">Registrar cómo fue hoy</button></div><p id="spmDailyStatus" role="status">${loadError?'No pudimos recuperar tus registros. Reintenta antes de completar el día.':loaded?'El día avanza cuando eliges completarlo.':'Recuperando tus actividades guardadas…'}</p>${loadError?'<button type="button" class="btn sec" id="spmDailyRetry">Reintentar</button>':''}`;
+ host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Estas son tus actividades de hoy</h2><p>Abre cada actividad y vuelve aquí al terminar. ${done} de ${required.length} prácticas registradas. El hábito de bienestar es opcional.</p>${safetyNotice(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
+  const blocked=restricted(c,a),saved=recordComplete(a);
+  return `<article class="spm-daily-activity" data-activity="${esc(a.id)}"><span class="spm-daily-number">${i+1}</span><div><small>${a.optional?esc(a.optionalLabel||'BIENESTAR · OPCIONAL'):i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'}${a.minutes?' · '+a.minutes+' min':''}</small><h3>${esc(a.title)}</h3><p>${esc(blocked?'La práctica requiere revisar primero la indicación de seguridad. Puedes consultar el motivo y el contenido educativo.':a.summary)}</p><div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}">${blocked?'Ver indicación y opciones':saved?'Volver a abrir':'Abrir actividad'} →</button>${blocked?'<span class="spm-daily-paused">Práctica en pausa</span>':saved?'<span class="spm-daily-saved">Registrada ✓</span>':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`;
+ }).join('')}</div><div id="spmDailyWorkspace"></div><div class="spm-daily-footer"><button type="button" class="btn pri" id="spmDailyComplete" ${paused||pending||!loaded||done!==required.length||!required.length||c.completed?.includes(Number(c.day))?'disabled':''}>${c.completed?.includes(Number(c.day))?'Día completado ✓':`Completar día ${c.day}`}</button><button type="button" class="btn sec" id="spmDailyCoach">Registrar cómo fue hoy</button></div><p id="spmDailyStatus" role="status">${loadError?'No pudimos recuperar tus registros. Reintenta antes de completar el día.':loaded?'El día avanza cuando completas las prácticas asignadas y eliges completarlo.':'Recuperando tus actividades guardadas…'}</p>${loadError?'<button type="button" class="btn sec" id="spmDailyRetry">Reintentar</button>':''}`;
  host.querySelectorAll('[data-daily-open]').forEach(b=>b.onclick=()=>launch(b.dataset.dailyOpen));
  host.querySelectorAll('[data-daily-confirm]').forEach(b=>b.onclick=()=>confirmActivity(b.dataset.dailyConfirm));
+ bindSafety(host);
  $('#spmDailyCoach').onclick=()=>{const select=$('#coachDay');if(select)select.value=String(ctx().day);$('#navCoach')?.click();};
  $('#spmDailyRetry')?.addEventListener('click',()=>load(true));
  $('#spmDailyComplete').onclick=complete;
+}
+function bindSafety(root){
+ root.querySelectorAll('[data-daily-safety-map]').forEach(b=>b.onclick=()=>$('#navMap')?.click());
+ root.querySelectorAll('[data-daily-library]').forEach(b=>b.onclick=library);
+}
+function pausedActivity(a){
+ const box=$('#spmDailyWorkspace'),c=ctx();
+ box.innerHTML=`<section class="spm-daily-work"><h3>${esc(a.title)}</h3><p>Esta práctica está en pausa. Abrir la biblioteca no elimina la indicación de seguridad.</p>${safetyNotice(c)||'<p>Movimiento mantiene su revisión de seguridad antes de iniciar o registrar actividad física.</p>'}<button type="button" class="btn sec" data-daily-library>Consultar biblioteca educativa</button></section>`;
+ bindSafety(box);focus(box);
 }
 async function load(force=false){
  const c=ctx(),key=c?`${scopeOf(c)}:${c.day}`:'';
@@ -68,17 +119,29 @@ async function load(force=false){
 function open({focus:shouldFocus=true}={}){view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
 function library(){view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
- const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c))throw Error('La sesión o su indicación de seguridad ha cambiado.');
- if(!assignments(c).some(a=>a.id===id))throw Error('Esta actividad no está asignada hoy.');
+ const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
+ const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');data={...data,activityKind:activity.kind};
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
  if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');}
  return {ok:true};
 }
 function confirmActivity(id){
- const a=assignments().find(x=>x.id===id),box=$('#spmDailyWorkspace');if(!a||!box||restricted(ctx()))return;
+ const a=assignments().find(x=>x.id===id),box=$('#spmDailyWorkspace');if(!a||!box||restricted(ctx(),a))return;
  const captured=scopeOf(ctx()),day=Number(ctx().day);
  box.innerHTML=`<form class="spm-daily-work"><h3>${esc(a.title)}</h3><label><input type="checkbox" required> Confirmo que realicé esta actividad hoy.</label><p class="micro">Abrir una actividad no la marca como completada.</p><button type="submit" class="btn pri">Guardar actividad</button><p role="status"></p></form>`;
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');b.disabled=true;try{await saveActivity(id,{confirmed:true},captured,day);}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Reintenta; el día no ha avanzado.';}};focus(box);
+}
+function wellness(a){
+ const box=$('#spmDailyWorkspace'),captured=scopeOf(ctx()),day=Number(ctx().day),prior=records[a.id]||{};
+ box.innerHTML=`<form class="spm-daily-work" data-wellness-session><span class="stepBadge">${esc(a.tip.label)} · Día ${day} · <span data-wellness-step>1 de 3</span></span><h3>${esc(a.tip.title)}</h3><section data-wellness-panel="0"><h4>Tu acción de hoy</h4><p>${esc(a.tip.body)}</p><p>Hoy trabaja solo esta acción. Puedes consultar el programa completo en la biblioteca.</p></section><section data-wellness-panel="1" hidden><h4>Hazlo concreto</h4><label>¿Cómo lo llevarás a tu día?<textarea name="intention" rows="2" maxlength="1000" placeholder="Elige un momento o una oportunidad concreta…">${esc(prior.intention)}</textarea></label><p>Adapta la acción a tu situación y a las indicaciones de tu profesional.</p></section><section data-wellness-panel="2" hidden><h4>Registra tu experiencia</h4><label>¿Qué hiciste o qué observaste?<textarea name="reflection" rows="2" maxlength="1000">${esc(prior.reflection)}</textarea></label><label><input name="confirmed" type="checkbox"> Ya realicé esta acción.</label><p>Si aún no la has hecho, vuelve a Hoy y regístrala después.</p></section><div class="spm-daily-actions"><button type="button" class="btn sec" data-wellness-prev hidden>Anterior</button><button type="button" class="btn pri" data-wellness-next>Siguiente</button><button type="submit" class="btn pri" hidden>Guardar y volver a Hoy</button><button type="button" class="btn sec" data-wellness-return>Volver a Hoy</button></div><button type="button" class="btn sec" data-wellness-library>Consultar biblioteca de ${esc(a.tip.label)}</button><p role="status"></p></form>`;
+ const form=box.querySelector('form');let step=0;
+ const show=()=>{form.querySelectorAll('[data-wellness-panel]').forEach(p=>p.hidden=Number(p.dataset.wellnessPanel)!==step);form.querySelector('[data-wellness-step]').textContent=`${step+1} de 3`;form.querySelector('[data-wellness-prev]').hidden=step===0;form.querySelector('[data-wellness-next]').hidden=step===2;form.querySelector('[type=submit]').hidden=step!==2;};
+ form.querySelector('[data-wellness-next]').onclick=()=>{step=Math.min(2,step+1);show();};
+ form.querySelector('[data-wellness-prev]').onclick=()=>{step=Math.max(0,step-1);show();};
+ form.querySelector('[data-wellness-return]').onclick=()=>{box.replaceChildren();focus($('#spmDailySession'));};
+ form.querySelector('[data-wellness-library]').onclick=()=>{if(a.tip.category==='sleep')window.SPM_SLEEP_LIBRARY_V1?.open({origin:'dailyPlan',tip:a.tip.sleepTipId});else window.SPM_RESOURCES?.open(a.tip.category,day,{origin:'dailyPlan'});};
+ form.onsubmit=async e=>{e.preventDefault();const status=form.querySelector('[role=status]');if(!form.querySelector('[name=confirmed]').checked){status.textContent='Confirma la acción solo después de realizarla.';return;}const b=form.querySelector('[type=submit]');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{intention:fields.get('intention'),reflection:fields.get('reflection'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;status.textContent='No se pudo guardar. Revisa tu conexión o la indicación de seguridad y reintenta.';}};
+ focus(box);
 }
 function worksheet(a){
  const box=$('#spmDailyWorkspace'),d=a.lesson,prior=records[a.id]||{},captured=scopeOf(ctx()),day=Number(ctx().day);
@@ -86,7 +149,7 @@ function worksheet(a){
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{reflection:fields.get('reflection'),measure:fields.get('measure'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; reintenta.';}};focus(box);
 }
 async function launch(id){
- const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a||restricted(c))return;
+ const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a)return;if(restricted(c,a)){pausedActivity(a);return;}
  active={id,scope:scopeOf(c),day:Number(c.day)};
  try{
   if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
@@ -97,11 +160,12 @@ async function launch(id){
   else if(a.kind==='pelvic')await window.SPM_PELVIC_LAB.open({origin:'dailyPlan',day:Number(c.day)});
   else if(a.kind==='breathing')await window.SPM_BREATHING_LAB.open({origin:'dailyPlan',day:Number(c.day)});
   else if(a.kind==='sensate')await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day:Number(c.day)});
+  else if(a.kind==='wellness')wellness(a);
   else worksheet(a);
  }catch{status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
 }
 async function complete(){
- const c=ctx(),items=assignments(c);if(!loaded||restricted(c)||!items.length||items.some(a=>!records[a.id]?.completed))return;
+ const c=ctx(),items=assignments(c).filter(a=>!a.optional);if(!loaded||restricted(c)||!items.length||items.some(a=>restricted(c,a)||!recordComplete(a)))return;
  const b=$('#spmDailyComplete');b.disabled=true;status('Guardando tu día…');
  try{await window.SPM_COMPLETE_DAILY_PRACTICE(Number(c.day),scopeOf(c));await load(true);status(Number(c.day)===28?'Ciclo inicial completado. Revisa tu progreso y la recomendación de continuidad.':`Día ${c.day} guardado. Tu siguiente sesión está preparada.`);focus($('#spmDailySession'));}
  catch{b.disabled=false;status('No se pudo completar el día. Reintenta; tus actividades permanecen guardadas.',true);}
@@ -118,7 +182,7 @@ window.addEventListener('pagehide',()=>{generation++;});
 window.addEventListener('spm:resourcecontext',()=>load());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,active:()=>active,restricted};
+window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
 layout();load();
 })();
