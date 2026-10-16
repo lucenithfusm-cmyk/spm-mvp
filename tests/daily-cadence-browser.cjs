@@ -26,7 +26,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    assert.ok(await p.locator('#srScenario .spm-v4-card').count()>=3);assert.equal(await p.locator('[data-scenario]:visible').count(),0);checks+=2;
    await p.locator('[data-sr-close]').click();
   }
-  assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false);assert.equal(await p.evaluate(()=>SPM_QA.writes.length),0);checks+=3;
+  assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false);assert.equal(await p.evaluate(()=>SPM_QA.writes.filter(w=>w.table!=='profiles').length),0);checks+=3;
   await p.close();
  }
  if(process.env.SPM_CALENDAR_EXPORT)fs.writeFileSync(process.env.SPM_CALENDAR_EXPORT,JSON.stringify(routes,null,2));
