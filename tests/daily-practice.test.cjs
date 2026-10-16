@@ -125,3 +125,16 @@ test('all seven recovery stories and the approved weekly frequencies are real as
 test('recovery completion retains the assigned scenario for day-specific tracking',async()=>{
  const h=harness('ejaculation',11);try{await wait();const a=h.w.SPM_DAILY_PRACTICE.assignments().find(a=>a.kind==='recovery');await h.w.SPM_DAILY_PRACTICE.saveActivity(a.id,{confirmed:true});assert.equal(h.writes[0][1].scenario,'early');}finally{h.close()}
 });
+
+test('erection Desire is twice weekly, or three times for expressed low Desire, without changing shared cadence',async()=>{
+ const h=harness();try{await wait();
+ for(const profile of [{secondary:null,motives:['erection'],answers:{}},{secondary:'desire',motives:['erection'],answers:{}},{secondary:null,motives:['erection','desire'],answers:{}},{secondary:null,motives:['erection'],answers:{d_desire:2}},{secondary:null,motives:['erection'],answers:{h_medeffect:'desire'}}]){
+ const rows=Array.from({length:28},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,...profile,day:i+1}));
+ const high=profile.secondary==='desire'||profile.motives.includes('desire')||profile.answers.d_desire===2||profile.answers.h_medeffect==='desire';
+ assert.deepEqual(rows.flatMap((a,i)=>a.some(x=>x.kind==='desire')?[i+1]:[]),high?[2,5,7,10,11,12,15,17,21,22,25,26]:[2,5,10,12,15,17,22,26]);
+ for(let w=0;w<4;w++)assert.equal(rows.slice(w*7,w*7+7).filter(a=>a.some(x=>x.kind==='desire')).length,high?3:2);
+ assert.ok(rows.every(a=>a.length<=5));
+ assert.deepEqual(rows.flatMap((a,i)=>a.some(x=>x.id==='de-confidence-'+(i+1))?[i+1]:[]),[7,14,21,28]);
+ }
+ }finally{h.close()}
+});
