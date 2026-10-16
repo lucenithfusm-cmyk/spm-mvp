@@ -18,7 +18,7 @@ jobs:
       - run: npm run typecheck --prefix labs/sensate && npm run build --prefix labs/sensate
       - run: git diff --exit-code -- premium-v2/breathing-lab premium-v2/sensate-lab
       - run: npx --prefix labs/breathing vitest run --root labs/breathing
-      - run: node --test tests/breathing-lab-bridge.test.cjs tests/sensate-lab-bridge.test.cjs tests/desire-lab-bridge.test.cjs tests/daily-support-plan.test.cjs tests/daily-entry.test.cjs
+      - run: node --test tests/breathing-lab-bridge.test.cjs tests/sensate-lab-bridge.test.cjs tests/desire-lab-bridge.test.cjs tests/daily-support-plan.test.cjs tests/daily-entry.test.cjs tests/daily-practice.test.cjs
       - run: npm install --prefix /tmp/spm-browser-qa playwright@1.62.1 --no-audit --no-fund
       - name: Verify daily activities and synchronized video in a real browser
         env:
@@ -30,3 +30,4 @@ jobs:
           trap 'kill "$spm_server_pid" 2>/dev/null || true' EXIT
           node tests/breathing-lab-browser.cjs
           node tests/daily-entry-browser.cjs
+          node tests/daily-practice-browser.cjs

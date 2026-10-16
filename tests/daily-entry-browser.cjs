@@ -15,9 +15,12 @@ const fixture=fs.readFileSync(path.join(__dirname,'returning-user-fixture.js'),'
   assert.equal(await page.locator('[data-desire-daily]').count(),primary==='desire'?1:0);assert.equal(await page.locator('.dayCard .spmPlay[data-key="dr-low-desire"]').count(),0);assert.ok(await page.locator('#spmDesireLabEntry button').count());checks+=3;
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false);checks++;
   await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await cta.evaluate(b=>getComputedStyle(b,'::before').animationName),'none');checks++;
-  // Cross-week navigation: return from week 1 directly to the actual day in week 2.
-  await page.locator('.phaseBtn').first().click();await cta.click();await page.waitForFunction(()=>document.activeElement?.classList.contains('dayCard'));
-  const current=page.locator('.spm-current-day');assert.equal(await current.locator('.dayNum').textContent(),'12');assert.ok((await current.getAttribute('class')).includes('open'));checks+=2;
+  // The CTA opens actionable daily tasks, not the legacy text accordion.
+  await cta.click();await page.waitForFunction(()=>document.activeElement?.id==='spmDailySession');
+  const current=page.locator('#spmDailySession');assert.ok((await current.textContent()).includes('DÍA 12'));assert.ok(await current.locator('[data-daily-open]').count());checks+=2;
+  assert.equal(await page.locator('#dayGrid').isVisible(),false);checks++;
+  await page.locator('[data-daily-view="library"]').click();assert.equal(await page.locator('#spmDesireLabEntry').isVisible(),true);checks++;
+  await page.locator('[data-daily-view="today"]').click();
   const actualDay=await page.evaluate(()=>SPM_RESOURCE_CONTEXT().day);assert.equal(actualDay,12);assert.equal(await page.evaluate(()=>SPM_RESOURCE_CONTEXT().completed.length),0);assert.deepEqual(errors,[]);checks+=3;
   await page.close();
  }

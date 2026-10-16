@@ -38,6 +38,25 @@ window.SPM_RESOURCE_CONTEXT=()=>{
  if(!S.planId||!S.map)return null;
  return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,secondary:S.map.secondary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
 };
+// Each daily activity is saved separately; resource rows never advance the 28-day plan.
+window.SPM_DAILY_RECORDS={
+ async read(expectedScope,day){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId)throw Error('Program changed');
+  const {data,error}=await db.from('activity_completions').select('module_key,metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('day_number',day).like('module_key','resource:daily_activity:%');
+  if(error)throw error;
+  return Object.fromEntries((data||[]).map(r=>[r.module_key.slice('resource:daily_activity:'.length),r.metadata]));
+ },
+ async save(id,metadata,expectedScope,day){
+  const c=window.SPM_RESOURCE_CONTEXT();
+  if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
+  if(!/^[a-z0-9-]{1,60}$/.test(id)||!metadata||JSON.stringify(metadata).length>25000)throw Error('Invalid activity');
+  if(window.SPM_DAILY_PRACTICE?.restricted(c))throw Error('Practice paused');
+  const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:daily_activity:'+id,metadata,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
+  if(error)throw error;
+  return {ok:true};
+ }
+};
 window.SPM_RESOURCE_RECORDS={
  async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
  async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
@@ -298,14 +317,29 @@ function renderPlan(){
  const ph=(M.phases||[]).find(x=>x.id===S.phase)||{days:[1,2,3,4,5,6,7],name_es:'Fase 1',intro_es:'Construye una línea de base segura.'};$('weekIntro').innerHTML=`<b>${ph.name_es}</b> · ${ph.intro_es}`;
  const g=$('dayGrid');g.innerHTML='';M.days.filter(x=>ph.days.includes(x.d)).forEach(day=>{const c=document.createElement('div');c.className='dayCard';const done=S.completed.has(day.d);
  c.innerHTML=`<div class="dayTop"><div class="dayNum">${day.d}</div><div><h4>${day.title_es}</h4><p>${(day.learn_es||'').slice(0,105)}…</p></div><span class="tag">${done?'Completado ✓':label(S.map.primary)}</span></div><div class="dayBody"><div class="lessonFlow"><div class="lesson"><b>Aprender</b><p>${day.learn_es||''}</p></div><div class="lesson"><b>Practicar</b><p>${day.practice_es||'Practica la habilidad principal del día sin convertirla en una prueba de desempeño.'}</p></div><div class="lesson"><b>Medir</b><p>${day.measure_es||'Registra tu experiencia de 0 a 10.'}</p></div><div class="lesson"><b>Aplicar</b><p>${day.apply_es||'Aplica la habilidad en un contexto seguro y sin presión.'}</p></div><div class="lesson"><b>Completar</b><p>${day.complete_es||'Marca la práctica al finalizar.'}</p></div></div><div class="interactive"><button class="btn pri doneBtn">${done?'Completado ✓':'Marcar práctica como completada'}</button></div></div>`;
- c.querySelector('.dayTop').onclick=()=>c.classList.toggle('open');c.querySelector('.doneBtn').onclick=()=>completeDay(day.d,c);g.appendChild(c)});
+ c.querySelector('.dayTop').onclick=()=>c.classList.toggle('open');c.querySelector('.doneBtn').onclick=()=>completeDay(day.d,c).catch(e=>msg(e.message,'danger'));g.appendChild(c)});
 }
 async function completeDay(day,card){
- if(!S.planId)return;const exists=S.completed.has(day);if(!exists){const {error}=await db.from('activity_completions').insert({user_id:S.user.id,plan_id:S.planId,day_number:day,module_key:'daily_practice',metadata:{source:'premium-v2-live'}});if(error){msg(error.message,'danger');return}S.completed.add(day)}
- card.querySelector('.doneBtn').textContent='Completado ✓';card.querySelector('.tag').textContent='Completado ✓';
- const next=Math.min(28,Math.max(...S.completed,1)+1);await db.from('plans').update({current_day:next}).eq('id',S.planId);renderProgress();msg(`Día ${day} guardado correctamente.`,'good');
+ if(!S.planId||!S.user)throw Error('No hay un plan activo.');
+ const uid=S.user.id,pid=S.planId;
+ const {error}=await db.from('activity_completions').upsert({user_id:uid,plan_id:pid,day_number:day,module_key:'daily_practice',metadata:{source:'premium-v2-live'}},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;
+ const next=Math.min(28,Math.max(...S.completed,day,1)+1);
+ const update=await db.from('plans').update({current_day:next}).eq('id',pid).eq('user_id',uid);if(update.error)throw update.error;
+ if(S.user?.id!==uid||S.planId!==pid)throw Error('Program changed');
+ S.completed.add(day);
+ if(window.SPM_RESTORED_CONTEXT?.plan?.id===pid){window.SPM_RESTORED_CONTEXT.done=S.completed;window.SPM_RESTORED_CONTEXT.plan.current_day=next;}
+ if(card){card.querySelector('.doneBtn').textContent='Completado ✓';card.querySelector('.tag').textContent='Completado ✓';}
+ renderProgress();msg(`Día ${day} guardado correctamente.`,'good');
  window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+ return {ok:true};
 }
+window.SPM_COMPLETE_DAILY_PRACTICE=async(day,expectedScope)=>{
+ const c=window.SPM_RESOURCE_CONTEXT();
+ if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
+ if(window.SPM_DAILY_PRACTICE?.restricted(c))throw Error('Practice paused');
+ const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent)===day);
+ return completeDay(day,card);
+};
 window.SPM_SAVE_MODULE=async function({day,moduleKey,metricValue=null,metadata={}}){
  if(!S.planId||!S.user)throw new Error('No hay un plan activo para guardar esta práctica.');
  const payload={user_id:S.user.id,plan_id:S.planId,day_number:day,module_key:moduleKey,metric_value:metricValue,metadata:{...metadata,source:'premium-v2-live'},completed_at:new Date().toISOString()};
