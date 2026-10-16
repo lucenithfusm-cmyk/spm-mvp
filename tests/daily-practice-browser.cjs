@@ -54,7 +54,7 @@ const fixture=fs.readFileSync(path.join(__dirname,'support/daily-fixture.js'),'u
   const before=await p.evaluate(()=>SPM_QA.writes.length);assert.equal(await p.evaluate(async()=>{try{await SPM_DAILY_PRACTICE.saveActivity('main');return false;}catch{return true;}}),true);assert.equal(await p.evaluate(()=>SPM_QA.writes.length),before);checks+=2;
   await p.close();
   // Day 28 remains capped and records closure only once.
-  const end=await pageFor('lifestyle',28);await confirm(end,'main');await end.locator('#spmDailyComplete').click();await end.waitForFunction(()=>SPM_RESOURCE_CONTEXT().completed.includes(28));assert.equal(await end.evaluate(()=>SPM_RESOURCE_CONTEXT().day),28);checks++;
+  const end=await pageFor('lifestyle',28);await confirm(end,'main');await confirm(end,'route-video-mental-preparation');await end.locator('#spmDailyComplete').click();await end.waitForFunction(()=>SPM_RESOURCE_CONTEXT().completed.includes(28));assert.equal(await end.evaluate(()=>SPM_RESOURCE_CONTEXT().day),28);checks++;
   await end.close();console.log(`${checks} daily-practice browser checks passed.`);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

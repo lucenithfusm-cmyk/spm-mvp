@@ -15,7 +15,7 @@ const assert=require('node:assert/strict');
    const iframe=page.locator(`.spm-${lab}-modal iframe`),frame=await (await iframe.elementHandle()).contentFrame();
    if(lab==='desire')await frame.getByRole('button',{name:'Biblioteca',exact:true}).first().click();
    await frame.waitForSelector(`[data-program-videos="${lab}"] video`);
-   assert.equal(await frame.locator(`[data-program-videos="${lab}"] video`).count(),lab==='sensate'?4:1);checks++;
+   assert.equal(await frame.locator(`[data-program-videos="${lab}"] video`).count(),lab==='sensate'?4:8);checks++;
    assert(await frame.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));checks++;
    // An actual shared resource must resolve from the parent base, never the nested lab folder.
    assert.match(await frame.locator('[data-video-key="sensory-focus"] video').getAttribute('src'),/spm-media\/videos\/sensory-focus.mp4$/);checks++;
@@ -24,25 +24,31 @@ const assert=require('node:assert/strict');
    await page.evaluate(lab=>window[lab==='sensate'?'SPM_SENSATE_LAB':'SPM_DESIRE_LAB'].flush(),lab);
    const writesBeforeVideo=await page.evaluate(()=>testWrites.length);
    const video=frame.locator('[data-video-key="sensory-focus"] video');
-   await video.evaluate(v=>v.play());
-   await frame.waitForFunction(()=>document.querySelector('[data-video-key="sensory-focus"] video').currentTime>0);
+   const h264=await video.evaluate(v=>!!v.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'));
+   assert.ok(h264||!process.env.CI,'Chrome CI must verify real video playback');
+   if(h264){await video.evaluate(v=>v.play());await frame.waitForFunction(()=>document.querySelector('[data-video-key="sensory-focus"] video').currentTime>0);}
    assert.equal(await page.evaluate(()=>testWrites.length),writesBeforeVideo);checks++;
    await page.evaluate(lab=>window[lab==='sensate'?'SPM_SENSATE_LAB':'SPM_DESIRE_LAB'].close(),lab);
   }
   await page.evaluate(()=>SPM_EJACULATORY_CONTROL.open(12));
   await page.waitForSelector('#ecProgram [data-program-videos="ejaculation"]');
-  assert.equal(await page.locator('#ecProgram [data-video-key]').count(),3);checks++;
+  assert.equal(await page.locator('#ecProgram [data-video-key]').count(),7);checks++;
   await page.locator('.ecClose').click();
   for(const day of (width===390?Array.from({length:28},(_,i)=>i+1):[12])){
    await page.evaluate(day=>SPM_ERECTILE_FUNCTION.open(day,{origin:'dailyPlan'}),day);
-   assert.equal(await page.locator('#spmDeModal [data-video-key]').count(),5);checks++;
+   assert.equal(await page.locator('#spmDeModal [data-video-key]').count(),0);checks++;
    assert.equal(await page.locator('#deKicker').textContent(),`Día ${day} de 28`);checks++;
   }
+  await page.evaluate(()=>SPM_ERECTILE_FUNCTION.open(12,{origin:'library'}));
+  assert.equal(await page.locator('#spmDeModal [data-video-key]').count(),10);checks++;
   await page.locator('.deClose').click();
   await page.evaluate(()=>SPM_RESOURCES.open('confidence',12));
   await page.waitForSelector('[data-program-videos="anxiety"]');
-  assert.equal(await page.locator('[data-program-videos="anxiety"] video').count(),5);checks++;
+  assert.equal(await page.locator('[data-program-videos="anxiety"] video').count(),7);checks++;
   const sr=page.locator('.sr-dialog');assert(await sr.evaluate(e=>e.scrollWidth<=e.clientWidth+2));checks++;
+  await page.locator('[data-sr-close]').click();
+  await page.evaluate(()=>SPM_RESOURCES.open('confidence',12,{origin:'dailyPlan'}));
+  assert.equal(await page.locator('[data-program-videos="anxiety"] video').count(),0);checks++;
   await page.locator('[data-sr-close]').click();
   assert.equal(await page.evaluate(()=>JSON.stringify(testContext)),before);checks++;
   assert(await page.evaluate(()=>testWrites.every(x=>Object.keys(x).every(k=>k.startsWith('spm-')))));checks++;

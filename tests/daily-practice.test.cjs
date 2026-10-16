@@ -14,14 +14,14 @@ function harness(primary='erection',day=12){
  w.SPM_EJACULATORY_CONTROL={schedule:{1:{tech:'startstop',week:1,session:1},12:{tech:'squeeze',week:2,session:3}},open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
+ for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
  return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
    h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=4);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
-   if(route==='erection')assert.equal(items[0].kind,'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.ok(!items.some(x=>x.kind==='desire'));
+   if(route==='erection')assert.equal(items[0].kind,'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
  }
@@ -45,7 +45,7 @@ test('wellness rotates over 28 days while the primary and scheduled supports sta
  for(let day=1;day<=28;day++){
   const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day}),well=items.filter(a=>a.kind==='wellness');
   assert.equal(well.length,1);assert.equal(well[0].optional,true);counts[well[0].tip.category]++;
-  if(day%7===0)assert.equal(items.filter(a=>!a.optional).length,1);
+  if(day%7===0)assert.equal(items.filter(a=>!a.optional).length,2);
  }
  assert.deepEqual(counts,{nutrition:10,movement:9,sleep:9});
  for(const [day,kind] of [[6,'pelvic'],[11,'recovery'],[13,'confidence'],[18,'worksheet'],[25,'recovery']]){
@@ -83,6 +83,26 @@ test('conditional pelvic sessions retain the original agenda days and the EP day
  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [12,19,24]){
   const pelvic=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}).filter(a=>a.kind==='pelvic');
   assert.equal(pelvic.length,primary==='ejaculation'&&day===24?0:1);assert.ok(pelvic.every(a=>a.optional));
+ }
+ }finally{h.close()}
+});
+
+test('all routes schedule short videos; mixed Desire support never replaces the primary session',async()=>{
+ const h=harness('desire');try{await wait();
+ for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle','anxiety','optimization','mixed']){
+  const days=Array.from({length:28},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day:i+1}));
+  assert.deepEqual(days.flatMap((items,i)=>items.some(a=>a.kind==='video')?[i+1]:[]),[1,2,7,9,14,18,21,28]);
+  assert.ok(days.flat().filter(a=>a.kind==='video').every(a=>h.w.SPM_VIDEO_LIBRARY.some(v=>v.key===a.videoKey)));
+  for(const day of [5,15,22]){
+   const c={...h.c,primary,day},items=h.w.SPM_DAILY_PRACTICE.assignments(c);
+   assert.equal(items.filter(a=>a.kind==='desire').length,1);
+   if(!['erection','desire'].includes(primary)){
+    assert.notEqual(items[0].kind,'desire');
+    assert.equal(h.w.SPM_DAILY_PRACTICE.assignments({...c,secondary:null,motives:[primary]}).some(a=>a.kind==='desire'),false);
+   }
+  }
+  assert.ok(days[10].some(a=>a.kind==='recovery'));
+  assert.ok(days[24].some(a=>a.kind==='recovery'));
  }
  }finally{h.close()}
 });
