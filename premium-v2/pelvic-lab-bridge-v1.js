@@ -80,7 +80,7 @@ function showLab(){
   getState:()=>token===generation?clone(state):{},write:(k,v)=>token===generation&&write(k,v),close:()=>token===generation?close():Promise.resolve(false),
   getContext:()=>({day:openDay,origin,restriction:token===generation?restriction(ctx(),state):'review'}),
  };
- const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261003-pf1';
+ const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261016-today1';
  modal.querySelector('[data-pf-body]').replaceChildren(frame);
 }
 async function open(opts={}){if(await load(opts))showLab();}
