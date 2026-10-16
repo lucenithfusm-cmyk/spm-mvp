@@ -15,7 +15,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    const p=await pageFor(primary,1,[390,768,1440][i%3]);
    const matrix=await p.evaluate(()=>{const c=SPM_RESOURCE_CONTEXT();return Array.from({length:28},(_,i)=>{const day=i+1,items=SPM_DAILY_PRACTICE.assignments({...c,day});return {items,agenda:SPM_DAILY_AGENDA_ITEMS(day)};});});
    for(const [index,{items,agenda}] of matrix.entries()){
-    assert.ok(items.length>=2&&items.length<=4);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);
+    assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);
     assert.equal(items.find(a=>a.kind==='wellness').tip.category,['nutrition','movement','sleep'][index%3]);assert.ok(items.every(a=>agenda.some(text=>text.startsWith(a.title))));checks+=6;
     if(baseline){assert.deepEqual(items.filter(a=>!a.id.startsWith('route-')),baseline[primary][index]);checks++;}
    }
@@ -57,7 +57,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   await mixed.locator('[data-daily-open="route-desire-5"]').click();const f=mixed.frameLocator('.spm-desire-modal iframe');await f.getByRole('heading',{name:'Mapa de aceleradores y frenos',exact:true}).waitFor();
   assert.equal(await mixed.evaluate(()=>SPM_DESIRE_LAB_HOST.getContext().day),5);assert.equal(await f.locator('.dz-tabs button').count(),1);assert.equal(await mixed.evaluate(()=>SPM_RESOURCE_CONTEXT().primary),'ejaculation');checks+=3;
   await mixed.locator('[data-desire-close]').click();await mixed.locator('.spm-desire-modal').waitFor({state:'detached'});await finish(mixed);
-  const recovery=await pageFor('ejaculation',25);await recovery.locator('[data-daily-open="route-recovery-25"]').click();await recovery.locator('#srScenario .sr-scene').waitFor();assert.equal(await recovery.locator('[data-scenario="next"]').isVisible(),false);assert.equal(await recovery.evaluate(()=>SPM_RESOURCE_CONTEXT().day),25);checks+=2;await finish(recovery);
+  const recovery=await pageFor('ejaculation',25);await recovery.locator('[data-daily-open="recovery-next"]').click();await recovery.locator('#srScenario .sr-scene').waitFor();assert.equal(await recovery.locator('[data-scenario="next"]').isVisible(),false);assert.equal(await recovery.evaluate(()=>SPM_RESOURCE_CONTEXT().day),25);checks+=2;await finish(recovery);
   console.log(`${checks} resource checks passed across all 168 route-days, mixed priorities, Library and persistence.`);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

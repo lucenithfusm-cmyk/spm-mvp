@@ -23,8 +23,6 @@ function compose(main,support,c,level){
   if(v)extra.push({id:'de-video-'+key,kind:'video',videoKey:key,title:'Video · '+v.title,summary:v.desc+' Al terminar, anota una idea para tu proceso.',label:'VIDEO DE HOY',duration:v.duration});
  }
  if(desire[day])extra.push(desireActivity(day));
- if(day===6)extra.push({id:'support-pelvic',kind:'pelvic',title:'Piso pélvico · práctica guiada de conciencia y relajación',summary:'Abre el laboratorio para realizar la práctica asignada a este día. La adaptación del programa decide qué es adecuado para tu perfil.',optional:true,optionalLabel:'PISO PÉLVICO · SEGÚN TU PERFIL'});
- if([11,25].includes(day))extra.push({id:'de-recovery-'+day,kind:'recovery',title:day===11?'Recuperación · una pausa sin alarma':'Recuperación · prepararte para la próxima vez',summary:'Abre la historia de hoy, recorre sus escenas y elige una idea para tu plan de recuperación.',label:'RECUPERACIÓN · HISTORIA DE HOY'});
  const unique=new Map([...support,...extra].map(a=>[a.id,a]));
  return {main,support:[...unique.values()]};
 }

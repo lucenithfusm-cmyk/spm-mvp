@@ -34,4 +34,5 @@ jobs:
           node tests/daily-safety-calendar-browser.cjs
           node tests/erection-daily-browser.cjs
           node tests/daily-resources-browser.cjs
+          node tests/daily-cadence-browser.cjs
           node tests/program-videos-browser.cjs

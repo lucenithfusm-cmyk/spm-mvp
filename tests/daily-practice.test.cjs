@@ -11,17 +11,17 @@ function harness(primary='erection',day=12){
  const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_DAILY_RECORDS={read:async()=>({}),save:async(...args)=>writes.push(args)};
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
- w.SPM_EJACULATORY_CONTROL={schedule:{1:{tech:'startstop',week:1,session:1},12:{tech:'squeeze',week:2,session:3}},open:(...args)=>opens.push(['ejaculation',...args])};
+ w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
+ for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
  return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
-   h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=4);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
-   if(route==='erection')assert.equal(items[0].kind,'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
+   h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
+   if(route==='erection')assert.equal(items[0].kind,day===6?'pelvic':'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
  }
@@ -78,11 +78,11 @@ test('new check-in safety flags and unknown status retain the physical pause',as
  assert.equal(h.w.SPM_DAILY_PRACTICE.restricted(null),true);
  }finally{h.close()}
 });
-test('conditional pelvic sessions retain the original agenda days and the EP day 24 alternative',async()=>{
+test('secondary routes keep their conditional pelvic sessions; EF and EP use a twice-weekly calendar',async()=>{
  const h=harness('confidence');try{await wait();
  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [12,19,24]){
   const pelvic=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}).filter(a=>a.kind==='pelvic');
-  assert.equal(pelvic.length,primary==='ejaculation'&&day===24?0:1);assert.ok(pelvic.every(a=>a.optional));
+  assert.equal(pelvic.length,['erection','ejaculation'].includes(primary)?0:1);assert.ok(pelvic.every(a=>a.optional));
  }
  }finally{h.close()}
 });
@@ -105,4 +105,23 @@ test('all routes schedule short videos; mixed Desire support never replaces the 
   assert.ok(days[24].some(a=>a.kind==='recovery'));
  }
  }finally{h.close()}
+});
+
+test('all seven recovery stories and the approved weekly frequencies are real assignments',async()=>{
+ const h=harness();try{await wait();const routes={};
+ for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+  const rows=Array.from({length:28},(_,i)=>({day:i+1,base:h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day:i+1,secondary:null,motives:[primary]}),withDesire:h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day:i+1})}));routes[primary]=rows;
+  const stories=rows.flatMap(r=>r.base.filter(a=>a.kind==='recovery'));
+  assert.equal(stories.length,7);assert.equal(new Set(stories.map(a=>a.scenario)).size,7);
+  assert.ok(stories.every(a=>h.w.SPM_RESOURCE_CONTENT.scenarios.some(s=>s.id===a.scenario&&a.title.includes(s.title.es))));
+  if(['erection','ejaculation'].includes(primary))for(let week=0;week<4;week++){
+   const days=rows.slice(week*7,week*7+7);assert.equal(days.filter(r=>r.base.some(a=>a.kind==='pelvic')).length,2);
+   if(primary==='ejaculation'){assert.equal(days.filter(r=>r.base.some(a=>a.kind==='ejaculation')).length,3);assert.ok(days.every(r=>!r.base.some(a=>a.kind==='pelvic')||!r.base.some(a=>a.kind==='ejaculation')));}
+  }
+ }
+ if(process.env.SPM_CALENDAR_EXPORT)fs.writeFileSync(process.env.SPM_CALENDAR_EXPORT,JSON.stringify(routes,null,2));
+ }finally{h.close()}
+});
+test('recovery completion retains the assigned scenario for day-specific tracking',async()=>{
+ const h=harness('ejaculation',11);try{await wait();const a=h.w.SPM_DAILY_PRACTICE.assignments().find(a=>a.kind==='recovery');await h.w.SPM_DAILY_PRACTICE.saveActivity(a.id,{confirmed:true});assert.equal(h.writes[0][1].scenario,'early');}finally{h.close()}
 });

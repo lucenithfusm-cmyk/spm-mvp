@@ -30,7 +30,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
      const c=SPM_RESOURCE_CONTEXT(),routes=['erection','ejaculation','desire','confidence','wellbeing','lifestyle'];
      return routes.map(primary=>({primary,days:Array.from({length:28},(_,i)=>SPM_DAILY_PRACTICE.assignments({...c,primary,secondary:null,motives:[primary],day:i+1}).map(a=>({id:a.id,kind:a.kind,optional:!!a.optional,title:a.title})))}));
     });
-    for(const r of matrix)for(const items of r.days){assert.ok(items.length>=2&&items.length<=4);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);checks+=4;}
+    for(const r of matrix)for(const items of r.days){assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);checks+=4;}
     await p.locator('[data-daily-view="library"]').click();await p.locator('.dayCard').first().locator('.dayTop').click();
     await p.evaluate(()=>document.querySelector('.doneBtn').click());assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks++;
     await p.evaluate(()=>SPM_SAVE_MODULE({day:28,moduleKey:'library-test',metadata:{test:true}}));await p.reload();await p.locator('#map.on').waitFor();assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks++;

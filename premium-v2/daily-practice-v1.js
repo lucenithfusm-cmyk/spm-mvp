@@ -70,7 +70,7 @@ function assignments(c=ctx()){
  const wellness=tip?[{id:`wellness-${tip.category}`,kind:'wellness',title:`${tip.label} · ${tip.title}`,summary:tip.body,tip,optional:true}]:[];
  return [main,...support,...wellness];
 }
-function recordComplete(a){const r=records[a.id];return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind);}
+function recordComplete(a){const r=records[a.id];return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind)&&(!a.scenario||r.scenario===a.scenario);}
 function focus(el){if(!el)return;el.tabIndex=-1;el.style.scrollMarginTop=(Math.ceil($('.top')?.getBoundingClientRect().height||0)+16)+'px';el.scrollIntoView({behavior:'instant',block:'start'});el.focus({preventScroll:true});}
 function status(text,error=false){const el=$('#spmDailyStatus');if(el){el.textContent=text;el.classList.toggle('error',error);}}
 function layout(){
@@ -124,7 +124,7 @@ function pauseDailyVideo(){document.querySelectorAll('#spmDailyWorkspace video')
 function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
  const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
- const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');data={...data,activityKind:activity.kind};
+ const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');data={...data,activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
  if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');}
  return {ok:true};
