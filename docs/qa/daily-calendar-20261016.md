@@ -30,10 +30,12 @@ El calendario desplegable y Hoy consultan la misma lista de actividades. Recuper
 - Reproducción del día 14 con aviso de revisión: guardar revisión y completar el día sin borrar el aviso.
 - Señal urgente: muestra motivo, permite consulta de biblioteca y rechaza guardar/completar prácticas.
 - Todas las pruebas de datos usan registros ficticios e interceptan el cliente de datos; no verifican los datos particulares de una cuenta real.
+- Vista previa de Vercel del commit `8b4f380`: 706 comprobaciones aprobadas en navegador, incluidas las 168 combinaciones de ruta y día.
+- La prueba de restauración se actualizó para comprobar que guardar en biblioteca no avanza la jornada y que el cierre explícito exige los registros diarios. Verificada con todas las capas Premium y con la ruta heredada.
 
 Archivos de pruebas: `tests/daily-practice.test.cjs`, `tests/daily-support-plan.test.cjs`, `tests/daily-safety-calendar-browser.cjs`, `tests/daily-entry-browser.cjs`, `tests/daily-practice-browser.cjs` y pruebas existentes de los puentes de programas.
 
-Estado: preparado para vista previa y revisión de la usuaria. No fusionar en producción antes de esa revisión.
+Estado: correcciones publicadas en vista previa para revisión de la usuaria. No fusionar en producción antes de esa revisión.
 
 ## Autorización de sincronización
 

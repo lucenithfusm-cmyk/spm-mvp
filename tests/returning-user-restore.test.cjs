@@ -38,11 +38,23 @@ async function harness(primary='erection',options={}){
  const plan={id:'qa-plan',user_id:user.id,assessment_id:'qa-assessment',performance_map_id:'qa-map',status:'active',current_day:12,created_at:'2026-09-20T00:00:00Z'};
  const rows={plans:[plan],assessments:{id:plan.assessment_id,user_id:user.id,motives:[primary],answers:{}},performance_maps:{id:plan.performance_map_id,user_id:user.id,domain_scores:{erection:40,ejaculation:80,confidence:55},primary_domain:primary,spm_score:65,safety_level:'none',safety_flags:[]},activity_completions:[],daily_checkins:[],profiles:null};
  const db={auth:{getSession:async()=>({data:{session:{user}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from(table){
-  const query={};for(const name of ['select','eq','order','maybeSingle','upsert','like','update','insert'])query[name]=()=>query;
+  const query={},filters=[];let upsert=null;
+  for(const name of ['select','order','maybeSingle','update','insert'])query[name]=()=>query;
+  query.eq=(key,value)=>{filters.push(row=>row[key]===value);return query;};
+  query.like=(key,value)=>{filters.push(row=>String(row[key]||'').startsWith(value.replace(/%$/,'')));return query;};
+  query.upsert=payload=>{upsert=payload;return query;};
   query.then=(resolve,reject)=>{
    requests.push(table);
    if(options.hangTable===table)return new Promise(()=>{}).then(resolve,reject);
-   return Promise.resolve({data:rows[table],error:null}).then(resolve,reject);
+   let data=rows[table];
+   if(table==='activity_completions'){
+    if(upsert){
+     const index=data.findIndex(row=>row.plan_id===upsert.plan_id&&row.day_number===upsert.day_number&&row.module_key===upsert.module_key);
+     if(index<0)data.push({...upsert});else data[index]={...upsert};
+    }
+    data=data.filter(row=>filters.every(matches=>matches(row)));
+   }
+   return Promise.resolve({data,error:null}).then(resolve,reject);
   };return query;
  }};
  w.supabase={createClient:()=>db};
@@ -86,11 +98,21 @@ test('a stalled profile sync does not block a restored program',async()=>{
  }finally{h.close()}
 });
 
-test('completing the current practice advances the restored daily assignment immediately',async()=>{
+test('a restored program advances only after completing its daily requirements',async()=>{
  const h=await harness('desire');
  try{
   assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,12);
   await h.w.SPM_SAVE_MODULE({day:12,moduleKey:'qa-daily-practice'});
+  if(h.w.SPM_DAILY_PRACTICE){
+   assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,12,'A library save must not complete the day');
+   const context=h.w.SPM_RESOURCE_CONTEXT(),scope=context.userId+':'+context.planId;
+   await assert.rejects(h.w.SPM_COMPLETE_DAILY_PRACTICE(12,scope),/Daily activities pending/);
+   const required=h.w.SPM_DAILY_PRACTICE.assignments(context).filter(activity=>!activity.optional);
+   assert.ok(required.length>0);
+   for(const activity of required)await h.w.SPM_DAILY_PRACTICE.saveActivity(activity.id,{confirmed:true});
+   assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,12,'Saving assigned activities waits for explicit day completion');
+   await h.w.SPM_COMPLETE_DAILY_PRACTICE(12,scope);
+  }
   assert.equal(h.w.SPM_RESOURCE_CONTEXT().day,13);
   assert.equal(h.w.SPM_CURRENT_DAY,13);
   assert.match(h.w.document.querySelector('#spmTodayHero').textContent,/DÍA 13 DE 28/);
