@@ -36,7 +36,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);assert.equal(await p.locator('#spmDailyComplete').isDisabled(),true);checks+=2;
   await p.reload();await p.locator('#map.on').waitFor();await p.locator('#goPlan').click();await p.locator('#spmGoToday').click();await p.locator('[data-activity="de-video-dr-performance-anxiety"] .spm-daily-saved').waitFor();checks++;
   await p.screenshot({path:'/tmp/spm-erection-day1.png',fullPage:true});await clean(p);
-  for(const [day,title,width] of [[5,'Mapa de aceleradores y frenos',390],[15,'Escalera de intimidad sin presión',768],[22,null,1440]]){
+  for(const [day,title,width] of [2,5,7,10,11,12,15,17,21,22,25,26].map((day,i)=>[day,day===5?'Mapa de aceleradores y frenos':day===15?'Escalera de intimidad sin presión':null,[390,768,1440][i%3]])){
    const page=await pageFor(day,width);
    await page.evaluate(()=>SPM_QA.rows.activity_completions.push({user_id:'qa-user',plan_id:'qa-plan',day_number:1,module_key:'resource:desire_lab_state',metadata:{state:{'spm-desire-state':JSON.stringify({health:['none'],stimuli:['touch']})}}}));
    await page.locator(`[data-daily-open="de-desire-${day}"]`).click();const f=page.frameLocator('.spm-desire-modal iframe');await f.locator('.dz-tabs').waitFor();
