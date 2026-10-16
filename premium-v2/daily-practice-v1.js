@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 // Today owns the daily entry; the original calendars and full resources remain in Library.
-const $=s=>document.querySelector(s),ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
+const $=s=>document?.querySelector(s),ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?`${c.userId}:${c.planId}`:'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let current='',view='entry',records={},loaded=false,loadError=false,generation=0,active=null;
@@ -114,6 +114,7 @@ const style=document.createElement('style');style.textContent=`
 @media(max-width:540px){.spm-daily-activity{padding:15px;gap:10px;grid-template-columns:28px minmax(0,1fr)}.spm-daily-number{width:28px;height:28px}.spm-daily-actions{align-items:stretch;flex-direction:column}.spm-daily-actions button{width:100%}.spm-daily-work{padding:14px}}
 `;document.head.appendChild(style);
 document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan')){view='entry';layout();}if(e.target.closest('#logoutBtn,#newAssessment')){generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();view='entry';}},true);
+window.addEventListener('pagehide',()=>{generation++;});
 window.addEventListener('spm:resourcecontext',()=>load());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
