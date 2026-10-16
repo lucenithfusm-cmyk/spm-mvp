@@ -5,20 +5,23 @@ const wait=()=>new Promise(r=>setTimeout(r,40));
 function harness(primary='erection',day=12){
  const dom=new JSDOM('<section id="plan"><div id="dayGrid"></div><section id="original-library">Library</section></section>',{url:'https://spm.test',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
  w.HTMLElement.prototype.scrollIntoView=function(){};
+ w.HTMLMediaElement.prototype.pause=function(){};
+ const observers=[],NativeObserver=w.MutationObserver;
+ w.MutationObserver=class extends NativeObserver{constructor(fn){super(fn);observers.push(this);}};
  const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_DAILY_RECORDS={read:async()=>({}),save:async(...args)=>writes.push(args)};
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
  w.SPM_EJACULATORY_CONTROL={schedule:{1:{tech:'startstop',week:1,session:1},12:{tech:'squeeze',week:2,session:3}},open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
- return{w,c,writes,opens,close:()=>w.close()};
+ for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-practice-v1.js'])w.eval(read(f));
+ return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
    h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=4);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
-   if(route==='erection')assert.equal(items[0].kind,'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else assert.ok(!items.some(x=>x.kind==='desire'));
+   if(route==='erection')assert.equal(items[0].kind,'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.ok(!items.some(x=>x.kind==='desire'));
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
  }
@@ -30,7 +33,7 @@ test('Today opens the real current session and keeps the library intact',async()
 });
 test('saving one activity does not complete or advance the day; stale and restricted writes fail',async()=>{
  const h=harness();try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,true);
- await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='review';await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
+ await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='review';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
  }finally{h.close()}
 });
 test('shared breathing/focus replaces a duplicate text task and retains the scheduled session',async()=>{

@@ -20,7 +20,7 @@ function restricted(c,id){
  const a=typeof id==='string'?assignments(c).find(x=>x.id===id):id;if(!a)return true;
  if(a.kind==='wellness'&&a.tip.category==='movement'&&window.SPM_RESOURCES?.restricted?.(c)!==false)return true;
  if(level==='none')return false;
- return !(a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&educational.has(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement'));
+ return !(a.kind==='video'||a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&educational.has(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement'));
 }
 function safetyNotice(c){
  const level=safety(c);if(level==='none')return '';
@@ -64,6 +64,7 @@ function assignments(c=ctx()){
  if([12,19,24].includes(day)&&!(day===24&&c.primary==='ejaculation'))support.push({id:'support-pelvic',kind:'pelvic',title:'Piso pélvico · conciencia y relajación',summary:'Abre la práctica breve adaptada a tu perfil. Sigue la indicación del laboratorio; no añadas fortalecimiento por tu cuenta.',optional:true,optionalLabel:'APOYO SEGÚN TU PERFIL · OPCIONAL'});
  // Review/checkpoint days stay light, including when a non-urgent flag is present.
  if(safety(c)==='review'&&[7,14,21,28].includes(day)&&main.kind!=='ep-checkpoint')main={id:'main',kind:'worksheet',title:base.title_es,summary:base.practice_es,lesson:base};
+ if(c.primary==='erection'&&window.SPM_ERECTION_DAILY)({main,support}=window.SPM_ERECTION_DAILY.compose(main,support,c,safety(c)));
  const tip=window.SPM_WELLNESS_DAILY_TIP_V1?.tipFor(day);
  const wellness=tip?[{id:`wellness-${tip.category}`,kind:'wellness',title:`${tip.label} · ${tip.title}`,summary:tip.body,tip,optional:true}]:[];
  return [main,...support,...wellness];
@@ -87,9 +88,10 @@ function render(){
  const paused=restricted(c),pending=required.some(a=>restricted(c,a));
  const signature=JSON.stringify([current,c.primary,c.secondary,c.safety,c.flags,c.checkins,items.map(a=>[a.id,restricted(c,a)]),loaded,loadError,records,c.completed]);
  if(host.dataset.signature===signature)return;host.dataset.signature=signature;
- host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Estas son tus actividades de hoy</h2><p>Abre cada actividad y vuelve aquí al terminar. ${done} de ${required.length} prácticas registradas. El hábito de bienestar es opcional.</p>${safetyNotice(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
+ pauseDailyVideo();
+ host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>${c.primary==='erection'?'Tu ruta de Erección y firmeza':'Estas son tus actividades de hoy'}</h2><p>${c.primary==='erection'?'Hoy tienes tu actividad principal, el recurso guiado asignado y una recomendación de bienestar. ':''}Abre cada actividad y vuelve aquí al terminar. ${done} de ${required.length} prácticas registradas. El hábito de bienestar es opcional.</p>${safetyNotice(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
   const blocked=restricted(c,a),saved=recordComplete(a);
-  return `<article class="spm-daily-activity" data-activity="${esc(a.id)}"><span class="spm-daily-number">${i+1}</span><div><small>${a.optional?esc(a.optionalLabel||'BIENESTAR · OPCIONAL'):i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'}${a.minutes?' · '+a.minutes+' min':''}</small><h3>${esc(a.title)}</h3><p>${esc(blocked?'La práctica requiere revisar primero la indicación de seguridad. Puedes consultar el motivo y el contenido educativo.':a.summary)}</p><div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}">${blocked?'Ver indicación y opciones':saved?'Volver a abrir':'Abrir actividad'} →</button>${blocked?'<span class="spm-daily-paused">Práctica en pausa</span>':saved?'<span class="spm-daily-saved">Registrada ✓</span>':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`;
+  return `<article class="spm-daily-activity" data-activity="${esc(a.id)}"><span class="spm-daily-number">${i+1}</span><div><small>${a.optional?esc(a.optionalLabel||'BIENESTAR · OPCIONAL'):esc(a.label||(i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'))}${a.minutes?' · '+a.minutes+' min':a.duration?' · '+esc(a.duration):''}</small><h3>${esc(a.title)}</h3><p>${esc(blocked?'La práctica requiere revisar primero la indicación de seguridad. Puedes consultar el motivo y el contenido educativo.':a.summary)}</p><div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}">${blocked?'Ver indicación y opciones':saved?'Volver a abrir':a.kind==='video'?'Ver video de hoy':'Abrir actividad'} →</button>${blocked?'<span class="spm-daily-paused">Práctica en pausa</span>':saved?'<span class="spm-daily-saved">Registrada ✓</span>':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`;
  }).join('')}</div><div id="spmDailyWorkspace"></div><div class="spm-daily-footer"><button type="button" class="btn pri" id="spmDailyComplete" ${paused||pending||!loaded||done!==required.length||!required.length||c.completed?.includes(Number(c.day))?'disabled':''}>${c.completed?.includes(Number(c.day))?'Día completado ✓':`Completar día ${c.day}`}</button><button type="button" class="btn sec" id="spmDailyCoach">Registrar cómo fue hoy</button></div><p id="spmDailyStatus" role="status">${loadError?'No pudimos recuperar tus registros. Reintenta antes de completar el día.':loaded?'El día avanza cuando completas las prácticas asignadas y eliges completarlo.':'Recuperando tus actividades guardadas…'}</p>${loadError?'<button type="button" class="btn sec" id="spmDailyRetry">Reintentar</button>':''}`;
  host.querySelectorAll('[data-daily-open]').forEach(b=>b.onclick=()=>launch(b.dataset.dailyOpen));
  host.querySelectorAll('[data-daily-confirm]').forEach(b=>b.onclick=()=>confirmActivity(b.dataset.dailyConfirm));
@@ -116,8 +118,9 @@ async function load(force=false){
  catch{if(token!==generation)return;loadError=true;}
  render();
 }
-function open({focus:shouldFocus=true}={}){view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
-function library(){view='library';layout();focus($('#spmDailyLibraryIntro'));}
+function open({focus:shouldFocus=true}={}){pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
+function pauseDailyVideo(){document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
+function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
  const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
  const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');data={...data,activityKind:activity.kind};
@@ -126,10 +129,23 @@ async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(c
  return {ok:true};
 }
 function confirmActivity(id){
+ pauseDailyVideo();
  const a=assignments().find(x=>x.id===id),box=$('#spmDailyWorkspace');if(!a||!box||restricted(ctx(),a))return;
  const captured=scopeOf(ctx()),day=Number(ctx().day);
  box.innerHTML=`<form class="spm-daily-work"><h3>${esc(a.title)}</h3><label><input type="checkbox" required> Confirmo que realicé esta actividad hoy.</label><p class="micro">Abrir una actividad no la marca como completada.</p><button type="submit" class="btn pri">Guardar actividad</button><p role="status"></p></form>`;
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');b.disabled=true;try{await saveActivity(id,{confirmed:true},captured,day);}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Reintenta; el día no ha avanzado.';}};focus(box);
+}
+function dailyVideo(a){
+ const video=window.SPM_VIDEO_LIBRARY?.find(v=>v.key===a.videoKey),box=$('#spmDailyWorkspace');
+ if(!video){status('No pudimos encontrar el video de hoy. Reintenta.',true);return;}
+ const captured=scopeOf(ctx()),day=Number(ctx().day),prior=records[a.id]||{};
+ box.innerHTML=`<form class="spm-daily-work" data-daily-video="${esc(a.videoKey)}"><span class="stepBadge">VIDEO DE HOY · Día ${day}</span><h3>${esc(video.title)}</h3><p>${esc(video.desc)}</p><video controls playsinline preload="metadata" aria-label="${esc(video.title)}"></video><p data-video-error hidden>No pudimos cargar el video. <button type="button" data-video-retry>Reintentar</button></p><label>Una idea que te llevas<textarea name="reflection" rows="2" maxlength="1000" required>${esc(prior.reflection)}</textarea></label><label><input name="confirmed" type="checkbox" required> Ya revisé este video y su idea principal.</label><button type="submit" class="btn pri">Guardar y volver a Hoy</button><p role="status"></p></form>`;
+ const form=box.querySelector('form'),player=form.querySelector('video'),error=form.querySelector('[data-video-error]');player.src=video.url;
+ player.onloadedmetadata=()=>{player.toggleAttribute('data-portrait',player.videoHeight>player.videoWidth);error.hidden=true;};player.onerror=()=>{error.hidden=false;};
+ form.querySelector('[data-video-retry]').onclick=()=>{error.hidden=true;player.load();};
+ player.onplay=()=>window.SPM_PROGRAM_VIDEOS?.pause();
+ form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('[type=submit]');b.disabled=true;try{await saveActivity(a.id,{videoKey:a.videoKey,reflection:new FormData(form).get('reflection'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Conservamos tu respuesta; reintenta.';}};
+ focus(box);
 }
 function wellness(a){
  const box=$('#spmDailyWorkspace'),captured=scopeOf(ctx()),day=Number(ctx().day),prior=records[a.id]||{};
@@ -149,10 +165,12 @@ function worksheet(a){
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('button');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{reflection:fields.get('reflection'),measure:fields.get('measure'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; reintenta.';}};focus(box);
 }
 async function launch(id){
+ pauseDailyVideo();
  const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a)return;if(restricted(c,a)){pausedActivity(a);return;}
  active={id,scope:scopeOf(c),day:Number(c.day)};
  try{
-  if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
+  if(a.kind==='video')dailyVideo(a);
+  else if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ejaculation')window.SPM_EJACULATORY_CONTROL.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='desire')await window.SPM_DESIRE_LAB.open({origin:'dailyPlan'});
   else if(['confidence','response','recovery'].includes(a.kind))window.SPM_RESOURCES.open(a.kind,Number(c.day),{origin:'dailyPlan'});
@@ -175,10 +193,12 @@ const style=document.createElement('style');style.textContent=`
 #spmDailyViews{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}#spmDailyViews button{border:1px solid #31535b;border-radius:999px;padding:12px 18px;background:#0c242b;color:#bed4d5;font:inherit;cursor:pointer}#spmDailyViews button[aria-pressed="true"]{background:#78dfc5;color:#06231e;font-weight:800}
 .spm-daily-activities{display:grid;gap:14px;margin:24px 0}.spm-daily-activity{display:grid;grid-template-columns:36px minmax(0,1fr);gap:15px;padding:20px;border:1px solid #31545c;border-radius:18px;background:linear-gradient(135deg,#102e34,#0a1d25)}.spm-daily-number{display:grid;place-items:center;width:34px;height:34px;background:#d4b879;color:#072620;border-radius:50%;font-weight:900}.spm-daily-activity small{color:#9ae5d0;letter-spacing:.08em;font-size:10px}.spm-daily-activity h3{margin:7px 0 10px}.spm-daily-activity p{color:#b9cdd0;line-height:1.6}.spm-daily-actions,.spm-daily-footer{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.spm-daily-saved{color:#8aebcc}.spm-daily-work{padding:20px;margin:20px 0;border:1px solid #5b817d;border-radius:18px;display:grid;gap:16px}.spm-daily-work label{display:block;line-height:1.6}.spm-daily-work textarea{display:block;width:100%;margin-top:10px;background:#061b23;border:1px solid #42626a;color:#f2f8f8;border-radius:10px;padding:12px;font:inherit}.spm-daily-work input{accent-color:#78dfc5}.spm-daily-work summary{cursor:pointer;color:#93e2ce}.spm-daily-work p{line-height:1.6}#spmDailyStatus{color:#a2c9c3;line-height:1.5}#spmDailyStatus.error{color:#ffd094}#spmDailySession button:disabled{opacity:.5;cursor:not-allowed}
 #spmDeModal[data-daily-session="true"] #deRoad,#spmDeModal[data-daily-session="true"] #dePrev,#spmDeModal[data-daily-session="true"] #deNext,#spmDeModal[data-daily-session="true"] .spm-program-videos,#spmEcModal[data-daily-session="true"] .ecPremiumDock,#spmEcModal[data-daily-session="true"] #ecBackProgram{display:none!important}
+.spm-daily-work video{display:block;width:100%;max-height:65vh;object-fit:contain;background:#000;border-radius:12px}.spm-daily-work video[data-portrait]{aspect-ratio:9/16;max-width:350px;margin:auto}.spm-daily-work [hidden]{display:none!important}
 @media(max-width:540px){.spm-daily-activity{padding:15px;gap:10px;grid-template-columns:28px minmax(0,1fr)}.spm-daily-number{width:28px;height:28px}.spm-daily-actions{align-items:stretch;flex-direction:column}.spm-daily-actions button{width:100%}.spm-daily-work{padding:14px}}
 `;document.head.appendChild(style);
-document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan')){view='entry';layout();}if(e.target.closest('#logoutBtn,#newAssessment')){generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();view='entry';}},true);
-window.addEventListener('pagehide',()=>{generation++;});
+document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,#navMap,#navCoach,#logoutBtn,#newAssessment'))pauseDailyVideo();if(e.target.closest('#navPlan,#goPlan')){view='entry';layout();}if(e.target.closest('#logoutBtn,#newAssessment')){generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();view='entry';}},true);
+window.addEventListener('pagehide',()=>{pauseDailyVideo();generation++;});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDailyVideo();});
 window.addEventListener('spm:resourcecontext',()=>load());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
