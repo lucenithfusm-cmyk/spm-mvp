@@ -1,0 +1,28 @@
+name: Published SPM release QA
+on:
+  pull_request:
+    paths: ['tests/production-release-browser.cjs', '.github/workflows/production-release-qa.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  published:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --prefix /tmp/spm-release-qa playwright@1.62.1 --no-audit --no-fund
+      - name: Test published routes with synthetic data only
+        env:
+          NODE_PATH: /tmp/spm-release-qa/node_modules
+          CHROME_BIN: /usr/bin/google-chrome
+          SPM_TEST_BASE: https://spm-premium-staging.vercel.app/premium-v2/
+        run: |
+          node tests/production-release-browser.cjs
+          node tests/daily-safety-calendar-browser.cjs
+          node tests/erection-daily-browser.cjs
+          node tests/daily-resources-browser.cjs
+          node tests/daily-cadence-browser.cjs
+          node tests/program-videos-browser.cjs
