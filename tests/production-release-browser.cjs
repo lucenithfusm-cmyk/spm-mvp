@@ -11,8 +11,8 @@ for(const primary of ['erection','ejaculation','desire','confidence','wellbeing'
  await page.route('**/*.supabase.co/**',r=>r.request().method()==='GET'?r.continue():r.abort());
  await page.goto(base+'live.html');await page.locator('#ageCard').waitFor();await page.locator('[data-age="0"]').click();assert.equal(await page.locator('#motiveCard').isVisible(),false);checks++;
  await page.locator('[data-age="1"]').click();await page.locator('#motiveNext').click();assert.equal(await page.locator('#quizCard').isVisible(),false);checks++;
- await page.locator('[data-motive="'+primary+'"]').click();await page.locator('#motiveNext').click();
- await page.locator('#qNext').click();assert.equal(await page.locator('#qCount').textContent(),await page.locator('#qCount').textContent());
+ await page.locator('[data-motive="'+(primary==='lifestyle'?'optimization':primary)+'"]').click();await page.locator('#motiveNext').click();
+ const firstCount=await page.locator('#qCount').textContent();await page.locator('#qNext').click();assert.equal(await page.locator('#qCount').textContent(),firstCount);checks++;
  let count=0;
  while(await page.locator('#quizCard').isVisible()){
   assert.ok(count++<100,'questionnaire must terminate');
