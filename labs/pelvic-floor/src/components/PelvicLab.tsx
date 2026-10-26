@@ -343,6 +343,7 @@ export function PelvicLab() {
     setFlags(load(K.flags, [])); setOverload(load(K.overload, [])); setResults(load(K.results, [])); setDaily(load(K.daily, null));
     setSc(load(K.screen, { aware: null, comp: [], releaseOk: null })); setCheckins(load(K.checkins, []));
     setCfg(PRACTICES.contrae.demo);
+    if(host?.getContext().origin === 'dailyPlan'){setStep(PRACTICES.percibe.step);setOrigin('dailyPlan');setAssign('percibe');}
   }, []);
 
   const go = (n: number, o: Origin = 'lab', practice: PracticeId | null = null) => {
@@ -368,7 +369,7 @@ export function PelvicLab() {
   const libIdx = SCREENS.findIndex(s => s.id === 'library');
   const relaxIdx = PRACTICES.percibe.step;
   const returnLabel = origin === 'dailyPlan' ? '← Volver a Hoy' : origin === 'library' ? '← Volver a Biblioteca' : null;
-  const doReturn = () => (origin === 'dailyPlan' ? goToday() : go(libIdx));
+  const doReturn = () => (host?.getContext().origin === 'dailyPlan' ? host.close() : origin === 'dailyPlan' ? goToday() : go(libIdx));
 
   const onResult = (r: PracticeResult) => {
     const sr: StoredResult = { ...r, at: new Date().toISOString(), origin: host?.getContext().origin === 'dailyPlan' ? 'dailyPlan' : origin };
@@ -598,8 +599,8 @@ export function PelvicLab() {
     <div className="pf">
       <header className="pf-top">
         <div className="pf-top-in">
-          <button className="pf-brand" onClick={() => go(0)}><span className="pf-mark">SPM</span><span style={{ textAlign: 'left' }}><b>Pelvic Floor Lab</b><small>PISO PÉLVICO</small></span></button>
-          <span className="pf-count">{today ? 'HOY' : <>{String(step + 1).padStart(2, '0')}<i> / </i>{SCREENS.length}</>}</span>
+          <button className="pf-brand" onClick={() => host?.getContext().origin === 'dailyPlan' ? host.close() : go(0)}><span className="pf-mark">SPM</span><span style={{ textAlign: 'left' }}><b>Pelvic Floor Lab</b><small>PISO PÉLVICO</small></span></button>
+          <span className="pf-count">{host?.getContext().origin === 'dailyPlan' ? `DÍA ${host.getContext().day}` : today ? 'HOY' : <>{String(step + 1).padStart(2, '0')}<i> / </i>{SCREENS.length}</>}</span>
         </div>
         <div className="pf-bar"><span style={{ width: `${((step + 1) / SCREENS.length) * 100}%` }} /></div>
       </header>

@@ -19,7 +19,7 @@ const sensate={
  23:{id:'sensate-communicate',title:'Comunicación y conexión',summary:'Practica las cuatro frases de comunicación y vuelve a las sensaciones corporales.',steps:[12,3],minutes:3,practiceId:'sf-communication'},
  26:{id:'sensate-consolidate',title:'Consolidar una práctica cómoda',summary:'Repite la práctica sensorial que resulte cómoda, sin obligación de avanzar.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1',optionalProgression:true}
 };
-const routes={breathing:['erection','ejaculation','desire'],sensate:['erection','ejaculation','desire','confidence','anxiety','wellbeing']};
+const routes={breathing:['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed'],sensate:['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed']};
 function relevant(lab,c){return !!c&&routes[lab]?.some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
 function activity(lab,day,c){const item=({breathing,sensate})[lab]?.[Number(day)];return item&&relevant(lab,c)?{...item,steps:[...item.steps],day:Number(day),lab}:null;}
 function assignments(day,c){return ['breathing','sensate'].map(lab=>activity(lab,day,c)).filter(Boolean);}

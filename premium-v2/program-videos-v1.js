@@ -3,16 +3,19 @@ if(window.SPM_PROGRAM_VIDEOS)return;
 // Keys resolve against the existing Central catalog. No media copies or progress writes.
 const routes=Object.freeze({
  sensate:['sensory-focus','partner-communication','anticipatory-failure','mental-preparation'],
- desire:['sensory-focus'],
- ejaculation:['partner-communication','anticipatory-failure','mental-preparation'],
- erection:['partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','dr-performance-anxiety'],
- anxiety:['partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','dr-performance-anxiety']
+ desire:['sensory-focus','partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','anxiety-regulation','dr-metabolic','dr-medications'],
+ ejaculation:['partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','anxiety-regulation','sensory-focus','dr-medications'],
+ erection:['partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','dr-performance-anxiety','sensory-focus','anxiety-regulation','dr-vascular','dr-metabolic','dr-medications'],
+ anxiety:['partner-communication','anticipatory-failure','mental-preparation','performance-anxiety','dr-performance-anxiety','anxiety-regulation','sensory-focus']
 });
 const base=document.baseURI, mounted=new WeakMap(), players=new Set(), mounts=new Set();
 function keysFor(route){return [...(routes[route==='confidence'?'anxiety':route]||[])];}
 function pause(root){for(const video of players)if(!root||root.contains(video))video.pause();}
 function mount(root,route){
  if(!root)return ()=>{};
+ // Today already selects a single video. Keep the full collection in Library
+ // and unload a previous library mount when the same dialog opens a daily task.
+ if(root.closest('[data-daily-session="true"]')){unmount(root);return ()=>{};}
  pause();
  const old=mounted.get(root);if(old?.route===route && old.section.isConnected)return old.cleanup;if(old)old.cleanup();
  const catalog=window.SPM_VIDEO_LIBRARY||[],items=keysFor(route).map(key=>catalog.find(v=>v.key===key)).filter(Boolean);

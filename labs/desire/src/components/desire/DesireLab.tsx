@@ -430,7 +430,7 @@ export function DesireLab() {
         {typeof view === 'number' && <span className="dz-count"><b>{String(view).padStart(2, '0')}</b> / 20</span>}
       </header>
       <nav className="dz-tabs" aria-label="Secciones">
-        {([['cycle', 'Mi ciclo 28 días'], ['today', 'Hoy'], [20, 'Biblioteca'], ['progress28', 'Progreso'], [1, 'Recorrido 20 pantallas']] as [View, string][]).map(([v, l]) =>
+        {([['cycle', 'Mi ciclo 28 días'], ['today', 'Hoy'], [20, 'Biblioteca'], ['progress28', 'Progreso'], [1, 'Recorrido 20 pantallas']] as [View, string][]).filter(([v]) => central.origin !== 'dailyPlan' || v === 'today').map(([v, l]) =>
           <button key={l} className={view === v ? 'on' : ''} onClick={() => { setRetPractice(''); setNotice(''); if (v === 'today') { origin === 'dailyPlan' ? go('today', 'dailyPlan') : ( (setToday(todayFor(s, prog, centralContext().day)), setDay(centralContext().day), go('today', 'dailyPlan'))); } else go(v, origin === 'dailyPlan' ? 'dailyPlan' : 'lab'); }}>{l}</button>)}
       </nav>
       {typeof view === 'number' && <div className="dz-progress"><span style={{ width: `${(view / 20) * 100}%` }} /></div>}

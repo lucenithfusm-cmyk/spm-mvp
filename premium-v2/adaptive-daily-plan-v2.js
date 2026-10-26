@@ -5,7 +5,7 @@ const baseAgenda={
 };
 // Keep the main curriculum and wellness tasks; breathing/focalization come from one schedule.
 const agenda=Object.fromEntries(Object.entries(baseAgenda).map(([day,items])=>[day,items.filter(x=>!/respira|focaliza|regulaci[oó]n corporal/i.test(x))]));
-function itemsFor(day){const c=window.SPM_RESOURCE_CONTEXT?.();return [...(agenda[day]||[]),...(window.SPM_DAILY_SUPPORT?.assignments(Number(day),c)||[]).map(x=>x.title+' · '+x.minutes+' min')];}
+function itemsFor(day){const c=window.SPM_RESOURCE_CONTEXT?.();if(c&&window.SPM_DAILY_PRACTICE)return window.SPM_DAILY_PRACTICE.assignments({...c,day:Number(day)}).map(x=>x.title+(x.minutes?' · '+x.minutes+' min':'')+(x.optional?' · opcional':''));return [...(agenda[day]||[]),...(window.SPM_DAILY_SUPPORT?.assignments(Number(day),c)||[]).map(x=>x.title+' · '+x.minutes+' min')];}
 window.SPM_DAILY_AGENDA_ITEMS=itemsFor;
 function decorate(){
  const grid=document.getElementById('dayGrid');if(!grid)return;
