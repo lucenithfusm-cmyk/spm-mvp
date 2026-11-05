@@ -35,7 +35,9 @@ function addCSS(){
 .spmOfferFilm{position:relative;display:block;width:100%;padding:0;overflow:hidden;border:1px solid #487d735c;border-radius:21px;background:#09252d;color:#f1fff9;cursor:pointer;text-align:left;touch-action:manipulation}
 .spmOfferFilm>img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:contain;opacity:.83;transition:opacity .2s}
 .spmOfferFilm:hover>img,.spmOfferFilm:focus-visible>img{opacity:1}
-.spmOfferPlay{position:absolute;top:35%;left:9%;height:48px;width:48px;border-radius:50%;display:grid;place-items:center;background:#a0ecd9;color:#06232a;font-size:17px;padding-left:3px;box-shadow:0 4px 28px #03181a70;animation:spmOfferPlayPulse 2.8s ease-in-out infinite}
+.spmOfferFilm:focus-visible{outline:3px solid #C5A46C;outline-offset:5px}
+.spmOfferFilm[hidden]{display:none}
+.spmOfferPlay{position:absolute;top:22%;left:9%;height:clamp(72px,17vw,92px);width:clamp(72px,17vw,92px);border-radius:50%;display:grid;place-items:center;background:#a0ecd9;color:#06232a;font-size:30px;padding-left:5px;border:1px solid #dcfff0aa;box-shadow:0 0 28px #8fe3d04d,0 8px 32px #03181a70;animation:spmOfferPlayPulse 2.8s ease-in-out infinite}
 .spmOfferPlay:after{content:'';position:absolute;inset:-7px;border:1px solid #a0ecd98c;border-radius:50%;pointer-events:none;animation:spmOfferPlayHalo 2.8s ease-out infinite}
 @keyframes spmOfferPlayPulse{0%,45%,100%{transform:scale(1)}18%{transform:scale(1.09)}30%{transform:scale(1.03)}}
 @keyframes spmOfferPlayHalo{0%{transform:scale(.88);opacity:0}16%{opacity:.65}65%,100%{transform:scale(1.4);opacity:0}}
