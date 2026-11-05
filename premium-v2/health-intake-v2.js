@@ -58,7 +58,7 @@ function educationText(h){
 function speak(text){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.94;const vs=speechSynthesis.getVoices(),v=vs.find(x=>/es[-_]CO/i.test(x.lang))||vs.find(x=>/^es/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 function decorateMap(){
  const map=document.getElementById('map');if(!map?.classList.contains('on'))return;
- const h=load(),existing=document.getElementById('spmHealthEducation');
+ const h=window.SPM_RESOURCE_CONTEXT?(window.SPM_RESOURCE_CONTEXT()?.answers||{}):load(),existing=document.getElementById('spmHealthEducation');
  if(h.h_has_condition!==true){existing?.remove();return}
  const target=map.querySelector('.mapHero');if(!target)return;
  const text=educationText(h),status=h.h_control_status==='controlled'?'CONDICIÓN REPORTADA · CONTROLADA':h.h_control_status==='uncontrolled'?'CONDICIÓN REPORTADA · REQUIERE MEJOR CONTROL':'SALUD GENERAL Y FUNCIÓN SEXUAL';

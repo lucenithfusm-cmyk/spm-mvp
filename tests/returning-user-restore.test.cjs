@@ -36,7 +36,9 @@ async function harness(primary='erection',options={}){
  };
  const user={id:'qa-user',email:'qa@example.test'};
  const plan={id:'qa-plan',user_id:user.id,assessment_id:'qa-assessment',performance_map_id:'qa-map',status:'active',current_day:12,created_at:'2026-09-20T00:00:00Z'};
- const rows={plans:[plan],assessments:{id:plan.assessment_id,user_id:user.id,motives:[primary],answers:{}},performance_maps:{id:plan.performance_map_id,user_id:user.id,domain_scores:{erection:40,ejaculation:80,confidence:55},primary_domain:primary,spm_score:65,safety_level:'none',safety_flags:[]},activity_completions:[],daily_checkins:[],profiles:null};
+ const policy=require('../supabase/functions/_shared/assessment-policy.js'),catalog=require('../supabase/functions/_shared/question-catalog.json'),answers={};
+ for(const q of policy.queue(catalog,[primary]))if(policy.visible(q,answers))answers[q.id]=q.type==='boolean'?false:q.type.startsWith('scale5')?3:q.type==='text'?'No recuerdo':q.options[0].value;
+ const rows={plans:[plan],assessments:{id:plan.assessment_id,user_id:user.id,motives:[primary],answers},performance_maps:{id:plan.performance_map_id,user_id:user.id,domain_scores:{erection:40,ejaculation:80,confidence:55},primary_domain:primary,spm_score:65,safety_level:'none',safety_flags:[]},activity_completions:[],daily_checkins:[],profiles:null};
  const db={auth:{getSession:async()=>({data:{session:{user}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from(table){
   const query={},filters=[];let upsert=null;
   for(const name of ['select','order','maybeSingle','update','insert'])query[name]=()=>query;

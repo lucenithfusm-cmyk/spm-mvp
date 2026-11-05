@@ -1,0 +1,6 @@
+[functions.spm-payments]
+verify_jwt = false
+# Auth is checked with auth.getUser for checkout/status. Webhooks verify Wompi signatures.
+[functions.spm-program-recovery]
+verify_jwt = false
+# Every request validates auth.getUser and plan ownership.
