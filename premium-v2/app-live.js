@@ -297,7 +297,7 @@ async function finishAssessment(){
  S.map=scoreMap();
  if(PUBLIC_ASSESSMENT){
   $('quizCard').hidden=true;hideMsg();renderMap();
-  window.dispatchEvent(new CustomEvent('spm:public-assessment-complete'));
+  window.dispatchEvent(new CustomEvent('spm:public-assessment-complete',{detail:{priorities:[S.map.primary,S.map.secondary].filter(Boolean)}}));
   return;
  }
  msg('Guardando tu evaluación y creando el plan…','good');
