@@ -7,7 +7,7 @@ const $=id=>document.getElementById(id);
 const guest=window.SPM_GUEST_ENTRY||null;
 const guestEnglish=()=>!!guest&&window.SPM_LANGUAGE?.get?.()==='en';
 const guestText=(es,en)=>guestEnglish()?en:es;
-function guestProgress(){guest?.progress?.({version:1,motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
+function guestProgress(){guest?.progress?.({version:1,insights:window.SPM_INSIGHT_FLOW?.snapshot(),motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 const motiveDefs=[
  ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
@@ -78,7 +78,7 @@ async function restore(){
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
 }
-function resetForAssessment(){S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function resetForAssessment(){window.SPM_INSIGHT_FLOW?.reset();S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
  motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / performance anxiety',wellbeing:'Satisfaction and connection',optimization:'Optimization / prevention'}[id]||t):t}</b>`;fragment.appendChild(b)});
@@ -137,6 +137,16 @@ function renderMap(){
  $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>Sin banderas mayores detectadas en este tamizaje.</b> Esto no sustituye una valoración médica.</div>';
  const g=$('domainGrid');g.innerHTML='';Object.entries(m.scores).filter(([k])=>['erection','ejaculation','desire','confidence','wellbeing','lifestyle'].includes(k)).forEach(([k,v])=>{g.insertAdjacentHTML('beforeend',`<div class="domain"><div class="domainHead"><b>${label(k)}</b><span>${v}/100</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`)});
  $('whyList').innerHTML=`<div class="mini"><small>Driver principal</small><p>${label(m.primary)} es el dominio con mayor margen de trabajo.</p></div>${m.secondary?`<div class="mini"><small>Secundario</small><p>${label(m.secondary)} puede modificar la respuesta del driver principal.</p></div>`:''}`;
+ if(!guest){
+  let welcome=$('spmWelcome');if(!welcome){welcome=document.createElement('section');welcome.id='spmWelcome';welcome.className='card';$('map').prepend(welcome)}
+  welcome.replaceChildren();
+  const title=document.createElement('h2');title.textContent='Bienvenido a tu programa SPM de 28 días';welcome.append(title);
+  const intro=document.createElement('p');intro.textContent=`Según tu autoevaluación, vamos a priorizar ${label(m.primary).toLowerCase()}${m.secondary?`, junto con ${label(m.secondary).toLowerCase()}`:''}. Tus respuestas orientan las áreas que exploraremos; no confirman una enfermedad ni una causa.`;welcome.append(intro);
+  const work={erection:'Comprender tu respuesta eréctil, trabajar las sensaciones y la confianza, y practicar según tu ruta.',ejaculation:'Reconocer la excitación y entrenar el ritmo y el control con prácticas progresivas y descansos.',desire:'Explorar el deseo, las sensaciones y las condiciones que facilitan la conexión, sin exigencia de rendimiento.',confidence:'Trabajar la ansiedad de rendimiento, la atención y la confianza con recursos guiados.',wellbeing:'Fortalecer la comunicación, la conexión y el disfrute compartido.',lifestyle:'Trabajar hábitos de sueño, movimiento y alimentación distribuidos durante el programa.'};
+  for(const key of new Set([m.primary,m.secondary])){if(work[key]){const item=document.createElement('p');item.textContent=work[key];welcome.append(item)}}
+  const guide=document.createElement('p');guide.textContent='Tu rutina te indicará qué realizar cada día. Tendrás recursos de apoyo, una biblioteca y revisiones para observar tu evolución. Respeta las indicaciones de seguridad que aparecen en tu evaluación.';welcome.append(guide);
+  const note=document.createElement('p');note.className='notice';note.textContent='SPM complementa tu cuidado de la salud. No reemplaza una valoración médica ni tu tratamiento. Si tienes un medicamento prescrito para la función eréctil u otra condición, participar en el programa no es motivo para suspenderlo ni cambiar su dosis. Cualquier ajuste debe acordarse con el profesional que te lo indique.';welcome.append(note);
+ }
 }
 function renderPlan(){
  if(!S.map||!M.days)return;const tabs=$('phaseTabs');tabs.innerHTML='';(M.phases||[]).forEach(ph=>{const b=document.createElement('button');b.className='phaseBtn'+(S.phase===ph.id?' on':'');b.textContent=`${ph.id}. ${ph.name_es}`;b.onclick=()=>{S.phase=ph.id;renderPlan()};tabs.appendChild(b)});
@@ -188,6 +198,7 @@ const guestAPI=guest?{
  start(saved){
   resetForAssessment();hideMsg();show('appScreen');
   if(saved?.version===1){
+   window.SPM_INSIGHT_FLOW?.restore(saved.insights);
    S.motives=(saved.motives||[]).filter(k=>motiveDefs.some(([id])=>id===k));
    const ids=new Set(E.assessment.questions.map(q=>q.id));
    S.answers=Object.fromEntries(Object.entries(saved.answers||{}).filter(([k])=>ids.has(k)));
@@ -227,7 +238,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false;guestProgress()}else msg('SPM está diseñado para mayores de 18 años.','warn')});
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Selecciona al menos un motivo.','Choose at least one reason.'),'warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
- $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
+ $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();const advance=()=>{clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};if(window.SPM_INSIGHT_FLOW){window.SPM_INSIGHT_FLOW.advance(q.id,advance);guestProgress()}else advance()};
  document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;if($('newAssessment'))$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
 });
 })();
