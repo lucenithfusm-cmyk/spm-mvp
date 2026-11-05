@@ -45,6 +45,7 @@ function addCSS(){
 .spmOfferPlayer{overflow-anchor:none;min-width:0}
 .spmOfferExplore>section{min-width:0}
 .spmOfferMessage{max-width:720px;margin:25px auto;text-align:center}
+.spmOfferValue{padding:24px;border:1px solid #C5A46C66;border-radius:20px;background:#0b252d;text-align:left}.spmOfferValue p{font-size:17px;line-height:1.65}.spmOfferValue p+p{margin-top:14px}.spmOfferValue strong{color:#f6ead4}
 .spmGateVisual .spmOfferMessage h2{margin:0 0 9px;color:#e8faf3;font-size:clamp(23px,3.4vw,32px);line-height:1.15;letter-spacing:-.035em}
 .spmOfferMessage p{max-width:570px;margin:0 auto;color:#aac8c7;font-size:15px;line-height:1.5}
 .spmOfferMessageConnection{margin:0 auto 30px}.spmOfferMessageFinal{margin:25px auto 15px}

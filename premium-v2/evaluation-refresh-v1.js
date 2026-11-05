@@ -1,13 +1,13 @@
 (()=>{
 'use strict';
 const MOMENTS=[
-{at:6,n:1,es:{k:'INSIGHT 1 DE 4',t:'Tu patrón empieza a tomar forma.',b:'No estamos mirando una respuesta aislada. Estamos conectando señales para entender qué áreas merecen mayor atención.',micro:'Tu evaluación ya está construyendo una lectura más completa de ti.'},en:{k:'INSIGHT 1 OF 4',t:'Your Performance Starts in Your Mind',b:'Confidence, focus and control are not just mental — they directly influence your sexual performance. When you manage stress and train your mindset, your body responds.',micro:'A calmer mind builds a stronger you.'}},
-{at:11,n:2,es:{k:'INSIGHT 2 DE 4',t:'Lo que ocurre fuera también cuenta.',b:'Sueño, estrés, actividad física y salud general pueden influir en distintos componentes de tu rendimiento.',micro:'Mejorar no empieza con una fórmula genérica. Empieza entendiendo qué está influyendo en ti.'},en:{k:'INSIGHT 2 OF 4',t:'Better Blood Flow, Better Performance',b:'Healthy circulation is key to stronger erections, greater stamina and a more satisfying response. Exercise, breathing and healthy habits can naturally support blood flow and sexual response.',micro:'Your body performs better when it flows.'}},
-{at:16,n:3,es:{k:'INSIGHT 3 DE 4',t:'Tu caso es único.',b:'No existe una plantilla para todos. SPM analiza tus respuestas para construir un programa personalizado según las áreas que tu evaluación identifica como prioritarias.',micro:'Tu programa se construye alrededor de tu punto de partida, no al revés.'},en:{k:'INSIGHT 3 OF 4',t:'Less Anxiety, More Connection',b:'When you reduce anxiety and stay present, you can enjoy intimacy more, feel more secure and connect more deeply with your partner. Regulation techniques help you stay in control when it matters most.',micro:'Calm leads to control. Control leads to freedom.'}},
-{at:21,n:4,es:{k:'INSIGHT 4 DE 4',t:'Tu Performance Map™ está casi listo.',b:'Estamos conectando las piezas para mostrarte tu punto de partida y las áreas que conviene fortalecer.',micro:'Cuando sabes qué trabajar, mejorar deja de depender del ensayo y error.'},en:{k:'INSIGHT 4 OF 4',t:'Small Changes Create Big Results',b:'Better sleep, regular exercise, healthy nutrition and consistent habits can significantly improve sexual performance and overall well-being. You do not need to be perfect — just consistent.',micro:'Consistency today creates a stronger tomorrow.'}}
+{at:4,n:1,es:{k:'INSIGHT 1 DE 4',t:'Tu patrón empieza a tomar forma.',b:'No estamos mirando una respuesta aislada. Estamos conectando señales para entender qué áreas merecen mayor atención.',micro:'Tu evaluación ya está construyendo una lectura más completa de ti.'},en:{k:'INSIGHT 1 OF 4',t:'Your Performance Starts in Your Mind',b:'Confidence, focus and control are not just mental — they directly influence your sexual performance. When you manage stress and train your mindset, your body responds.',micro:'A calmer mind builds a stronger you.'}},
+{at:8,n:2,es:{k:'INSIGHT 2 DE 4',t:'Lo que ocurre fuera también cuenta.',b:'Sueño, estrés, actividad física y salud general pueden influir en distintos componentes de tu rendimiento.',micro:'Mejorar no empieza con una fórmula genérica. Empieza entendiendo qué está influyendo en ti.'},en:{k:'INSIGHT 2 OF 4',t:'Better Blood Flow, Better Performance',b:'Healthy circulation is key to stronger erections, greater stamina and a more satisfying response. Exercise, breathing and healthy habits can naturally support blood flow and sexual response.',micro:'Your body performs better when it flows.'}},
+{at:12,n:3,es:{k:'INSIGHT 3 DE 4',t:'Tu caso es único.',b:'No existe una plantilla para todos. SPM analiza tus respuestas para construir un programa personalizado según las áreas que tu evaluación identifica como prioritarias.',micro:'Tu programa se construye alrededor de tu punto de partida, no al revés.'},en:{k:'INSIGHT 3 OF 4',t:'Less Anxiety, More Connection',b:'When you reduce anxiety and stay present, you can enjoy intimacy more, feel more secure and connect more deeply with your partner. Regulation techniques help you stay in control when it matters most.',micro:'Calm leads to control. Control leads to freedom.'}},
+{at:16,n:4,es:{k:'INSIGHT 4 DE 4',t:'Tu Performance Map™ está casi listo.',b:'Estamos conectando las piezas para mostrarte tu punto de partida y las áreas que conviene fortalecer.',micro:'Cuando sabes qué trabajar, mejorar deja de depender del ensayo y error.'},en:{k:'INSIGHT 4 OF 4',t:'Small Changes Create Big Results',b:'Better sleep, regular exercise, healthy nutrition and consistent habits can significantly improve sexual performance and overall well-being. You do not need to be perfect — just consistent.',micro:'Consistency today creates a stronger tomorrow.'}}
 ];
 const IMAGES={es:{1:'assets/insights/insight-1-es.png?v=20260912b',2:'assets/insights/insight-2-es.png?v=20260912b',3:'assets/insights/insight-3-es.png?v=20260912b',4:'assets/insights/insight-4-es.png?v=20260912b'},en:{1:'assets/insights/insight-1-en.png?v=20260912b',2:'assets/insights/insight-2-en.png?v=20260912b',3:'assets/insights/insight-3-en.png?v=20260912b',4:'assets/insights/insight-4-en.png?v=20260912b'}};
-const seen=new Set();let layer=null,last='',player=null,audioTimer=null,returnFocus=null;
+const seen=new Set(),answered=new Set();let layer=null,player=null,audioTimer=null,returnFocus=null,onContinue=null;
 function lang(){const v=(window.SPM_LANG||localStorage.getItem('spm_lang')||document.documentElement.lang||'es').toLowerCase();return v.startsWith('en')?'en':'es'}
 function tx(es,en){return lang()==='en'?en:es}
 function addCSS(){if(document.getElementById('spmRefreshCSS'))return;const s=document.createElement('style');s.id='spmRefreshCSS';s.textContent=`
@@ -31,7 +31,7 @@ function play(n,btn,state){
  const unavailable=()=>{if(!active())return;stopAudio();if(btn)btn.textContent='▶';state.textContent=tx('Pulsa Escuchar para oír el mensaje o Continuar para avanzar.','Tap Listen to hear the message or Continue to move on.')};
  sound.onerror=unavailable;try{const p=sound.play();if(p?.catch)p.catch(unavailable)}catch{unavailable()}
 }
-function close(){cancelAudioTimer();stopAudio();layer?.remove();layer=null;const focus=returnFocus;returnFocus=null;if(focus?.isConnected)focus.focus?.({preventScroll:true})}
+function close(advance=true){const next=onContinue;onContinue=null;cancelAudioTimer();stopAudio();layer?.remove();layer=null;const focus=returnFocus;returnFocus=null;if(focus?.isConnected)focus.focus?.({preventScroll:true});if(advance&&next)next()}
 function showPoster(x,img){
  const language=lang(),isEn=language==='en',copy=isEn?x.en:x.es;returnFocus=document.activeElement;layer=document.createElement('div');layer.className='spmRefresh';
  layer.innerHTML=`<section class="spmPosterWrap" data-insight="${x.n}" data-lang="${language}" role="dialog" aria-modal="true" aria-label="SPM Insight ${x.n}"><div class="spmPosterViewport"><div class="spmPosterMedia"><img class="spmPoster" src="${img}" alt="${copy.t}"><button class="spmPosterPlay" type="button" aria-hidden="true" tabindex="-1">Audio</button></div></div><div class="spmPosterControls"><div class="spmPosterActions"><button class="spmInsightListen" type="button" aria-label="${isEn?'Play or stop message':'Escuchar o detener mensaje'}" aria-pressed="false">${isEn?'▶ Listen':'▶ Escuchar'}</button><button class="spmPosterContinue" type="button" aria-label="${isEn?'Continue my assessment':'Continuar mi evaluación'}">${isEn?'Continue →':'Continuar →'}</button></div><p class="spmPosterHint">${isEn?'Continue automatically after the audio, or tap the image to continue now.':'Avanza al terminar el audio o toca la imagen para continuar ahora.'}</p><div class="spmPosterState" aria-live="polite"></div></div></section>`;
@@ -46,7 +46,28 @@ function showPoster(x,img){
 }
 function showEnglish(x){const z=x.en;layer=document.createElement('div');layer.className='spmRefresh';layer.innerHTML=`<section class="spmEnglishCard" role="dialog" aria-modal="true" aria-label="SPM Insight ${x.n}"><div class="spmEnglishHero"><span class="spmEnglishTag">${z.k}</span><h2>${z.t}</h2><p>${z.b}</p></div><div class="spmEnglishMicro">“${z.micro}”</div><div class="spmEnglishActions"><button class="spmEnglishContinue" type="button">Continue my assessment</button><button class="spmEnglishListen" type="button" aria-label="Play or stop message">▶</button></div><div class="spmEnglishState" aria-live="polite"></div></section>`;document.body.appendChild(layer);const btn=layer.querySelector('.spmEnglishListen'),state=layer.querySelector('.spmEnglishState');btn.onclick=()=>{if(player){stopAudio();btn.textContent='▶';state.textContent='Audio stopped.'}else play(x.n,btn,state)};layer.querySelector('.spmEnglishContinue').onclick=close;audioTimer=setTimeout(()=>{audioTimer=null;play(x.n,btn,state)},450)}
 function show(x){addCSS();const img=IMAGES[lang()]?.[x.n]||'';if(img)showPoster(x,img);else showEnglish(x)}
-function tick(){if(layer)return;const card=document.getElementById('quizCard'),count=document.getElementById('qCount');if(!card||card.hidden||!count)return;const text=count.textContent.trim();if(!text||text===last)return;last=text;const m=text.match(/(\d+)\s*\/\s*(\d+)/);if(!m)return;const pos=Number(m[1]);const x=MOMENTS.find(v=>v.at===pos&&!seen.has(v.at));if(x){seen.add(x.at);setTimeout(()=>show(x),220)}}
-window.SPM_INSIGHTS_PREVIEW={open(n){const item=MOMENTS.find(x=>x.n===Number(n));if(!item)return;close();show(item)},close};
-window.addEventListener('spm:languagechange',()=>{if(layer)close()});setInterval(tick,250);
+// Progress is driven by validated Next actions, never by polling a rendered counter.
+window.SPM_INSIGHT_FLOW={
+ reset(){close(false);seen.clear();answered.clear()},
+ restore(saved){
+  this.reset();
+  if(saved?.version!==1)return;
+  for(const id of Array.isArray(saved.answered)?saved.answered:[])if(typeof id==='string'&&id.length<120)answered.add(id);
+  for(const n of Array.isArray(saved.seen)?saved.seen:[])if(MOMENTS.some(x=>x.n===n))seen.add(n);
+ },
+ snapshot(){return {version:1,answered:[...answered],seen:[...seen]}},
+ advance(questionId,next){
+  if(layer||document.querySelector('.spmJourney,.spmGate'))return;
+  answered.add(questionId);
+  const item=MOMENTS.find(x=>answered.size>=x.at&&!seen.has(x.n));
+  if(!item){next();return}
+  onContinue=()=>{seen.add(item.n);next()};show(item);
+ }
+};
+window.SPM_INSIGHTS_PREVIEW={open(n){if(onContinue)return;const item=MOMENTS.find(x=>x.n===Number(n));if(!item)return;close(false);show(item)},close:()=>close(false)};
+window.addEventListener('spm:languagechange',()=>{
+ if(!layer)return;
+ const n=Number(layer.querySelector('[data-insight]')?.dataset.insight),item=MOMENTS.find(x=>x.n===n),next=onContinue;
+ close(false);if(item){onContinue=next;show(item)}
+});
 })();
