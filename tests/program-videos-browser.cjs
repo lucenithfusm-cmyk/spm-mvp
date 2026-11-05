@@ -8,7 +8,7 @@ const assert=require('node:assert/strict');
  for(const width of [390,768,1440]){
   const page=await browser.newPage({viewport:{width,height:900},ignoreHTTPSErrors:true});page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/__program-video-review.html',r=>r.fulfill({body:html,contentType:'text/html'}));
-  await page.goto('http://127.0.0.1:4173/premium-v2/__program-video-review.html');
+  await page.goto((process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/')+'__program-video-review.html');
   const before=await page.evaluate(()=>JSON.stringify(testContext));
   for(const lab of ['sensate','desire']){
    await page.evaluate(lab=>window[lab==='sensate'?'SPM_SENSATE_LAB':'SPM_DESIRE_LAB'].open({origin:'library'}),lab);

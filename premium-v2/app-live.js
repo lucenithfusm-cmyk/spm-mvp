@@ -1,7 +1,8 @@
 (()=>{
 const SB_URL='https://jogirmziqjlsttbbarcx.supabase.co';
 const SB_KEY='sb_publishable_jXmxa5K6ThK9C8DPIxmVVQ_mbuLWVaf';
-const db=window.supabase.createClient(SB_URL,SB_KEY);
+const PUBLIC_ASSESSMENT=document.documentElement.dataset.spmPublicAssessment==='true';
+const db=PUBLIC_ASSESSMENT?null:window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
@@ -141,6 +142,7 @@ function show(id){document.querySelectorAll('.screen').forEach(x=>x.hidden=x.id!
 function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.panel===id));}
 function label(k){return (M.profiles?.[k]?.label_es)||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
+ if(PUBLIC_ASSESSMENT){show('appScreen');renderMotives();resetForAssessment(true);return;}
  const {data:{session}}=await db.auth.getSession();
  if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
  db.auth.onAuthStateChange(async(event,session)=>{
@@ -292,7 +294,13 @@ function scoreMap(){
  const total=Math.round(core.reduce((a,k)=>a+scores[k],0)/(core.length||1));return{scores,primary,secondary,urgent,review,total};
 }
 async function finishAssessment(){
- S.map=scoreMap();msg('Guardando tu evaluación y creando el plan…','good');
+ S.map=scoreMap();
+ if(PUBLIC_ASSESSMENT){
+  $('quizCard').hidden=true;hideMsg();renderMap();
+  window.dispatchEvent(new CustomEvent('spm:public-assessment-complete'));
+  return;
+ }
+ msg('Guardando tu evaluación y creando el plan…','good');
  const now=new Date().toISOString();
  const {data:a,error:ae}=await db.from('assessments').insert({user_id:S.user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:now}).select().single();
  if(ae){msg('No pudimos guardar la evaluación: '+ae.message,'danger');return}S.assessmentId=a.id;
