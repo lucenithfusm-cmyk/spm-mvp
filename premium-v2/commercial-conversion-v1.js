@@ -17,6 +17,7 @@ window.addEventListener('spm:public-assessment-complete',event=>{
  const areaLabels={erection:'Firmeza y estabilidad de la erección',ejaculation:'Control y ritmo eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza y presión de rendimiento',wellbeing:'Satisfacción y conexión',lifestyle:'Hábitos y bienestar general'};
  const areas=[...new Set(event.detail?.priorities||[])].filter(k=>areaLabels[k]).slice(0,2);
  const hero=gate.querySelector('.spmGateHero');
+ const medication=document.createElement('p');medication.className='spmClinicalPromise';medication.dataset.medicationNote='';medication.textContent='SPM complementa tu cuidado de la salud; no reemplaza una valoración médica ni tu tratamiento. Si tienes un medicamento prescrito para la función eréctil u otra condición, participar en el programa no es motivo para suspenderlo ni cambiar su dosis. Cualquier ajuste debe acordarse con el profesional que te lo indicó.';hero.querySelector('.spmGateNote').before(medication);
  hero.querySelector('h1').textContent='Hemos analizado tus respuestas.';
  hero.querySelector('.lead').textContent='Este es tu perfil inicial: una primera orientación para entender qué áreas merecen atención y por qué puede ayudarte una ruta guiada.';
  const finding=hero.querySelector('.spmFinding');finding.replaceChildren();

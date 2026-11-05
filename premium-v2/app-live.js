@@ -5,6 +5,7 @@ const PUBLIC_ASSESSMENT=document.documentElement.dataset.spmPublicAssessment==='
 const db=PUBLIC_ASSESSMENT?null:window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
+const MEDICATION_NOTE='SPM complementa tu cuidado de la salud; no reemplaza una valoración médica ni tu tratamiento. Si tienes un medicamento prescrito para la función eréctil u otra condición, participar en el programa no es motivo para suspenderlo ni cambiar su dosis. Cualquier ajuste debe acordarse con el profesional que te lo indicó.';
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 window.SPM_RESTORE_AUTHORITY_V3=true;
 const restoreState={running:false,complete:false,hasPlan:false};
@@ -284,6 +285,7 @@ function renderQ(){
    const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
    opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
  }
+ if(q.id==='h_meds'){const note=document.createElement('p');note.className='notice';note.dataset.medicationNote='';note.textContent=MEDICATION_NOTE;box.appendChild(note);}
  $('qBack').disabled=prevVisibleIndex(S.qi)<0;
 }
 function scoreMap(){
@@ -314,7 +316,7 @@ async function finishAssessment(){
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu evaluación, mapa y programa de 28 días quedaron guardados.','good');
 }
 function renderMap(){
- if(!S.map)return;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
+ if(!S.map)return;let medication=$('spmMedicationNote');if(!medication){medication=document.createElement('p');medication.id='spmMedicationNote';medication.className='notice';$('profileExplain').after(medication)}medication.textContent=MEDICATION_NOTE;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
  $('profileExplain').textContent=`Tu prioridad educativa principal aparece en ${label(m.primary).toLowerCase()}${m.secondary?`, con un componente secundario en ${label(m.secondary).toLowerCase()}`:''}. El mapa guía el entrenamiento; no es un diagnóstico.`;
  $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>Sin banderas mayores detectadas en este tamizaje.</b> Esto no sustituye una valoración médica.</div>';
  const g=$('domainGrid');g.innerHTML='';Object.entries(m.scores).filter(([k])=>['erection','ejaculation','desire','confidence','wellbeing','lifestyle'].includes(k)).forEach(([k,v])=>{g.insertAdjacentHTML('beforeend',`<div class="domain"><div class="domainHead"><b>${label(k)}</b><span>${v}/100</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`)});
