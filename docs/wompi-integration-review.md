@@ -4,13 +4,13 @@ Estado al 5 de noviembre de 2026: integración unificada en revisión; infraestr
 
 ## Recorrido preparado
 
-1. `premium-v2/free-assessment.html`: evaluación directa, sin usuario ni contraseña. Conserva el cierre audiovisual aprobado y muestra cuatro insights después de 4, 8, 12 y 16 respuestas únicas.
+1. `premium-v2/free-assessment.html`: portada SPM Digital Wellness con introducción y tres pasos; el botón de comenzar abre la confirmación de edad y la evaluación sin usuario ni contraseña. Conserva el cierre audiovisual aprobado y muestra cuatro insights después de 4, 8, 12 y 16 respuestas únicas.
 2. La compra presenta **$149.000 COP, pago único**. El texto de valor está inmediatamente después de «Tu ritmo. Tu control». El video mantiene el botón grande de reproducción, con pulso y respeto a movimiento reducido.
 3. Al elegir comprar, se crea o se utiliza la cuenta para conservar la evaluación. Crear la cuenta no cobra ni activa un plan.
 4. El servidor crea una orden única, fija el valor y firma el enlace de Wompi. Reutiliza una orden pendiente para evitar duplicados.
 5. El regreso de Wompi muestra pendiente, no aprobado, prueba aprobada o pago confirmado. La URL del navegador por sí sola no activa acceso.
 6. El servidor comprueba firma de eventos, ambiente, referencia, moneda e importe y consulta la transacción directamente en Wompi. Solo una aprobación de producción puede crear acceso comercial. La confirmación en la base de datos es atómica e idempotente.
-7. `premium-v2/live.html` conserva el programa moderno completo. La bienvenida incluye interpretación educativa, áreas de trabajo, objetivos, instrucciones, avance real y la nota de cuidado de salud acordada.
+7. `premium-v2/live.html` conserva el programa moderno completo. La bienvenida incluye la marca completa, una introducción al programa, un recorrido visual (comprende, practica, observa), interpretación educativa, áreas de trabajo, objetivos, instrucciones, avance real y la nota de cuidado de salud acordada.
 
 La antigua grabación comercial aún menciona US$39. Se conserva por la autorización de mantenerla si la voz no podía corregirse; la interfaz y el cobro usan COP 149.000. No presentar la grabación como actualizada.
 
