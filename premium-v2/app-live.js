@@ -5,6 +5,7 @@ const PUBLIC_ASSESSMENT=document.documentElement.dataset.spmPublicAssessment==='
 const db=PUBLIC_ASSESSMENT?null:window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
+const MEDICATION_NOTE='SPM complementa tu cuidado de la salud. No reemplaza una valoración médica ni tu tratamiento. Si tienes un medicamento prescrito para la función eréctil u otra condición, participar en el programa no es motivo para suspenderlo ni cambiar su dosis. Cualquier ajuste debe acordarse con el profesional que te lo indique.';
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 window.SPM_RESTORE_AUTHORITY_V3=true;
 const restoreState={running:false,complete:false,hasPlan:false};
@@ -24,7 +25,7 @@ function restoreOverlay(show=true,text='Restaurando tu programa SPM…'){
 async function withRetry(task,attempts=3){
  let lastError=null;
  for(let i=0;i<attempts;i++){
-  const result=await task();
+  let timer;const result=await Promise.race([task(),new Promise(resolve=>{timer=setTimeout(()=>resolve({error:new Error('La conexión tardó demasiado.')}),8000)})]).finally(()=>clearTimeout(timer));
   if(!result?.error)return result;
   lastError=result.error;
   if(i<attempts-1)await wait(300*(i+1));
@@ -61,6 +62,10 @@ window.SPM_DAILY_RECORDS={
 window.SPM_RESOURCE_RECORDS={
  async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
  async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
+};
+window.SPM_EP_RECORDS={
+ async read(expectedScope){const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');const {data,error}=await db.from('activity_completions').select('metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:ep_checkpoint');if(error)throw error;return (data||[]).map(x=>x.metadata);},
+ async save(record,expectedScope){const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope||![1,14,28].includes(record.day)||record.day>Number(c.day))throw Error('Program changed');if(typeof record.ielt_evaluable!=='boolean'||(record.ielt_evaluable&&(!Number.isInteger(record.ielt_seconds)||record.ielt_seconds<=0||record.ielt_seconds>3599))||(record.pedt_score!==null&&(!Number.isInteger(record.pedt_score)||record.pedt_score<0||record.pedt_score>20)))throw Error('Invalid checkpoint');const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:record.day,module_key:'resource:ep_checkpoint',metadata:record,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;}
 };
 // The educational Lab saves its own state. It never completes a calendar day.
 window.SPM_PELVIC_RECORDS={
@@ -188,12 +193,27 @@ async function enterApp(){
   const restored=await restore();
   // Existing programs can render without waiting for a secondary profile write.
   if(restored)ensureProfile().catch(error=>console.warn('SPM profile sync delayed',error));
-  else if(!restoreState.hasPlan){await ensureProfile();renderMotives();}
+  else if(!restoreState.hasPlan){ensureProfile().catch(()=>{});}
  }catch(error){
   console.error('SPM authoritative restore',error);
-  msg('No pudimos terminar de restaurar tu programa. Tus datos siguen guardados; vuelve a intentar en unos segundos.','warn');
+  msg('No pudimos terminar de recuperar tu programa. Tu avance se conserva. Usa «Reintentar acceso» para continuar.','warn');
+  let retry=$('spmRestoreRetry');if(!retry){retry=document.createElement('button');retry.id='spmRestoreRetry';retry.className='btn pri';retry.textContent='Reintentar acceso';$('status').after(retry);}retry.onclick=async()=>{retry.disabled=true;await enterApp();retry.disabled=false;};
  }finally{restoreOverlay(false);}
 }
+function showAccessPending(){
+ nav('intake');['ageCard','motiveCard','quizCard'].forEach(id=>$(id).hidden=true);
+ let card=$('spmAccessPending');if(!card){card=document.createElement('section');card.id='spmAccessPending';card.className='card';$('intake').append(card);}
+ card.innerHTML='<h2>Recuperemos tu siguiente paso.</h2><p>Tu cuenta está lista. Si ya pagaste, comprueba la confirmación para recuperar tu programa. Si todavía no has realizado la autoevaluación gratuita, puedes abrirla directamente.</p><p><a class="btn pri" href="free-assessment.html">Abrir mi evaluación gratuita</a></p><button type="button" class="btn sec" data-access-retry>Ya pagué: comprobar mi acceso</button><p role="status"></p>';
+ card.querySelector('[data-access-retry]').onclick=async()=>{const b=card.querySelector('button'),status=card.querySelector('[role=status]');b.disabled=true;try{const result=await window.SPM_PAYMENTS.latest(db);if(result.orderId){location.assign('payment-return.html?order='+encodeURIComponent(result.orderId));return;}status.textContent='No encontramos una compra asociada a esta cuenta. Comprueba que usas el mismo correo con el que realizaste el pago.';}catch{status.textContent='No pudimos comprobarlo ahora. Tu pago no se ha repetido; conserva el enlace de confirmación de Wompi y reintenta.';}finally{b.disabled=false;}};
+}
+window.SPM_PROGRAM_REPAIR={
+ async save(patch,expectedScope){
+  let c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
+  await window.SPM_PAYMENTS.completeMissing(db,c.planId,patch);
+  c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
+  await restore();window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+ }
+};
 async function ensureProfile(){
  const {error}=await db.from('profiles').upsert({id:S.user.id,alias:(S.user.email||'usuario').split('@')[0],locale:'es'},{onConflict:'id'});
  if(error)console.warn('SPM profile sync',error);
@@ -203,7 +223,7 @@ async function restore(){
  restoreState.running=true;
  try{
   const {data:plans}=await withRetry(()=>db.from('plans').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}));
-  if(!plans?.length){restoreState.complete=true;restoreState.hasPlan=false;resetForAssessment(true);return false}
+  if(!plans?.length){restoreState.complete=true;restoreState.hasPlan=false;showAccessPending();return false}
   const ranked=[...plans].sort((a,b)=>{
    const active=(b.status==='active')-(a.status==='active');
    if(active)return active;
@@ -221,6 +241,7 @@ async function restore(){
    if(ar.data&&mr.data){p=candidate;a=ar.data;m=mr.data;break}
   }
   if(!p)throw new Error('Se encontró tu cuenta, pero no un conjunto completo de evaluación, Performance Map y plan.');
+  $('spmRestoreRetry')?.remove();$('spmAccessPending')?.remove();
   S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
   S.motives=a.motives||[];S.answers=a.answers||{};
   S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
@@ -297,28 +318,27 @@ async function finishAssessment(){
  S.map=scoreMap();
  if(PUBLIC_ASSESSMENT){
   $('quizCard').hidden=true;hideMsg();renderMap();
-  window.dispatchEvent(new CustomEvent('spm:public-assessment-complete'));
+  window.dispatchEvent(new CustomEvent('spm:public-assessment-complete',{detail:{priorities:[S.map.primary,S.map.secondary].filter(Boolean)}}));
   return;
  }
- msg('Guardando tu evaluación y creando el plan…','good');
- const now=new Date().toISOString();
- const {data:a,error:ae}=await db.from('assessments').insert({user_id:S.user.id,status:'completed',motives:S.motives,answers:S.answers,completed_at:now}).select().single();
- if(ae){msg('No pudimos guardar la evaluación: '+ae.message,'danger');return}S.assessmentId=a.id;
- const safety=S.map.urgent.length?'urgent':S.map.review.length?'review':'none', flags=[...S.map.urgent,...S.map.review];
- const explanation=`Prioridad educativa: ${label(S.map.primary)}${S.map.secondary?`; secundaria: ${label(S.map.secondary)}`:''}.`;
- const {data:m,error:me}=await db.from('performance_maps').insert({user_id:S.user.id,assessment_id:S.assessmentId,spm_score:S.map.total,primary_domain:S.map.primary,secondary_domain:S.map.secondary,domain_scores:S.map.scores,safety_level:safety,safety_flags:flags,explanation}).select().single();
- if(me){msg('La evaluación se guardó, pero el mapa no: '+me.message,'danger');return}S.mapId=m.id;
- const snapshot={version:'SPM-V1-live',primary:S.map.primary,secondary:S.map.secondary,created_at:now};
- const {data:p,error:pe}=await db.from('plans').insert({user_id:S.user.id,assessment_id:S.assessmentId,performance_map_id:S.mapId,route_key:S.map.primary,cycle_days:28,current_day:1,status:'active',plan_snapshot:snapshot}).select().single();
- if(pe){msg('El mapa se guardó, pero el plan no: '+pe.message,'danger');return}S.planId=p.id;
- ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu evaluación, mapa y programa de 28 días quedaron guardados.','good');
+ // New enrollments are created only by the server after verified payment.
+ showAccessPending();
 }
 function renderMap(){
  if(!S.map)return;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
- $('profileExplain').textContent=`Tu prioridad educativa principal aparece en ${label(m.primary).toLowerCase()}${m.secondary?`, con un componente secundario en ${label(m.secondary).toLowerCase()}`:''}. El mapa guía el entrenamiento; no es un diagnóstico.`;
+ $('profileExplain').textContent=`Según tu autoevaluación, tu área prioritaria de trabajo es ${label(m.primary).toLowerCase()}${m.secondary?`, junto con ${label(m.secondary).toLowerCase()}`:''}. Estas respuestas nos ayudan a organizar tu rutina y explorar factores que pueden relacionarse con tu experiencia sexual. No establecen un diagnóstico ni confirman una causa.`;
  $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>Sin banderas mayores detectadas en este tamizaje.</b> Esto no sustituye una valoración médica.</div>';
  const g=$('domainGrid');g.innerHTML='';Object.entries(m.scores).filter(([k])=>['erection','ejaculation','desire','confidence','wellbeing','lifestyle'].includes(k)).forEach(([k,v])=>{g.insertAdjacentHTML('beforeend',`<div class="domain"><div class="domainHead"><b>${label(k)}</b><span>${v}/100</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`)});
  $('whyList').innerHTML=`<div class="mini"><small>Driver principal</small><p>${label(m.primary)} es el dominio con mayor margen de trabajo.</p></div>${m.secondary?`<div class="mini"><small>Secundario</small><p>${label(m.secondary)} puede modificar la respuesta del driver principal.</p></div>`:''}`;
+ if(!PUBLIC_ASSESSMENT){
+  let routine=$('spmMapRoutine');if(!routine){routine=document.createElement('section');routine.id='spmMapRoutine';routine.className='card';$('map').append(routine)}
+  const work={erection:'Trabajaremos la comprensión de tu respuesta eréctil, la atención a las sensaciones y la confianza, junto con prácticas y hábitos seleccionados para tu ruta.',ejaculation:'Trabajaremos el reconocimiento de la excitación, el ritmo y las habilidades de control, con prácticas progresivas y descansos dentro de tu calendario.',desire:'Trabajaremos la exploración del deseo, el contexto, las sensaciones y la conexión, sin convertir la experiencia en una exigencia de rendimiento.',confidence:'Trabajaremos la presión de rendimiento, la atención y la confianza mediante recursos guiados y registros de tu experiencia.',wellbeing:'Trabajaremos la satisfacción, la conexión y los hábitos que apoyan tu bienestar sexual.',lifestyle:'Trabajaremos una base de hábitos y bienestar, con recomendaciones de sueño, movimiento y alimentación distribuidas durante el programa.'};
+  routine.replaceChildren();const title=document.createElement('h3');title.textContent='Qué vamos a trabajar en tu rutina';routine.append(title);
+  for(const key of [...new Set([m.primary,m.secondary].filter(Boolean))]){if(work[key]){const paragraph=document.createElement('p');paragraph.textContent=work[key];routine.append(paragraph)}}
+  const schedule=document.createElement('p');schedule.textContent='En «Hoy» encontrarás las actividades asignadas a tu día. El calendario combina tu prioridad con apoyos de otras áreas y seguimiento de tu evolución. Las prácticas se ajustan a las indicaciones de seguridad de tu evaluación.';routine.append(schedule);
+  let medication=$('spmMedicationNote');if(!medication){medication=document.createElement('p');medication.id='spmMedicationNote';medication.className='notice'}medication.textContent=MEDICATION_NOTE;medication.hidden=!!window.SPM_PROGRAM_WELCOME;routine.append(medication);
+ }
+ window.SPM_PROGRAM_WELCOME?.mount();
 }
 function renderPlan(){
  if(!S.map||!M.days)return;const tabs=$('phaseTabs');tabs.innerHTML='';(M.phases||[]).forEach(ph=>{const b=document.createElement('button');b.className='phaseBtn'+(S.phase===ph.id?' on':'');b.textContent=`${ph.id}. ${ph.name_es}`;b.onclick=()=>{S.phase=ph.id;renderPlan()};tabs.appendChild(b)});
@@ -397,6 +417,6 @@ document.addEventListener('DOMContentLoaded',()=>{
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg('Selecciona al menos un motivo.','warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?'Escribe una respuesta para continuar.':'Selecciona una respuesta.','warn');return}hideMsg();clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};
- document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{restoreState.hasPlan=false;window.SPM_RESTORED_CONTEXT=null;resetForAssessment(true);hideMsg()};boot();
+ document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;$('newAssessment').onclick=()=>{location.assign('free-assessment.html')};boot();
 });
 })();
