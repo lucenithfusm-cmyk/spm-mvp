@@ -1,7 +1,7 @@
 name: Published SPM release QA
 on:
   pull_request:
-    paths: ['tests/production-release-browser.cjs', '.github/workflows/production-release-qa.yml']
+    paths: ['premium-v2/evaluacion.html', 'premium-v2/app-live.js', 'premium-v2/commercial-conversion-v1.js', 'tests/commercial-funnel-browser.cjs', 'tests/production-release-browser.cjs', '.github/workflows/production-release-qa.yml']
   workflow_dispatch:
 permissions:
   contents: read
