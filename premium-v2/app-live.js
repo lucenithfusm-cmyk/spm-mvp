@@ -285,7 +285,6 @@ function renderQ(){
    const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
    opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
  }
- if(q.id==='h_meds'){const note=document.createElement('p');note.className='notice';note.dataset.medicationNote='';note.textContent=MEDICATION_NOTE;box.appendChild(note);}
  $('qBack').disabled=prevVisibleIndex(S.qi)<0;
 }
 function scoreMap(){
@@ -316,11 +315,20 @@ async function finishAssessment(){
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu evaluación, mapa y programa de 28 días quedaron guardados.','good');
 }
 function renderMap(){
- if(!S.map)return;let medication=$('spmMedicationNote');if(!medication){medication=document.createElement('p');medication.id='spmMedicationNote';medication.className='notice';$('profileExplain').after(medication)}medication.textContent=MEDICATION_NOTE;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
- $('profileExplain').textContent=`Tu prioridad educativa principal aparece en ${label(m.primary).toLowerCase()}${m.secondary?`, con un componente secundario en ${label(m.secondary).toLowerCase()}`:''}. El mapa guía el entrenamiento; no es un diagnóstico.`;
+ if(!S.map)return;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
+ $('profileExplain').textContent=`Según tu autoevaluación, tu área prioritaria de trabajo es ${label(m.primary).toLowerCase()}${m.secondary?`, junto con ${label(m.secondary).toLowerCase()}`:''}. Estas respuestas nos ayudan a organizar tu rutina y explorar factores que pueden relacionarse con tu experiencia sexual. No establecen un diagnóstico ni confirman una causa.`;
  $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>Sin banderas mayores detectadas en este tamizaje.</b> Esto no sustituye una valoración médica.</div>';
  const g=$('domainGrid');g.innerHTML='';Object.entries(m.scores).filter(([k])=>['erection','ejaculation','desire','confidence','wellbeing','lifestyle'].includes(k)).forEach(([k,v])=>{g.insertAdjacentHTML('beforeend',`<div class="domain"><div class="domainHead"><b>${label(k)}</b><span>${v}/100</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`)});
  $('whyList').innerHTML=`<div class="mini"><small>Driver principal</small><p>${label(m.primary)} es el dominio con mayor margen de trabajo.</p></div>${m.secondary?`<div class="mini"><small>Secundario</small><p>${label(m.secondary)} puede modificar la respuesta del driver principal.</p></div>`:''}`;
+ if(!PUBLIC_ASSESSMENT){
+  let routine=$('spmMapRoutine');if(!routine){routine=document.createElement('section');routine.id='spmMapRoutine';routine.className='card';$('map').append(routine)}
+  const work={erection:'Trabajaremos la comprensión de tu respuesta eréctil, la atención a las sensaciones y la confianza, junto con prácticas y hábitos seleccionados para tu ruta.',ejaculation:'Trabajaremos el reconocimiento de la excitación, el ritmo y las habilidades de control, con prácticas progresivas y descansos dentro de tu calendario.',desire:'Trabajaremos la exploración del deseo, el contexto, las sensaciones y la conexión, sin convertir la experiencia en una exigencia de rendimiento.',confidence:'Trabajaremos la presión de rendimiento, la atención y la confianza mediante recursos guiados y registros de tu experiencia.',wellbeing:'Trabajaremos la satisfacción, la conexión y los hábitos que apoyan tu bienestar sexual.',lifestyle:'Trabajaremos una base de hábitos y bienestar, con recomendaciones de sueño, movimiento y alimentación distribuidas durante el programa.'};
+  routine.replaceChildren();const title=document.createElement('h3');title.textContent='Qué vamos a trabajar en tu rutina';routine.append(title);
+  for(const key of [...new Set([m.primary,m.secondary].filter(Boolean))]){if(work[key]){const paragraph=document.createElement('p');paragraph.textContent=work[key];routine.append(paragraph)}}
+  const schedule=document.createElement('p');schedule.textContent='En «Hoy» encontrarás las actividades asignadas a tu día. El calendario combina tu prioridad con apoyos de otras áreas y seguimiento de tu evolución. Las prácticas se ajustan a las indicaciones de seguridad de tu evaluación.';routine.append(schedule);
+  let medication=$('spmMedicationNote');if(!medication){medication=document.createElement('p');medication.id='spmMedicationNote';medication.className='notice'}medication.textContent=MEDICATION_NOTE;routine.append(medication);
+ }
+
 }
 function renderPlan(){
  if(!S.map||!M.days)return;const tabs=$('phaseTabs');tabs.innerHTML='';(M.phases||[]).forEach(ph=>{const b=document.createElement('button');b.className='phaseBtn'+(S.phase===ph.id?' on':'');b.textContent=`${ph.id}. ${ph.name_es}`;b.onclick=()=>{S.phase=ph.id;renderPlan()};tabs.appendChild(b)});
