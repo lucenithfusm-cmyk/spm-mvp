@@ -138,3 +138,17 @@ test('erection Desire is twice weekly, or three times for expressed low Desire, 
  }
  }finally{h.close()}
 });
+
+test('safety next steps expose only permitted activities without changing flags or day',async()=>{
+ for(const level of ['review','urgent']){
+  const h=harness('lifestyle',15);try{
+   h.c.safety=level;h.c.flags=['review-test'];await wait();h.w.SPM_DAILY_PRACTICE.open();
+   h.w.document.querySelector('[data-daily-safety-next]').click();
+   const panel=h.w.document.querySelector('[data-safety-next]');assert.ok(panel);
+   const ids=[...panel.querySelectorAll('[data-safe-activity]')].map(b=>b.dataset.safeActivity);
+   assert.ok(ids.every(id=>!h.w.SPM_DAILY_PRACTICE.restricted(h.c,id)));if(level==='urgent')assert.equal(ids.length,0);
+   assert.equal(h.c.day,15);assert.equal(h.c.safety,level);assert.deepEqual(h.c.flags,['review-test']);assert.equal(h.writes.length,0);
+   panel.querySelector('[data-safety-return]').click();assert.equal(h.w.document.querySelector('[data-safety-next]'),null);
+  }finally{h.close()}
+ }
+});
