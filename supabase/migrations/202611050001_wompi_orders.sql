@@ -54,6 +54,12 @@ begin
  -- Late/out-of-order events never undo an approval. A verified void revokes its access.
  if o.status='VOIDED' or (o.status='APPROVED' and v_status<>'VOIDED') then return jsonb_build_object('status',o.status,'planId',o.plan_id); end if;
  if o.status in ('DECLINED','ERROR') and v_status='PENDING' then return jsonb_build_object('status',o.status); end if;
+ -- An old pending event must not resurrect an expired checkout or collide with
+ -- a newer pending order. Keep its transaction ID so approval can be recovered.
+ if o.status='EXPIRED' and v_status='PENDING' then
+  update public.spm_payment_orders set transaction_id=p_transaction->>'id',verified_at=now() where id=o.id;
+  return jsonb_build_object('status',o.status);
+ end if;
  update public.spm_payment_orders set status=v_status,transaction_id=p_transaction->>'id',verified_at=now() where id=o.id;
  if v_status='VOIDED' then
   update public.spm_program_access set status='revoked' where order_id=o.id;

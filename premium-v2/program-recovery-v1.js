@@ -46,7 +46,7 @@ function open(){
   const controls=[...modal.querySelectorAll('button,input,select,textarea')];controls.forEach(b=>b.disabled=true);status.textContent='Guardando tus respuestas y recuperando tu programa…';
   try{
    await window.SPM_PROGRAM_REPAIR.save(patch,scope);
-   close();window.SPM_DAILY_PRACTICE?.open();
+   close();document.getElementById('navPlan')?.click();window.SPM_DAILY_PRACTICE?.open();
   }catch{status.textContent='No pudimos guardar. Tus respuestas siguen aquí; revisa tu conexión y reintenta. Si completaste la evaluación en otra pestaña, cierra y vuelve a abrir este formulario.';controls.forEach(b=>b.disabled=false);update();}
  };
  document.body.append(modal);modal.showModal();

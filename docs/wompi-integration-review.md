@@ -1,6 +1,6 @@
 # SPM: integración de pago, bienvenida y recuperación de evaluaciones
 
-Estado al 5 de noviembre de 2026: código de revisión. No es una confirmación de que los pagos estén habilitados ni de que se haya recibido dinero.
+Estado al 5 de noviembre de 2026: integración unificada en revisión; infraestructura de Supabase instalada y verificada. El servidor devuelve `ready:false`, `environment:off`: los cobros todavía no están habilitados y no se ha realizado una transacción Wompi.
 
 ## Recorrido preparado
 
@@ -29,8 +29,8 @@ La inspección de los datos confirmó una alerta de salud guardada en el plan de
 
 Proyecto Supabase: `jogirmziqjlsttbbarcx`. Proyecto Vercel existente: `spm-premium-staging`.
 
-1. Aplicar `supabase/migrations/202611050001_wompi_orders.sql`. Es aditiva y no altera los planes existentes. La primera solicitud de aplicación venció sin confirmación; se verificó que las tablas nuevas todavía no existían.
-2. Desplegar `spm-payments` y `spm-program-recovery` con sus archivos compartidos. `verify_jwt=false` permite recibir webhooks; checkout, consulta y recuperación verifican usuario con `auth.getUser` y propiedad del registro en el código.
+1. **Aplicado:** `supabase/migrations/202611050001_wompi_orders.sql`, registrado como `spm_wompi_orders_and_program_recovery`. Tablas y funciones creadas. RLS habilitado; no hay lectura anónima ni creación de órdenes/accesos desde el cliente. Las RPC solo admiten `service_role`. Los planes existentes no fueron modificados.
+2. **Desplegado:** `spm-payments` y `spm-program-recovery` con sus archivos compartidos. `verify_jwt=false` permite recibir webhooks; checkout, consulta y recuperación verifican usuario con `auth.getUser` y propiedad del registro en el código.
 3. Configurar secretos según `supabase/.env.example`, comenzando con `WOMPI_MODE=test`, los identificadores de cuentas de prueba y los orígenes exactos permitidos. No escribir llaves privadas en el chat, HTML, Git o variables públicas.
 4. En Wompi configurar las URL de eventos separadas:
    - Sandbox: `https://jogirmziqjlsttbbarcx.supabase.co/functions/v1/spm-payments/webhook/test`
@@ -39,7 +39,9 @@ Proyecto Supabase: `jogirmziqjlsttbbarcx`. Proyecto Vercel existente: `spm-premi
 6. Antes de publicar el nuevo flujo comercial, aplicar `202611050002_paid_access_release_gate.sql` junto con el frontend unificado. Esta migración conserva todos los planes anteriores como accesos existentes e impide que un navegador cree planes sin un pago confirmado. No aplicarla antes del cambio de frontend: el antiguo formulario privado aún intentaba crear planes directamente.
 7. Cambiar a producción solo después de las pruebas. Verificar con un pago real autorizado y el movimiento bancario el abono; una prueba sandbox no demuestra un abono real.
 
-Las claves privadas, la configuración de eventos, la transacción Wompi y el abono bancario continúan pendientes de verificación. La sesión de navegador de Wompi dejó de responder durante la configuración anterior. No se pulsó crear enlace ni se realizó un cobro.
+Las claves privadas, la configuración de eventos, la transacción Wompi y el abono bancario continúan pendientes. La comprobación HTTP del servidor confirma que está apagado y que el webhook de prueba aún no tiene configuración. El navegador de este turno abrió Wompi sin una sesión de comercio iniciada. No se ha realizado un cobro.
+
+Sin `SPM_ALLOWED_ORIGINS`, se admiten únicamente el origen canónico de staging y su alias exacto de esta rama de revisión; la variable reemplaza esa lista. Antes de cambiar el dominio de lanzamiento debe configurarse la lista exacta. La dependencia del servidor está fijada a `@supabase/supabase-js@2.119.0`.
 
 ## Validación reproducible
 
@@ -47,6 +49,14 @@ Ejecutar `node scripts/build-assessment-catalog.cjs --check` para comprobar que 
 
 Los tests de `commercial-approved`, `insight-cadence`, `daily-practice`, `returning-user-restore`, `payment-policy` y `program-recovery` verifican el recorrido gratuito, las cadencias, los recursos de 28 días, el guardado de avance, la firma de pago y la recuperación sin borrar alertas. La restauración también se prueba cargando todos los módulos con `SPM_QA_ALL_LAYERS=1`.
 
-La verificación de interfaz en un navegador móvil real, las funciones desplegadas y la base de datos siguen siendo gates de lanzamiento; los tests locales no sustituyen esas comprobaciones.
+Se verificó la interfaz con datos ficticios en navegador y en un marco de 390 px: bienvenida, respuesta pendiente, guardar y regresar directamente a Hoy/día 15, conservación de la alerta y acceso a los pasos permitidos. Esto no sustituye una prueba en Safari/iPhone ni el recorrido autenticado de una compra real.
+
+`tests/payment-recovery-database.sql` pasó 12 comprobaciones en la base desplegada dentro de una transacción revertida: importe/ambiente incorrectos, aprobación de prueba sin plan, aprobación comercial sintética, repetición de evento, llegada fuera de orden, anulación, recuperación del día 15, conflictos y conservación de alertas. Todos los datos ficticios se revirtieron.
+
+Comprobaciones HTTP desplegadas: configuración 200 con pago apagado; origen no permitido 403; checkout y recuperación sin sesión 401; webhook sin secretos 503. El aviso informativo del asesor de Supabase sobre RLS sin políticas en `spm_payment_orders` es intencional: esa tabla es exclusivamente de servidor, sin permisos para `anon` ni `authenticated`. No se cambió la configuración previa de contraseñas.
+
+Correcciones adicionales: un pago bancario pendiente no vence por expirar el enlace de checkout; los eventos tardíos no reabren órdenes vencidas; la referencia de transacción ya registrada prevalece sobre el parámetro de retorno; el reintento de recuperación tras una respuesta perdida es idempotente; la bienvenida no presenta una evaluación incompleta como completada.
+
+Pendientes de lanzamiento: configurar llaves/eventos, probar el checkout sandbox de extremo a extremo y la recuperación autenticada, aplicar el gate 002 junto al frontend aprobado, habilitar producción y verificar un pago real autorizado y su abono. La migración 002 permanece sin aplicar y la rama sin fusionar a main.
 
 Fuentes técnicas: [Wompi Checkout](https://docs.wompi.co/docs/colombia/widget-checkout-web/), [eventos](https://docs.wompi.co/docs/colombia/eventos/), [transacciones](https://docs.wompi.co/docs/colombia/transacciones/) y [Supabase Auth en Edge Functions](https://supabase.com/docs/guides/functions/auth-legacy-jwt).

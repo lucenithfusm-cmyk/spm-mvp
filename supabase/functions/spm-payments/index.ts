@@ -55,7 +55,7 @@ Deno.serve(async(req:Request)=>{
    const orderConfig=config(order.environment);
    // A redirect ID is only a hint; it cannot activate access by itself.
    if(orderConfig&&(body.transactionId||order.transaction_id)){
-    const id=body.transactionId||order.transaction_id;
+    const id=order.transaction_id||body.transactionId;
     try{await confirm(db,order,await transaction(id,orderConfig),order.environment);}catch{return json({error:'verification_pending',retryable:true},503,headers);}
    }
    const {data:fresh,error:readError}=await db.from('spm_payment_orders').select('id,status,environment,plan_id,reference').eq('id',order.id).single();
@@ -78,10 +78,12 @@ Deno.serve(async(req:Request)=>{
   const profile=policy.score(questions,a.data.motives,a.data.answers),safety=policy.preserveSafety(profile,m.data);
   if(safety.safety_level==='urgent')return json({error:'review_safety_first'},409,headers);
   const origin=req.headers.get('origin')!;
-  const expired=await db.from('spm_payment_orders').update({status:'EXPIRED'}).eq('user_id',user.id).eq('environment',mode).eq('status','PENDING').lt('expires_at',new Date().toISOString());
+  // Checkout expiry does not mean a bank transfer already in progress has failed.
+  const expired=await db.from('spm_payment_orders').update({status:'EXPIRED'}).eq('user_id',user.id).eq('environment',mode).eq('status','PENDING').is('transaction_id',null).lt('expires_at',new Date().toISOString());
   if(expired.error)throw Error('Order expiry failed');
   let {data:order,error:pendingError}=await db.from('spm_payment_orders').select('*').eq('user_id',user.id).eq('environment',mode).eq('status','PENDING').maybeSingle();
   if(pendingError)throw Error('Order lookup failed');
+  if(order?.transaction_id)return json({pendingOrder:true,orderId:order.id},200,headers);
   if(order&&(order.assessment_id!==a.data.id||order.performance_map_id!==m.data.id))return json({pendingOrder:true,orderId:order.id},200,headers);
   if(!order){
    const {count,error}=await db.from('spm_payment_orders').select('id',{count:'exact',head:true}).eq('user_id',user.id).gte('created_at',new Date(Date.now()-86400000).toISOString());
@@ -92,6 +94,7 @@ Deno.serve(async(req:Request)=>{
     const concurrent=await db.from('spm_payment_orders').select('*').eq('user_id',user.id).eq('environment',mode).eq('status','PENDING').single();if(concurrent.error)throw Error('Order conflict');order=concurrent.data;
    }else if(created.error)throw Error('Order creation failed');else order=created.data;
   }
+  if(order.transaction_id||order.assessment_id!==a.data.id||order.performance_map_id!==m.data.id)return json({pendingOrder:true,orderId:order.id},200,headers);
   // Reuse an in-flight order, avoiding a second charge from double clicks or another tab.
   const redirect=new URL('/premium-v2/payment-return.html',origin);redirect.searchParams.set('order',order.id);
   return json({orderId:order.id,environment:mode,checkoutUrl:await checkoutURL(order,c.publicKey,c.integrity,redirect.toString())},200,headers);

@@ -1,9 +1,12 @@
-import { createClient } from 'npm:@supabase/supabase-js@2';
+import { createClient } from 'npm:@supabase/supabase-js@2.119.0';
 export const env=(name:string)=>Deno.env.get(name)||'';
 export const admin=()=>createClient(env('SUPABASE_URL'),env('SUPABASE_SERVICE_ROLE_KEY'),{auth:{persistSession:false,autoRefreshToken:false}});
 export function cors(req:Request){
  const origin=req.headers.get('origin')||'';
- const allowed=env('SPM_ALLOWED_ORIGINS').split(',').map(x=>x.trim()).filter(Boolean);
+ // Public configuration, never credentials. Exact owned origins keep recovery usable
+ // before payment secrets are supplied; an explicit setting replaces this list.
+ const defaults=['https://spm-premium-staging.vercel.app','https://spm-premium-staging-git-feat-spm-wompi-8fd964-lucenithfusm-cmyk.vercel.app'];
+ const allowed=env('SPM_ALLOWED_ORIGINS')?env('SPM_ALLOWED_ORIGINS').split(',').map(x=>x.trim()).filter(Boolean):defaults;
  return origin&&allowed.includes(origin)?{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Vary':'Origin'}:null;
 }
 export const json=(value:unknown,status=200,headers:Record<string,string>={})=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...headers}});

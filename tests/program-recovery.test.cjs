@@ -31,16 +31,16 @@ function harness(){
 }
 test('recovery opens where the user is blocked, saves explicit missing answers and preserves day/history/flags',async()=>{
  const h=harness();try{
- const {w,c}=h;assert.match(w.document.querySelector('#spmProgramWelcome').textContent,/2 días con práctica registrada/);
+ const {w,c}=h;let returnedToPlan=false;w.document.getElementById('navPlan').onclick=()=>{returnedToPlan=true};assert.match(w.document.querySelector('#spmProgramWelcome').textContent,/2 días con práctica registrada/);
  w.document.querySelector('[data-complete-missing]').click();const input=w.document.querySelector('#repair-h_has_condition');assert(input);input.value='false';input.dispatchEvent(new w.Event('change'));
  w.document.querySelector('#spmRecoveryDialog form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));
- assert.equal(h.saves.length,1);assert.deepEqual(JSON.parse(JSON.stringify(h.saves[0])),{patch:{h_has_condition:false},scope:'user:plan'});assert.equal(c.day,15);assert.deepEqual(c.completed,[1,2]);assert.deepEqual(c.flags,['s_penile']);assert.equal(w.document.querySelector('#spmRecoveryDialog'),null);
+ assert.equal(h.saves.length,1);assert.deepEqual(JSON.parse(JSON.stringify(h.saves[0])),{patch:{h_has_condition:false},scope:'user:plan'});assert.equal(c.day,15);assert.deepEqual(c.completed,[1,2]);assert.deepEqual(c.flags,['s_penile']);assert.equal(w.document.querySelector('#spmRecoveryDialog'),null);assert.equal(returnedToPlan,true);
  }finally{h.close();}
 });
 test('failed recovery retains answers and offers retry; welcome never claims new patients have practised',async()=>{
  const h=harness();try{
- h.c.completed=[];h.w.SPM_PROGRAM_WELCOME.mount();assert.match(h.w.document.querySelector('#spmProgramWelcome').textContent,/Tus prácticas de entrenamiento comienzan ahora/);
- h.setFail();h.w.SPM_PROGRAM_RECOVERY.open();const input=h.w.document.querySelector('#repair-h_has_condition');input.value='false';input.dispatchEvent(new h.w.Event('change'));
+ h.c.completed=[];h.c.answers.h_has_condition=false;h.w.SPM_PROGRAM_WELCOME.mount();assert.match(h.w.document.querySelector('#spmProgramWelcome').textContent,/Tus prácticas de entrenamiento comienzan ahora/);
+ delete h.c.answers.h_has_condition;h.setFail();h.w.SPM_PROGRAM_RECOVERY.open();const input=h.w.document.querySelector('#repair-h_has_condition');input.value='false';input.dispatchEvent(new h.w.Event('change'));
  h.w.document.querySelector('#spmRecoveryDialog form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));
  assert.equal(input.value,'false');assert.match(h.w.document.querySelector('#spmRecoveryDialog [role=status]').textContent,/Tus respuestas siguen aquí/);assert.equal(h.w.document.querySelector('#spmRecoveryDialog [type=submit]').disabled,false);assert.equal(h.c.day,15);assert.equal(h.saves.length,0);
  }finally{h.close();}
@@ -50,4 +50,19 @@ test('EP checkpoint offers not evaluable / no existing PEDT score, records no in
  const observers=[],Observer=w.MutationObserver;w.MutationObserver=class extends Observer{constructor(callback){super(callback);observers.push(this)}};
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_EP_RECORDS={read:async()=>[],save:async(record,scope)=>saves.push({record,scope})};w.alert=m=>{throw Error(m)};
  try{w.eval(read('ejaculatory-control-router.js'));await w.SPM_EP_ASSESSMENT.open(28);w.document.querySelector('#epAEvaluable [data-v="0"]').click();w.document.querySelector('#epANoPedt').click();w.document.querySelector('#epASave').click();await new Promise(r=>setImmediate(r));assert.equal(saves.length,1);assert.equal(saves[0].record.pedt_score,null);assert.equal(saves[0].record.ielt_seconds,null);assert.equal(w.SPM_EP_ASSESSMENT.records().length,1);c={userId:'two',planId:'b',day:28};assert.equal(w.SPM_EP_ASSESSMENT.records().length,0);}finally{observers.forEach(x=>x.disconnect());w.close();}
+});
+
+test('repeating a recovery after a lost response succeeds without changing valid answers',()=>{
+ const original=complete();delete original.h_has_condition;
+ const saved=policy.fillMissing(questions,['erection'],original,{h_has_condition:false});
+ const retry=policy.fillMissing(questions,['erection'],saved,{h_has_condition:false});
+ assert.deepEqual(retry,saved);
+ assert.throws(()=>policy.fillMissing(questions,['erection'],saved,{h_has_condition:true}),/Only missing/);
+});
+test('welcome does not call an incomplete assessment completed',()=>{
+ const h=harness();try{h.c.completed=[];h.w.SPM_PROGRAM_WELCOME.mount();
+ const text=h.w.document.querySelector('.spm-welcome-progress').textContent;
+ assert.match(text,/respuestas pendientes/);assert.doesNotMatch(text,/autoevaluación está completada/);
+ assert(h.w.document.querySelector('[data-complete-missing]'));
+ }finally{h.close();}
 });

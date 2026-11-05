@@ -30,6 +30,8 @@ function fillMissing(questions,selected,original,patch){
  const next={...original};const qs=queue(questions,selected);
  // Fill parents first, so conditional follow-up questions can be completed in one form.
  for(const q of qs){if(!Object.hasOwn(patch,q.id))continue;
+  // A successful save whose response was lost may be safely retried.
+  if(valid(q,original[q.id])&&original[q.id]===patch[q.id])continue;
   if(valid(q,original[q.id])||!visible(q,next)||!valid(q,patch[q.id]))throw Error('Only missing answers may be completed');
   next[q.id]=patch[q.id];
  }
