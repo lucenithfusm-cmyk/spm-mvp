@@ -151,4 +151,4 @@ button.guided-step{text-align:left;color:inherit;font:inherit;cursor:pointer;min
 @media(prefers-reduced-motion:reduce){.pf-floor.st-hold{animation:none!important}}
 
 
-.pf-technique-clip{float:right;width:min(240px,40%);margin:0 0 20px 24px;padding:14px;border:1px solid #b5a37d;border-radius:16px;background:#faf8f1}.pf-technique-clip video{display:block;width:100%;max-height:340px;aspect-ratio:9/16;object-fit:contain;border-radius:10px;background:#000}.pf-main:has(.pf-technique-clip){display:flow-root}@media(max-width:600px){.pf-technique-clip{float:none;width:100%;max-width:280px;margin:16px auto}}
+.pf-technique-clip{float:right;width:min(240px,40%);margin:0 0 20px 24px;padding:14px;border:1px solid #b5a37d;border-radius:16px;background:#0b252d;color:#edf8f6}.pf-technique-clip video{display:block;width:100%;max-height:340px;aspect-ratio:9/16;object-fit:contain;border-radius:10px;background:#000}.pf-main:has(.pf-technique-clip){display:flow-root}@media(max-width:600px){.pf-technique-clip{float:none;width:100%;max-width:280px;margin:16px auto}}
