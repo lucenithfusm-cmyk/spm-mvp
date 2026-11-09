@@ -152,3 +152,13 @@ test('safety next steps expose only permitted activities without changing flags 
   }finally{h.close()}
  }
 });
+
+test('refreshing after a requirement reloads saved state without erasing a clinical flag',async()=>{
+ const h=harness('erection',15);try{await wait();h.c.safety='review';h.c.flags=['s_penile'];
+ let calls=0;h.w.SPM_PROGRAM_REPAIR={refresh:async scope=>{assert.equal(scope,'qa:plan');calls++;}};
+ h.w.SPM_DAILY_PRACTICE.open();h.w.document.querySelector('[data-daily-safety-next]').click();
+ h.w.document.querySelector('[data-safety-refresh]').click();await wait();
+ assert.equal(calls,1);assert.equal(h.c.day,15);assert.deepEqual(h.c.flags,['s_penile']);assert.equal(h.writes.length,0);
+ assert.match(h.w.document.querySelector('#spmDailyStatus').textContent,/señal de seguridad sigue registrada/);
+ }finally{h.close();}
+});

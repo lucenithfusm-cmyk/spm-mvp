@@ -150,3 +150,5 @@ button.guided-step{text-align:left;color:inherit;font:inherit;cursor:pointer;min
 .pf-dosage{padding:24px 0 12px;border-bottom:1px solid var(--pf-line)}.pf-dosage h2{font-size:22px;line-height:1.25;margin:12px 0 8px}.pf-dosage p{font-size:14px;line-height:1.65;color:var(--pf-mute);margin:0}.pf-dosage-frequency{margin-top:24px;padding-top:20px;border-top:1px solid var(--pf-line)}.pf-dosage-frequency h3{color:var(--pf-gold);margin-bottom:8px}.pf-dosage .pf-list{margin-top:12px}.pf-dosage .pf-list li{line-height:1.55}.pf-dosage .pf-list li b{color:var(--pf-text)}
 @media(prefers-reduced-motion:reduce){.pf-floor.st-hold{animation:none!important}}
 
+
+.pf-technique-clip{float:right;width:min(240px,40%);margin:0 0 20px 24px;padding:14px;border:1px solid #b5a37d;border-radius:16px;background:#faf8f1}.pf-technique-clip video{display:block;width:100%;max-height:340px;aspect-ratio:9/16;object-fit:contain;border-radius:10px;background:#000}.pf-main:has(.pf-technique-clip){display:flow-root}@media(max-width:600px){.pf-technique-clip{float:none;width:100%;max-width:280px;margin:16px auto}}

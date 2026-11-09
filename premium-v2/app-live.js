@@ -207,6 +207,13 @@ function showAccessPending(){
  card.querySelector('[data-access-retry]').onclick=async()=>{const b=card.querySelector('button'),status=card.querySelector('[role=status]');b.disabled=true;try{const result=await window.SPM_PAYMENTS.latest(db);if(result.orderId){location.assign('payment-return.html?order='+encodeURIComponent(result.orderId));return;}status.textContent='No encontramos una compra asociada a esta cuenta. Comprueba que usas el mismo correo con el que realizaste el pago.';}catch{status.textContent='No pudimos comprobarlo ahora. Tu pago no se ha repetido; conserva el enlace de confirmación de Wompi y reintenta.';}finally{b.disabled=false;}};
 }
 window.SPM_PROGRAM_REPAIR={
+ async refresh(expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
+  if(restoreState.running)throw Error('Restore in progress');
+  if(!await restore())throw Error('Restore failed');
+  const after=window.SPM_RESOURCE_CONTEXT();if(!after||after.userId+':'+after.planId!==expectedScope)throw Error('Program changed');
+  window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+ },
  async save(patch,expectedScope){
   let c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
   await window.SPM_PAYMENTS.completeMissing(db,c.planId,patch);

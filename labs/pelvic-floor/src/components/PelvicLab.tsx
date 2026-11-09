@@ -9,6 +9,32 @@ import {
   type FloorState, type Phase, type PelvicPracticeConfig, type PracticeId, type PracticeResult, type RouteKey,
 } from '@/lib/pf-data';
 
+function TechniqueClip() {
+  const ref = useRef<HTMLVideoElement>(null);
+  const active = useSequenceActive();
+  const [failed, setFailed] = useState(false);
+  useEffect(() => { if (active) ref.current?.pause(); }, [active]);
+  useEffect(() => {
+    const video = ref.current;
+    const stop = () => video?.pause();
+    const hide = () => { if (document.hidden) stop(); };
+    document.addEventListener('visibilitychange', hide);
+    return () => { stop(); document.removeEventListener('visibilitychange', hide); };
+  }, []);
+  return <aside className="pf-technique-clip">
+    <h3>Mira la técnica · 5 segundos</h3>
+    <video ref={ref} controls playsInline preload="none"
+      src="../assets/videos/techniques/pelvic-contraction.mp4"
+      poster="../assets/videos/techniques/pelvic-contraction.jpg"
+      aria-label="Contracción del piso pélvico · demostración visual"
+      onPlay={() => { if (active) ref.current?.pause(); else stopAudio(); }}
+      onError={() => setFailed(true)} onLoadedData={() => setFailed(false)} />
+    <p className="pf-small">Apoyo visual. Sigue los tiempos de tu sesión. Ver el clip no registra una práctica.</p>
+    {active && <p className="pf-small">Pausa la práctica para revisar la técnica.</p>}
+    {failed && <p role="status">No se pudo cargar el clip. Puedes seguir las instrucciones de esta pantalla.</p>}
+  </aside>;
+}
+
 /* ---------- authenticated SPM program state ---------- */
 const K = { step: 'pf-step', origin: 'pf-origin', assign: 'pf-assignment', results: 'pf-results', daily: 'pf-daily-result', flags: 'pf-flags', overload: 'pf-overload', screen: 'pf-screening', checkins: 'pf-checkins', cfg: 'pf-demo-config' };
 type Origin = 'lab' | 'library' | 'dailyPlan';
@@ -461,6 +487,7 @@ export function PelvicLab() {
         {relaxOnly && <div className="pf-alert"><b>Fortalecimiento en pausa.</b> Practica Percibe · Respira · Suelta. Si hay dolor o síntomas nuevos, busca una valoración profesional (por ejemplo, urología o fisioterapia de piso pélvico, según el caso).</div>}
       </>);
       case 'technique': return (<>
+        <TechniqueClip />
         <Anatomy state="up" amp={0.6} label="Eleva y cierra" />
         <div className="pf-card"><ul className="pf-list">
           {['Siéntate cómodo, pies apoyados, respira normal.', 'Eleva suave, como retener un gas.', 'Sin apnea: sigue respirando.', 'Suelta del todo y nota la diferencia.'].map((t, i) => <li key={i}><span>0{i + 1}</span>{t}</li>)}
@@ -468,6 +495,7 @@ export function PelvicLab() {
         <CompCheck value={sc.comp} onChange={v => setScreen({ ...sc, comp: v })} />
       </>);
       case 'guided': return (<>
+        <TechniqueClip />
         {!host && origin === 'lab' && !relaxOnly && <DemoConfig cfg={cfg} onChange={upd<PelvicPracticeConfig>(K.cfg, setCfg)} />}
         {flow('contrae', origin === 'lab' ? cfg : PRACTICES.contrae.demo)}
       </>);
