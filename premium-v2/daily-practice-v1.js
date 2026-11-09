@@ -116,7 +116,7 @@ function safetyNext(){
   try{
    await window.SPM_PROGRAM_REPAIR.refresh(scopeOf(c));
    const latest=ctx();if(scopeOf(latest)!==scopeOf(c))throw Error('Program changed');
-   open();
+   $('#navPlan')?.click();open();
    const target=$('#spmDailyStatus');if(target)target.textContent=window.SPM_PROGRAM_RECOVERY?.pending(latest).length?'Todavía hay respuestas pendientes. Usa «Completar evaluación pendiente».':safety(latest)==='none'?'Estado actualizado. Puedes continuar con tus actividades.':'Comprobamos tu evaluación: no faltan respuestas, pero la señal de seguridad sigue registrada. Revisa su motivo con tu profesional; tu avance se conserva.';
   }catch{button.disabled=false;status.textContent='No pudimos comprobar el estado. Tu avance se conserva; reintenta cuando tengas conexión.';}
  };
