@@ -20,6 +20,7 @@ window.SPM_PAYMENTS={
  },
  status:(db,orderId,transactionId)=>request('spm-payments/status',db,{orderId,transactionId}),
  latest:db=>request('spm-payments/latest',db,{}),
+ correctMistake:(db,planId,questionId)=>request('spm-program-recovery',db,{action:'correct_mistake',planId,questionId,confirmMistake:true}),
  completeMissing:(db,planId,answers)=>request('spm-program-recovery',db,{planId,answers})
 };
 })();

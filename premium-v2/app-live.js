@@ -214,6 +214,11 @@ window.SPM_PROGRAM_REPAIR={
   const after=window.SPM_RESOURCE_CONTEXT();if(!after||after.userId+':'+after.planId!==expectedScope)throw Error('Program changed');
   window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
  },
+ async correctMistake(questionId,expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
+  await window.SPM_PAYMENTS.correctMistake(db,c.planId,questionId);
+  await this.refresh(expectedScope);
+ },
  async save(patch,expectedScope){
   let c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');
   await window.SPM_PAYMENTS.completeMissing(db,c.planId,patch);

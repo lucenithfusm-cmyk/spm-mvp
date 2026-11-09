@@ -66,3 +66,21 @@ test('welcome does not call an incomplete assessment completed',()=>{
  assert(h.w.document.querySelector('[data-complete-missing]'));
  }finally{h.close();}
 });
+test('mistaken safety answer requires explicit choice and confirmation; saves only that question',async()=>{
+ const h=harness();try{
+  h.c.answers.s_penile=true;h.c.answers.h_has_condition=false;
+  const calls=[];h.w.SPM_PROGRAM_REPAIR.correctMistake=async(id,scope)=>{calls.push({id,scope});h.c.answers[id]=false;h.c.flags=[];h.c.safety='none';};
+  h.w.SPM_PROGRAM_RECOVERY.correctMistake();const d=h.w.document,select=d.querySelector('#spmSafetyQuestion'),reason=d.querySelector('#spmSafetyReason'),confirm=d.querySelector('[name=confirm]'),submit=d.querySelector('[type=submit]');
+  assert.equal(submit.disabled,true);select.value='s_penile';select.dispatchEvent(new h.w.Event('change'));reason.value='correct';reason.dispatchEvent(new h.w.Event('change'));assert.equal(submit.disabled,true);
+  reason.value='mistake';reason.dispatchEvent(new h.w.Event('change'));assert.equal(submit.disabled,true);confirm.checked=true;confirm.dispatchEvent(new h.w.Event('change'));assert.equal(submit.disabled,false);
+  d.querySelector('form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));assert.deepEqual(calls,[{id:'s_penile',scope:'user:plan'}]);assert.equal(h.c.day,15);assert.deepEqual(h.c.completed,[1,2]);assert.equal(d.querySelector('dialog'),null);
+ }finally{h.close();}
+});
+test('correction failure retains selection and account switch prevents saving',async()=>{
+ const h=harness();try{
+ h.c.answers.s_penile=true;let calls=0;h.w.SPM_PROGRAM_REPAIR.correctMistake=async()=>{calls++;throw Error('Offline');};h.w.SPM_PROGRAM_RECOVERY.correctMistake();const d=h.w.document;
+ for(const [selector,value] of [['#spmSafetyQuestion','s_penile'],['#spmSafetyReason','mistake']]){const el=d.querySelector(selector);el.value=value;el.dispatchEvent(new h.w.Event('change'));}
+ const c=d.querySelector('[name=confirm]');c.checked=true;c.dispatchEvent(new h.w.Event('change'));d.querySelector('form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));assert.equal(calls,1);assert.equal(d.querySelector('[type=submit]').disabled,false);assert.equal(h.c.answers.s_penile,true);
+ h.c.userId='another-user';d.querySelector('form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));assert.equal(calls,1);assert.match(d.querySelector('[role=status]').textContent,/cuenta cambió/);
+ }finally{h.close();}
+});

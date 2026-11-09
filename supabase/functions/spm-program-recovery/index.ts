@@ -16,6 +16,14 @@ Deno.serve(async(req:Request)=>{
    db.from('performance_maps').select('*').eq('id',plan.performance_map_id).eq('user_id',user.id).eq('assessment_id',plan.assessment_id).single()
   ]);
   if(a.error||m.error)return json({error:'restore_support_required'},409,headers);
+  if(body.action==='correct_mistake'){
+   const q=questions.find((item:any)=>item.id===body.questionId);
+   if(!q?.safety||q.type!=='boolean'||body.confirmMistake!==true||a.data.answers[q.id]!==true)return json({error:'invalid_correction'},422,headers);
+   const {error}=await db.rpc('spm_correct_safety_mistake',{p_user_id:user.id,p_plan_id:plan.id,p_question_id:q.id,p_expected_answers:a.data.answers});
+   if(error)return json({error:'save_conflict',retryable:true},409,headers);
+   return json({saved:true,day:plan.current_day},200,headers);
+  }
+  if(body.action)return json({error:'invalid_action'},400,headers);
   let answers;
   try{answers=policy.fillMissing(questions,a.data.motives,a.data.answers,body.answers);}catch{return json({error:'answers_changed_or_invalid'},409,headers);}
   const missing=policy.missing(questions,a.data.motives,answers);
