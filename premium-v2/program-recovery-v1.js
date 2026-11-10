@@ -8,7 +8,7 @@ function notice(c){const items=pending(c);if(!items.length)return '';
 }
 function blocks(c,a){
  if(!a)return false;
- const educational=a.kind==='video'||a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&['baseline','context','checklist','review','progress','reassessment','script','planner','priorities','reframe','ifthen'].includes(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement');
+ const educational=a.kind==='program-checkpoint'||a.kind==='video'||a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&['baseline','context','checklist','review','progress','reassessment','script','planner','priorities','reframe','ifthen'].includes(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement');
  if(educational)return false;
  return pending(c).some(q=>q.section==='safety'||(a.kind==='pelvic'&&q.section==='pelvic_floor')||(a.kind==='wellness'&&a.tip.category==='movement'&&q.section==='health'));
 }

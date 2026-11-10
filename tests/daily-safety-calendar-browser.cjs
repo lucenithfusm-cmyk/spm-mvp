@@ -13,7 +13,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   await review.locator('[data-daily-open="main"]').click();await review.locator('[name=reflection]').fill('Revisé sueño, confianza y adherencia.');await review.locator('[name=confirmed]').check();
   await review.locator('#spmDailyWorkspace button[type=submit]').click();await review.locator('[data-activity="main"] .spm-daily-saved').waitFor();
   assert.equal(await review.locator('#spmDailyComplete').isDisabled(),true);
-  await review.locator('[data-daily-open="route-video-mental-preparation"]').click();await review.locator('[name=reflection]').fill('Preparación breve sin exigencia.');await review.locator('[name=confirmed]').check();await review.locator('#spmDailyWorkspace button[type=submit]').click();await review.locator('[data-activity="route-video-mental-preparation"] .spm-daily-saved').waitFor();assert.equal(await review.locator('#spmDailyComplete').isDisabled(),false);assert.equal(await review.locator('[data-activity="wellness-movement"] .spm-daily-paused').count(),1);checks+=2;
+  await review.locator('[data-daily-open="route-video-performance-anxiety"]').click();await review.locator('[name=reflection]').fill('Preparación breve sin exigencia.');await review.locator('[name=confirmed]').check();await review.locator('#spmDailyWorkspace button[type=submit]').click();await review.locator('[data-activity="route-video-performance-anxiety"] .spm-daily-saved').waitFor();await checkpoint(review);assert.equal(await review.locator('#spmDailyComplete').isDisabled(),false);assert.equal(await review.locator('[data-activity="wellness-movement"] .spm-daily-paused').count(),1);checks+=2;
   await review.screenshot({path:'/tmp/spm-calendar-day14-review.png'});
   await review.locator('#spmDailyComplete').click();await review.waitForFunction(()=>SPM_RESOURCE_CONTEXT().day===15);assert.equal(await review.evaluate(()=>SPM_RESOURCE_CONTEXT().safety),'review');checks++;
   assert.deepEqual(review.errors,[]);checks++;await review.close();
@@ -30,7 +30,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
      const c=SPM_RESOURCE_CONTEXT(),routes=['erection','ejaculation','desire','confidence','wellbeing','lifestyle'];
      return routes.map(primary=>({primary,days:Array.from({length:28},(_,i)=>SPM_DAILY_PRACTICE.assignments({...c,primary,secondary:null,motives:[primary],day:i+1}).map(a=>({id:a.id,kind:a.kind,optional:!!a.optional,title:a.title})))}));
     });
-    for(const r of matrix)for(const items of r.days){assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);checks+=4;}
+    for(const r of matrix)for(const items of r.days){assert.ok(items.length>=2&&items.length<=9);assert.equal(items[0].id,'main');assert.ok([1,2].includes(items.filter(a=>a.kind==='wellness').length));assert.equal(new Set(items.map(a=>a.id)).size,items.length);checks+=4;}
     await p.locator('[data-daily-view="library"]').click();await p.locator('.dayCard').first().locator('.dayTop').click();
     await p.evaluate(()=>document.querySelector('.doneBtn').click());assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks++;
     await p.evaluate(()=>SPM_SAVE_MODULE({day:28,moduleKey:'library-test',metadata:{test:true}}));await p.reload();await p.locator('#map.on').waitFor();assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks++;
@@ -47,3 +47,5 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   console.log(`${checks} calendar and safety browser checks passed; 168 route-days verified.`);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
+
+async function checkpoint(page){await page.locator('[data-daily-open="program-checkpoint"]').click();if(await page.locator('[data-checkpoint-edit]').count())await page.locator('[data-checkpoint-edit]').click();for(const key of ['firmness','control','desire','confidence','comfort','sleep','skill'])await page.locator('[data-program-checkpoint] [name="'+key+'"]').selectOption('na');await page.locator('[data-program-checkpoint] button[type=submit]').click();await page.locator('[data-program-report]').waitFor();}

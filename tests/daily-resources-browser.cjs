@@ -15,11 +15,11 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    const p=await pageFor(primary,1,[390,768,1440][i%3]);
    const matrix=await p.evaluate(()=>{const c=SPM_RESOURCE_CONTEXT();return Array.from({length:28},(_,i)=>{const day=i+1,items=SPM_DAILY_PRACTICE.assignments({...c,day});return {items,agenda:SPM_DAILY_AGENDA_ITEMS(day)};});});
    for(const [index,{items,agenda}] of matrix.entries()){
-    assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(items.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(items.map(a=>a.id)).size,items.length);
+    assert.ok(items.length>=2&&items.length<=9);assert.equal(items[0].id,'main');assert.ok([1,2].includes(items.filter(a=>a.kind==='wellness').length));assert.equal(new Set(items.map(a=>a.id)).size,items.length);
     assert.equal(items.find(a=>a.kind==='wellness').tip.category,['nutrition','movement','sleep'][index%3]);assert.ok(items.every(a=>agenda.some(text=>text.startsWith(a.title))));checks+=6;
     if(baseline){assert.deepEqual(items.filter(a=>!a.id.startsWith('route-')),baseline[primary][index]);checks++;}
    }
-   assert.deepEqual(matrix.flatMap(({items},i)=>items.some(a=>a.kind==='video')?[i+1]:[]),[1,2,7,9,14,18,21,28]);checks++;
+   assert.deepEqual(matrix.flatMap(({items},i)=>items.some(a=>a.kind==='video')?[i+1]:[]),['erection','desire','wellbeing','lifestyle'].includes(primary)?[1,2,3,7,9,10,14,16,18,21,23,28]:[1,3,7,10,14,16,18,21,23,28]);checks++;
    assert.ok(matrix[10].items.some(a=>a.kind==='recovery'));assert.ok(matrix[24].items.some(a=>a.kind==='recovery'));checks+=2;
    const current=await p.evaluate(()=>({day:SPM_RESOURCE_CONTEXT().day,completed:SPM_RESOURCE_CONTEXT().completed,writes:SPM_QA.writes.length}));
    await p.locator('[data-daily-view="library"]').click();await p.locator('#spmVideoLibrary').waitFor();assert.equal(await p.locator('#spmVideoLibrary [data-key]').count(),12);checks++;
@@ -43,11 +43,11 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   }
   // Desire's daily video is saved independently, survives a reload and handles
   // failure without losing the reflection or marking the main session complete.
-  const desire=await pageFor('desire',1);
+  const desire=await pageFor('desire',23);
   await desire.locator('[data-daily-open="route-video-dr-low-desire"]').click();await desire.locator('[name=reflection]').fill('Reconozco cómo influye mi contexto en el deseo.');await desire.locator('[name=confirmed]').check();
   await desire.evaluate(()=>SPM_QA.failNext=true);await desire.locator('#spmDailyWorkspace button[type=submit]').click();await desire.getByText('No se pudo guardar. Conservamos tu respuesta; reintenta.',{exact:true}).waitFor();assert.equal(await desire.locator('[name=reflection]').inputValue(),'Reconozco cómo influye mi contexto en el deseo.');checks++;
   await desire.locator('#spmDailyWorkspace button[type=submit]').click();await desire.locator('[data-activity="route-video-dr-low-desire"] .spm-daily-saved').waitFor();assert.equal(await desire.locator('#spmDailyComplete').isDisabled(),true);checks++;
-  await desire.reload();await desire.locator('#map.on').waitFor();await desire.locator('#goPlan').click();await desire.locator('#spmGoToday').click();await desire.locator('[data-activity="route-video-dr-low-desire"] .spm-daily-saved').waitFor();assert.equal(await desire.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks++;
+  await desire.reload();await desire.locator('#map.on').waitFor();await desire.locator('#goPlan').click();await desire.locator('#spmGoToday').click();await desire.locator('[data-activity="route-video-dr-low-desire"] .spm-daily-saved').waitFor();assert.equal(await desire.evaluate(()=>SPM_RESOURCE_CONTEXT().day),23);checks++;
   await finish(desire);
   // Mixed EP + Desire keeps EP's scheduled session and opens just the Desire
   // assignment for the same central day, never the full course or another route.

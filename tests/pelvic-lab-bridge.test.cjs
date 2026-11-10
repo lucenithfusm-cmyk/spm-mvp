@@ -37,7 +37,7 @@ test('a failed cloud save retains the open module and supports retry',async()=>{
 });
 test('the selector retains the existing program and recommends preparation for unknown awareness',async()=>{
  const h=harness();try{await h.w.SPM_PELVIC_HUB.open();assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/28 días/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/RECOMENDADO PARA EMPEZAR/);
- h.w.document.querySelector('[data-pf-training]').click();await new Promise(r=>setTimeout(r,0));assert.equal(h.trained(),1);
+ h.w.document.querySelector('[data-pf-training]').click();await new Promise(r=>setTimeout(r,0));assert.equal(h.trained(),0);
  }finally{await h.close()}
 });
 test('pelvic symptoms and high tension keep contraction training paused',async()=>{
@@ -52,3 +52,12 @@ test('unknown keys and malformed or oversized clinical values are rejected',asyn
  assert.equal(valid({'pf-screening':{aware:'ok',comp:['gluteos','gluteos','gluteos'],releaseOk:'si'}}),false);
  }finally{await h.close()}
 });
+
+ test('scheduled sessions alternate classic and Lab only after verified readiness',async()=>{
+ const ready={'pf-screening':{aware:'ok',releaseOk:'si',comp:['mandibula','abdomen','gluteos']}};
+ const h=harness(ready);try{await h.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,preference:'classic'});assert.equal(h.trained(),1);await h.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:6,preference:'lab'});assert.ok(h.w.document.querySelector('iframe'));}finally{await h.close();}
+ const beginner=harness();try{await beginner.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,preference:'classic'});assert.equal(beginner.trained(),0);assert.equal(beginner.w.SPM_PELVIC_LAB_HOST.getContext().restriction,'awareness');}finally{await beginner.close();}
+ });
+ test('reported good control can start classic; pelvic pain always overrides it',async()=>{
+ const h=harness();try{const c={userId:'qa-user',planId:'qa-plan',day:2,safety:'none',flags:[],checkins:[],answers:{pf_awareness:'good_control',pf_tension:1}};h.setContext(c);await h.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,preference:'classic'});assert.equal(h.trained(),1);c.answers.pf_tension=5;await h.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,preference:'classic'});assert.equal(h.trained(),1);assert.equal(h.w.SPM_PELVIC_LAB_HOST.getContext().restriction,'relax');}finally{await h.close();}
+ });

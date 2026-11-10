@@ -6,6 +6,11 @@
  const rows=JSON.parse(sessionStorage.getItem('spm-qa-rows')||'null')||initial;
  const qa=window.SPM_QA={rows,writes:[],failNext:false};
  const db={auth:{getSession:async()=>({data:{session:{user}}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from(table){
+  // Complete synthetic answers isolate route tests from the separate missing-intake suite.
+  if(window.ENGINE&&rows.assessments[0]&&!Object.keys(rows.assessments[0].answers).length){
+   for(const q of window.ENGINE.assessment.questions)rows.assessments[0].answers[q.id]=q.type==='boolean'?false:q.type.startsWith('scale5')?3:q.type==='text'?'Dato de prueba':(q.options?.find(o=>['none','no','na','unsure'].includes(o.value))||q.options?.[0])?.value;
+   rows.assessments[0].answers.pf_awareness='unsure';rows.assessments[0].answers.pf_tension=1;
+  }
   let filters=[],op='read',payload=null,single=false;
   const q={select:()=>q,order:()=>q,eq:(k,v)=>{filters.push(r=>r[k]===v);return q;},like:(k,v)=>{filters.push(r=>String(r[k]||'').startsWith(v.replace(/%$/,'')));return q;},maybeSingle:()=>{single=true;return q;},single:()=>{single=true;return q;}};
   for(const method of ['upsert','insert','update'])q[method]=p=>{op=method;payload=p;return q;};

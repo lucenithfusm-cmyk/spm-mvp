@@ -15,12 +15,12 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   const p=await pageFor(1);
   const matrix=await p.evaluate(()=>{const c=SPM_RESOURCE_CONTEXT();return Array.from({length:28},(_,i)=>{const day=i+1,items=SPM_DAILY_PRACTICE.assignments({...c,day});return {day,items,agenda:SPM_DAILY_AGENDA_ITEMS(day),title:SPM_DE_LIBRARY.days()[day].title};});});
   for(const row of matrix){
-   assert.ok(row.items.length>=3&&row.items.length<=5);if(row.day!==6)assert.equal(row.items[0].title,row.title);else assert.equal(row.items[0].kind,'pelvic');
-   assert.ok(row.items.filter(a=>a.kind!=='wellness').length>=2);assert.equal(row.items.filter(a=>a.kind==='wellness').length,1);
+   assert.ok(row.items.length>=3&&row.items.length<=9);if(row.day!==6)assert.equal(row.items[0].title,row.title);else assert.equal(row.items[0].kind,'pelvic');
+   assert.ok(row.items.filter(a=>a.kind!=='wellness').length>=2);assert.ok([1,2].includes(row.items.filter(a=>a.kind==='wellness').length));
    assert.equal(new Set(row.items.map(a=>a.id)).size,row.items.length);assert.ok(row.items.every(a=>row.agenda.some(text=>text.startsWith(a.title))));checks+=6;
   }
   const days=kind=>matrix.filter(row=>row.items.some(a=>a.kind===kind)).map(row=>row.day);
-  assert.deepEqual(days('desire'),[2,5,7,10,11,12,15,17,21,22,25,26]);assert.deepEqual(days('breathing'),[3,6,10,13,17,20,24,27]);assert.deepEqual(days('sensate'),[4,8,12,16,19,23,26]);assert.deepEqual(days('pelvic'),[2,6,9,13,16,20,23,27]);assert.deepEqual(days('recovery'),[4,8,11,15,18,22,25]);assert.deepEqual(days('video'),[1,2,7,9,14,18,21,28]);checks+=6;
+  assert.deepEqual(days('desire'),Array.from({length:28},(_,i)=>i+1));assert.deepEqual(days('breathing'),[3,6,10,13,17,20,24,27]);assert.deepEqual(days('sensate'),[4,8,12,16,19,23,26]);assert.deepEqual(days('pelvic'),[2,6,9,13,16,20,23,27]);assert.deepEqual(days('recovery'),[4,8,11,15,18,22,25]);assert.deepEqual(days('video'),[1,2,3,7,9,10,14,16,18,21,23,28]);checks+=6;
   const habits=matrix.map(r=>r.items.find(a=>a.kind==='wellness').tip.category);assert.deepEqual(habits,Array.from({length:28},(_,i)=>['nutrition','movement','sleep'][i%3]));checks++;
   // Exact pre-change EP comparison is enabled for the implementation audit.
   if(process.env.SPM_EP_BASELINE){const before=JSON.parse(fs.readFileSync(process.env.SPM_EP_BASELINE,'utf8')).ep;const ep=await p.evaluate(()=>{const c=SPM_RESOURCE_CONTEXT();return Array.from({length:28},(_,i)=>SPM_DAILY_PRACTICE.assignments({...c,primary:'ejaculation',day:i+1}));});assert.deepEqual(ep,before);checks++;}

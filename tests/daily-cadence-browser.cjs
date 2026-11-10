@@ -10,7 +10,7 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   await p.goto(base+'live.html'+(process.env.SPM_TEST_QUERY||''));await p.locator('#map.on').waitFor();await p.locator('#goPlan').click();await p.locator('#spmGoToday').click();
   const rows=await p.evaluate(()=>{const c=SPM_RESOURCE_CONTEXT();return Array.from({length:28},(_,i)=>({day:i+1,base:SPM_DAILY_PRACTICE.assignments({...c,day:i+1,secondary:null,motives:[c.primary]}),withDesire:SPM_DAILY_PRACTICE.assignments({...c,day:i+1})}));});routes[primary]=rows;
   for(const row of rows){
-   assert.equal(row.base.filter(a=>a.kind==='wellness').length,1);assert.equal(new Set(row.base.map(a=>a.id)).size,row.base.length);assert.ok(row.withDesire.length<=5);checks+=3;
+   assert.ok([1,2].includes(row.base.filter(a=>a.kind==='wellness').length));assert.equal(new Set(row.base.map(a=>a.id)).size,row.base.length);assert.ok(row.withDesire.length<=9);checks+=3;
   }
   const stories=rows.flatMap(r=>r.base.filter(a=>a.kind==='recovery').map(a=>({day:r.day,...a})));
   assert.equal(stories.length,7);assert.equal(new Set(stories.map(a=>a.scenario)).size,7);checks+=2;

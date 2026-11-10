@@ -14,13 +14,13 @@ function harness(primary='erection',day=12){
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
+ for(const f of ['engine.js','modules.js','sleep-library-v1.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','program-checkpoint-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
  return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
-   h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=5);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
+   h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=9);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
    if(route==='erection')assert.equal(items[0].kind,day===6?'pelvic':'erection');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
@@ -37,17 +37,17 @@ test('saving one activity does not complete or advance the day; stale and restri
  }finally{h.close()}
 });
 test('shared breathing/focus replaces a duplicate text task and retains the scheduled session',async()=>{
- const h=harness('confidence',16);try{await wait();const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.equal(items.filter(a=>!a.optional).length,1);assert.equal(items[0].kind,'sensate');h.w.document.querySelector('[data-daily-open="main"]').click();await wait();assert.equal(h.opens[0][0],'SENSATE');assert.equal(h.opens[0][1].day,16);}finally{h.close()}
+ const h=harness('confidence',16);try{await wait();const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.equal(items.filter(a=>!a.optional&&a.kind!=='video').length,1);assert.equal(items[0].kind,'sensate');h.w.document.querySelector('[data-daily-open="main"]').click();await wait();assert.equal(h.opens[0][0],'SENSATE');assert.equal(h.opens[0][1].day,16);}finally{h.close()}
 });
 
 test('wellness rotates over 28 days while the primary and scheduled supports stay separate',async()=>{
  const h=harness('ejaculation');try{await wait();const counts={nutrition:0,movement:0,sleep:0};
  for(let day=1;day<=28;day++){
   const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day}),well=items.filter(a=>a.kind==='wellness');
-  assert.equal(well.length,1);assert.equal(well[0].optional,true);counts[well[0].tip.category]++;
-  if(day%7===0)assert.equal(items.filter(a=>!a.optional).length,2);
+  assert.ok(well.length>=1&&well.length<=2);for(const a of well){assert.equal(a.optional,true);counts[a.tip.category]++;}
+  if([1,14,28].includes(day))assert.ok(items.some(a=>a.kind==='program-checkpoint'));
  }
- assert.deepEqual(counts,{nutrition:10,movement:9,sleep:9});
+ assert.deepEqual(counts,{nutrition:10,movement:9,sleep:18});
  for(const [day,kind] of [[6,'pelvic'],[11,'recovery'],[13,'confidence'],[18,'worksheet'],[25,'recovery']]){
   assert.ok(h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary:'desire',day}).some(a=>a.kind===kind));
  }
@@ -91,7 +91,7 @@ test('all routes schedule short videos; mixed Desire support never replaces the 
  const h=harness('desire');try{await wait();
  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle','anxiety','optimization','mixed']){
   const days=Array.from({length:28},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day:i+1}));
-  assert.deepEqual(days.flatMap((items,i)=>items.some(a=>a.kind==='video')?[i+1]:[]),[1,2,7,9,14,18,21,28]);
+  assert.deepEqual(days.flatMap((items,i)=>items.some(a=>a.kind==='video')?[i+1]:[]),['erection','desire','wellbeing','lifestyle','optimization'].includes(primary)?[1,2,3,7,9,10,14,16,18,21,23,28]:[1,3,7,10,14,16,18,21,23,28]);
   assert.ok(days.flat().filter(a=>a.kind==='video').every(a=>h.w.SPM_VIDEO_LIBRARY.some(v=>v.key===a.videoKey)));
   for(const day of [5,15,22]){
    const c={...h.c,primary,day},items=h.w.SPM_DAILY_PRACTICE.assignments(c);
@@ -126,14 +126,14 @@ test('recovery completion retains the assigned scenario for day-specific trackin
  const h=harness('ejaculation',11);try{await wait();const a=h.w.SPM_DAILY_PRACTICE.assignments().find(a=>a.kind==='recovery');await h.w.SPM_DAILY_PRACTICE.saveActivity(a.id,{confirmed:true});assert.equal(h.writes[0][1].scenario,'early');}finally{h.close()}
 });
 
-test('erection Desire is twice weekly, or three times for expressed low Desire, without changing shared cadence',async()=>{
+test('erection Desire is twice weekly, or daily for expressed low Desire, without changing shared cadence',async()=>{
  const h=harness();try{await wait();
  for(const profile of [{secondary:null,motives:['erection'],answers:{}},{secondary:'desire',motives:['erection'],answers:{}},{secondary:null,motives:['erection','desire'],answers:{}},{secondary:null,motives:['erection'],answers:{d_desire:2}},{secondary:null,motives:['erection'],answers:{h_medeffect:'desire'}}]){
  const rows=Array.from({length:28},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,...profile,day:i+1}));
  const high=profile.secondary==='desire'||profile.motives.includes('desire')||profile.answers.d_desire===2||profile.answers.h_medeffect==='desire';
- assert.deepEqual(rows.flatMap((a,i)=>a.some(x=>x.kind==='desire')?[i+1]:[]),high?[2,5,7,10,11,12,15,17,21,22,25,26]:[2,5,10,12,15,17,22,26]);
- for(let w=0;w<4;w++)assert.equal(rows.slice(w*7,w*7+7).filter(a=>a.some(x=>x.kind==='desire')).length,high?3:2);
- assert.ok(rows.every(a=>a.length<=5));
+ assert.deepEqual(rows.flatMap((a,i)=>a.some(x=>x.kind==='desire')?[i+1]:[]),high?Array.from({length:28},(_,i)=>i+1):[2,5,10,12,15,17,22,26]);
+ for(let w=0;w<4;w++)assert.equal(rows.slice(w*7,w*7+7).filter(a=>a.some(x=>x.kind==='desire')).length,high?7:2);
+ assert.ok(rows.every(a=>a.length<=9));
  assert.deepEqual(rows.flatMap((a,i)=>a.some(x=>x.id==='de-confidence-'+(i+1))?[i+1]:[]),[7,14,21,28]);
  }
  }finally{h.close()}
@@ -162,3 +162,26 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  assert.match(h.w.document.querySelector('#spmDailyStatus').textContent,/señal de seguridad sigue registrada/);
  }finally{h.close();}
 });
+
+ test('all 18 sleep cards and both movement alternatives are assigned in every domain',()=>{const h=harness();try{
+ for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+ const all=Array.from({length:28},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day:i+1})).flat();
+ const sleep=all.filter(a=>a.tip?.category==='sleep');assert.equal(new Set(sleep.map(a=>a.tip.sleepTipId)).size,18);
+ assert.deepEqual(sleep.map(a=>a.tip.sleepTipId).sort(),Array.from(h.w.SPM_SLEEP_LIBRARY_V1.tips,t=>t.id).sort());
+ assert.ok(all.some(a=>a.tip?.movementId==='swim'));assert.ok(all.some(a=>a.tip?.movementId==='dance'));
+ assert.ok(all.filter(a=>a.tip?.category==='nutrition').every(a=>a.summary.includes('biblioteca')));
+ assert.equal(all.filter(a=>a.kind==='program-checkpoint').length,16);assert.ok(all.filter(a=>a.kind==='program-checkpoint').every(a=>a.optional));
+ }
+ }finally{h.close();}});
+ test('maintenance difficulty selects 3 pelvic sessions weekly and indicated sessions are required',()=>{const h=harness();try{
+ for(const answers of [{e_maint:1,pf_awareness:'unsure',pf_tension:1},{e_maint:2,pf_awareness:'good_control',pf_tension:1}]){
+ for(let week=0;week<4;week++){const sessions=Array.from({length:7},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day:week*7+i+1,answers})).flat().filter(a=>a.kind==='pelvic');assert.equal(sessions.length,3);assert.ok(sessions.every(a=>!a.optional));}
+ }
+ assert.equal(h.w.SPM_DAILY_RESOURCES.pelvicDays({...h.c,answers:{e_maint:1,pf_awareness:'hard_to_relax',pf_tension:5}}).length,8);
+ }finally{h.close();}});
+ test('checkpoint cannot be marked complete without its actual answers',async()=>{const h=harness('wellbeing',14);try{await wait();await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',{confirmed:true}));assert.equal(h.writes.length,0);
+ const record={checkpointVersion:1,metrics:Object.fromEntries(Array.from(h.w.SPM_PROGRAM_CHECKPOINT.metrics,([key])=>[key,null])),reflection:'No evaluable',continuity:'Continuar con comodidad'};
+ await h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',record);assert.equal(h.writes.length,1);assert.equal(h.c.day,14);
+ }finally{h.close();}});
+
+ test('missing followups do not prevent completion or final report in any domain',async()=>{const h=harness();try{await wait();for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [14,28]){const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});assert.equal(items[0].optional,true);assert.ok(items.filter(a=>a.kind==='program-checkpoint'||a.kind==='ep-checkpoint').every(a=>a.optional));assert.ok(items.some(a=>!a.optional));}}finally{h.close();}});

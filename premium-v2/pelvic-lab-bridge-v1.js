@@ -23,9 +23,10 @@ function validValue(k,v){
 }
 function validState(s){return !!s&&typeof s==='object'&&!Array.isArray(s)&&JSON.stringify(s).length<80000&&Object.entries(s).every(([k,v])=>keys.includes(k)&&validValue(k,v));}
 function restriction(c,s={}){
- const last=(s['pf-results']||[]).at(-1),check=(s['pf-checkins']||[]).at(-1),sc=s['pf-screening']||{};
+ const a=c?.answers||{},last=(s['pf-results']||[]).at(-1),check=(s['pf-checkins']||[]).at(-1),sc=s['pf-screening']||{};
  if(!c||c.safety!=='none'||c.flags?.length||c.checkins?.some(x=>x.new_safety_flag))return 'review';
- if(s['pf-flags']?.length||s['pf-overload']?.length||sc.releaseOk==='no'||check?.tension>=7||check?.release==='Difícil'||last?.discomfort||last?.postTension||['relax','clinical-review'].includes(last?.recommendation))return 'relax';
+ if(a.pf_awareness==='hard_to_relax'||Number(a.pf_tension)>=4||s['pf-flags']?.length||s['pf-overload']?.length||sc.releaseOk==='no'||check?.tension>=7||check?.release==='Difícil'||last?.discomfort||last?.postTension||['relax','clinical-review'].includes(last?.recommendation))return 'relax';
+ if(!s['pf-screening']&&a.pf_awareness==='good_control'&&[1,2].includes(Number(a.pf_tension)))return 'ready';
  if(sc.aware!=='ok'||sc.releaseOk!=='si'||sc.comp?.length!==3)return 'awareness';
  return 'ready';
 }
@@ -84,13 +85,20 @@ function showLab(){
  modal.querySelector('[data-pf-body]').replaceChildren(frame);
 }
 async function open(opts={}){if(await load(opts))showLab();}
+async function openScheduled(opts={}){
+ if(!await load(opts))return;
+ // Read saved Lab state each time; never infer readiness from calendar day alone.
+ if(opts.preference==='classic'&&restriction(ctx(),state)==='ready'&&window.SPM_PELVIC_V2?.open){
+  const verified=clone(state);if(await close())window.SPM_PELVIC_V2.open({origin:'dailyPlan',day:opts.day,readiness:()=>restriction(ctx(),verified)});
+ }else showLab();
+}
 async function openHub(opts={}){
  if(!await load({...opts,hub:true}))return;
  const route=restriction(ctx(),state),ready=route==='ready';
  const why=route==='review'?'Hay información de seguridad pendiente de revisión. Puedes consultar el contenido educativo; las prácticas quedan en pausa.':route==='relax'?'Tus registros orientan a conciencia y relajación. El entrenamiento de contracciones queda en pausa.':ready?'Has registrado localización, técnica y relajación completas. Puedes continuar el entrenamiento y consultar el Lab como apoyo.':'Empieza por reconocer la musculatura y aprender a soltar. Tu entrenamiento de 28 días conserva su calendario y progreso.';
- modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · PISO PÉLVICO</span><h1>Dos recursos para tu evolución</h1><p>'+why+'</p><article><small>'+(ready?'EDUCACIÓN Y APOYO':'RECOMENDADO PARA EMPEZAR')+'</small><h2>Conciencia y relajación</h2><p>Pelvic Floor Lab: identifica, respira y coordina con el entrenador SPM.</p><button type="button" data-pf-education>Abrir Pelvic Floor Lab</button></article><article><small>'+(ready?'CONTINUAR TU PRÁCTICA':'PROGRAMA DE ENTRENAMIENTO')+'</small><h2>Entrenamiento progresivo</h2><p>Tu programa interactivo de 7 pasos y calendario de 28 días.</p><button type="button" data-pf-training '+(route==='review'||route==='relax'?'disabled':'')+'>Abrir entrenamiento actual</button></article><p class="spm-pf-small">Una práctica principal por sesión. No necesitas sumar dos rutinas completas.</p></section>';
+ modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · PISO PÉLVICO</span><h1>Dos recursos para tu evolución</h1><p>'+why+'</p><article><small>'+(ready?'EDUCACIÓN Y APOYO':'RECOMENDADO PARA EMPEZAR')+'</small><h2>Conciencia y relajación</h2><p>Pelvic Floor Lab: identifica, respira y coordina con el entrenador SPM.</p><button type="button" data-pf-education>Abrir Pelvic Floor Lab</button></article><article><small>'+(ready?'CONTINUAR TU PRÁCTICA':'PROGRAMA DE ENTRENAMIENTO')+'</small><h2>Entrenamiento progresivo</h2><p>Tu programa interactivo de 7 pasos y calendario de 28 días.</p><button type="button" data-pf-training '+(!ready?'disabled':'')+'>Abrir entrenamiento actual</button></article><p class="spm-pf-small">Una práctica principal por sesión. No necesitas sumar dos rutinas completas.</p></section>';
  modal.querySelector('[data-pf-education]').onclick=showLab;
- modal.querySelector('[data-pf-training]').onclick=async()=>{const r=restriction(ctx(),state);if(['review','relax'].includes(r))return;if(!window.SPM_PELVIC_V2?.open){status('El entrenamiento todavía está cargando. Inténtalo de nuevo.',false);return;}if(await close())window.SPM_PELVIC_V2.open();};
+ modal.querySelector('[data-pf-training]').onclick=async()=>{const r=restriction(ctx(),state);if(r!=='ready')return;if(!window.SPM_PELVIC_V2?.open){status('El entrenamiento todavía está cargando. Inténtalo de nuevo.',false);return;}const verified=clone(state);if(await close())window.SPM_PELVIC_V2.open({readiness:()=>restriction(ctx(),verified)});};
 }
 let scheduled=false;
 function mount(){
@@ -105,5 +113,5 @@ window.addEventListener('spm:session-change',e=>{if(modal&&e.detail?.userId!==sc
 window.addEventListener('spm:open-lab',e=>{if(['pelvic','pelvic-floor'].includes(e.detail?.lab))openHub(e.detail||{});});
 window.addEventListener('pagehide',()=>{clearTimeout(timer);});
 const style=document.createElement('style');style.textContent='.spm-pf-modal{padding:0;border:1px solid #31545c;border-radius:20px;background:#08151c;color:#edf8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-width:100%;max-height:96dvh;overflow:hidden}.spm-pf-modal::backdrop{background:#020a10ec}.spm-pf-shell{height:100%;display:flex;flex-direction:column}.spm-pf-shell>header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid #31545c}.spm-pf-shell>header button,.spm-pf-choice button{min-height:44px;border-radius:10px;border:1px solid #42616a;background:#17343e;color:#eef8f6;padding:9px 13px;cursor:pointer}.spm-pf-shell>header span{font-size:11px;color:#88cdbb}.spm-pf-shell>header span[data-error=true]{color:#e5be76}.spm-pf-shell>main{flex:1;min-height:0;overflow:auto}.spm-pf-shell iframe{width:100%;height:100%;border:0;display:block;background:#08151c}.spm-pf-choice{padding:24px;max-width:850px;margin:auto}.spm-pf-choice>span,.spm-pf-choice small,.spm-pf-entry span{color:#d8ba75;font-size:10px;letter-spacing:.09em;font-weight:800}.spm-pf-choice h1{font-size:30px;line-height:1.2}.spm-pf-choice p{line-height:1.6;color:#afc3c7}.spm-pf-choice article{padding:20px;border:1px solid #31545c;border-radius:16px;margin-top:14px;background:#10252e}.spm-pf-choice h2{font-size:23px;margin:8px 0}.spm-pf-choice button{background:#7ee1c5;color:#06221b;font-weight:800}.spm-pf-choice button:disabled{opacity:.5;cursor:not-allowed}.spm-pf-small{font-size:13px}.spm-pf-entry{display:flex;align-items:center;justify-content:space-between;gap:16px}.spm-pf-entry p{color:var(--muted)}[data-pf-lab]{margin-top:12px;width:100%}@media(max-width:600px){.spm-pf-entry{flex-direction:column;align-items:stretch}.spm-pf-choice{padding:18px}.spm-pf-shell>header span{max-width:48%}}';document.head.appendChild(style);
-window.SPM_PELVIC_LAB={open,close,flush,validState,restriction};window.SPM_PELVIC_HUB={open:openHub};schedule();
+window.SPM_PELVIC_LAB={open,openScheduled,close,flush,validState,restriction};window.SPM_PELVIC_HUB={open:openHub};schedule();
 })();

@@ -43,12 +43,22 @@ const META={
  sleep:{label:'Sueño',resourceId:'wellness.sleep',icon:'🌙'}
 };
 function day(){return Number(window.SPM_CURRENT_DAY||document.documentElement.dataset.spmCurrentDay||1)||1}
-function tipFor(d=day()){
- const cat=ORDER[(d-1)%3],round=Math.floor((d-1)/3),list=TIPS[cat],tip=list[round%list.length];
- return {...tip,category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:d};
+const SCHEDULE={nutrition:[1,4,7,10,13,16,19,22,25,28],movement:[2,5,8,11,14,17,20,23,26],sleep:[1,3,4,6,7,9,10,12,13,15,16,18,19,21,22,24,25,27]};
+TIPS.movement[7]={id:'mov.08',movementId:'swim',title:'Actividad en el agua',body:'Si tienes acceso seguro y es adecuado para ti, elige movimiento suave en el agua. Consulta la ficha de actividad acuática. Si no puedes, elige una caminata cómoda como alternativa.',cta:'Ver actividad en el agua'};
+TIPS.movement[8]={id:'mov.09',movementId:'dance',title:'Bailar y moverte',body:'Elige música que disfrutes y baila a un ritmo cómodo, adaptado a tu movilidad. Puedes hacerlo sentado o de pie. Consulta la ficha de baile y detente si aparece malestar.',cta:'Ver baile y movimiento'};
+function tipsFor(d=day()){
+ return ORDER.flatMap(cat=>{
+  const index=SCHEDULE[cat].indexOf(Number(d));if(index<0)return [];
+  const sleep=window.SPM_SLEEP_LIBRARY_V1?.tips?.[index];
+  const tip=cat==='sleep'&&sleep?{id:'slp.'+sleep.id,sleepTipId:sleep.id,title:sleep.title,body:sleep.body+' '+sleep.action,cta:'Abrir Sueño SPM'}:TIPS[cat][index];
+  if(!tip)return [];
+  return [{...tip,body:tip.body+(cat==='nutrition'?' Consulta la biblioteca de Nutrición para elegir alimentos compatibles con tus necesidades y restricciones.':''),category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:Number(d)}];
+ });
 }
+function tipFor(d=day()){return tipsFor(d)[0];}
 function render(){
  const hero=document.getElementById('spmTodayHero');if(!hero)return;
+ if(window.SPM_DAILY_PRACTICE){document.getElementById('spmWellnessTip')?.remove();return;}
  const tip=tipFor();let box=document.getElementById('spmWellnessTip');
  if(!box){box=document.createElement('section');box.id='spmWellnessTip';box.className='spm-wellness-tip';hero.appendChild(box)}
  box.dataset.category=tip.category;box.innerHTML='<div class="spm-wellness-tip-top"><div class="spm-wellness-tip-icon" aria-hidden="true">'+tip.icon+'</div><div><div class="spm-wellness-kicker">RECOMENDACIÓN DE BIENESTAR · '+tip.label.toUpperCase()+'</div><h3>'+tip.title+'</h3></div></div><p>'+tip.body+'</p><div class="spm-wellness-actions"><span>Una acción breve · '+tip.label+' reaparece cada 3 días</span><div class="spm-wellness-buttons"><button type="button" class="btn sec" id="spmWellnessOpen">'+tip.cta+'</button><button type="button" class="btn sec ghost" id="spmWellnessLibrary">Biblioteca Bienestar</button></div></div>';
@@ -60,5 +70,5 @@ document.addEventListener('click',e=>{if(e.target.closest('#navPlan,#goPlan,.pha
 document.addEventListener('DOMContentLoaded',()=>setTimeout(render,1400),{once:true});
 setTimeout(render,2200);
 const css=document.createElement('style');css.textContent='.spm-wellness-tip{--well:#78dfc5;--wellText:#052018;position:relative;overflow:hidden;margin-top:12px;padding:15px 16px;border:1px solid color-mix(in srgb,var(--well) 28%,transparent);border-radius:18px;background:radial-gradient(circle at 92% 0,color-mix(in srgb,var(--well) 13%,transparent),transparent 38%),linear-gradient(145deg,rgba(11,31,38,.96),rgba(6,18,22,.96));box-shadow:0 14px 32px rgba(0,0,0,.18);transition:.22s ease}.spm-wellness-tip[data-category="movement"]{--well:#67cfe4;--wellText:#06202a}.spm-wellness-tip[data-category="sleep"]{--well:#b1a6ee;--wellText:#151327}.spm-wellness-tip:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--well) 48%,transparent)}.spm-wellness-tip-top{display:flex;gap:11px;align-items:center}.spm-wellness-tip-icon{width:44px;height:44px;flex:0 0 auto;display:grid;place-items:center;border-radius:14px;background:color-mix(in srgb,var(--well) 12%,#0d2228);border:1px solid color-mix(in srgb,var(--well) 24%,transparent);font-size:22px}.spm-wellness-kicker{font-size:10px;font-weight:950;letter-spacing:.12em;color:var(--well)}.spm-wellness-tip h3{margin:4px 0 0}.spm-wellness-tip>p{margin:10px 0 0;color:var(--muted);line-height:1.5}.spm-wellness-actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:12px}.spm-wellness-actions span{font-size:11px;color:#b8c9c6}.spm-wellness-buttons{display:flex;gap:8px;flex-wrap:wrap}.spm-wellness-actions .btn{white-space:nowrap;border-color:color-mix(in srgb,var(--well) 30%,transparent)!important;background:var(--well)!important;color:var(--wellText)!important}.spm-wellness-actions .btn.ghost{background:#102a32!important;color:#eaf4f3!important;border-color:#31515a!important}@media(max-width:650px){.spm-wellness-actions{align-items:stretch;flex-direction:column}.spm-wellness-actions .btn{width:100%}}@media(prefers-reduced-motion:reduce){.spm-wellness-tip{transition:none!important}.spm-wellness-tip:hover{transform:none}}';document.head.appendChild(css);
-window.SPM_WELLNESS_DAILY_TIP_V1={tipFor,TIPS,ORDER,render};
+window.SPM_WELLNESS_DAILY_TIP_V1={tipFor,tipsFor,SCHEDULE,TIPS,ORDER,render};
 })();

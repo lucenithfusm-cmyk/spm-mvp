@@ -42,6 +42,11 @@ window.SPM_RESOURCE_CONTEXT=()=>{
 };
 // Each daily activity is saved separately; resource rows never advance the 28-day plan.
 window.SPM_DAILY_RECORDS={
+ async readCheckpoints(expectedScope){
+  const c=window.SPM_RESOURCE_CONTEXT();if(!c||expectedScope!==c.userId+':'+c.planId)throw Error('Program changed');
+  const {data,error}=await db.from('activity_completions').select('day_number,metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:daily_activity:program-checkpoint').order('day_number');
+  if(error)throw error;return data||[];
+ },
  async read(expectedScope,day){
   const c=window.SPM_RESOURCE_CONTEXT();
   if(!c||expectedScope!==c.userId+':'+c.planId)throw Error('Program changed');
