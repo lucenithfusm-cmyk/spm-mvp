@@ -98,18 +98,19 @@ function nextVisibleIndex(from){for(let i=from+1;i<S.queue.length;i++)if(shouldS
 function prevVisibleIndex(from){for(let i=from-1;i>=0;i--)if(shouldShow(S.queue[i]))return i;return -1}
 function visibleQueue(){return S.queue.filter(shouldShow)}
 function clearHiddenAnswers(){S.queue.forEach(q=>{if(q.show_if&&!shouldShow(q))delete S.answers[q.id]})}
-function scaleOptions(){return [1,2,3,4,5].map(v=>({value:v,label:(guestEnglish()?['Very low / never','Low / rarely','Mid','Good / often','Very good / almost always']:['Muy bajo / nunca','Bajo / rara vez','Intermedio','Bueno / frecuente','Muy bueno / casi siempre'])[v-1]}))}
+function scaleOptions(q){return E.assessment.responseScales[q.response_scale][guestEnglish()?'en':'es'].map((label,i)=>({value:i+1,label}))}
 function renderQ(){
  if(S.qi>=S.queue.length)return finishAssessment();
  let q=S.queue[S.qi];if(!shouldShow(q)){S.qi=nextVisibleIndex(S.qi-1);return renderQ()}
  const visible=visibleQueue(),pos=Math.max(0,visible.findIndex(x=>x.id===q.id));
- $('qCount').textContent=`${pos+1} / ${visible.length}`;$('prog').style.width=`${((pos+1)/visible.length)*100}%`;$('qSection').textContent=guest?.sectionLabel?.(q.section)||q.section.replace('_',' ');
+ const progress=(pos+1)/visible.length*100,bar=$('prog');bar.style.width=`${progress}%`;bar.parentElement.setAttribute('aria-valuenow',String(Math.round(progress)));bar.parentElement.setAttribute('aria-label',guestText('Avance de tu evaluación','Assessment progress'));
+ const explorationNotice=$('explorationNotice');if(explorationNotice)explorationNotice.hidden=!S.exploring||pos!==0;
  const box=$('qbox');box.innerHTML=`<h3 class="qtitle">${guestEnglish()?(q.prompt_en||q.prompt_es):q.prompt_es}</h3>`;
  if(q.type==='text'){
    const input=document.createElement('textarea');input.className='assessmentText';input.rows=3;input.placeholder=guestEnglish()?(q.placeholder_en||'Write your answer'):(q.placeholder_es||'Escribe tu respuesta');input.value=S.answers[q.id]||'';
    input.oninput=()=>{S.answers[q.id]=input.value;guestProgress()};box.appendChild(input);setTimeout(()=>input.focus(),50);
  }else{
-   let opts=[];if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions();else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:guestText('Sí','Yes')}];else opts=(q.options||[]).map(o=>({value:o.value,label:guestEnglish()?(o.en||o.es):o.es}));
+   let opts=[];if(q.type==='scale5'||q.type==='scale5_reverse')opts=scaleOptions(q);else if(q.type==='boolean')opts=[{value:false,label:'No'},{value:true,label:guestText('Sí','Yes')}];else opts=(q.options||[]).map(o=>({value:o.value,label:guestEnglish()?(o.en||o.es):o.es}));
    const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
    opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
  }

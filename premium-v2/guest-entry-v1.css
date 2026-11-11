@@ -40,3 +40,7 @@ body{background:radial-gradient(ellipse at 70% 0,#133b40,#061419 60%);color:#edf
 #motiveGrid .motiveExplore:hover{color:#edf8f4}
 #motiveGrid .motiveExplore[aria-pressed=true]{background:#15372f;color:#a3ecd7;border-color:#397461;padding-left:12px;padding-right:12px;text-decoration:none}
 #motiveGrid .motiveExplore[aria-pressed=true]:before{content:'✓';margin-right:8px}
+
+#quizCard .progress{margin:18px 0 22px}#quizCard .progress i{background:#78e1c4;transition:width .2s ease}
+.spmGuestExploreNotice{font-size:14px;line-height:1.6;color:#b9e6d6;margin:0 0 18px}
+@media(prefers-reduced-motion:reduce){#quizCard .progress i{transition:none}}

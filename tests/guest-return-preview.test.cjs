@@ -29,9 +29,29 @@ test('exploration resumes as prevention and supports switching back to multiple 
  try{
   h.$('#spmGuestStart').click();assert.equal(h.$('#motiveExplore').getAttribute('aria-pressed'),'true');assert.equal(h.$('[data-motive="optimization"]').getAttribute('aria-pressed'),'false');
   h.$('[data-motive="erection"]').click();h.$('[data-motive="confidence"]').click();assert.deepEqual(h.record().draft.motives,['erection','confidence']);assert.equal(h.$('#motiveExplore').getAttribute('aria-pressed'),'false');
-  h.$('#motiveExplore').click();h.$('#motiveNext').click();h.finish({c_fail:5,l_stress:5,l_sleep:2,d_desire:1});
+  h.$('#motiveExplore').click();h.$('#motiveNext').click();assert.equal(h.$('#explorationNotice').hidden,false);h.$('#qbox .opt').click();h.$('#qNext').click();assert.equal(h.$('#explorationNotice').hidden,true);h.finish({c_fail:5,l_stress:5,l_sleep:2,d_desire:1});
   assert.deepEqual(h.record().draft.motives,prevention.record().draft.motives);assert.deepEqual(h.record().draft.answers,prevention.record().draft.answers);assert.equal(h.$('.spmGuestPriority').textContent,prevention.$('.spmGuestPriority').textContent);assert.equal(h.checkoutCalls(),0);
  }finally{h.close();prevention.close()}
+});
+test('each five-option question uses one matching scale and keeps its numeric answer when language changes',()=>{
+ const h=harness(),seen=new Set();
+ const expected={satisfaction:['Nada satisfecho','Poco satisfecho','Más o menos','Satisfecho','Muy satisfecho'],frequency:['Nunca','Rara vez','A veces','Frecuentemente','Casi siempre'],feeling:['Para nada','Un poco','Algo','Bastante','Mucho']};
+ try{
+  h.$('#spmGuestStart').click();h.$('[data-age="1"]').click();for(const id of ['confidence','desire','wellbeing','ejaculation','erection','optimization'])h.$('[data-motive="'+id+'"]').click();h.$('#motiveNext').click();
+  assert.equal(h.$('#qCount'),null);assert.equal(h.$('#qSection'),null);assert.equal(h.$('#explorationNotice').hidden,true);assert(!h.$('#quizCard').textContent.includes('SPM Adaptive'));
+  let n=0,previous=0;
+  while(!h.$('#quizCard').hidden){
+   assert(++n<100);const q=h.w.ENGINE.assessment.questions.find(q=>q.prompt_es===h.$('#qbox h3').textContent),progress=Number(h.$('[role="progressbar"]').getAttribute('aria-valuenow'));assert(progress>=previous&&progress<=100);previous=progress;
+   if(q.type.startsWith('scale5')){
+    seen.add(q.id);const buttons=[...h.w.document.querySelectorAll('#qbox .opt')];assert.deepEqual(buttons.map(b=>b.textContent),expected[q.response_scale]);buttons[4].click();assert.equal(h.record().draft.answers[q.id],5);
+    if(q.id==='e_firm'){
+     h.w.SPM_LANGUAGE.set('en');assert.deepEqual([...h.w.document.querySelectorAll('#qbox .opt')].map(b=>b.textContent),['Not at all satisfied','Slightly satisfied','Somewhat satisfied','Satisfied','Very satisfied']);assert.equal(h.record().draft.answers[q.id],5);assert.equal(h.$('#qbox .opt.sel').textContent,'Very satisfied');h.w.SPM_LANGUAGE.set('es');
+    }
+   }else if(q.type==='text'){const input=h.$('#qbox textarea');input.value='Synthetic QA';input.dispatchEvent(new h.w.Event('input'))}else h.$('#qbox .opt').click();
+   h.$('#qNext').click();if(h.$('.spmPoster'))h.$('.spmPoster').click();
+  }
+  assert.equal(seen.size,29);assert(h.$('.spmGuestResult'));
+ }finally{h.close()}
 });
 test('only visitors with a draft see its clear action and cancelling preserves their choices',()=>{
  const first=harness();assert.equal(first.$('#spmGuestClear'),null);first.$('#spmGuestStart').click();first.$('[data-age="1"]').click();first.$('[data-motive="confidence"]').click();const saved=JSON.stringify(first.record());first.close();

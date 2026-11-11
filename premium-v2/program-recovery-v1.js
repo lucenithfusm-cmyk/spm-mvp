@@ -27,7 +27,7 @@ function open(){
   if(q.type==='text'){input.rows=3;input.maxLength=2000;input.placeholder=q.placeholder_es||'Escribe tu respuesta';}
   else{
    input.append(new Option('Selecciona una respuesta',''));
-   const opts=q.type==='boolean'?[{value:false,es:'No'},{value:true,es:'Sí'}]:q.type.startsWith('scale5')?[1,2,3,4,5].map((value,i)=>({value,es:['Muy bajo / nunca','Bajo / rara vez','Intermedio','Bueno / frecuente','Muy bueno / casi siempre'][i]})):q.options;
+   const opts=q.type==='boolean'?[{value:false,es:'No'},{value:true,es:'Sí'}]:q.type.startsWith('scale5')?window.ENGINE.assessment.responseScales[q.response_scale].es.map((es,i)=>({value:i+1,es})):q.options;
    for(const opt of opts)input.append(new Option(opt.es,String(opt.value)));
   }
   input.addEventListener(q.type==='text'?'input':'change',()=>{

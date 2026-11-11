@@ -22,7 +22,7 @@ test('missing safety answer accepts false explicitly and new true answers raise 
 function harness(){
  const dom=new JSDOM('<section id="map"><div class="mapHero"></div></section><button id="navPlan"></button>',{url:'https://spm.test',runScripts:'outside-only'}),w=dom.window;
  w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
- w.ENGINE={assessment:{questions}};w.SPM_ASSESSMENT_POLICY=policy;
+ w.eval(read('engine.js'));w.ENGINE.assessment.questions=questions;w.SPM_ASSESSMENT_POLICY=policy;
  const c={userId:'user',planId:'plan',day:15,primary:'erection',secondary:'desire',motives:['erection'],answers:complete(),safety:'review',flags:['s_penile'],completed:[1,2],checkins:[]};delete c.answers.h_has_condition;
  w.SPM_RESOURCE_CONTEXT=()=>c;const saves=[];let fail=false;
  w.SPM_PROGRAM_REPAIR={save:async(patch,scope)=>{if(fail)throw Error('Offline');saves.push({patch,scope});c.answers={...c.answers,...patch};}};
@@ -61,10 +61,21 @@ test('repeating a recovery after a lost response succeeds without changing valid
 });
 test('welcome does not call an incomplete assessment completed',()=>{
  const h=harness();try{h.c.completed=[];h.w.SPM_PROGRAM_WELCOME.mount();
- const text=h.w.document.querySelector('.spm-welcome-progress').textContent;
+ const text=[...h.w.document.querySelectorAll('.spm-welcome-progress')].map(el=>el.textContent).join(' ');
  assert.match(text,/respuestas pendientes/);assert.doesNotMatch(text,/autoevaluación está completada/);
  assert(h.w.document.querySelector('[data-complete-missing]'));
  }finally{h.close();}
+});
+test('missing scale answers use the same satisfaction, frequency and feeling labels and save numbers',async()=>{
+ const h=harness();try{
+  h.c.motives=['erection','desire'];h.c.answers=complete(h.c.motives);for(const id of ['e_firm','e_init','d_arousal'])delete h.c.answers[id];h.w.SPM_PROGRAM_RECOVERY.open();
+  for(const [id,labels,value] of [
+   ['e_firm',['Nada satisfecho','Poco satisfecho','Más o menos','Satisfecho','Muy satisfecho'],4],
+   ['e_init',['Nunca','Rara vez','A veces','Frecuentemente','Casi siempre'],5],
+   ['d_arousal',['Para nada','Un poco','Algo','Bastante','Mucho'],3]
+  ]){const input=h.w.document.querySelector('#repair-'+id);assert.deepEqual([...input.options].slice(1).map(o=>o.textContent),labels);input.value=String(value);input.dispatchEvent(new h.w.Event('change'));}
+  h.w.document.querySelector('#spmRecoveryDialog form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));assert.equal(h.saves.length,1);assert.deepEqual(JSON.parse(JSON.stringify(h.saves[0].patch)),{e_init:5,e_firm:4,d_arousal:3});
+ }finally{h.close()}
 });
 test('mistaken safety answer requires explicit choice and confirmation; saves only that question',async()=>{
  const h=harness();try{
