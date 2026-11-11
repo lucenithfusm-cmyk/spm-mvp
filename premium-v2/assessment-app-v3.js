@@ -10,8 +10,8 @@ const guestText=(es,en)=>guestEnglish()?en:es;
 function guestProgress(){guest?.progress?.({version:1,insights:window.SPM_INSIGHT_FLOW?.snapshot(),motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
 const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 const motiveDefs=[
- ['erection','Erección o firmeza'],['ejaculation','Control eyaculatorio'],['desire','Deseo o excitación'],
- ['confidence','Confianza / ansiedad de desempeño'],['wellbeing','Satisfacción y conexión'],['optimization','Optimización / prevención']
+ ['erection','Dificultad para lograr o mantener una erección firme'],['ejaculation','Dificultad para controlar la eyaculación'],['desire','Bajo deseo sexual'],
+ ['confidence','Ansiedad o inseguridad durante la intimidad'],['wellbeing','Dificultad para disfrutar o conectar en la intimidad'],['optimization','Quiero cuidar mi bienestar sexual y prevenir dificultades']
 ];
 function msg(t,kind='good'){const el=(!$('authScreen').hidden?$('authStatus'):$('status')); if(!el)return; el.className='notice '+kind; el.textContent=t; el.hidden=false;}
 function hideMsg(){if($('status'))$('status').hidden=true;if($('authStatus'))$('authStatus').hidden=true}
@@ -81,7 +81,7 @@ async function restore(){
 function resetForAssessment(){window.SPM_INSIGHT_FLOW?.reset();S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
- motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Erection or firmness',ejaculation:'Ejaculatory control',desire:'Desire or arousal',confidence:'Confidence / performance anxiety',wellbeing:'Satisfaction and connection',optimization:'Optimization / prevention'}[id]||t):t}</b>`;fragment.appendChild(b)});
+ motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Difficulty getting or maintaining a firm erection',ejaculation:'Difficulty controlling ejaculation',desire:'Low sexual desire',confidence:'Anxiety or insecurity during intimacy',wellbeing:'Difficulty enjoying or connecting during intimacy',optimization:'I want to care for my sexual wellbeing and prevent difficulties'}[id]||t):t}</b>`;fragment.appendChild(b)});
  g.replaceChildren(fragment);
 }
 function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives();guestProgress()}
