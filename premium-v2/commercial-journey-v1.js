@@ -203,7 +203,8 @@ function cinematic(preview=false){
 }
 function count(){const q=$('#qCount')?.textContent||'';const m=q.match(/(\d+)\s*\/\s*(\d+)/);return m?Number(m[1]):0}
 function busy(){return !!document.querySelector('.spmRefresh,.spmJourney')}
-function watch(){const quiz=$('#quizCard'),map=$('#map');if(!quiz||!map)return;const visible=!quiz.hidden;if(visible){quizWasVisible=true;const n=count();if(!state.intro&&n<=1&&!busy()){intro();return}if(n!==lastCount){lastCount=n;if(n>=18&&!state.signal&&!busy()){signal();return}if(n>=26&&!state.route&&!busy()){route();return}}}else if(quizWasVisible){finalArmed=true}if(!window.SPM_GUEST_ENTRY&&finalArmed&&map.classList.contains('on')&&!state.final&&!busy()){finalArmed=false;setTimeout(()=>{if(!busy())cinematic()},120)}}
+// Free entry has its own welcome and four-question insight cadence.
+function watch(){if(window.SPM_GUEST_ENTRY)return;const quiz=$('#quizCard'),map=$('#map');if(!quiz||!map)return;const visible=!quiz.hidden;if(visible){quizWasVisible=true;const n=count();if(!state.intro&&n<=1&&!busy()){intro();return}if(n!==lastCount){lastCount=n;if(n>=18&&!state.signal&&!busy()){signal();return}if(n>=26&&!state.route&&!busy()){route();return}}}else if(quizWasVisible){finalArmed=true}if(!window.SPM_GUEST_ENTRY&&finalArmed&&map.classList.contains('on')&&!state.final&&!busy()){finalArmed=false;setTimeout(()=>{if(!busy())cinematic()},120)}}
 window.SPM_COMMERCIAL_PREVIEW={intro:()=>intro(true),signal:()=>signal(true),route:()=>route(true),cinematic:()=>cinematic(true),close};
 window.SPM_COMMERCIAL_JOURNEY_RESET=()=>{try{sessionStorage.removeItem(KEY)}catch{};location.reload()};
 window.addEventListener('spm:languagechange',()=>{if(layer)close()});

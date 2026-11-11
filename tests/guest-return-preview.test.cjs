@@ -41,7 +41,7 @@ test('each five-option question uses one matching scale and keeps its numeric an
   assert.equal(h.$('#qCount'),null);assert.equal(h.$('#qSection'),null);assert.equal(h.$('#explorationNotice').hidden,true);assert(!h.$('#quizCard').textContent.includes('SPM Adaptive'));
   let n=0,previous=0;
   while(!h.$('#quizCard').hidden){
-   assert(++n<100);const q=h.w.ENGINE.assessment.questions.find(q=>q.prompt_es===h.$('#qbox h3').textContent),progress=Number(h.$('[role="progressbar"]').getAttribute('aria-valuenow'));assert(progress>=previous&&progress<=100);previous=progress;
+   assert(++n<100);h.watch();assert.equal(h.$('.spmJourney'),null,'The free flow must not add a second introduction or duplicate insight overlays');const q=h.w.ENGINE.assessment.questions.find(q=>q.prompt_es===h.$('#qbox h3').textContent),progress=Number(h.$('[role="progressbar"]').getAttribute('aria-valuenow'));assert(progress>=previous&&progress<=100);previous=progress;
    if(q.type.startsWith('scale5')){
     seen.add(q.id);const buttons=[...h.w.document.querySelectorAll('#qbox .opt')];assert.deepEqual(buttons.map(b=>b.textContent),expected[q.response_scale]);buttons[4].click();assert.equal(h.record().draft.answers[q.id],5);
     if(q.id==='e_firm'){
