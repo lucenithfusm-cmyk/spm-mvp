@@ -210,11 +210,12 @@ const guestAPI=guest?{
   }
   renderMotives();guestProgress();
  },
+ review(saved){this.start({...saved,stage:'motives',qi:0})},
  refresh(){renderMotives();if(!$('quizCard').hidden)renderQ()},
  async authenticate(mode,email,password){
   return mode==='signup'?db.auth.signUp({email,password,options:{emailRedirectTo:location.href.split('#')[0]}}):db.auth.signInWithPassword({email,password});
  },
- async checkout(receipt){return window.SPM_PAYMENTS.checkout(db,receipt)},
+ async checkout(receipt){const {data,error}=await db.auth.getUser();if(error||!data?.user||data.user.id!==receipt.userId)throw new Error('sign_in_required');return window.SPM_PAYMENTS.checkout(db,receipt)},
  async save(receipt={}){
   if(!S.map||S.map.urgent.length)throw new Error(guestText('Revisa primero tu orientación de seguridad.','Review your safety guidance first.'));
   const {data,error}=await db.auth.getUser();if(error||!data?.user)throw new Error(guestText('Confirma tu correo e inicia sesión para guardar la evaluación.','Confirm your email and sign in to save your assessment.'));
