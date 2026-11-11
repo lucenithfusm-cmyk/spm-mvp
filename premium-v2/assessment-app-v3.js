@@ -7,11 +7,15 @@ const $=id=>document.getElementById(id);
 const guest=window.SPM_GUEST_ENTRY||null;
 const guestEnglish=()=>!!guest&&window.SPM_LANGUAGE?.get?.()==='en';
 const guestText=(es,en)=>guestEnglish()?en:es;
-function guestProgress(){guest?.progress?.({version:1,insights:window.SPM_INSIGHT_FLOW?.snapshot(),motives:[...S.motives],answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
-const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+function guestProgress(){guest?.progress?.({version:1,insights:window.SPM_INSIGHT_FLOW?.snapshot(),motives:[...S.motives],exploring:S.exploring,answers:{...S.answers},qi:S.qi,stage:S.map?'result':!$('ageCard').hidden?'age':!$('motiveCard').hidden?'motives':'questions'});}
+const S={user:null,motives:[],exploring:false,queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
 const motiveDefs=[
- ['erection','Dificultad para lograr o mantener una erección firme'],['ejaculation','Dificultad para controlar la eyaculación'],['desire','Bajo deseo sexual'],
- ['confidence','Ansiedad o inseguridad durante la intimidad'],['wellbeing','Dificultad para disfrutar o conectar en la intimidad'],['optimization','Quiero cuidar mi bienestar sexual y prevenir dificultades']
+ ['confidence','Quiero sentirme más seguro y tranquilo en la intimidad','I want to feel more confident and calm during intimacy'],
+ ['desire','Quiero tener más energía y deseo','I want to have more energy and desire'],
+ ['wellbeing','Quiero disfrutar más y conectar mejor con mi pareja','I want to enjoy intimacy more and connect better with my partner'],
+ ['ejaculation','Quiero tener más control y durar más','I want to have more control and last longer'],
+ ['erection','Quiero lograr erecciones más firmes y consistentes','I want to achieve firmer, more consistent erections'],
+ ['optimization','Quiero cuidar mi bienestar y prevenir a futuro','I want to care for my wellbeing and focus on prevention']
 ];
 function msg(t,kind='good'){const el=(!$('authScreen').hidden?$('authStatus'):$('status')); if(!el)return; el.className='notice '+kind; el.textContent=t; el.hidden=false;}
 function hideMsg(){if($('status'))$('status').hidden=true;if($('authStatus'))$('authStatus').hidden=true}
@@ -78,13 +82,16 @@ async function restore(){
  ['navMap','navPlan','navCoach','navProgress'].forEach(id=>$(id).disabled=false);
  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg('Tu progreso anterior se cargó correctamente.','good');
 }
-function resetForAssessment(){window.SPM_INSIGHT_FLOW?.reset();S.motives=[];S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
+function resetForAssessment(){window.SPM_INSIGHT_FLOW?.reset();S.motives=[];S.exploring=false;S.answers={};S.queue=[];S.qi=0;S.map=null;S.assessmentId=S.mapId=S.planId=null;S.completed=new Set();S.checkins=[];nav('intake');$('ageCard').hidden=false;$('motiveCard').hidden=true;$('quizCard').hidden=true;}
 function renderMotives(){
  const g=$('motiveGrid');if(!g)return;const fragment=document.createDocumentFragment();
- motiveDefs.forEach(([id,t])=>{const b=document.createElement('button');b.type='button';b.className='choice'+(S.motives.includes(id)?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(S.motives.includes(id)));b.innerHTML=`<b>${guestEnglish()?({erection:'Difficulty getting or maintaining a firm erection',ejaculation:'Difficulty controlling ejaculation',desire:'Low sexual desire',confidence:'Anxiety or insecurity during intimacy',wellbeing:'Difficulty enjoying or connecting during intimacy',optimization:'I want to care for my sexual wellbeing and prevent difficulties'}[id]||t):t}</b>`;fragment.appendChild(b)});
+ motiveDefs.forEach(([id,es,en])=>{const selected=!S.exploring&&S.motives.includes(id),b=document.createElement('button');b.type='button';b.className='choice'+(selected?' sel':'');b.dataset.motive=id;b.setAttribute('aria-pressed',String(selected));const text=document.createElement('b');text.textContent=guestText(es,en);b.appendChild(text);fragment.appendChild(b)});
+ const explore=document.createElement('button');explore.type='button';explore.id='motiveExplore';explore.className='motiveExplore';explore.setAttribute('aria-pressed',String(S.exploring));explore.textContent=guestText('Solo estoy explorando por ahora','I am just exploring for now');fragment.appendChild(explore);
  g.replaceChildren(fragment);
 }
-function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives();guestProgress()}
+function selectMotive(id){if(!motiveDefs.some(([key])=>key===id))return;if(S.exploring){S.exploring=false;S.motives=[]}S.motives.includes(id)?S.motives=S.motives.filter(x=>x!==id):S.motives.push(id);renderMotives();guestProgress()}
+// Exploration is a presentation choice for the existing prevention route, not a seventh domain.
+function selectExploration(){S.exploring=!S.exploring;S.motives=S.exploring?['optimization']:[];renderMotives();guestProgress()}
 function buildQueue(){const sec=new Set(['goal','lifestyle','health','pelvic_floor','safety']);S.motives.forEach(m=>{if(m!=='optimization')sec.add(m)});if(S.motives.includes('optimization'))['confidence','wellbeing','desire'].forEach(x=>sec.add(x));S.queue=E.assessment.questions.filter(q=>sec.has(q.section))}
 function shouldShow(q){if(!q?.show_if)return true;return S.answers[q.show_if.id]===q.show_if.equals}
 function nextVisibleIndex(from){for(let i=from+1;i<S.queue.length;i++)if(shouldShow(S.queue[i]))return i;return S.queue.length}
@@ -200,6 +207,7 @@ const guestAPI=guest?{
   if(saved?.version===1){
    window.SPM_INSIGHT_FLOW?.restore(saved.insights);
    S.motives=(saved.motives||[]).filter(k=>motiveDefs.some(([id])=>id===k));
+   S.exploring=saved.exploring===true&&S.motives.length===1&&S.motives[0]==='optimization';
    const ids=new Set(E.assessment.questions.map(q=>q.id));
    S.answers=Object.fromEntries(Object.entries(saved.answers||{}).filter(([k])=>ids.has(k)));
    if(S.motives.length)buildQueue();clearHiddenAnswers();
@@ -236,9 +244,9 @@ const guestAPI=guest?{
 }:null;
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
- const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive]');if(button&&motiveGrid.contains(button))selectMotive(button.dataset.motive)});
+ const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive],#motiveExplore');if(button&&motiveGrid.contains(button)){if(button.id==='motiveExplore')selectExploration();else selectMotive(button.dataset.motive)}});
  document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false;guestProgress()}else msg('SPM está diseñado para mayores de 18 años.','warn')});
- $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Selecciona al menos un motivo.','Choose at least one reason.'),'warn');return}buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
+ $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Elige una opción para continuar.','Choose an option to continue.'),'warn');return}hideMsg();buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
  $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();const advance=()=>{clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};if(window.SPM_INSIGHT_FLOW){window.SPM_INSIGHT_FLOW.advance(q.id,advance);guestProgress()}else advance()};
  document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;if($('newAssessment'))$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();

@@ -22,6 +22,21 @@ function harness(saved,language='es',media={}){
  return {w,$,record,finish,plays:()=>plays,checkoutCalls:()=>checkoutCalls,close:()=>{w.dispatchEvent(new w.Event('pagehide'));w.close()},watch:()=>intervals.forEach(f=>f())};
 }
 function completed(motives=['erection','confidence','desire']){const h=harness();h.$('#spmGuestStart').click();h.$('[data-age="1"]').click();for(const k of motives)h.$('[data-motive="'+k+'"]').click();h.$('#motiveNext').click();h.finish({c_fail:5,l_stress:5,l_sleep:2,d_desire:1});return h}
+test('exploration resumes as prevention and supports switching back to multiple goals',()=>{
+ const first=harness();first.$('#spmGuestStart').click();first.$('[data-age="1"]').click();first.$('[data-motive="confidence"]').click();first.$('#motiveExplore').click();
+ const saved=JSON.stringify(first.record());assert.deepEqual(first.record().draft.motives,['optimization']);first.close();
+ const h=harness(saved),prevention=completed(['optimization']);
+ try{
+  h.$('#spmGuestStart').click();assert.equal(h.$('#motiveExplore').getAttribute('aria-pressed'),'true');assert.equal(h.$('[data-motive="optimization"]').getAttribute('aria-pressed'),'false');
+  h.$('[data-motive="erection"]').click();h.$('[data-motive="confidence"]').click();assert.deepEqual(h.record().draft.motives,['erection','confidence']);assert.equal(h.$('#motiveExplore').getAttribute('aria-pressed'),'false');
+  h.$('#motiveExplore').click();h.$('#motiveNext').click();h.finish({c_fail:5,l_stress:5,l_sleep:2,d_desire:1});
+  assert.deepEqual(h.record().draft.motives,prevention.record().draft.motives);assert.deepEqual(h.record().draft.answers,prevention.record().draft.answers);assert.equal(h.$('.spmGuestPriority').textContent,prevention.$('.spmGuestPriority').textContent);assert.equal(h.checkoutCalls(),0);
+ }finally{h.close();prevention.close()}
+});
+test('only visitors with a draft see its clear action and cancelling preserves their choices',()=>{
+ const first=harness();assert.equal(first.$('#spmGuestClear'),null);first.$('#spmGuestStart').click();first.$('[data-age="1"]').click();first.$('[data-motive="confidence"]').click();const saved=JSON.stringify(first.record());first.close();
+ const h=harness(saved);try{assert(h.$('#spmGuestClear'));h.$('#spmGuestClear').click();assert(h.$('#spmGuestRestartConfirm'));h.$('#spmGuestRestartCancel').click();h.$('#spmGuestStart').click();assert.equal(h.$('#motiveCard').hidden,false);assert.equal(h.$('[data-motive="confidence"]').getAttribute('aria-pressed'),'true');assert.deepEqual(h.record().draft.motives,['confidence']);}finally{h.close()}
+});
 test('first assessment shows supported partial guidance, not the offer or detailed scores',()=>{
  const h=completed();try{assert(h.$('.spmGuestResult'));assert.match(h.$('.spmGuestResult').textContent,/Hemos analizado tus respuestas/);assert.match(h.$('.spmGuestSignals').textContent,/Presión por el desempeño/);assert.match(h.$('.spmGuestSignals').textContent,/Deseo e interés sexual/);assert.match(h.$('.spmGuestResult').textContent,/Sin mensualidades, anualidades ni cobros recurrentes/);assert(!h.$('.spmGuestResult #domainGrid'));h.$('#map').classList.add('on');h.watch();assert(!h.$('.spmGate'),'Legacy watchers must not cover the initial guidance');assert.equal(h.checkoutCalls(),0);}finally{h.close()}
 });
