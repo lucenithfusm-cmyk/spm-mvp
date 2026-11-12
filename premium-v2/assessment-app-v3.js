@@ -114,7 +114,7 @@ function renderQ(){
    const w=document.createElement('div');w.className='opts '+((q.type||'').startsWith('scale')?'scale':q.type==='boolean'?'binary':'single');
    opts.forEach(o=>{const b=document.createElement('button');b.className='opt'+(String(S.answers[q.id])===String(o.value)?' sel':'');b.innerHTML=`<span>${o.label}</span>`;b.onclick=()=>{S.answers[q.id]=o.value;clearHiddenAnswers();renderQ()};w.appendChild(b)});box.appendChild(w);
  }
- $('qBack').disabled=prevVisibleIndex(S.qi)<0;guestProgress();
+ $('qBack').disabled=false;guestProgress();
 }
 function scoreMap(){
  const domains={};S.queue.forEach(q=>{if(!q.domain||S.answers[q.id]===undefined)return;let v=Number(S.answers[q.id]);if(!Number.isFinite(v))return;if(q.type==='scale5_reverse')v=6-v;const s=(v-1)*25,w=q.weight||1;(domains[q.domain]??={sum:0,w:0});domains[q.domain].sum+=s*w;domains[q.domain].w+=w});
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive],#motiveExplore');if(button&&motiveGrid.contains(button)){if(button.id==='motiveExplore')selectExploration();else selectMotive(button.dataset.motive)}});
  document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{if(b.dataset.age==='1'){renderMotives();$('ageCard').hidden=true;$('motiveCard').hidden=false;guestProgress()}else msg('SPM está diseñado para mayores de 18 años.','warn')});
  $('motiveNext').onclick=()=>{if(!S.motives.length){msg(guestText('Elige una opción para continuar.','Choose an option to continue.'),'warn');return}hideMsg();buildQueue();S.qi=0;$('motiveCard').hidden=true;$('quizCard').hidden=false;renderQ()};
- $('qBack').onclick=()=>{const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}};
+ $('qBack').onclick=()=>{hideMsg();const prev=prevVisibleIndex(S.qi);if(prev>=0){S.qi=prev;renderQ()}else{renderMotives();$('quizCard').hidden=true;$('motiveCard').hidden=false;guestProgress();window.scrollTo({top:0,behavior:'instant'})}};
  $('qNext').onclick=()=>{const q=S.queue[S.qi],value=S.answers[q.id];if(value===undefined||value===null||(q.type==='text'&&!String(value).trim())){msg(q.type==='text'?guestText('Escribe una respuesta para continuar.','Write an answer to continue.'):guestText('Selecciona una respuesta.','Choose an answer.'),'warn');return}hideMsg();const advance=()=>{clearHiddenAnswers();S.qi=nextVisibleIndex(S.qi);renderQ()};if(window.SPM_INSIGHT_FLOW){window.SPM_INSIGHT_FLOW.advance(q.id,advance);guestProgress()}else advance()};
  document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>!b.disabled&&b.dataset.panel&&nav(b.dataset.panel));$('goPlan').onclick=()=>nav('plan');$('coachSave').onclick=saveCoach;if($('newAssessment'))$('newAssessment').onclick=()=>{resetForAssessment();hideMsg()};boot();
 });

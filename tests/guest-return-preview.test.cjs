@@ -22,6 +22,26 @@ function harness(saved,language='es',media={}){
  return {w,$,record,finish,plays:()=>plays,checkoutCalls:()=>checkoutCalls,close:()=>{w.dispatchEvent(new w.Event('pagehide'));w.close()},watch:()=>intervals.forEach(f=>f())};
 }
 function completed(motives=['erection','confidence','desire']){const h=harness();h.$('#spmGuestStart').click();h.$('[data-age="1"]').click();for(const k of motives)h.$('[data-motive="'+k+'"]').click();h.$('#motiveNext').click();h.finish({c_fail:5,l_stress:5,l_sleep:2,d_desire:1});return h}
+test('back from the first question returns to goals, survives reload, and rebuilds the chosen route',()=>{
+ const first=harness();let saved;
+ try{
+  first.$('#spmGuestStart').click();first.$('[data-age="1"]').click();first.$('#motiveExplore').click();first.$('#motiveNext').click();
+  assert.equal(first.$('#qBack').disabled,false);
+  first.$('#qbox .opt').click();const answers=first.record().draft.answers;
+  first.$('#qNext').click();first.$('#qBack').click();assert(first.$('#qbox .opt.sel'));
+  first.$('#qBack').click();assert.equal(first.$('#motiveCard').hidden,false);assert.equal(first.$('#quizCard').hidden,true);
+  assert.equal(first.$('#motiveExplore').getAttribute('aria-pressed'),'true');assert.deepEqual(first.record().draft.answers,answers);assert.equal(first.record().draft.stage,'motives');
+  saved=JSON.stringify(first.record());
+ }finally{first.close()}
+ const h=harness(saved);
+ try{
+  h.$('#spmGuestStart').click();assert.equal(h.$('#motiveCard').hidden,false);
+  h.$('[data-motive="erection"]').click();h.$('[data-motive="ejaculation"]').click();h.$('#motiveNext').click();
+  assert.deepEqual(h.record().draft.motives,['erection','ejaculation']);assert.equal(h.record().draft.exploring,false);assert.equal(h.$('#explorationNotice').hidden,true);assert(h.$('#qbox .opt.sel'));
+  h.finish();const answers=h.record().draft.answers;
+  assert(Object.hasOwn(answers,'e_firm'));assert(Object.hasOwn(answers,'ej_control'));assert(!Object.hasOwn(answers,'d_desire'));assert.equal(h.checkoutCalls(),0);
+ }finally{h.close()}
+});
 test('exploration resumes as prevention and supports switching back to multiple goals',()=>{
  const first=harness();first.$('#spmGuestStart').click();first.$('[data-age="1"]').click();first.$('[data-motive="confidence"]').click();first.$('#motiveExplore').click();
  const saved=JSON.stringify(first.record());assert.deepEqual(first.record().draft.motives,['optimization']);first.close();
