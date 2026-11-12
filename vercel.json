@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/28-dias",
+      "destination": "/premium-v2/free-assessment.html",
+      "permanent": false
+    }
+  ]
+}
