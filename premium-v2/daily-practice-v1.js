@@ -239,6 +239,8 @@ function continuation(root){
 function refreshContinuation(){
  if(view!=='today'||!validActive())return;
  const a=assignments().find(x=>x.id===active.id),module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');
+ // Desire has an explicit finish/partial handoff. A second footer collapses its iframe.
+ if(a?.kind==='desire'){module?.querySelector('[data-spm-next]')?.remove();return;}
  if(module)continuation(module);
 }
 function showContinuation(){
