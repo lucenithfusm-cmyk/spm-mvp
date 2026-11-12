@@ -4,7 +4,6 @@ Estado: código preparado; no desplegado, sin envíos activados. La página diar
 
 Archivo identificado: `Recetario_SPM.pdf`, 1.806.512 bytes, 15 páginas, 12 preparaciones.
 SHA-256: `1e732d27a659e7af9232fb7140634d120023875d13c79bb1ad5cfabb78e5fdb3`.
-Identidad del documento: `libfile_fde3_f-68e6a6e38c2c819180135fb5e1ee5aa6_e5eac49243f08191b379c72f64a855df`.
 
 ## Regla preparada
 

@@ -189,7 +189,16 @@ test('continuation uses actual pending assignments in all six routes and exclude
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route,1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
   const items=h.w.SPM_DAILY_PRACTICE.nextActivities();assert(!items.some(a=>a.id==='main'));
-  const panel=h.w.document.querySelector('#spmDailyWorkspace [data-spm-next]');assert(panel);for(const a of items)assert(panel.textContent.includes(a.title));
+  const panel=h.w.document.querySelector('#spmDailyWorkspace [data-spm-next]');assert(panel);
+  for(const a of items){
+   assert(panel.querySelector(`[data-next-id="${a.id}"]`),`${route}: ${a.id} is actionable`);
+   if(a.kind==='wellness'&&['sleep','nutrition'].includes(a.tip.category)){
+    const card=panel.querySelector(`[data-activity="${a.id}"]`);assert(card);
+    const title=a.tip.category==='sleep'?h.w.SPM_SLEEP_LIBRARY_V1.tips.find(t=>t.id===a.tip.sleepTipId).title:a.tip.title;
+    assert(card.textContent.includes(title),`${route}: the assigned original card is shown`);
+   }else assert(panel.textContent.includes(a.title));
+  }
+  assert(!panel.querySelector('[data-next-id="main"]'));
   assert.equal(h.w.document.querySelector('#spmDailySession').dataset.continuation,'true');assert.equal(h.c.day,1);
   }finally{h.close();}
  }
