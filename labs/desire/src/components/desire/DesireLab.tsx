@@ -1,6 +1,6 @@
 import { ProgramVideos } from './ProgramVideos';
 import { DoctorDesireVideo } from './DoctorDesireVideo';
-import { centralStorage, centralContext } from '@/lib/central';
+import { centralStorage, centralContext, host } from '@/lib/central';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, ArrowRight, Check, VolumeX, BookOpen, CalendarDays, ShieldAlert, Sparkles } from 'lucide-react';
 import trainer from '@/assets/spm-trainer.jpg';
@@ -145,6 +145,11 @@ export function DesireLab() {
   const adaptation = useMemo(() => adapt(s, baselineMetrics(prog), prog.sessions), [s, prog]);
   const genToday = () => { const c = todayFor(s, prog, day); setToday(c); lsSet(STORAGE.today, JSON.stringify(c)); };
   const openPractice = (id: string, o: Origin, d?: number) => { setPDay(clampDay(d ?? (o === 'dailyPlan' ? day : centralContext().day))); if (o === 'cycle' && d) setRetDay(clampDay(d)); setRetPractice(''); openFrom(`p:${id}`, o); };
+  const returnToToday = async () => {
+    if (host()?.returnToToday) {
+      if (!await host()!.returnToToday!()) setNotice('No pudimos volver todavía. Conserva esta pantalla y reintenta el guardado.');
+    } else go('today', 'dailyPlan');
+  };
   const clinical = ev.rec === 'clinical-review' || central.restriction !== 'none';
   const ctx: CycleCtx = { s, up, prog, setProg, origin, programDay: day, clinical, centralBlocked: central.restriction !== 'none', go: (v, o) => { const pv = parseView(v) ?? 20; if (typeof pv === 'string' && pv.startsWith('day:')) setRetDay(clampDay(pv.slice(4))); setView(pv); if (o) setOrigin(o as Origin); },
     openResource: (r) => { const pv = parseView(r); if (pv === null) return; setRetPractice(String(view)); setView(pv); }, openPractice: (id, o, d) => openPractice(id, o as Origin, d) };
@@ -431,14 +436,14 @@ export function DesireLab() {
       </header>
       <nav className="dz-tabs" aria-label="Secciones">
         {([['cycle', 'Mi ciclo 28 días'], ['today', 'Hoy'], [20, 'Biblioteca'], ['progress28', 'Progreso'], [1, 'Recorrido 20 pantallas']] as [View, string][]).filter(([v]) => central.origin !== 'dailyPlan' || v === 'today').map(([v, l]) =>
-          <button key={l} className={view === v ? 'on' : ''} onClick={() => { setRetPractice(''); setNotice(''); if (v === 'today') { origin === 'dailyPlan' ? go('today', 'dailyPlan') : ( (setToday(todayFor(s, prog, centralContext().day)), setDay(centralContext().day), go('today', 'dailyPlan'))); } else go(v, origin === 'dailyPlan' ? 'dailyPlan' : 'lab'); }}>{l}</button>)}
+          <button key={l} className={view === v ? 'on' : ''} onClick={() => { setRetPractice(''); setNotice(''); if (v === 'today') { central.origin === 'dailyPlan' ? void returnToToday() : ( (setToday(todayFor(s, prog, centralContext().day)), setDay(centralContext().day), go('today', 'dailyPlan'))); } else go(v, origin === 'dailyPlan' ? 'dailyPlan' : 'lab'); }}>{l}</button>)}
       </nav>
       {typeof view === 'number' && <div className="dz-progress"><span style={{ width: `${(view / 20) * 100}%` }} /></div>}
       <main className="dz-main" data-audio-id={audio}>
         {notice && <p className="dz-note" role="status">{notice}</p>}
         {retPractice && retPractice !== String(view) && <button className="dz-back" onClick={() => { const r = retPractice; setRetPractice(''); setView(r); }}><ArrowLeft size={16} /> Volver a la práctica</button>}
         {origin !== 'lab' && !(retPractice && retPractice !== String(view)) && (
-          <button className="dz-back" onClick={() => origin === 'library' ? go(20, 'library') : origin === 'route' ? go('route') : origin === 'cycle' ? go(`day:${retDay}`) : go('today', 'dailyPlan')}>
+          <button className="dz-back" onClick={() => origin === 'library' ? go(20, 'library') : origin === 'route' ? go('route') : origin === 'cycle' ? go(`day:${retDay}`) : void returnToToday()}>
             <ArrowLeft size={16} /> {origin === 'library' ? 'Volver a Biblioteca' : origin === 'route' ? 'Volver a Tu ruta SPM' : origin === 'cycle' ? `Volver al Día ${retDay}` : 'Volver a Hoy'}
           </button>
         )}

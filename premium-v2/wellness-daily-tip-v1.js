@@ -36,6 +36,7 @@ const TIPS={
   {id:'slp.09',sleepTipId:'sl-despertares-02',title:'Si no puedes dormir, evita pelear con el sueño',body:'Si llevas un buen rato despierto y frustrado, sal de la cama un momento, realiza una actividad tranquila con poca luz y vuelve cuando aparezca sueño.',cta:'Abrir Sueño SPM'}
  ]
 };
+if(window.SPM_NUTRITION_DAILY)TIPS.nutrition=window.SPM_NUTRITION_DAILY.cards;
 const ORDER=['nutrition','movement','sleep'];
 const META={
  nutrition:{label:'Nutrición',resourceId:'wellness.nutrition',icon:'🥗'},
@@ -52,7 +53,7 @@ function tipsFor(d=day()){
   const sleep=window.SPM_SLEEP_LIBRARY_V1?.tips?.[index];
   const tip=cat==='sleep'&&sleep?{id:'slp.'+sleep.id,sleepTipId:sleep.id,title:sleep.title,body:sleep.body+' '+sleep.action,cta:'Abrir Sueño SPM'}:TIPS[cat][index];
   if(!tip)return [];
-  return [{...tip,body:tip.body+(cat==='nutrition'?' Consulta la biblioteca de Nutrición para elegir alimentos compatibles con tus necesidades y restricciones.':''),category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:Number(d)}];
+  return [{...tip,body:tip.body,category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:Number(d)}];
  });
 }
 function tipFor(d=day()){return tipsFor(d)[0];}

@@ -39,3 +39,17 @@ test('daily handoff preserves incomplete practices and requires both day-one exe
   await h.w.SPM_DESIRE_LAB.open({origin:'dailyPlan'});assert.equal(await h.w.SPM_DESIRE_LAB_HOST.finishDaily(false),true);assert.equal(completed,1);assert.equal(next,2);
  }finally{await h.close();}
 });
+
+test('return to Today flushes without completing and opens the central action dashboard',async()=>{
+ const h=harness({day:1,primary:'desire'});let opens=0;
+ h.w.SPM_DAILY_PRACTICE={open:()=>opens++};
+ try{
+  await h.w.SPM_DESIRE_LAB.open({origin:'dailyPlan'});
+  h.w.SPM_DESIRE_LAB_HOST.write('spm-desire-step','4');
+  const returnToToday=h.w.SPM_DESIRE_LAB_HOST.returnToToday;
+  h.w.SPM_DESIRE_RECORDS.save=async()=>{throw Error('offline')};
+  assert.equal(await returnToToday(),false);assert.equal(opens,0);assert(h.w.document.querySelector('dialog'));
+  h.w.SPM_DESIRE_RECORDS.save=async()=>{};
+  assert.equal(await returnToToday(),true);assert.equal(opens,1);assert.equal(h.w.document.querySelector('dialog'),null);
+ }finally{await h.close();}
+});

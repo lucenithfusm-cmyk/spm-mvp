@@ -27,13 +27,19 @@ function write(k,v){
 }
 function dispose(){window.SPM_PROGRAM_VIDEOS?.unmount(modal?.querySelector('iframe')?.contentDocument?.body);generation++;clearTimeout(timer);clearInterval(watch);modal?.close();modal?.remove();modal=null;delete window.SPM_DESIRE_LAB_HOST;state={};scope='';dirty=saved=0;flight=null;lastFocus?.focus?.();}
 async function close(){if(!modal)return true;modal.querySelector('iframe')?.contentWindow?.dispatchEvent(new Event('pagehide'));try{await flush();}catch{return false;}dispose();return true;}
+async function returnToToday(){
+ const captured=scope,currentDay=day;
+ if(scopeOf(ctx())!==captured||Number(ctx()?.day)!==currentDay)return false;
+ if(!await close())return false;
+ window.SPM_DAILY_PRACTICE?.open();return true;
+}
 async function open(opts={}){
  if(modal&&!await close())return false;
  const c=ctx();if(!c)return false;
  scope=scopeOf(c);day=Math.min(28,Math.max(1,Number(c.day)||1));origin=['erectile','ejaculation','dailyPlan'].includes(opts.origin)?opts.origin:'library';state={};dirty=saved=0;
  lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-desire-modal';modal.setAttribute('aria-label','Deseo SPM');
  modal.innerHTML='<header><button type="button" data-desire-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':origin==='dailyPlan'?'Hoy':'mi programa')+'</button><button type="button" data-desire-breathing>Respiración diafragmática</button><span role="status" data-desire-status>Cargando tu progreso…</span><button type="button" data-desire-retry hidden>Reintentar guardado</button></header><main></main>';
- document.body.appendChild(modal);modal.showModal();modal.querySelector('[data-desire-close]').onclick=close;modal.querySelector('[data-desire-retry]').onclick=()=>flush().catch(()=>{});modal.addEventListener('cancel',e=>{e.preventDefault();close();});
+ document.body.appendChild(modal);modal.showModal();modal.querySelector('[data-desire-close]').onclick=()=>origin==='dailyPlan'?returnToToday():close();modal.querySelector('[data-desire-retry]').onclick=()=>flush().catch(()=>{});modal.addEventListener('cancel',e=>{e.preventDefault();close();});
  modal.querySelector('[data-desire-breathing]').hidden=origin==='dailyPlan';
  modal.querySelector('[data-desire-breathing]').onclick=async()=>{if(await close())window.SPM_BREATHING_LAB?.open({origin:'desire',returnToDesire:true});};
  const token=++generation,captured=scope;
@@ -41,7 +47,7 @@ async function open(opts={}){
  watch=setInterval(()=>{const current=ctx();if(scopeOf(current)!==scope || Number(current?.day || 1)!==day){dispose();return;}const r=restriction(current);if(lastRestriction!==r){lastRestriction=r;notify();}},300);
  try{
   const value=await window.SPM_DESIRE_RECORDS.read(captured);if(token!==generation||scopeOf(ctx())!==captured)return false;if(!validState(value))throw Error('Invalid state');state=clone(value);
-  window.SPM_DESIRE_LAB_HOST={finishDaily:async(completed)=>{
+  window.SPM_DESIRE_LAB_HOST={returnToToday,finishDaily:async(completed)=>{
    if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
    try{
     await flush();
@@ -57,7 +63,7 @@ async function open(opts={}){
     window.SPM_DAILY_PRACTICE.showContinuation();return true;
    }catch{status('No pudimos guardar y continuar. Reintenta.',true);return false;}
   },getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),getContext:()=>({day,origin,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Deseo · Conoce y explora tu deseo';frame.allow='autoplay';frame.src='desire-lab/index.html?v=20261112-next4&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  const frame=document.createElement('iframe');frame.title='Deseo · Conoce y explora tu deseo';frame.allow='autoplay';frame.src='desire-lab/index.html?v=20261112-action8&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-desire-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;

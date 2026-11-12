@@ -5,7 +5,7 @@ const wait=()=>new Promise(r=>setTimeout(r,40));
 function harness(primary='erection',day=12){
  const dom=new JSDOM('<section id="plan"><div id="dayGrid"></div><section id="original-library">Library</section></section>',{url:'https://spm.test',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
  w.HTMLElement.prototype.scrollIntoView=function(){};
- w.HTMLMediaElement.prototype.pause=function(){};
+ w.HTMLMediaElement.prototype.pause=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  const observers=[],NativeObserver=w.MutationObserver;
  w.MutationObserver=class extends NativeObserver{constructor(fn){super(fn);observers.push(this);}};
  const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
@@ -14,7 +14,7 @@ function harness(primary='erection',day=12){
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','sleep-library-v1.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','program-checkpoint-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
+ for(const f of ['engine.js','modules.js','practice-audio-v1.js','nutrition-daily-cards-v1.js','sleep-library-v1.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','program-checkpoint-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
  return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
@@ -169,7 +169,7 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  const sleep=all.filter(a=>a.tip?.category==='sleep');assert.equal(new Set(sleep.map(a=>a.tip.sleepTipId)).size,18);
  assert.deepEqual(sleep.map(a=>a.tip.sleepTipId).sort(),Array.from(h.w.SPM_SLEEP_LIBRARY_V1.tips,t=>t.id).sort());
  assert.ok(all.some(a=>a.tip?.movementId==='swim'));assert.ok(all.some(a=>a.tip?.movementId==='dance'));
- assert.ok(all.filter(a=>a.tip?.category==='nutrition').every(a=>a.summary.includes('biblioteca')));
+ assert.equal(all.filter(a=>a.tip?.category==='nutrition').length,10);assert.ok(all.filter(a=>a.tip?.category==='nutrition').every(a=>a.tip.steps.length===3));
  assert.equal(all.filter(a=>a.kind==='program-checkpoint').length,16);assert.ok(all.filter(a=>a.kind==='program-checkpoint').every(a=>a.optional));
  }
  }finally{h.close();}});
@@ -212,5 +212,17 @@ test('a finished EP modal shows a working next-activity button and closes throug
  const m=h.w.document.createElement('div');m.id='spmEcModal';m.className='on';m.innerHTML='<button class="ecClose">Cerrar</button>';m.querySelector('button').onclick=()=>m.classList.remove('on');h.w.document.body.append(m);};
  await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
  const modal=h.w.document.querySelector('#spmEcModal');const button=modal.querySelector('[data-next-id]');assert(button);const id=button.dataset.nextId;button.click();await wait();assert(!modal.classList.contains('on'));assert.equal(h.w.SPM_DAILY_PRACTICE.active().id,id);
+ }finally{h.close();}
+});
+
+test('Today shows the existing sleep design and practical nutrition with its library link',async()=>{
+ const h=harness('desire',1);try{
+  await wait();h.w.SPM_DAILY_PRACTICE.open();const d=h.w.document;
+  assert(d.querySelector('.is-sleep .slTip'));assert(d.querySelector('.is-nutrition img'));assert(d.querySelector('[data-nutrition-library]'));
+  d.querySelector('[data-nutrition-library]').click();assert.equal(h.opens.at(-1)[1],'nutrition');
+  await h.w.SPM_DAILY_PRACTICE.launch('wellness-nutrition');assert.equal(d.querySelectorAll('.spm-food-steps li').length,3);assert(d.querySelector('[data-wellness-library]'));assert(d.querySelector('[data-wellness-session] [data-spm-speak]'));assert(!d.querySelector('[data-wellness-next]'));
+  d.querySelector('[data-wellness-return]').click();assert.equal(d.querySelector('#spmDailyWorkspace').children.length,0);
+  await h.w.SPM_DAILY_PRACTICE.launch('wellness-sleep');assert.equal(d.querySelectorAll('.slModal .slTip').length,1);assert.equal(d.querySelector('.slModal .slTipCopy b').textContent,h.w.SPM_SLEEP_LIBRARY_V1.tips[0].title);assert(d.querySelector('.slModal [data-spm-speak]'));
+  d.querySelector('[data-sl-done]').click();await wait();assert.equal(h.writes.at(-1)[0],'wellness-sleep');assert.equal(h.writes.at(-1)[1].tipId,'slp.sl-horario-01');assert.equal(d.querySelector('.slModal'),null);
  }finally{h.close();}
 });

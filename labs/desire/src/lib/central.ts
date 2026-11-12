@@ -1,5 +1,5 @@
 export type CentralContext = { day: number; origin: string; restriction: 'none' | 'review' | 'urgent' };
-type Host = { getState: () => Record<string, string>; write: (key: string, value: string) => boolean; getContext: () => CentralContext; finishDaily?: (completed: boolean) => Promise<boolean> };
+type Host = { getState: () => Record<string, string>; write: (key: string, value: string) => boolean; getContext: () => CentralContext; returnToToday?: () => Promise<boolean>; finishDaily?: (completed: boolean) => Promise<boolean> };
 declare global { interface Window { SPM_DESIRE_LAB_HOST?: Host } }
 export function host(): Host | undefined {
   try { return window.parent !== window ? window.parent.SPM_DESIRE_LAB_HOST : undefined; } catch { return undefined; }
