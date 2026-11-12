@@ -37,7 +37,7 @@ import { Quote, Cue, Trainer, Slider, Chips, Seg, Card, VideoSlot, Spark, unitOp
 
 export function DesireLab() {
   const [s, setS] = useState<DesireState>(initialState);
-  const [view, setView] = useState<View>(1);
+  const [view, setView] = useState<View>(() => centralContext().origin === 'dailyPlan' ? 'today' : 1);
   const [origin, setOrigin] = useState<Origin>('lab');
   const [loaded, setLoaded] = useState(false);
   const [ciDay, setCiDay] = useState<'D14' | 'D28'>('D14');
@@ -63,7 +63,7 @@ export function DesireLab() {
     try {
       const raw = centralStorage.getItem(STORAGE.state);
       const q = new URLSearchParams(window.location.search);
-      const qo = q.get('origin') as Origin | null;
+      const qo = (centralContext().origin === 'dailyPlan' ? 'dailyPlan' : q.get('origin')) as Origin | null;
       let parsed: unknown = null; try { parsed = raw ? JSON.parse(raw) : null; } catch { parsed = null; }
       let base: DesireState = normalizeState(parsed);
       const pm = qo === 'dailyPlan' ? readPerformanceMap() : null;
@@ -443,8 +443,8 @@ export function DesireLab() {
           </button>
         )}
         {view !== 1 && <h2 className="dz-h">{heading}</h2>}
-        <section className="dz-body" key={String(view)}>{(view === 1 || view === 20) && <DoctorDesireVideo />}{body}</section>
-        {(view === 1 || view === 20) && <ProgramVideos key={String(view)} route="desire" />}
+        <section className="dz-body" key={String(view)}>{central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <DoctorDesireVideo />}{body}</section>
+        {central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <ProgramVideos key={String(view)} route="desire" />}
       </main>
       {origin === 'lab' && typeof view === 'number' && (
         <nav className="dz-foot" aria-label="Navegación del laboratorio">

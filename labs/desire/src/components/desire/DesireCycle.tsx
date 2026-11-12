@@ -1,7 +1,7 @@
 import { centralContext } from '@/lib/central';
 // 28-day cycle, recovered resources (A1–F) and full practice sheets with guided timer. Browser-local only.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Pause, Play, RotateCcw, ShieldAlert, Square, X } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Pause, Play, RotateCcw, ShieldAlert, Square, Volume2, X } from 'lucide-react';
 import { Card, Chips, Cue, Quote, Seg } from './ui';
 import { curriculum } from '@/lib/desire-curriculum';
 import { practices, generateToday, personalLines, rankItems, rankLabel, type TodayCard, type TodayOpts } from '@/lib/desire-engine';
@@ -57,6 +57,26 @@ function Measure({ metric, label, value, onChange }: { metric: string; label: st
 /** Full educational sheet + guided timer + session diary.
  * Completed only when the timer finishes in the foreground, or with an explicit confirmation for untimed practices.
  * Pause saves and is restored (active time only); leaving while running = interrupted; restart after completion = new attempt id. */
+function SpokenSteps({ text }: { text: string }) {
+  const [speaking, setSpeaking] = useState(false);
+  const [error, setError] = useState(false);
+  const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  useEffect(() => () => { if (supported) window.speechSynthesis.cancel(); }, [text, supported]);
+  if (!supported) return null;
+  return <><button type="button" className="dz-btn gold" style={{ width: '100%', minHeight: 64, fontSize: 18 }} aria-pressed={speaking} onClick={() => {
+    window.speechSynthesis.cancel();
+    if (speaking) { setSpeaking(false); return; }
+    setError(false);
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'es-CO'; speech.rate = 0.92;
+    const voice = window.speechSynthesis.getVoices().find(v => v.lang.startsWith('es'));
+    if (voice) speech.voice = voice;
+    speech.onend = () => setSpeaking(false);
+    speech.onerror = () => { setSpeaking(false); setError(true); };
+    setSpeaking(true); window.speechSynthesis.speak(speech);
+  }}><Volume2 size={30} />{speaking ? 'Detener audio' : 'Escuchar indicaciones'}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Las indicaciones están debajo.</p>}</>;
+}
+
 export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number; ctx: CycleCtx; why?: string | undefined }) {
   const { prog, setProg, clinical, s } = ctx;
   const pr = practices[pid]!;
@@ -116,18 +136,13 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const restart = () => { setRun(false); setElapsed(0); if (live.current.saved === 'completed' || live.current.saved === 'interrupted') { setSid(`${pid}-d${day}-${Date.now().toString(36)}`); setSaved(null); setBefore(null); setAfter(null); setRefl(''); setComfort(null); setExtra({}); setConfirm(false); } };
   const needsReady = pid === 'sensate-2' && !ready;
   return (<>
-    {why && <Card className="accent"><span className="dz-eyebrow">Por qué te la asignamos</span><p>{why}</p></Card>}
-    <dl className="dz-sheet">
-      <dt>Propósito</dt><dd>{pr.purpose ?? pr.metricLabel}</dd>
-      <dt>Preparación</dt><dd>{pr.prep ?? 'Un momento tranquilo y privado, sin prisa.'}</dd>
-      <dt>Duración</dt><dd>{pr.duration} · breve y opcional, no una obligación</dd>
-      <dt>Qué observar</dt><dd>{pr.observe ?? pr.metricLabel}</dd>
-    </dl>
-    {lines.length > 0 && <Card className="accent"><span className="dz-eyebrow">Personalizado con tus datos</span>{lines.map((l) => <p key={l}>{l}</p>)}</Card>}
+    <p className="dz-eyebrow">Día {day} · {pr.duration}</p>
+    <p className="dz-muted">{pr.prep ?? 'Busca un momento tranquilo y privado.'}</p>
     {needsReady ? <Card><span className="dz-eyebrow">Antes de ampliar</span><p>La fase I quedó registrada como cómoda. ¿Hoy te sientes con disposición{hasPartner ? ' y hay consentimiento mutuo' : ''} para ampliar?</p>
       <label className="dz-check"><input type="checkbox" checked={ready} onChange={(e) => setReady(e.target.checked)} /> Sí, hoy quiero ampliar y sé que puedo parar en cualquier momento</label>
       {pend && <p className="dz-muted small">Tienes un intento en pausa ({fmt(pend.activeSec)} activos) que se retomará.</p>}
       <button className="dz-btn ghost" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Prefiero repetir la fase I</button></Card> : <>
+    <SpokenSteps text={[pr.title, pr.prep, ...pr.steps, pr.exit].filter(Boolean).join(". ")} />
     <ol className="dz-steps">{pr.steps.map((x) => <li key={x}>{x}</li>)}</ol>
     {pr.note && <p className="dz-note">{pr.note}</p>}
     {pr.link && <p className="dz-muted small">{pr.link}</p>}
@@ -165,6 +180,16 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       {saved === 'completed' && <button className="dz-btn gold" onClick={() => save('completed')}><Check size={16} /> Actualizar registro</button>}
     </div>
     </>}
+    <details><summary>Para qué sirve esta práctica</summary>
+    {why && <Card className="accent"><span className="dz-eyebrow">Por qué te la asignamos</span><p>{why}</p></Card>}
+    <dl className="dz-sheet">
+      <dt>Propósito</dt><dd>{pr.purpose ?? pr.metricLabel}</dd>
+      <dt>Preparación</dt><dd>{pr.prep ?? 'Un momento tranquilo y privado, sin prisa.'}</dd>
+      <dt>Duración</dt><dd>{pr.duration} · breve y opcional, no una obligación</dd>
+      <dt>Qué observar</dt><dd>{pr.observe ?? pr.metricLabel}</dd>
+    </dl>
+    {lines.length > 0 && <Card className="accent"><span className="dz-eyebrow">Personalizado con tus datos</span>{lines.map((l) => <p key={l}>{l}</p>)}</Card>}
+    </details>
     {saved && <p className="dz-saved"><Check size={14} /> Sesión {saved === 'completed' ? 'completada' : saved === 'paused' ? 'en pausa (guardada)' : 'interrumpida'} · día {day}</p>}
     {sessions.length > 0 && <p className="dz-muted small">Historial: {sessions.filter((x) => x.status === 'completed').length} completadas · {sessions.filter((x) => x.status === 'paused').length} en pausa · {sessions.filter((x) => x.status === 'interrupted').length} interrumpidas</p>}
   </>);

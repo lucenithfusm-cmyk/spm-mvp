@@ -39,7 +39,7 @@ function assignments(c=ctx()){
  if(c.primary==='erection'){
   const spec=window.SPM_DE_LIBRARY?.days?.()[day];
   main={...main,kind:'erection',title:spec?.title||window.SPM_ERECTILE_FUNCTION?.days?.[day]?.[1]||base.title_es,summary:spec?.practice||base.practice_es};
- }else if(c.primary==='desire')main={...main,kind:'desire',title:`Tu sesión de deseo · Día ${day}`,summary:'Abre las prácticas de deseo seleccionadas para esta jornada y registra tu experiencia.'};
+ }else if(c.primary==='desire')main={...main,kind:'desire',title:`Tu sesión de deseo · Día ${day}`,summary:'Abre tu práctica de hoy.',...(window.SPM_ERECTION_DAILY?.desireCurriculum[day]||{})};
  else if(c.primary==='ejaculation'&&window.SPM_EJACULATORY_CONTROL?.schedule?.[day]){
   const s=window.SPM_EJACULATORY_CONTROL.schedule[day],names={startstop:'Start/Stop',squeeze:'Stop–Squeeze',combined:'Técnica combinada'};
   main={...main,kind:'ejaculation',title:`${names[s.tech]} · Sesión ${s.session}`,summary:`Semana ${s.week}. Abre la explicación y la práctica guiada de esta sesión.`};
