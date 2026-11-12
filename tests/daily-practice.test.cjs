@@ -223,6 +223,6 @@ test('Today shows the existing sleep design and practical nutrition with its lib
   await h.w.SPM_DAILY_PRACTICE.launch('wellness-nutrition');assert.equal(d.querySelectorAll('.spm-food-steps li').length,3);assert(d.querySelector('[data-wellness-library]'));assert(d.querySelector('[data-wellness-session] [data-spm-speak]'));assert(!d.querySelector('[data-wellness-next]'));
   d.querySelector('[data-wellness-return]').click();assert.equal(d.querySelector('#spmDailyWorkspace').children.length,0);
   await h.w.SPM_DAILY_PRACTICE.launch('wellness-sleep');assert.equal(d.querySelectorAll('.slModal .slTip').length,1);assert.equal(d.querySelector('.slModal .slTipCopy b').textContent,h.w.SPM_SLEEP_LIBRARY_V1.tips[0].title);assert(d.querySelector('.slModal [data-spm-speak]'));
-  d.querySelector('[data-sl-done]').click();await wait();assert.equal(h.writes.at(-1)[0],'wellness-sleep');assert.equal(h.writes.at(-1)[1].tipId,'slp.sl-horario-01');assert.equal(d.querySelector('.slModal'),null);
+  d.querySelector('[data-sl-done]').click();await wait();assert.equal(h.writes.at(-1)[0],'wellness-sleep');assert.equal(h.writes.at(-1)[1].tipId,'slp.sl-horario-01');assert.equal(d.querySelector('.slModal'),null);assert(d.querySelector('[data-spm-next] .spm-food-card'));assert(d.querySelector('[data-spm-next] [data-nutrition-library]'));
  }finally{h.close();}
 });
