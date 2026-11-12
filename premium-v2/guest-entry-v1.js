@@ -83,7 +83,7 @@ function previewHTML(){
 }
 function includedHTML(){return `<section class="spmGuestIncluded"><h2>${t('Al activar tu programa, accedes a:','When you activate your program, you get:')}</h2><ul><li><span aria-hidden="true">🔒</span> ${t('Tu interpretación educativa ampliada y tu Performance Map™.','Your expanded educational interpretation and Performance Map™.')}</li><li><span aria-hidden="true">🔒</span> ${t('Tu ruta de 28 días: qué practicar cada día, con actividades guiadas, videos y biblioteca.','Your 28-day pathway: what to practice each day, with guided activities, videos and a library.')}</li><li><span aria-hidden="true">🔒</span> ${t('Registro de prácticas y evaluaciones de seguimiento para observar tu evolución.','Practice records and follow-up assessments to observe your progress.')}</li></ul></section>`}
 
-// The return visit leads with a relevant benefit; the educational detail stays one tap away.
+// First completion and return visits share one continuous, audiovisual offer.
 const returnMessages={
  erection:['Entrena tu firmeza. Trabaja tu confianza.','Train for firmness. Work on confidence.','Firmeza','Firmness'],
  ejaculation:['Conoce tu excitación. Entrena tu ritmo.','Know your arousal. Practice your pace.','Control del ritmo','Pace control'],
@@ -119,20 +119,23 @@ function bindMotivation(){
  // One attempt per page visit. A blocked autoplay never intercepts an unrelated click.
  if(returning&&!readyAudioAttempted&&!paused&&!document.hidden){readyAudioAttempted=true;play()}
 }
-function returnExperienceHTML(saved=false){
+function returnExperienceHTML(){
  const {key,selected}=returnFocus(),message=returnMessages[key];
  const keywords=[...new Set([key,...selected])].slice(0,3).map(k=>`<span>${esc(t(returnMessages[k][2],returnMessages[k][3]))}</span>`).join('');
- return `<section class="${saved?'spmGuestAccount':'spmGuestResult'} spmGuestReturn" data-focus="${key}">
+ return `<section class="spmGuestResult spmGuestReturn spmGuestUnified" data-focus="${key}">
   <header class="spmGuestReturnHero"><img src="assets/commercial-cinema/spm-new-beginning-v1.webp" width="1586" height="992" fetchpriority="high" alt="${t('Un hombre adulto avanza al aire libre, con la luz del amanecer.','An adult man walks outdoors in the morning light.')}"><div class="spmGuestReturnCopy"><span class="spmGuestReadyBadge"><span aria-hidden="true">✓</span> ${t('Tu evaluación ya está lista.','Your assessment is ready.')}</span><h1>${esc(t(message[0],message[1]))}</h1><p>${t('Una ruta para ti. Un paso cada día.','A pathway for you. One step each day.')}</p><div class="spmGuestReturnKeywords" aria-label="${t('Lo que quieres trabajar','What you want to work on')}">${keywords}</div></div></header>
   <div class="spmGuestReturnBody">${motivationHTML()}${safetyHTML()}
-   <div class="spmGuestReturnPurchase">${priceNote()}${saved?`<button type="button" id="spmGuestPay" class="spmGuestButton" disabled>${t('Activar con Wompi · $149.000 COP','Activate with Wompi · $149.000 COP')}</button><p id="spmGuestPaymentState" class="spmGuestNote" role="status">${t('Comprobando disponibilidad de pago…','Checking payment availability…')}</p>${button(t('Ver qué incluye mi programa','See what my program includes'),'spmGuestBackOffer',true)}`:button(t('Quiero iniciar mi ruta de 28 días →','Start my 28-day pathway →'),'spmGuestOffer')}</div>
+   <div class="spmGuestReturnPurchase">${priceNote()}<button type="button" id="spmGuestOffer" class="spmGuestButton" data-guest-start>${t('Iniciar mi programa →','Start my program →')}</button></div>
+   <section class="spmGuestEvaluation" aria-label="${t('Tu orientación inicial','Your initial guidance')}"><h2>${t('Esto es lo que vamos a trabajar contigo.','Here is what we will work on with you.')}</h2>${previewHTML()}</section>
    <section class="spmGuestReturnBenefits" aria-label="${t('Lo que incluye tu programa','What your program includes')}">
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5ZM9 3v16m6-14v16"/></svg><b>${t('Conócete','Understand')}</b><span>Performance Map™</span></div>
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="4"/><path d="m10 8 6 4-6 4V8Z"/></svg><b>${t('Practica','Practice')}</b><span>${t('Guías, videos y biblioteca','Guides, videos & library')}</span></div>
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4v16h17M8 16v-4m5 4V9m5 7V5"/></svg><b>${t('Observa tu avance','Track progress')}</b><span>${t('28 días + seguimiento','28 days + follow-ups')}</span></div>
    </section>
-   <details class="spmGuestSavedPreview spmGuestReturnDetails"><summary>${t('Ver lo que sugieren mis respuestas','See what my answers suggest')}</summary>${previewHTML()}</details>
+   <div id="spmGuestCommercial"></div>
+   <section id="spmGuestCheckout" class="spmGuestCheckout" aria-label="${t('Pago de tu programa','Program payment')}" hidden></section>
    ${assessmentActions()}<footer class="spmGuestReturnFooter"><span>${t('Orientación educativa, no un diagnóstico.','Educational guidance, not a diagnosis.')}</span></footer>
+   <div class="spmGuestStartBar"><div><b>$149.000 COP</b><small>${t('Pago único · Sin suscripciones','One payment · No subscriptions')}</small></div><button type="button" class="spmGuestButton" data-guest-start>${t('Iniciar mi programa →','Start my program →')}</button></div>
   </div></section>`;
 }
 
@@ -148,17 +151,22 @@ function safetyHTML(){
 }
 function renderResult(){
  stage='result';closeLayers();
- if(returning&&!result.urgent.length){surface(returnExperienceHTML());$('#spmGuestOffer').onclick=openOffer;bindAssessmentActions();bindMotivation();return}
+ if(!result.urgent.length){surface(returnExperienceHTML());window.SPM_COMMERCIAL_GATE_PREVIEW.mount($('#spmGuestCommercial'));bindAssessmentActions();bindMotivation();return}
  surface(`<section class="spmGuestResult"><span class="spmGuestEyebrow">${t('TU ORIENTACIÓN INICIAL · GRATUITA','YOUR INITIAL GUIDANCE · FREE')}</span><h1>${returning?t('Tu evaluación ya está lista.','Your assessment is ready.'):t('Hemos analizado tus respuestas.','We have reviewed your answers.')}</h1>${returning?`<p class="spmGuestLead">${t('Ya completaste el test. Tu siguiente paso es activar tu ruta de 28 días; también puedes revisar tus respuestas o hacer una nueva evaluación antes de decidir.','You have completed the assessment. Your next step is to activate your 28-day pathway; you can also review your answers or take a new assessment before deciding.')}</p>`:''}${safetyHTML()}${result.urgent.length?'':`${previewHTML()}${includedHTML()}<p class="spmGuestLead">${t('Comprender tu punto de partida es el comienzo. Descubre cómo convertirlo en una práctica diaria, paso a paso y a tu ritmo.','Understanding your starting point is the beginning. Discover how to turn it into daily practice, step by step and at your pace.')}</p>${priceNote()}${button(t('Descubrir mi programa de 28 días','Discover my 28-day program'),'spmGuestOffer')}`}${assessmentActions()}<p class="spmGuestNote">${temporaryNote()}</p>${note()}${button(t('Volver al inicio','Back to the start'),'spmGuestHome',true)}</section>`);
  $('#spmGuestOffer')?.addEventListener('click',openOffer);$('#spmGuestHome').onclick=renderLanding;bindAssessmentActions();
 }
-function openOffer(){if(expire()||!result||result.urgent.length)return;stopMotivation();stage='offer';window.SPM_COMMERCIAL_GATE_PREVIEW.open()}
+function openOffer(){if(expire()||!result||result.urgent.length)return;renderResult()}
+function focusCheckout(){const host=$('#spmGuestCheckout');if(!host)return;host.scrollIntoView({block:'start',behavior:'instant'});const heading=host.querySelector('h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true})}}
+function paymentSurface(html){stopMotivation();window.SPM_COMMERCIAL_PREVIEW?.close();const host=$('#spmGuestCheckout');if(!host)return;host.hidden=false;host.innerHTML=html;focusCheckout()}
+function startPayment(){
+ if(busy||expire()||!result||result.urgent.length)return;
+ const host=$('#spmGuestCheckout');if(host&&!host.hidden){focusCheckout();return}
+ if(record?.receipt?.assessmentId)renderSaved(true);else renderAccount();
+}
 function renderAccount(mode='signup'){
  if(!result||result.urgent.length)return;stage='account';
- window.SPM_COMMERCIAL_PREVIEW?.close();window.SPM_COMMERCIAL_GATE_PREVIEW?.close();
- surface(`<section class="spmGuestAccount"><span class="spmGuestEyebrow">${t('ACTIVA TU SIGUIENTE PASO','ACTIVATE YOUR NEXT STEP')}</span><h1>${t('Conserva tu punto de partida.','Keep your starting point.')}</h1><p class="spmGuestLead">${t('Tu evaluación ya está lista. Crea tu cuenta para guardarla y preparar el acceso a tu programa SPM.','Your assessment is ready. Create your account to save it and prepare access to your SPM program.')}</p><div class="spmGuestAccountPrice"><b>$149.000 COP</b><span>${t('Pago único · 28 días · Sin mensualidades ni anualidades','One payment · 28 days · No monthly or annual fees')}</span></div>${privacyHTML()}<form id="spmGuestAccountForm"><label for="spmGuestEmail">${t('Correo electrónico','Email address')}</label><input id="spmGuestEmail" type="email" autocomplete="email" required><label for="spmGuestPassword">${t('Contraseña','Password')}</label><input id="spmGuestPassword" type="password" minlength="6" autocomplete="${mode==='signup'?'new-password':'current-password'}" required><p class="spmGuestNote">${t('Mínimo 6 caracteres. Al continuar, asocias esta evaluación a tu cuenta para conservarla.','At least 6 characters. Continuing links this assessment to your account so you can keep it.')}</p><button class="spmGuestButton" type="submit">${mode==='signup'?t('Crear cuenta y guardar mi evaluación','Create account and save my assessment'):t('Entrar y guardar mi evaluación','Sign in and save my assessment')}</button></form><p id="spmGuestAuthStatus" class="spmGuestAuthStatus" role="status" aria-live="polite"></p>${button(mode==='signup'?t('Ya tengo cuenta','I already have an account'):t('Crear una cuenta nueva','Create a new account'),'spmGuestAccountMode',true)}${button(t('Volver a mi programa','Back to my program'),'spmGuestBackOffer',true)}<p class="spmGuestNote">${t('La evaluación es gratuita. Crear una cuenta no realiza ningún cobro.','The assessment is free. Creating an account does not charge you.')}</p></section>`);
- $('#spmGuestAccountMode').onclick=()=>{if(!busy)renderAccount(mode==='signup'?'signin':'signup')};$('#spmGuestBackOffer').onclick=()=>{if(!busy)openOffer()};
- bindAssessmentActions();
+ paymentSurface(`<section class="spmGuestAccount"><span class="spmGuestEyebrow">${t('ACTIVA TU SIGUIENTE PASO','ACTIVATE YOUR NEXT STEP')}</span><h2>${t('Prepara tu pago seguro.','Prepare your secure payment.')}</h2><p class="spmGuestLead">${t('Elige el correo y la contraseña con los que entrarás a tu programa. Continuarás al pago seguro con Wompi.','Choose the email and password you will use to access your program. Continue to secure payment with Wompi.')}</p><div class="spmGuestAccountPrice"><b>$149.000 COP</b><span>${t('Pago único · 28 días · Sin mensualidades ni anualidades','One payment · 28 days · No monthly or annual fees')}</span></div><form id="spmGuestAccountForm"><label for="spmGuestEmail">${t('Correo electrónico','Email address')}</label><input id="spmGuestEmail" type="email" autocomplete="email" required><label for="spmGuestPassword">${t('Contraseña','Password')}</label><input id="spmGuestPassword" type="password" minlength="6" autocomplete="${mode==='signup'?'new-password':'current-password'}" required><p class="spmGuestNote">${t('Mínimo 6 caracteres. Al continuar, asocias esta evaluación a tu cuenta para conservarla.','At least 6 characters. Continuing links this assessment to your account so you can keep it.')}</p><button class="spmGuestButton" type="submit">${mode==='signup'?t('Crear mi acceso y pagar con Wompi','Create my access and pay with Wompi'):t('Entrar y pagar con Wompi','Sign in and pay with Wompi')}</button></form><p id="spmGuestAuthStatus" class="spmGuestAuthStatus" role="status" aria-live="polite"></p>${button(mode==='signup'?t('Ya tengo cuenta','I already have an account'):t('Crear una cuenta nueva','Create a new account'),'spmGuestAccountMode',true)}<p class="spmGuestNote">${t('La evaluación es gratuita. Crear una cuenta no realiza ningún cobro.','The assessment is free. Creating an account does not charge you.')}</p></section>`);
+ $('#spmGuestAccountMode').onclick=()=>{if(!busy)renderAccount(mode==='signup'?'signin':'signup')};
  $('#spmGuestAccountForm').onsubmit=async e=>{
   e.preventDefault();if(busy||expire())return;const form=e.currentTarget;if(!form.reportValidity())return;
   busy=true;const controls=[...form.querySelectorAll('input,button')];controls.forEach(c=>c.disabled=true);const status=$('#spmGuestAuthStatus');status.textContent=t('Preparando tu cuenta…','Preparing your account…');
@@ -167,20 +175,19 @@ function renderAccount(mode='signup'){
    if(response.error)throw response.error;
    $('#spmGuestPassword').value='';
    if(!response.data?.session){status.textContent=t('Revisa tu correo para confirmar la cuenta. Después, vuelve a esta pestaña y elige «Ya tengo cuenta» para guardar tu evaluación. No se ha realizado ningún cobro.','Check your email to confirm your account. Then return to this tab and choose “I already have an account” to save your assessment. You have not been charged.');return}
-   status.textContent=t('Guardando tu evaluación…','Saving your assessment…');await api.save(record?.receipt||{});renderSaved();
+   status.textContent=t('Guardando tu evaluación…','Saving your assessment…');await api.save(record?.receipt||{});renderSaved(true);
   }catch(error){status.textContent=t('No pudimos completar este paso. Tu evaluación sigue disponible en esta pestaña. Comprueba los datos o vuelve a intentarlo.','We could not complete this step. Your assessment is still available in this tab. Check your details or try again.');}
   finally{busy=false;controls.forEach(c=>c.disabled=false);expire()}
  };
 }
-function renderSaved(){
- stage='saved';surface(returnExperienceHTML(true));
- $('#spmGuestBackOffer').onclick=openOffer;bindAssessmentActions();bindMotivation();
+function renderSaved(autoContinue=false){
+ stage='saved';paymentSurface(`<section class="spmGuestAccount"><h2>${t('Tu siguiente paso: el pago seguro.','Your next step: secure payment.')}</h2>${priceNote()}<button type="button" id="spmGuestPay" class="spmGuestButton" disabled>${t('Pagar con Wompi · $149.000 COP','Pay with Wompi · $149.000 COP')}</button><p id="spmGuestPaymentState" class="spmGuestNote" role="status">${t('Comprobando disponibilidad de pago…','Checking payment availability…')}</p></section>`);
  const pay=$('#spmGuestPay'),status=$('#spmGuestPaymentState');
  window.SPM_PAYMENTS?.configuration().then(config=>{
-  if(stage!=='saved')return;
+  if(stage!=='saved'||!pay.isConnected)return;
   if(!config.ready){status.textContent=t('El pago aún no está habilitado. Tu evaluación está guardada; no se ha realizado ningún cobro.','Payment is not enabled yet. Your assessment is saved; you have not been charged.');return}
   status.textContent=config.environment==='test'?t('Modo de prueba: no se cobra dinero real. Disponible para cuentas de prueba autorizadas.','Test mode: no real money is charged. Available to authorized test accounts.'):t('Al confirmar el pago, accedes a tu bienvenida y evaluación personalizada.','After payment is confirmed, open your welcome and personalized assessment.');
-  pay.disabled=false;if(config.environment==='test')pay.textContent=t('Probar el pago con Wompi','Test payment with Wompi');
+  pay.disabled=false;if(config.environment==='test')pay.textContent=t('Probar el pago con Wompi','Test payment with Wompi');if(autoContinue)pay.click();
  }).catch(()=>{status.textContent=t('No pudimos comprobar el pago ahora. Tu evaluación sigue guardada. Vuelve a intentar más tarde.','We could not check payment availability. Your assessment is saved. Please try again later.');});
  pay.onclick=async()=>{if(busy)return;stopMotivation();busy=true;pay.disabled=true;try{await api.checkout(record?.receipt||{});}catch(error){if(error.message==='sign_in_required'){renderAccount('signin');return}status.textContent=t('No se pudo abrir el pago. Tu evaluación se conserva. Reintenta; no se ha realizado ningún cobro desde esta pantalla.','Could not open checkout. Your assessment is saved. Retry; this screen has not charged you.');pay.disabled=false;}finally{busy=false;}};
 }
@@ -193,10 +200,11 @@ window.SPM_GUEST_ENTRY={
  showResult(){if(!busy&&result)renderResult()},
  progress:saveProgress,
  receipt(value){if(record){record.receipt=value;persist()}},
- complete(value){if(expire()||!draft)return;result=value;closeLayers();if(returning&&record?.receipt?.assessmentId&&!result.urgent.length)renderSaved();else renderResult()}
+ complete(value){if(expire()||!draft)return;result=value;closeLayers();renderResult()}
 };
 document.addEventListener('click',e=>{
- const buy=e.target.closest('.spmGate .startPay');if(!buy||!result)return;e.preventDefault();e.stopImmediatePropagation();renderAccount();window.SPM_COMMERCIAL_PREVIEW?.close();window.SPM_COMMERCIAL_GATE_PREVIEW?.close();
+ if(e.target.closest('.spmOfferFilm'))stopMotivation();
+ const buy=e.target.closest('[data-guest-start],.spmGate .startPay');if(!buy||!result)return;e.preventDefault();e.stopImmediatePropagation();startPayment();
 },true);
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('[data-guest-lang]').forEach(b=>b.onclick=()=>{if(!busy)window.SPM_LANGUAGE.set(b.dataset.guestLang)});
@@ -204,7 +212,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('spm:languagechange',()=>{
  translateChrome();if(!api)return;
  if(stage==='assessment'){api.refresh();return}
- if(stage==='landing')renderLanding();else if(stage==='result')renderResult();else if(stage==='offer'){window.SPM_COMMERCIAL_GATE_PREVIEW.close();openOffer()}else if(stage==='account')renderAccount();else if(stage==='saved')renderSaved();else if(stage==='restart')restartAssessment();
+ if(stage==='landing')renderLanding();else if(stage==='result')renderResult();else if(stage==='offer'){window.SPM_COMMERCIAL_GATE_PREVIEW.close();openOffer()}else if(stage==='account'){const mode=$('#spmGuestPassword')?.autocomplete==='current-password'?'signin':'signup';renderResult();renderAccount(mode)}else if(stage==='saved'){renderResult();renderSaved()}else if(stage==='restart')restartAssessment();
 });
 window.addEventListener('focus',expire);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)readyAudio?.pause();else expire()});

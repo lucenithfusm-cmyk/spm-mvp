@@ -44,3 +44,15 @@ body{background:radial-gradient(ellipse at 70% 0,#133b40,#061419 60%);color:#edf
 #quizCard .progress{margin:18px 0 22px}#quizCard .progress i{background:#78e1c4;transition:width .2s ease}
 .spmGuestExploreNotice{font-size:14px;line-height:1.6;color:#b9e6d6;margin:0 0 18px}
 @media(prefers-reduced-motion:reduce){#quizCard .progress i{transition:none}}
+
+/* One document scroll from the result cover through the offer and checkout. */
+.spmGuestUnified{padding-bottom:100px}.spmGuestUnified .spmGuestReturnBody{max-width:none}.spmGuestUnified .spmGuestMotivation,.spmGuestUnified .spmGuestEvaluation,.spmGuestUnified .spmGuestReturnPurchase,.spmGuestUnified .spmGuestSafety,.spmGuestUnified .spmGuestReturnBenefits,.spmGuestUnified .spmGuestAssessmentActions,.spmGuestUnified .spmGuestReturnFooter{max-width:720px;margin-left:auto;margin-right:auto}
+.spmGuestEvaluation{padding-top:12px}.spmGuestEvaluation>h2{font-size:clamp(23px,3vw,30px);line-height:1.2;margin:0 0 20px}.spmGuestEvaluation .spmGuestPriority{padding:22px}.spmGuestEvaluation .spmGuestSignals li{padding:16px}.spmGuestEvaluation .spmGuestSignals p{font-size:14px;line-height:1.5}.spmGuestEvaluation .spmGuestReassure{font-size:12px}
+#spmGuestSurface .spmGateInline{position:static;inset:auto;z-index:auto;height:auto;overflow:visible;background:none;backdrop-filter:none;display:block;padding:0}
+#spmGuestSurface .spmGateInline .spmGateInner{width:100%;min-height:0;margin:0;padding:30px 0 0}
+#spmGuestSurface .spmGateInline .spmGateHero{margin:0;padding:0;border:0;background:none;box-shadow:none;backdrop-filter:none}
+#spmGuestSurface .spmGateInline .spmCTAWrap{position:static;bottom:auto}
+.spmGuestStartBar{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:22px;width:min(960px,100%);padding:14px 22px calc(14px + env(safe-area-inset-bottom));border:1px solid #63847788;border-bottom:0;border-radius:20px 20px 0 0;background:#082229f5;box-shadow:0 -5px 28px #0004;backdrop-filter:blur(14px)}
+.spmGuestStartBar b,.spmGuestStartBar small{display:block}.spmGuestStartBar b{color:#e9cc96;font-size:20px;white-space:nowrap}.spmGuestStartBar small{font-size:11px;color:#bfd0c9;margin-top:4px}.spmGuestStartBar .spmGuestButton{width:auto;min-width:230px;background:#d3b174;color:#092329}
+.spmGuestCheckout{max-width:720px;margin:35px auto 20px;padding:28px;border:1px solid #88b6a0;border-radius:24px;background:#0b282f;scroll-margin-top:24px}.spmGuestCheckout h2{font-size:27px;line-height:1.2;margin:0 0 18px}.spmGuestCheckout .spmGuestAccountPrice{flex-wrap:wrap}
+@media(max-width:600px){.spmGuestStartBar{gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom))}.spmGuestStartBar b{font-size:16px}.spmGuestStartBar small{font-size:10px;max-width:135px;line-height:1.4}.spmGuestStartBar .spmGuestButton{min-width:0;font-size:13px;padding:12px;min-height:48px}.spmGuestCheckout{padding:21px 16px}.spmGuestCheckout h2{font-size:25px}}
