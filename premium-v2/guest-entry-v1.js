@@ -175,6 +175,7 @@ function renderAccount(mode='signup'){
    if(response.error)throw response.error;
    $('#spmGuestPassword').value='';
    if(!response.data?.session){status.textContent=t('Revisa tu correo para confirmar la cuenta. Después, vuelve a esta pestaña y elige «Ya tengo cuenta» para guardar tu evaluación. No se ha realizado ningún cobro.','Check your email to confirm your account. Then return to this tab and choose “I already have an account” to save your assessment. You have not been charged.');return}
+   if(await api.goToProgram?.())return;
    status.textContent=t('Guardando tu evaluación…','Saving your assessment…');await api.save(record?.receipt||{});renderSaved(true);
   }catch(error){status.textContent=t('No pudimos completar este paso. Tu evaluación sigue disponible en esta pestaña. Comprueba los datos o vuelve a intentarlo.','We could not complete this step. Your assessment is still available in this tab. Check your details or try again.');}
   finally{busy=false;controls.forEach(c=>c.disabled=false);expire()}

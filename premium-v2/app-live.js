@@ -264,12 +264,14 @@ async function restore(){
   S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
   S.completed=new Set();S.checkins=[];
   restoreState.complete=true;restoreState.hasPlan=true;
+  window.SPM_PROGRAM_ENTRY?.remember();
   window.SPM_RESTORE_COMPLETE=true;
   window.SPM_RESTORED_CONTEXT={db,uid:S.user.id,session:null,plan:p,assessment:a,map:m,done:S.completed,checkins:S.checkins};
   ['ageCard','motiveCard','quizCard'].forEach(id=>{if($(id))$(id).hidden=true});
   ['navMap','navPlan','navCoach','navProgress'].forEach(id=>{if($(id))$(id).disabled=false});
   S.phase=Math.max(1,Math.min(4,Math.ceil((Number(p.current_day)||1)/7)));
-  nav('map');renderMap();renderPlan();populateCoach();renderProgress();msg(`Tu Performance Map fue restaurado. Tu programa continúa en el día ${Number(p.current_day)||1}.`,'good');
+  const welcome=new URLSearchParams(location.search).get('welcome')==='1';
+  nav(welcome?'map':'plan');renderMap();renderPlan();populateCoach();renderProgress();if(!welcome)window.SPM_DAILY_PRACTICE?.open();msg(`Tu Performance Map fue restaurado. Tu programa continúa en el día ${Number(p.current_day)||1}.`,'good');
   hydrateProgressInBackground(p).catch(error=>console.warn('SPM progress hydration',error));
   return true;
  }finally{restoreState.running=false;}

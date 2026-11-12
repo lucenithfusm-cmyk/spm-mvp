@@ -23,7 +23,7 @@ function show(id){document.querySelectorAll('.screen').forEach(x=>x.hidden=x.id!
 function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.panel===id));}
 function label(k){return (M.profiles?.[k]?.[guestEnglish()?'label_en':'label_es'])||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
- if(guest){guest.ready(guestAPI);return}
+ if(guest){if(window.SPM_PROGRAM_ENTRY&&await window.SPM_PROGRAM_ENTRY.redirect(db))return;guest.ready(guestAPI);window.addEventListener('pageshow',e=>{if(e.persisted)window.SPM_PROGRAM_ENTRY?.redirect(db)});window.addEventListener('storage',e=>{if(e.key==='spm_program_return_v1'&&e.newValue==='1')window.SPM_PROGRAM_ENTRY?.redirect(db)});return}
  const {data:{session}}=await db.auth.getSession();
  if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
  db.auth.onAuthStateChange(async(event,session)=>{
@@ -203,6 +203,7 @@ function renderProgress(){
 async function signOut(){await db.auth.signOut();S.user=null;show('authScreen');resetForAssessment();}
 // The free-entry page opts in. Existing signed-in pages keep their original flow.
 const guestAPI=guest?{
+ async goToProgram(){return window.SPM_PROGRAM_ENTRY?window.SPM_PROGRAM_ENTRY.redirect(db):false},
  start(saved){
   resetForAssessment();hideMsg();show('appScreen');
   if(saved?.version===1){

@@ -14,7 +14,7 @@ async function harness(primary='erection',options={}){
  const vc=new VirtualConsole();
  vc.on('jsdomError',error=>{if(error.type==='unhandled exception')consoleErrors.push(error.message)});
  vc.on('error',(...args)=>consoleErrors.push(args.map(String).join(' ')));
- const dom=new JSDOM(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,''),{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
+ const dom=new JSDOM(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,''),{url:'https://spm.test/premium-v2/live.html'+(options.welcome?'?welcome=1':''),runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
  const w=dom.window;
  w.matchMedia=()=>({matches:false,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});
  w.IntersectionObserver=class{observe(){}unobserve(){}disconnect(){}};
@@ -60,7 +60,7 @@ async function harness(primary='erection',options={}){
   };return query;
  }};
  w.supabase={createClient:()=>db};
- const layers=['engine.js','modules.js','app-live.js','daily-progression-v3.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js'];
+ const layers=['program-entry-v1.js','engine.js','modules.js','app-live.js','daily-progression-v3.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js'];
  for(const match of html.matchAll(/<script src="([^"?]+)[^"]*"/g)){
   if(/^https?:/.test(match[1]))continue;
   if(!process.env.SPM_QA_ALL_LAYERS&&!layers.includes(match[1]))continue;
@@ -76,7 +76,7 @@ for(const primary of ['erection','ejaculation'])test(primary+' restores a saved 
  try{
   assert.equal(h.storm,null,'Mutation observer loop: '+JSON.stringify([...h.observerRuns]));
   assert.deepEqual(h.consoleErrors,[]);
-  assert.equal(h.w.document.querySelector('#map').classList.contains('on'),true);
+  assert.equal(h.w.document.querySelector('#plan').classList.contains('on'),true);
   assert.equal(h.w.document.querySelector('#scoreValue').textContent,'65');
   const overlay=h.w.document.querySelector('#spmRestoreOverlay');
   assert.ok(!overlay||h.w.getComputedStyle(overlay).display==='none','Restore overlay must stop covering the map');
@@ -93,7 +93,7 @@ test('a stalled profile sync does not block a restored program',async()=>{
  const h=await harness('erection',{hangTable:'profiles'});
  try{
   assert.equal(h.storm,null);
-  assert.equal(h.w.document.querySelector('#map').classList.contains('on'),true);
+  assert.equal(h.w.document.querySelector('#plan').classList.contains('on'),true);
   assert.equal(h.w.document.querySelector('#scoreValue').textContent,'65');
   assert.equal(h.w.document.querySelector('#spmRestoreOverlay'),null);
   assert.equal(h.w.SPM_CURRENT_DAY,12);
@@ -121,3 +121,5 @@ test('a restored program advances only after completing its daily requirements',
   assert.deepEqual(h.consoleErrors,[]);
  }finally{h.close()}
 });
+
+test('first paid welcome remains available while later visits open the saved daily route',async()=>{const h=await harness('erection',{welcome:true});try{assert.equal(h.w.document.querySelector('#map').classList.contains('on'),true);assert.equal(h.w.localStorage.getItem('spm_program_return_v1'),'1');assert.equal(h.w.SPM_CURRENT_DAY,12)}finally{h.close()}});
