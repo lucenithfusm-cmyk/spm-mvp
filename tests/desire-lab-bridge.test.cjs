@@ -26,3 +26,16 @@ test('curriculum is unchanged, internal labels removed, and the original Doctor 
  const video=fs.readFileSync(path.join(__dirname,'../labs/desire/src/components/desire/DoctorDesireVideo.tsx'),'utf8');assert.match(video,/dr-spm-low-desire\.mp4/);assert.match(video,/playsInline/);assert.ok(fs.statSync(path.join(__dirname,'../premium-v2/assets/videos/dr-spm-low-desire.mp4')).size>1000000);
  const cycle=fs.readFileSync(path.join(__dirname,'../labs/desire/src/components/desire/DesireCycle.tsx'),'utf8');assert.match(cycle,/ctx.centralBlocked/);assert.doesNotMatch(cycle,/Selector de día \(QA lab\)/);
 });
+test('daily handoff preserves incomplete practices and requires both day-one exercises before completion',async()=>{
+ const h=harness({day:1,primary:'desire'});let completed=0,next=0;
+ h.w.SPM_DAILY_PRACTICE={active:()=>({id:'main',scope:'qa:p1',day:1}),saveActivity:async()=>completed++,showContinuation:()=>next++};
+ try{
+  await h.w.SPM_DESIRE_LAB.open({origin:'dailyPlan'});
+  assert.equal(await h.w.SPM_DESIRE_LAB_HOST.finishDaily(true),false);assert.equal(completed,0);
+  h.w.SPM_DESIRE_LAB_HOST.write('spm-desire-program',JSON.stringify({sessions:[{day:1,status:'completed',practiceId:'presence-5'}]}));
+  assert.equal(await h.w.SPM_DESIRE_LAB_HOST.finishDaily(true),false);assert.equal(completed,0);
+  h.w.SPM_DESIRE_LAB_HOST.write('spm-desire-program',JSON.stringify({sessions:[{day:1,status:'completed',practiceId:'presence-5'},{day:1,status:'completed',practiceId:'explore-new-stimulus'}]}));
+  assert.equal(await h.w.SPM_DESIRE_LAB_HOST.finishDaily(true),true);assert.equal(completed,1);assert.equal(next,1);assert(!h.w.document.querySelector('dialog'));
+  await h.w.SPM_DESIRE_LAB.open({origin:'dailyPlan'});assert.equal(await h.w.SPM_DESIRE_LAB_HOST.finishDaily(false),true);assert.equal(completed,1);assert.equal(next,2);
+ }finally{await h.close();}
+});

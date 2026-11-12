@@ -41,8 +41,23 @@ async function open(opts={}){
  watch=setInterval(()=>{const current=ctx();if(scopeOf(current)!==scope || Number(current?.day || 1)!==day){dispose();return;}const r=restriction(current);if(lastRestriction!==r){lastRestriction=r;notify();}},300);
  try{
   const value=await window.SPM_DESIRE_RECORDS.read(captured);if(token!==generation||scopeOf(ctx())!==captured)return false;if(!validState(value))throw Error('Invalid state');state=clone(value);
-  window.SPM_DESIRE_LAB_HOST={getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),getContext:()=>({day,origin,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Deseo · Conoce y explora tu deseo';frame.allow='autoplay';frame.src='desire-lab/index.html?v=20261112-cards3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  window.SPM_DESIRE_LAB_HOST={finishDaily:async(completed)=>{
+   if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
+   try{
+    await flush();
+    const current=window.SPM_DAILY_PRACTICE?.active?.();
+    if(!current||current.scope!==captured||current.day!==day)return false;
+    if(completed){
+     const program=JSON.parse(state['spm-desire-program']||'{}');
+     const sessions=(program.sessions||[]).filter(s=>s.day===day&&s.status==='completed');
+     if(!sessions.length||(day===1&&(!sessions.some(s=>s.practiceId==='presence-5')||!sessions.some(s=>s.practiceId==='explore-new-stimulus'))))return false;
+     await window.SPM_DAILY_PRACTICE.saveActivity(current.id,{confirmed:true,source:'desire-lab'},captured,day);
+    }
+    if(!await close())return false;
+    window.SPM_DAILY_PRACTICE.showContinuation();return true;
+   }catch{status('No pudimos guardar y continuar. Reintenta.',true);return false;}
+  },getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),getContext:()=>({day,origin,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
+  const frame=document.createElement('iframe');frame.title='Deseo · Conoce y explora tu deseo';frame.allow='autoplay';frame.src='desire-lab/index.html?v=20261112-next4&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-desire-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;

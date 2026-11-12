@@ -185,3 +185,32 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  }finally{h.close();}});
 
  test('missing followups do not prevent completion or final report in any domain',async()=>{const h=harness();try{await wait();for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [14,28]){const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});assert.equal(items[0].optional,true);assert.ok(items.filter(a=>a.kind==='program-checkpoint'||a.kind==='ep-checkpoint').every(a=>a.optional));assert.ok(items.some(a=>!a.optional));}}finally{h.close();}});
+test('continuation uses actual pending assignments in all six routes and excludes completed tasks',async()=>{
+ for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+  const h=harness(route,1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
+  const items=h.w.SPM_DAILY_PRACTICE.nextActivities();assert(!items.some(a=>a.id==='main'));
+  const panel=h.w.document.querySelector('#spmDailyWorkspace [data-spm-next]');assert(panel);for(const a of items)assert(panel.textContent.includes(a.title));
+  assert.equal(h.w.document.querySelector('#spmDailySession').dataset.continuation,'true');assert.equal(h.c.day,1);
+  }finally{h.close();}
+ }
+});
+test('every route has a concrete closing advice for each day, with an individual alternative',async()=>{
+ const h=harness();try{await wait();for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(let day=1;day<=28;day++){
+ const a=h.w.SPM_DAILY_PRACTICE.closingAdvice({...h.c,primary,day});assert.equal(a.title,'Llévalo a tu vida diaria');assert(a.text.length>35);assert(a.individual.length>20);
+ }}finally{h.close();}
+});
+test('finishing a day presents that day closing advice even when the calendar advances',async()=>{
+ const h=harness('desire',1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();await h.w.SPM_DAILY_PRACTICE.launch('main');
+ for(const a of h.w.SPM_DAILY_PRACTICE.assignments().filter(a=>!a.optional))await h.w.SPM_DAILY_PRACTICE.saveActivity(a.id,{confirmed:true});
+ h.w.SPM_COMPLETE_DAILY_PRACTICE=async()=>{h.c.completed=[1];h.c.day=2;};
+ await h.w.document.querySelector('#spmDailyComplete').onclick();
+ const advice=h.w.document.querySelector('#spmDailyClosing');assert(advice);assert(advice.textContent.includes('DÍA 1'));assert(advice.textContent.includes('¿Qué te haría sentir a gusto hoy?'));assert.equal(h.c.day,2);
+ }finally{h.close();}
+});
+test('a finished EP modal shows a working next-activity button and closes through its own lifecycle',async()=>{
+ const h=harness('ejaculation',1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();h.w.SPM_EJACULATORY_CONTROL.open=()=>{
+ const m=h.w.document.createElement('div');m.id='spmEcModal';m.className='on';m.innerHTML='<button class="ecClose">Cerrar</button>';m.querySelector('button').onclick=()=>m.classList.remove('on');h.w.document.body.append(m);};
+ await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
+ const modal=h.w.document.querySelector('#spmEcModal');const button=modal.querySelector('[data-next-id]');assert(button);const id=button.dataset.nextId;button.click();await wait();assert(!modal.classList.contains('on'));assert.equal(h.w.SPM_DAILY_PRACTICE.active().id,id);
+ }finally{h.close();}
+});

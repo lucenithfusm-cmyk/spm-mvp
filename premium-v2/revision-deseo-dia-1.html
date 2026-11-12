@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>Revisión · Deseo · 28 días · SPM</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#071b23;color:#edf5f4;font-family:system-ui,sans-serif}header{padding:16px 20px;border-bottom:1px solid #35545b}h1{font-size:22px;margin:0 0 6px;color:#dfc18f}p{font-size:14px;line-height:1.45;margin:0;color:#c6d8d8}iframe{display:block;width:100%;height:calc(100dvh - 115px);min-height:640px;border:0}select{font:inherit;background:#15323a;color:#fff;padding:10px;border-radius:8px}nav button{padding:10px}button:disabled{opacity:.4}button{margin-top:10px;color:#c6d8d8;background:transparent;border:0;text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}</style></head>
+<style>*{box-sizing:border-box}body{margin:0;background:#071b23;color:#edf5f4;font-family:system-ui,sans-serif}header{padding:16px 20px;border-bottom:1px solid #35545b}h1{font-size:22px;margin:0 0 6px;color:#dfc18f}p{font-size:14px;line-height:1.45;margin:0;color:#c6d8d8}[hidden]{display:none!important}iframe{display:block;width:100%;height:calc(100dvh - 115px);min-height:640px;border:0}select{font:inherit;background:#15323a;color:#fff;padding:10px;border-radius:8px}nav button{padding:10px}button:disabled{opacity:.4}button{margin-top:10px;color:#c6d8d8;background:transparent;border:0;text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}</style></head>
 <body><header><h1>Revisión de Deseo · 28 días</h1><p>Vista de revisión con perfil de ejemplo. Sin cuenta. Revisa las prácticas de Deseo día a día. Los registros de prueba se conservan mientras esta página esté abierta.</p><nav aria-label="Día a revisar"><button id="prev" type="button">← Anterior</button> <label for="day">Día </label><select id="day" aria-label="Seleccionar día"></select> <button id="next" type="button">Siguiente →</button></nav><button type="button" id="reset">Reiniciar esta prueba</button></header>
 <script>
 (()=>{'use strict';
@@ -8,6 +8,20 @@
  const state={'spm-desire-state':JSON.stringify({health:['none'],stimuli:['tactile']})};
  const allowed=new Set(['spm-desire-state','spm-desire-profile','spm-desire-step','spm-desire-origin','spm-desire-today','spm-desire-program','spm-desire-ctx','spm-assessment-log']);
  window.SPM_DESIRE_LAB_HOST={
+ finishDaily:async(completed)=>{
+  const frame=document.querySelector('iframe');frame.hidden=true;
+  let panel=document.getElementById('review-next');if(!panel){panel=document.createElement('section');panel.id='review-next';panel.style.padding='20px';frame.after(panel);}
+  panel.hidden=false;panel.replaceChildren();
+  const title=document.createElement('h2');title.textContent='Después de Deseo · Día '+day;panel.append(title);
+  const note=document.createElement('p');note.textContent=completed?'Práctica de Deseo completada en esta demostración.':'La práctica de Deseo queda pendiente para retomarla.';panel.append(note);
+  const context={userId:'review',planId:'review',day,primary:'desire',secondary:null,motives:['desire'],answers:{},safety:'none',flags:[],checkins:[],completed:[]};
+  const tasks=window.SPM_DAILY_PRACTICE?.assignments(context)||[];
+  for(const task of tasks.filter(a=>a.id!=='main')){const card=document.createElement('article');card.style.cssText='padding:16px;border:1px solid #35545b;border-radius:14px;margin:14px 0';const h=document.createElement('h3');h.textContent=task.title;const p=document.createElement('p');p.textContent=task.summary;card.append(h,p);panel.append(card);}
+  const advice=window.SPM_DAILY_PRACTICE?.closingAdvice(context,day);
+  if(advice){const card=document.createElement('article');card.style.cssText='padding:16px;border:1px solid #c5a46c;border-radius:14px;margin:14px 0';const h=document.createElement('h3');h.textContent='Consejo de cierre del día · Vista previa';const p=document.createElement('p');p.textContent=advice.text;const solo=document.createElement('p');solo.textContent=advice.individual;card.append(h,p,solo);panel.append(card);}
+  const help=document.createElement('p');help.textContent='Esta vista muestra las siguientes actividades del perfil de ejemplo. En el programa con cuenta, cada una tiene su botón para continuar y guardar el progreso.';panel.append(help);
+  const back=document.createElement('button');back.textContent='Volver a revisar Deseo';back.onclick=()=>{panel.hidden=true;frame.hidden=false;};panel.append(back);panel.scrollIntoView({block:'start'});return true;
+ },
  getContext:()=>({day,origin:'dailyPlan',restriction:'none'}),
  getState:()=>({...state}),
  write:(key,value)=>{if(!allowed.has(key)||typeof value!=='string')return false;state[key]=value;return true;}
@@ -19,13 +33,14 @@
   function show(n){
    const selected=Math.min(28,Math.max(1,Number(n)||1));
    frame.contentWindow?.dispatchEvent(new Event('pagehide'));
+   document.getElementById('review-next')?.setAttribute('hidden','');frame.hidden=false;
    day=selected;picker.value=String(day);prev.disabled=day===1;next.disabled=day===28;
    frame.title='Práctica de Deseo del día '+day+' — demostración';
-   frame.src='desire-lab/index.html?v=20261112-cards3&origin=dailyPlan&reviewDay='+day;
+   frame.src='desire-lab/index.html?v=20261112-next4&origin=dailyPlan&reviewDay='+day;
   }
   picker.onchange=()=>show(picker.value);prev.onclick=()=>show(day-1);next.onclick=()=>show(day+1);prev.disabled=true;
  });
 })();
 </script>
-<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-cards3&amp;origin=dailyPlan" allow="autoplay"></iframe>
-</body></html>
+<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-next4&amp;origin=dailyPlan" allow="autoplay"></iframe>
+<script src="modules.js"></script><script src="daily-support-plan-v1.js"></script><script src="erection-daily-plan-v1.js?v=20261112-action1"></script><script src="daily-resource-plan-v1.js"></script><script src="wellness-daily-tip-v1.js"></script><script src="daily-practice-v1.js?v=20261112-next4"></script></body></html>

@@ -17,7 +17,7 @@ describe('Paid daily Desire entry',()=>{
   document.body.innerHTML='<div id="root"></div>';root=createRoot(document.getElementById('root')!);
   await act(async()=>root!.render(<StrictMode><DesireLab /></StrictMode>));
   const expected=generateToday({...initialState,health:['none'],stimuli:['touch']},day)[0]!;
-  expect(document.body.textContent).toContain(expected.title);
+  if(day!==1)expect(document.body.textContent).toContain(expected.title);
   expect(document.body.textContent).toContain(`Día ${day}`);
   expect(document.querySelector('video')).toBeNull();
   if(day === 1) {
@@ -25,13 +25,13 @@ describe('Paid daily Desire entry',()=>{
     expect(document.querySelector('.dz-timer')).toBeNull();
     const choose = document.querySelector('[aria-label="Se parece a mí hoy: Me dan ganas"]') as HTMLButtonElement;
     await act(async()=>choose.click());
-    expect(document.body.textContent).toContain('Reconoce lo que despierta tu interés');
+    expect(document.body.textContent).not.toContain('Explora sin exigencia');
     expect(document.querySelector('.dz-steps')?.textContent).toContain('recuerda una situación reciente');
     expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Instrucciones de la actividad');
     await click('Cambiar mi elección');
     await act(async()=>(document.querySelector('[aria-label="Se parece a mí hoy: Me voy conectando"]') as HTMLButtonElement).click());
-    expect(document.body.textContent).toContain('Crea espacio para conectar');
+    expect(document.querySelector('.dz-steps')?.closest('details')?.open).toBe(false);
     expect(document.querySelector('.dz-steps')?.textContent).toContain('sostener una taza tibia');
     expect(document.querySelector('.dz-timer')).toBeNull();
     const saved=JSON.parse(state['spm-desire-program']!);
@@ -42,7 +42,13 @@ describe('Paid daily Desire entry',()=>{
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Práctica en curso');
     expect(document.querySelector('.dz-clock')?.textContent).toBe('05:00');
     expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
-    await act(async()=>vi.advanceTimersByTime(300000));
+    await act(async()=>vi.advanceTimersByTime(10000));
+    await click('Pausar');
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Registra tu experiencia');
+    expect(JSON.parse(state['spm-desire-program']!).sessions[0].status).toBe('paused');
+    await click('Volver a la práctica');
+    await click('Reanudar');
+    await act(async()=>vi.advanceTimersByTime(290000));
     expect(document.querySelector('.dz-timer')).toBeNull();
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Registra tu experiencia');
     await click('Guardar y continuar');
@@ -50,7 +56,7 @@ describe('Paid daily Desire entry',()=>{
     const follow = Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Explorar otro estímulo'))!;
     await act(async()=>follow.click());
     expect(document.querySelector('.dz-steps')?.textContent).toContain('diferente al de la primera práctica');
-    expect(document.body.textContent).toContain('Ampliar tus posibilidades de disfrute');
+    expect(document.querySelector('.dz-steps')?.closest('details')?.open).toBe(false);
     await click('Iniciar mi práctica');
     expect(document.querySelector('.dz-clock')?.textContent).toBe('03:00');
     await click('Ya terminé');
@@ -71,6 +77,20 @@ describe('Paid daily Desire entry',()=>{
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Instrucciones de la actividad');
   }
   expect(document.querySelector('.dz-foot')).toBeNull();
+ });
+ it('stopping opens the record and continues without completing the exercise',async()=>{
+  const state:Record<string,string>={[STORAGE.state]:JSON.stringify({...initialState,health:['none'],stimuli:['touch']})};
+  const finishDaily=vi.fn(async()=>true);
+  Object.defineProperty(window,'parent',{configurable:true,value:{SPM_DESIRE_LAB_HOST:{getContext:()=>({day:1,origin:'dailyPlan',restriction:'none'}),getState:()=>state,write:(k:string,v:string)=>{state[k]=v;return true;},finishDaily}}});
+  window.history.replaceState(null,'','/');window.scrollTo=vi.fn();document.body.innerHTML='<div id="root"></div>';root=createRoot(document.getElementById('root')!);
+  await act(async()=>root!.render(<DesireLab/>));
+  await act(async()=>(document.querySelector('[aria-label="Se parece a mí hoy: Me dan ganas"]') as HTMLButtonElement).click());
+  await click('Iniciar mi práctica');await click('Parar');
+  expect(document.activeElement?.getAttribute('aria-label')).toBe('Registra tu experiencia');
+  await click('Guardar y continuar');
+  expect(finishDaily).toHaveBeenCalledWith(false);
+  const sessions=JSON.parse(state['spm-desire-program']!).sessions;
+  expect(sessions.every((s:any)=>s.status==='interrupted')).toBe(true);
  });
  it('day one begins with five minutes of practice',()=>{
   const first=generateToday(initialState,1)[0]!;

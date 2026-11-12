@@ -442,7 +442,7 @@ export function DesireLab() {
             <ArrowLeft size={16} /> {origin === 'library' ? 'Volver a Biblioteca' : origin === 'route' ? 'Volver a Tu ruta SPM' : origin === 'cycle' ? `Volver al Día ${retDay}` : 'Volver a Hoy'}
           </button>
         )}
-        {view !== 1 && <h2 className="dz-h">{heading}</h2>}
+        {view !== 1 && !(pid === 'presence-5' && pDay === 1) && <h2 className="dz-h">{heading}</h2>}
         <section className="dz-body" key={String(view)}>{central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <DoctorDesireVideo />}{body}</section>
         {central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <ProgramVideos key={String(view)} route="desire" />}
       </main>

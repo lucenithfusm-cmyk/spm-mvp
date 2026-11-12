@@ -145,14 +145,14 @@ async function load(force=false){
  catch{if(token!==generation)return;loadError=true;}
  render();
 }
-function open({focus:shouldFocus=true}={}){pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
+function open({focus:shouldFocus=true}={}){delete $('#spmDailySession')?.dataset.continuation;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
 function pauseDailyVideo(){document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
 function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
  const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
  const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');if(activity.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(data))throw Error('Completa la evaluación antes de registrarla.');data={...data,...(activity.tip?{tipId:activity.tip.id}:{}),activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
- if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');}
+ if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');if(active?.id===id){showContinuation();refreshContinuation();}const a=assignments().find(x=>x.id===id);const module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');if(module)focus(module.querySelector('[data-spm-next]'));}
  return {ok:true};
 }
 function confirmActivity(id){
@@ -209,16 +209,89 @@ async function launch(id){
   else if(a.kind==='sensate')await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day:Number(c.day)});
   else if(a.kind==='wellness')wellness(a);
   else worksheet(a);
+ refreshContinuation();
  }catch{status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
 }
+const moduleSelectors={desire:'.spm-desire-modal[open]',sensate:'.spm-sensate-modal[open]',breathing:'.spm-breathing-modal[open]',pelvic:'.spm-pf-modal[open],#spmPelvicV2:not([hidden])',erection:'#spmDeModal.on',ejaculation:'#spmEcModal.on',confidence:'.sr-dialog[open]',response:'.sr-dialog[open]',recovery:'.sr-dialog[open]'};
+function validActive(){const c=ctx();return active&&active.scope===scopeOf(c)&&active.day===Number(c?.day);}
+function nextActivities(){return assignments().filter(a=>!recordComplete(a));}
+async function leaveActivity(){
+ const a=assignments().find(a=>a.id===active?.id);if(!a)return true;
+ if(a.kind==='pelvic'&&$('#spmPelvicV2:not([hidden])')){window.SPM_PELVIC_V2?.close();return !$('#spmPelvicV2:not([hidden])');}
+ const api={desire:'SPM_DESIRE_LAB',sensate:'SPM_SENSATE_LAB',breathing:'SPM_BREATHING_LAB',pelvic:'SPM_PELVIC_LAB'}[a.kind];
+ if(api&&window[api]?.close)return await window[api].close()!==false;
+ const root=$(moduleSelectors[a.kind]||'#no-spm-module');
+ if(root){const close=root.querySelector('.deClose,.ecClose,[data-sr-close]');if(!close)return false;close.click();}
+ return true;
+}
+function continuation(root){
+ if(!root||!validActive())return;
+ const c=ctx(),items=nextActivities(),a=assignments(c).find(x=>x.id===active.id),currentDone=a&&recordComplete(a);
+ let panel=root.querySelector('[data-spm-next]');if(!panel){panel=document.createElement('section');panel.dataset.spmNext='';panel.className='spm-daily-work';root.appendChild(panel);}
+ const sig=JSON.stringify([active,items.map(x=>[x.id,restricted(c,x)]),currentDone]);if(panel.dataset.signature===sig)return;panel.dataset.signature=sig;
+ panel.innerHTML=`<h3>Continúa tu día ${c.day}</h3>${a&&!currentDone?`<p>«${esc(a.title)}» sigue pendiente. Abrirla o detenerla no la marca como realizada.</p><button type="button" class="btn sec" data-next-record>Ya la realicé · Registrar</button>`:''}${items.filter(x=>x.id!==active.id).map(x=>`<div><b>${esc(x.title)}</b><p>${x.optional?'Recomendación opcional':'Actividad pendiente'}</p><button type="button" class="btn pri" data-next-id="${esc(x.id)}">Continuar aquí →</button></div>`).join('')}${items.length===0?'<p>Terminaste las actividades de hoy. Continúa con constancia, a tu ritmo; no necesitas repetirlas ahora.</p>':''}${items.every(x=>x.optional)?'<button type="button" class="btn pri" data-next-day>Completar mi día</button>':''}<button type="button" class="btn sec" data-next-today>Ver todas mis actividades de hoy</button><p role="status"></p>`;
+ const go=async fn=>{try{if(!await leaveActivity())throw Error();if(!validActive())throw Error();open({focus:false});fn();}catch{panel.querySelector('[role=status]').textContent='No pudimos guardar o salir. Conserva esta pantalla y vuelve a intentarlo.';}};
+ panel.querySelectorAll('[data-next-id]').forEach(b=>b.onclick=()=>go(()=>launch(b.dataset.nextId)));
+ panel.querySelector('[data-next-record]')?.addEventListener('click',()=>go(()=>confirmActivity(a.id)));
+ panel.querySelector('[data-next-today]').onclick=()=>go(()=>open());
+ panel.querySelector('[data-next-day]')?.addEventListener('click',()=>go(complete));
+}
+function refreshContinuation(){
+ if(view!=='today'||!validActive())return;
+ const a=assignments().find(x=>x.id===active.id),module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');
+ if(module)continuation(module);
+}
+function showContinuation(){
+ if(!validActive())return;open({focus:false});const box=$('#spmDailyWorkspace');if(!box)return;box.replaceChildren();$('#spmDailySession').dataset.continuation='true';continuation(box);focus(box);
+}
+const dailyAdvice=[
+ ['Si hoy compartes un momento de intimidad, pregunta: «¿Qué te haría sentir a gusto hoy?». Escucha sin intentar resolver ni demostrar nada.','Si estás solo, identifica una cosa que te ayude a sentirte a gusto.'],
+ ['Propón unos minutos de cercanía sin pantallas y sin obligación de continuar hacia una actividad sexual. Acuerden juntos qué les apetece.','Dedica esos minutos a una actividad agradable sin pantallas.'],
+ ['Durante un encuentro que ambos deseen, vuelve a una sensación agradable —temperatura, textura o cercanía— en lugar de evaluar tu respuesta.','Explora una sensación cotidiana agradable sin buscar excitación.'],
+ ['Expresa una preferencia de forma sencilla: «Me gusta cuando…». Invita a tu pareja a compartir la suya.','Escribe una preferencia que te gustaría poder expresar.'],
+ ['Si notas presión, puedes decir: «Prefiero ir más despacio». Una pausa también puede formar parte de una experiencia agradable.','Practica esa frase para tenerla disponible cuando la necesites.'],
+ ['Agradece un gesto concreto de tu pareja que te haya hecho sentir cuidado. La conexión también se construye fuera de la intimidad.','Reconoce un gesto de cuidado que tuviste contigo hoy.'],
+ ['Recuerda una experiencia cómoda de esta semana. Comparte qué te gustó sin convertirla en una exigencia para la próxima vez.','Anota un detalle agradable de la semana que quieras conservar.'],
+ ['Si hoy hay disposición de ambos, propón un abrazo o una caricia cómoda. No necesita conducir a nada más.','Elige un gesto de autocuidado que te resulte agradable.'],
+ ['Pregunta a tu pareja si hoy prefiere conversar, descansar o compartir cercanía. Las preferencias pueden cambiar de un día a otro.','Pregúntate qué necesitas hoy y respeta esa respuesta.'],
+ ['Exploren un detalle diferente que ambos elijan: música, luz o un momento sin interrupciones. Cambien solo una cosa.','Prueba un cambio pequeño en un momento agradable para ti.'],
+ ['Si algo no sale como esperabas, prueba decir: «Podemos disfrutar de otra manera». Un momento no define toda la experiencia.','Escribe una forma amable de responderte ante una dificultad.'],
+ ['Habla de lo que te gusta en un momento tranquilo, fuera de una situación de presión. Empieza con una sola idea.','Ensaya cómo expresarías esa idea con tus propias palabras.'],
+ ['Da espacio a escuchar: pregunta «¿Cómo te sentiste?» y deja que tu pareja termine antes de responder.','Pregúntate cómo te sentiste hoy, sin calificarte.'],
+ ['Hoy puedes compartir algo que has aprendido sobre ti. Dos semanas son una oportunidad para observar y seguir aprendiendo, no un examen de resultados.','Anota un aprendizaje, aunque todavía no notes cambios.'],
+ ['Si ambos quieren cercanía, acuerden un ritmo cómodo y recuerden que cualquiera puede pedir una pausa o cambiar de idea.','Identifica una señal corporal que te invite a bajar el ritmo.'],
+ ['Prueba describir una sensación agradable con palabras sencillas. No hace falta compararla con encuentros anteriores.','Describe una sensación agradable de hoy, sin puntuarla.'],
+ ['Ofrece una elección en lugar de adivinar: «¿Te apetece esto o prefieres otra cosa?». Acepta también un no.','Piensa cómo expresarías un sí, un no o un todavía no.'],
+ ['Comparte un límite junto con una preferencia: «Esto no me apetece; esto otro sí». La claridad ayuda a cuidarse mutuamente.','Escribe un límite y una preferencia que quieras respetar.'],
+ ['Si ambos desean explorar, mantengan la atención en lo que resulta cómodo. No es necesario ampliar ni avanzar por cumplir una meta.','Elige una experiencia que ya sepas que te resulta cómoda.'],
+ ['Recupera un detalle del ambiente que les haya ayudado a conectar. Repítelo como invitación, no como fórmula obligatoria.','Prepara un pequeño espacio de calma para ti.'],
+ ['Al cerrar la semana, comparte qué te gustaría mantener y qué preferirías cambiar. Escucha también la respuesta de tu pareja.','Anota una cosa para mantener y otra para ajustar.'],
+ ['Elige una forma de conexión que te haya resultado agradable y propón repetirla si ambos quieren. No busques reproducir exactamente una respuesta.','Repite una actividad agradable sin exigir que se sienta igual.'],
+ ['Cambia «tiene que pasar» por «podemos explorar». Puedes usar esa frase para quitar presión a un encuentro.','Observa una expectativa rígida y reformúlala con más flexibilidad.'],
+ ['Si hoy hay menos energía o interés, háblenlo y adapten el plan. Descansar o compartir compañía también son opciones.','Elige lo que encaje con tu energía de hoy.'],
+ ['Acuerden un plan sencillo para un momento de presión: pausar, hablar o cambiar de actividad. No hace falta esperar a estar incómodos para conversarlo.','Escribe tu propio plan: «Si siento presión, puedo…».'],
+ ['Propón mantener un pequeño hábito de conexión que ambos disfruten. Que sea flexible y posible, sin convertirlo en una obligación.','Elige un hábito pequeño de autocuidado que quieras mantener.'],
+ ['Hoy puedes tomar la iniciativa con una invitación abierta: «Me gustaría compartir un rato contigo, ¿qué te apetece?».','Reserva un rato para algo que disfrutes y elige cómo vivirlo.'],
+ ['Comparte un aprendizaje de estas semanas y una práctica que quieras conservar. El cierre de los 28 días es un punto para seguir cuidándote, no una promesa de resultado definitivo.','Anota qué quieres mantener y cuándo volverás a practicarlo.']
+];
+function closingAdvice(c=ctx(),day=Number(c?.day)){
+ const advice=dailyAdvice[Math.min(28,Math.max(1,day||1))-1];
+ return {title:'Llévalo a tu vida diaria',text:advice[0],individual:advice[1]};
+}
+function showClosingAdvice(c,day){
+ const host=$('#spmDailySession');if(!host)return;const advice=closingAdvice(c,day),card=document.createElement('section');
+ card.id='spmDailyClosing';card.className='spm-daily-work';card.innerHTML=`<span class="stepBadge">DÍA ${day} · COMPLETADO</span><h3>${esc(advice.title)}</h3><p>${esc(advice.text)}</p><p>${esc(advice.individual)}</p><button type="button" class="btn pri" data-closing-next>${day===28?'Ver mi programa':'Volver a mi ruta'} →</button>`;
+ host.appendChild(card);host.dataset.continuation='true';$('#spmDailyWorkspace')?.replaceChildren();card.querySelector('button').onclick=()=>{card.remove();open();};focus(card);
+}
 async function complete(){
- const c=ctx(),items=assignments(c).filter(a=>!a.optional);if(!loaded||restricted(c)||!items.length||items.some(a=>restricted(c,a)||!recordComplete(a)))return;
+ const c=ctx(),completedDay=Number(c?.day),completedContext={...c},items=assignments(c).filter(a=>!a.optional);if(!loaded||restricted(c)||!items.length||items.some(a=>restricted(c,a)||!recordComplete(a)))return;
  const b=$('#spmDailyComplete');b.disabled=true;status('Guardando tu día…');
- try{await window.SPM_COMPLETE_DAILY_PRACTICE(Number(c.day),scopeOf(c));await load(true);status(Number(c.day)===28?'Ciclo inicial completado. Revisa tu progreso y la recomendación de continuidad.':`Día ${c.day} guardado. Tu siguiente sesión está preparada.`);focus($('#spmDailySession'));}
+ try{await window.SPM_COMPLETE_DAILY_PRACTICE(Number(c.day),scopeOf(c));if(scopeOf(ctx())!==scopeOf(completedContext))return;await load(true);status(Number(c.day)===28?'Ciclo inicial completado. Revisa tu progreso y la recomendación de continuidad.':`Día ${c.day} guardado. Tu siguiente sesión está preparada.`);showClosingAdvice(completedContext,completedDay);}
  catch{b.disabled=false;status('No se pudo completar el día. Reintenta; tus actividades permanecen guardadas.',true);}
 }
 const style=document.createElement('style');style.textContent=`
 #plan[data-spm-daily-view="entry"]>:not(#spmTodayHero):not(#spmDailyViews),#plan[data-spm-daily-view="today"]>:not(#spmDailySession):not(#spmDailyViews),#plan[data-spm-daily-view="library"]>#spmTodayHero,#plan[data-spm-daily-view="library"]>#spmDailySession{display:none!important}
+#spmDailySession[data-continuation="true"]>.spm-daily-activities,#spmDailySession[data-continuation="true"]>.spm-daily-footer,#spmDailySession[data-continuation="true"]>#spmDailyStatus{display:none!important}
 #spmDailyViews{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}#spmDailyViews button{border:1px solid #31535b;border-radius:999px;padding:12px 18px;background:#0c242b;color:#bed4d5;font:inherit;cursor:pointer}#spmDailyViews button[aria-pressed="true"]{background:#78dfc5;color:#06231e;font-weight:800}
 .spm-daily-activities{display:grid;gap:14px;margin:24px 0}.spm-daily-activity{display:grid;grid-template-columns:36px minmax(0,1fr);gap:15px;padding:20px;border:1px solid #31545c;border-radius:18px;background:linear-gradient(135deg,#102e34,#0a1d25)}.spm-daily-number{display:grid;place-items:center;width:34px;height:34px;background:#d4b879;color:#072620;border-radius:50%;font-weight:900}.spm-daily-activity small{color:#9ae5d0;letter-spacing:.08em;font-size:10px}.spm-daily-activity h3{margin:7px 0 10px}.spm-daily-activity p{color:#b9cdd0;line-height:1.6}.spm-daily-actions,.spm-daily-footer{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.spm-daily-saved{color:#8aebcc}.spm-daily-work{padding:20px;margin:20px 0;border:1px solid #5b817d;border-radius:18px;display:grid;gap:16px}.spm-daily-work label{display:block;line-height:1.6}.spm-daily-work textarea{display:block;width:100%;margin-top:10px;background:#061b23;border:1px solid #42626a;color:#f2f8f8;border-radius:10px;padding:12px;font:inherit}.spm-daily-work input{accent-color:#78dfc5}.spm-daily-work summary{cursor:pointer;color:#93e2ce}.spm-daily-work p{line-height:1.6}#spmDailyStatus{color:#a2c9c3;line-height:1.5}#spmDailyStatus.error{color:#ffd094}#spmDailySession button:disabled{opacity:.5;cursor:not-allowed}
 #spmDeModal[data-daily-session="true"] #deRoad,#spmDeModal[data-daily-session="true"] #dePrev,#spmDeModal[data-daily-session="true"] #deNext,#spmDeModal[data-daily-session="true"] .spm-program-videos,#spmEcModal[data-daily-session="true"] .ecPremiumDock,#spmEcModal[data-daily-session="true"] #ecBackProgram{display:none!important}
@@ -231,7 +304,9 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDailyV
 window.addEventListener('spm:resourcecontext',()=>load());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
+let continuationPending=false;
+new MutationObserver(()=>{if(continuationPending||!validActive())return;continuationPending=true;requestAnimationFrame(()=>{continuationPending=false;refreshContinuation();});}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','class']});
 layout();load();
 })();

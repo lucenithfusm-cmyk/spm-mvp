@@ -1,4 +1,4 @@
-import { centralContext } from '@/lib/central';
+import { centralContext, host } from '@/lib/central';
 // 28-day cycle, recovered resources (A1–F) and full practice sheets with guided timer. Browser-local only.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Pause, Play, RotateCcw, ShieldAlert, Square, Volume2, X } from 'lucide-react';
@@ -87,14 +87,14 @@ const formSteps: Record<string, string[]> = {
 };
 function DesireForms({ selected, onChoose, disabled = false }: { selected: string; onChoose: (id: string) => void; disabled?: boolean }) {
   return <section aria-label="Las dos formas del deseo"><h3>Las dos formas del deseo</h3>
-    <p>Las ganas pueden aparecer antes de empezar o surgir poco a poco. No hay una forma correcta: ambas pueden alternarse en ti.</p>
-    <p>Hoy aprenderás a reconocer cómo aparece tu interés y qué te ayuda a conectar, sin exigirte una respuesta sexual.</p>
+    
+    
     <SpokenSteps label="Escuchar explicación" text="Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy no buscamos forzar el deseo, sino reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después verás una práctica de cinco minutos relacionada con tu elección." />
     <div className="dz-grid2">{desireForms.map(form => <Card key={form.id} className={selected === form.id ? 'accent' : ''}>
       <h3>{form.title}</h3><p>{form.description}</p>
       <SpokenSteps label={'Escuchar: ' + form.title} text={form.audio} />
       <button type="button" className="dz-btn gold" disabled={disabled} aria-pressed={selected === form.id} aria-label={'Se parece a mí hoy: ' + form.title} onClick={() => onChoose(form.id)}>{selected === form.id && <Check size={18} />} Se parece a mí hoy</button>
-    </Card>)}</div><p className="dz-muted small">Elige la que más se acerque a ti hoy; no es una etiqueta fija. Si no quieres continuar, puedes detenerte.</p>
+    </Card>)}</div>
   </section>;
 }
 
@@ -116,6 +116,13 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState<Session['status'] | null>(pend ? 'paused' : null);
   const [stage, setStage] = useState<'choice' | 'instructions' | 'practice' | 'register' | 'done'>(() => pend ? 'practice' : day === 1 && pid === 'presence-5' ? 'choice' : 'instructions');
+  const [handoffError, setHandoffError] = useState(false);
+  useEffect(() => {
+    if(stage !== 'done' || (day === 1 && pid === 'presence-5' && saved === 'completed') || ctx.origin !== 'dailyPlan' || !host()?.finishDaily) return;
+    let cancelled = false;
+    host()!.finishDaily!(saved === 'completed').then(ok => { if(!cancelled && !ok) setHandoffError(true); }).catch(() => {if(!cancelled) setHandoffError(true);});
+    return () => {cancelled=true;};
+  }, [stage]);
   const stageTop = useRef<HTMLElement>(null);
   useEffect(() => {
     window.scrollTo({top: 0, behavior: 'auto'});
@@ -173,9 +180,9 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
     {stage === 'choice' && <DesireForms selected={form} onChoose={id => { restart(); setProg(p => ({...p, detailNotes: {...p.detailNotes, form: id}})); setStage('instructions'); }} />}
     {stage === 'instructions' && <>
       {firstDay && <button type="button" className="dz-back" onClick={() => setStage('choice')}><ArrowLeft size={18} /> Cambiar mi elección</button>}
-      <h3>{firstDay ? (form === 'spont' ? 'Reconoce lo que despierta tu interés' : 'Crea espacio para conectar') : pr.title}</h3>
-      <p>{firstDay ? introduction : pr.purpose ?? 'Observa tu respuesta sin exigirte un resultado.'}</p>
-      <p className="dz-muted">{pr.prep ?? 'Busca un momento tranquilo y privado.'}</p>
+      {!firstDay && <h3>{pr.title}</h3>}
+      
+      <p className="dz-muted">Busca privacidad. Silencia las notificaciones del móvil. Puedes usar audífonos.</p>
     {needsReady ? <Card><span className="dz-eyebrow">Antes de ampliar</span><p>La fase I quedó registrada como cómoda. ¿Hoy te sientes con disposición{hasPartner ? ' y hay consentimiento mutuo' : ''} para ampliar?</p>
       <label className="dz-check"><input type="checkbox" checked={ready} onChange={(e) => setReady(e.target.checked)} /> Sí, hoy quiero ampliar y sé que puedo parar en cualquier momento</label>
       {pend && <p className="dz-muted small">Tienes un intento en pausa ({fmt(pend.activeSec)} activos) que se retomará.</p>}
@@ -183,7 +190,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
 
       <SpokenSteps label="Escuchar el paso a paso" text={instructionAudio} />
       <button type="button" className="dz-btn gold" style={{width: '100%', minHeight: 60, marginTop: 16}} onClick={() => { if (elapsed >= total) restart(); setStage('practice'); setRun(true); }}><Play size={22} /> Iniciar mi práctica · {pr.duration}</button>
-      <ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol>
+      <details><summary>Leer el paso a paso</summary><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol></details>
     {pr.note && <p className="dz-note">{pr.note}</p>}
     {pr.link && <p className="dz-muted small">{pr.link}</p>}
     {pr.resourceLinks && <div className="dz-lib">{pr.resourceLinks.map((r) => <button key={r} onClick={() => { if (run) { setRun(false); save('paused'); } ctx.openResource(r); }}><ArrowRight size={14} /><span>Abrir: {resLabel(r)}</span></button>)}</div>}
@@ -214,9 +221,9 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       <div className="dz-bar"><span style={{ width: `${(elapsed / total) * 100}%` }} /></div>
       <div className="dz-row">
         {!run && elapsed < total && <button className="dz-btn gold" onClick={() => setRun(true)}><Play size={16} /> {elapsed ? 'Reanudar' : 'Iniciar'}</button>}
-        {run && <button className="dz-btn ghost" onClick={() => { setRun(false); save('paused'); }}><Pause size={16} /> Pausar</button>}
+        {run && <button className="dz-btn ghost" onClick={() => { setRun(false); save('paused'); setStage('register'); }}><Pause size={16} /> Pausar</button>}
         <button className="dz-btn ghost" disabled={!elapsed && saved !== 'completed'} onClick={() => { restart(); setStage('practice'); }}><RotateCcw size={16} /> {saved === 'completed' ? 'Nuevo intento' : 'Reiniciar'}</button>
-        <button className="dz-btn ghost" disabled={!elapsed || saved === 'completed'} onClick={() => { setRun(false); save('interrupted'); }}><Square size={16} /> Parar</button>
+        <button className="dz-btn ghost" disabled={saved === 'completed'} onClick={() => { setRun(false); save('interrupted'); setStage('register'); }}><Square size={16} /> Parar</button>
       </div>
       {pend && elapsed > 0 && saved === 'paused' && !run && <p className="dz-muted small">Retomando tu intento en pausa ({fmt(elapsed)} activos).</p>}
       <Cue id={cueId(pid)}>{phase ? `${phase}. ` : ''}Sin prisa y sin objetivo de rendimiento.</Cue>
@@ -225,7 +232,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       <button type="button" className="dz-btn ghost" onClick={() => { if (run) { setRun(false); save('paused'); } setStage('instructions'); }}><ArrowLeft size={18} /> Volver a las instrucciones</button>
       <details><summary>Recordar el paso a paso</summary><SpokenSteps text={instructionAudio} /><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol></details>
       <p className="dz-muted small">{pr.exit}</p>
-      {!pr.timer && <button type="button" className="dz-btn gold" onClick={() => { setRun(false); setStage('register'); }}>Ya terminé · Registrar experiencia <ArrowRight size={18} /></button>}
+      {!pr.timer && <button type="button" className="dz-btn gold" onClick={() => { setRun(false); setSaved(null); setStage('register'); }}>Ya terminé · Registrar experiencia <ArrowRight size={18} /></button>}
     </>}
     {stage === 'register' && <>
       <h3>{saved === 'completed' ? 'Práctica realizada' : '¿Cómo te fue?'}</h3>
@@ -239,12 +246,14 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
     <Card><label className="dz-field"><span>Tu reflexión (opcional)</span><textarea className="dz-input" rows={2} maxLength={400} value={refl} onChange={(e) => setRefl(e.target.value)} /></label></Card>
 
       {!pr.timer && saved !== 'completed' && <label className="dz-check"><input type="checkbox" checked={confirm} onChange={e => setConfirm(e.target.checked)} /> Realicé la actividad</label>}
-      <button type="button" className="dz-btn gold" disabled={!pr.timer && saved !== 'completed' && !confirm} onClick={() => { save('completed'); setStage('done'); }}>Guardar y continuar <ArrowRight size={18} /></button>
+      {(saved === 'paused' || saved === 'interrupted') && <p>Tu práctica quedó {saved === 'interrupted' ? 'interrumpida' : 'en pausa'}. Puedes registrar cómo te sentiste y retomarla después.</p>}
+      <button type="button" className="dz-btn gold" disabled={!pr.timer && saved !== 'completed' && saved !== 'paused' && saved !== 'interrupted' && !confirm} onClick={() => { save((saved === 'paused' || saved === 'interrupted') && (pr.timer || !confirm) ? saved : 'completed'); setStage('done'); }}>Guardar y continuar <ArrowRight size={18} /></button>
       <button type="button" className="dz-btn ghost" onClick={() => setStage('practice')}>Volver a la práctica</button>
     </>}
     {stage === 'done' && <>
-      <Card className="accent"><h3><Check size={22} /> Actividad completada</h3><p>Tu experiencia quedó registrada.</p></Card>
-      {firstDay ? <Card className="accent"><h3>Ahora amplía tus posibilidades</h3><p>Prueba un estímulo diferente que uses poco y observa cómo te sientes.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('explore-new-stimulus', ctx.origin, day)}>Explorar otro estímulo · 3 min <ArrowRight size={18} /></button></Card> : <button className="dz-btn gold" onClick={() => ctx.go('today', 'dailyPlan')}>Ver mis actividades de Deseo <ArrowRight size={18} /></button>}
+      <Card className="accent"><h3><Check size={22} /> {saved === 'completed' ? 'Actividad completada' : 'Experiencia registrada'}</h3><p>{saved === 'completed' ? 'Tu experiencia quedó registrada.' : 'Puedes retomar esta práctica desde Hoy.'}</p></Card>
+      {firstDay && saved === 'completed' ? <Card className="accent"><h3>Ahora amplía tus posibilidades</h3><p>Prueba un estímulo diferente que uses poco y observa cómo te sientes.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('explore-new-stimulus', ctx.origin, day)}>Explorar otro estímulo · 3 min <ArrowRight size={18} /></button></Card> : <button className="dz-btn gold" onClick={async () => { if(host()?.finishDaily) {setHandoffError(false);try{if(!await host()!.finishDaily!(saved === 'completed'))setHandoffError(true);}catch{setHandoffError(true);} } else ctx.go('today','dailyPlan'); }}>Continuar con las actividades de hoy <ArrowRight size={18} /></button>}
+      {handoffError && <p role="status">No pudimos continuar. Conservamos esta pantalla; pulsa continuar para reintentar.</p>}
       <button type="button" className="dz-btn ghost" onClick={() => setStage('register')}>Revisar mi registro</button>
     </>}
   </section>);
