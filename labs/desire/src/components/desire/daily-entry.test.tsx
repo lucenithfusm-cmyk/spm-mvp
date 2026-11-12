@@ -7,7 +7,7 @@ import { initialState, STORAGE } from '@/lib/desire-data';
 import { generateToday } from '@/lib/desire-engine';
 let root: Root | undefined;
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-afterEach(async () => { if(root) await act(async()=>root!.unmount()); root=undefined; document.body.innerHTML=''; });
+afterEach(async () => { vi.useRealTimers(); if(root) await act(async()=>root!.unmount()); root=undefined; document.body.innerHTML=''; });
 describe('Paid daily Desire entry',()=>{
  it.each(Array.from({length:28},(_,i)=>i+1))('opens day %s practice without introductory video, including replayed mount',async(day)=>{
   const state: Record<string,string> = {[STORAGE.state]:JSON.stringify({...initialState,health:['none'],stimuli:['touch']}),[STORAGE.step]:'1'};
@@ -19,6 +19,31 @@ describe('Paid daily Desire entry',()=>{
   expect(document.body.textContent).toContain(expected.title);
   expect(document.body.textContent).toContain(`Día ${day}`);
   expect(document.querySelector('video')).toBeNull();
+  if(day === 1) {
+    expect(document.body.textContent).toContain('Las dos formas del deseo');
+    expect(document.querySelector('.dz-timer')).toBeNull();
+    const choose = document.querySelector('[aria-label="Se parece a mí hoy: Me dan ganas"]') as HTMLButtonElement;
+    await act(async()=>choose.click());
+    expect(document.body.textContent).toContain('Tu práctica de hoy · Reconoce lo que despierta tu interés');
+    expect(document.querySelector('.dz-steps')?.textContent).toContain('recuerda una situación reciente');
+    await act(async()=>(document.querySelector('[aria-label="Se parece a mí hoy: Me voy conectando"]') as HTMLButtonElement).click());
+    expect(document.body.textContent).toContain('Tu práctica de hoy · Crea espacio para conectar');
+    expect(document.querySelector('.dz-steps')?.textContent).toContain('sostener una taza tibia');
+    expect(document.querySelector('.dz-timer')).not.toBeNull();
+    const saved=JSON.parse(state['spm-desire-program']!);
+    expect(saved.detailNotes.form).toBe('resp');
+    expect(saved.sessions).toHaveLength(0);
+    vi.useFakeTimers();
+    await act(async()=>(document.querySelector('.dz-timer .dz-btn.gold') as HTMLButtonElement).click());
+    await act(async()=>vi.advanceTimersByTime(300000));
+    expect(document.body.textContent).toContain('Ahora amplía tus posibilidades');
+    const follow = Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Explorar otro estímulo'))!;
+    await act(async()=>follow.click());
+    expect(document.querySelector('.dz-steps')?.textContent).toContain('diferente al de la primera práctica');
+    expect(document.body.textContent).toContain('Ampliar tus posibilidades de disfrute');
+    vi.useRealTimers();
+
+  }
   expect(document.querySelector('.dz-steps li')).not.toBeNull();
   expect(document.querySelector('.dz-foot')).toBeNull();
  });

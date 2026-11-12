@@ -57,7 +57,7 @@ function Measure({ metric, label, value, onChange }: { metric: string; label: st
 /** Full educational sheet + guided timer + session diary.
  * Completed only when the timer finishes in the foreground, or with an explicit confirmation for untimed practices.
  * Pause saves and is restored (active time only); leaving while running = interrupted; restart after completion = new attempt id. */
-function SpokenSteps({ text }: { text: string }) {
+function SpokenSteps({ text, label = 'Escuchar indicaciones' }: { text: string; label?: string }) {
   const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState(false);
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
@@ -74,7 +74,28 @@ function SpokenSteps({ text }: { text: string }) {
     speech.onend = () => setSpeaking(false);
     speech.onerror = () => { setSpeaking(false); setError(true); };
     setSpeaking(true); window.speechSynthesis.speak(speech);
-  }}><Volume2 size={30} />{speaking ? 'Detener audio' : 'Escuchar indicaciones'}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Las indicaciones están debajo.</p>}</>;
+  }}><Volume2 size={30} />{speaking ? 'Detener audio' : label}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Las indicaciones están debajo.</p>}</>;
+}
+
+const desireForms = [
+  { id: 'spont', title: 'Me dan ganas', description: 'El interés aparece antes de empezar: una idea, un recuerdo o una situación despierta tus ganas. Se llama deseo espontáneo.', audio: 'A veces las ganas aparecen antes de iniciar cualquier contacto. Por ejemplo, recuerdas un momento agradable y notas interés. A esto lo llamamos deseo espontáneo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a reconocer qué despierta ese interés y a disfrutarlo sin convertirlo en una obligación.' },
+  { id: 'resp', title: 'Me voy conectando', description: 'El interés puede aparecer poco a poco, cuando eliges una experiencia agradable y te sientes a gusto. Se llama deseo responsivo.', audio: 'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.' },
+];
+const formSteps: Record<string, string[]> = {
+  spont: ['Durante el primer minuto, recuerda una situación reciente que despertó tu interés. Identifica un detalle: una imagen, una voz, un gesto o un ambiente.', 'Durante tres minutos, presta atención a una sensación agradable y cómoda: el contacto de tus manos, la temperatura de tu piel o un aroma. Respira con naturalidad. No busques comprobar tu excitación.', 'En el último minuto, observa qué detalle te ayudó a conectar. Puedes anotarlo al terminar. Si no sentiste interés, también es una observación válida.'],
+  resp: ['Durante el primer minuto, elige una sensación que te resulte agradable y que quieras explorar: sostener una taza tibia, escuchar música suave o acariciar tus manos.', 'Durante tres minutos, disfruta esa sensación sin buscar una respuesta sexual. Nota la temperatura, la textura o el sonido. Si aparece presión o incomodidad, haz una pausa o detente.', 'En el último minuto, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo al terminar. No necesitas sentir deseo para que esta observación tenga valor.'],
+};
+function DesireForms({ selected, onChoose, disabled = false }: { selected: string; onChoose: (id: string) => void; disabled?: boolean }) {
+  return <section aria-label="Las dos formas del deseo"><h3>Las dos formas del deseo</h3>
+    <p>Las ganas pueden aparecer antes de empezar o surgir poco a poco. No hay una forma correcta: ambas pueden alternarse en ti.</p>
+    <p>Hoy aprenderás a reconocer cómo aparece tu interés y qué te ayuda a conectar, sin exigirte una respuesta sexual.</p>
+    <SpokenSteps label="Escuchar explicación" text="Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy no buscamos forzar el deseo, sino reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después verás una práctica de cinco minutos relacionada con tu elección." />
+    <div className="dz-grid2">{desireForms.map(form => <Card key={form.id} className={selected === form.id ? 'accent' : ''}>
+      <h3>{form.title}</h3><p>{form.description}</p>
+      <SpokenSteps label={'Escuchar: ' + form.title} text={form.audio} />
+      <button type="button" className="dz-btn gold" disabled={disabled} aria-pressed={selected === form.id} aria-label={'Se parece a mí hoy: ' + form.title} onClick={() => onChoose(form.id)}>{selected === form.id && <Check size={18} />} Se parece a mí hoy</button>
+    </Card>)}</div><p className="dz-muted small">Elige la que más se acerque a ti hoy; no es una etiqueta fija. Si no quieres continuar, puedes detenerte.</p>
+  </section>;
 }
 
 export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number; ctx: CycleCtx; why?: string | undefined }) {
@@ -94,6 +115,8 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const [refl, setRefl] = useState(pend?.reflection ?? '');
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState<Session['status'] | null>(pend ? 'paused' : null);
+  const nextStep = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (saved === 'completed') nextStep.current?.scrollIntoView?.({behavior: 'smooth', block: 'start'}); }, [saved]);
   const total = pr.timer?.seconds ?? 300;
   const acute = prog.acute || s.health.includes('acute');
   const gate = pid === 'sensate-2' ? sensateGate(prog, s, clinical) : { ok: true, reason: '' };
@@ -135,15 +158,23 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const mLabel = pr.metricLabel.replace(/ \/ después|\(.*\)/g, '').trim();
   const restart = () => { setRun(false); setElapsed(0); if (live.current.saved === 'completed' || live.current.saved === 'interrupted') { setSid(`${pid}-d${day}-${Date.now().toString(36)}`); setSaved(null); setBefore(null); setAfter(null); setRefl(''); setComfort(null); setExtra({}); setConfirm(false); } };
   const needsReady = pid === 'sensate-2' && !ready;
+  const firstDay = day === 1 && pid === 'presence-5';
+  const form = prog.detailNotes['form'] ?? '';
+  const steps = firstDay && formSteps[form] ? formSteps[form]! : pr.steps;
+  const introduction = form === 'spont' ? 'Vas a reconocer un estímulo que despierta tu interés y explorar una sensación agradable sin presión.' : 'Vas a crear un momento agradable para explorar comodidad y conexión, sin exigir que aparezca deseo.';
+  const instructionAudio = firstDay ? 'Vamos a practicar durante cinco minutos. ' + introduction + ' ' + steps.map((step, i) => ['Primero. ', 'Después. ', 'Para terminar. '][i] + step).join(' ') + ' Cuando estés listo, pulsa Iniciar. Puedes parar en cualquier momento.' : steps.join('. ') + '. ' + (pr.exit ?? 'Puedes detenerte en cualquier momento.');
   return (<>
     <p className="dz-eyebrow">Día {day} · {pr.duration}</p>
+    {firstDay && <DesireForms selected={form} disabled={run} onChoose={id => { restart(); setProg(p => ({...p, detailNotes: {...p.detailNotes, form: id}})); }} />}
+    {firstDay && !formSteps[form] ? <p role="status">Elige una opción para ver tu práctica de hoy.</p> : <>
+    {firstDay ? <div aria-live="polite"><h3>Tu práctica de hoy · {form === 'spont' ? 'Reconoce lo que despierta tu interés' : 'Crea espacio para conectar'}</h3><p>{introduction}</p></div> : <p>{pr.purpose ?? 'Observa tu respuesta sin exigirte un resultado.'}</p>}
     <p className="dz-muted">{pr.prep ?? 'Busca un momento tranquilo y privado.'}</p>
     {needsReady ? <Card><span className="dz-eyebrow">Antes de ampliar</span><p>La fase I quedó registrada como cómoda. ¿Hoy te sientes con disposición{hasPartner ? ' y hay consentimiento mutuo' : ''} para ampliar?</p>
       <label className="dz-check"><input type="checkbox" checked={ready} onChange={(e) => setReady(e.target.checked)} /> Sí, hoy quiero ampliar y sé que puedo parar en cualquier momento</label>
       {pend && <p className="dz-muted small">Tienes un intento en pausa ({fmt(pend.activeSec)} activos) que se retomará.</p>}
       <button className="dz-btn ghost" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Prefiero repetir la fase I</button></Card> : <>
-    <SpokenSteps text={[pr.title, pr.prep, ...pr.steps, pr.exit].filter(Boolean).join(". ")} />
-    <ol className="dz-steps">{pr.steps.map((x) => <li key={x}>{x}</li>)}</ol>
+    <SpokenSteps label="Escuchar cómo hacer la práctica" text={instructionAudio} />
+    <ol className="dz-steps">{steps.map((x) => <li key={x}>{x}</li>)}</ol>
     {pr.note && <p className="dz-note">{pr.note}</p>}
     {pr.link && <p className="dz-muted small">{pr.link}</p>}
     {pr.resourceLinks && <div className="dz-lib">{pr.resourceLinks.map((r) => <button key={r} onClick={() => { if (run) { setRun(false); save('paused'); } ctx.openResource(r); }}><ArrowRight size={14} /><span>Abrir: {resLabel(r)}</span></button>)}</div>}
@@ -180,7 +211,8 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       {saved === 'completed' && <button className="dz-btn gold" onClick={() => save('completed')}><Check size={16} /> Actualizar registro</button>}
     </div>
     </>}
-    <details><summary>Para qué sirve esta práctica</summary>
+    </>}
+    <details><summary>Más sobre esta práctica</summary>
     {why && <Card className="accent"><span className="dz-eyebrow">Por qué te la asignamos</span><p>{why}</p></Card>}
     <dl className="dz-sheet">
       <dt>Propósito</dt><dd>{pr.purpose ?? pr.metricLabel}</dd>
@@ -190,6 +222,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
     </dl>
     {lines.length > 0 && <Card className="accent"><span className="dz-eyebrow">Personalizado con tus datos</span>{lines.map((l) => <p key={l}>{l}</p>)}</Card>}
     </details>
+    {firstDay && (saved === 'completed' || sessions.some(session => session.day === day && session.status === 'completed')) && <div ref={nextStep}><Card className="accent"><h3>Ahora amplía tus posibilidades</h3><p>Ya exploraste una forma de conectar. El siguiente paso es probar un estímulo diferente que uses poco y observar cómo te sientes.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('explore-new-stimulus', ctx.origin, day)}>Explorar otro estímulo · 3 min <ArrowRight size={18} /></button></Card></div>}
     {saved && <p className="dz-saved"><Check size={14} /> Sesión {saved === 'completed' ? 'completada' : saved === 'paused' ? 'en pausa (guardada)' : 'interrumpida'} · día {day}</p>}
     {sessions.length > 0 && <p className="dz-muted small">Historial: {sessions.filter((x) => x.status === 'completed').length} completadas · {sessions.filter((x) => x.status === 'paused').length} en pausa · {sessions.filter((x) => x.status === 'interrupted').length} interrumpidas</p>}
   </>);
@@ -305,12 +338,10 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
   }
 
   switch (view) {
-    case 'r:concepts': { const v = prog.detailNotes['form'] ?? ''; return (<>
-      <p className="dz-lead">Dos formas del deseo. <em>No hay forma correcta.</em></p>
-      <div className="dz-grid2">{[['spont', 'Me dan ganas', 'Deseo espontáneo: aparece antes del contacto.', 'Ves a tu pareja al llegar a casa y sientes interés.'], ['resp', 'Me voy conectando', 'Deseo responsivo: aparece después de empezar, si el contexto ayuda.', 'Empiezan con un abrazo sin intención y poco a poco aparece el interés.']].map(([id, t, d, ex]) =>
-        <Card key={id} className={v === id ? 'accent' : ''}><h3>{t}</h3><p>{d}</p><p className="dz-muted small">En la vida real: {ex}</p><button className="dz-btn ghost" aria-pressed={v === id} onClick={() => P((p) => ({ ...p, detailNotes: { ...p.detailNotes, form: id ?? '' } }))}>{v === id ? <><Check size={14} /> Se parece a mí hoy</> : 'Se parece a mí hoy'}</button></Card>)}</div>
-      <p className="dz-note">Ambas son normales y pueden alternarse. No estás obligado a sentir ganas para empezar ni a empezar si no quieres.</p>
-      <Quote>Despierta la respuesta sexual sin presión.</Quote></>); }
+    case 'r:concepts': { const form = prog.detailNotes['form'] ?? ''; return <>
+      <DesireForms selected={form} onChoose={id => P(p => ({...p, detailNotes: {...p.detailNotes, form: id}}))} />
+      {formSteps[form] && <Card className="accent"><h3>{form === 'spont' ? 'Reconoce lo que despierta tu interés' : 'Crea espacio para conectar'}</h3><ol className="dz-steps">{formSteps[form]!.map(step => <li key={step}>{step}</li>)}</ol><SpokenSteps text={'Vamos a practicar durante cinco minutos. ' + formSteps[form]!.join(' ') + ' Puedes detenerte en cualquier momento.'} /></Card>}
+    </>; }
     case 'r:influence': return (<>
       <p className="dz-lead">Cuánto <em>influye</em> cada factor en tu deseo (0–10)</p><p className="dz-muted">Distinto de tu línea base: aquí mides influencia, no estado.</p>
       <div className="dz-grid2">{influenceF.map(([k, l]) => <Card key={k}><NumSlider label={l + (k === 'partner' ? ' (N/A sin pareja)' : '')} value={prog.influence[k] ?? null} onChange={(v) => P((p) => ({ ...p, influence: { ...p.influence, [k]: v } }))} low="Nada" high="Mucho" /></Card>)}</div>

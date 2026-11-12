@@ -1,18 +1,31 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>Revisión · Deseo · Día 1 · SPM</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#071b23;color:#edf5f4;font-family:system-ui,sans-serif}header{padding:16px 20px;border-bottom:1px solid #35545b}h1{font-size:22px;margin:0 0 6px;color:#dfc18f}p{font-size:14px;line-height:1.45;margin:0;color:#c6d8d8}iframe{display:block;width:100%;height:calc(100dvh - 115px);min-height:640px;border:0}button{margin-top:10px;color:#c6d8d8;background:transparent;border:0;text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}</style></head>
-<body><header><h1>Deseo · Día 1</h1><p>Vista de revisión con perfil de ejemplo. Sin cuenta. Lo que registres aquí se borra al recargar.</p><button type="button" id="reset">Reiniciar esta prueba</button></header>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>Revisión · Deseo · 28 días · SPM</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#071b23;color:#edf5f4;font-family:system-ui,sans-serif}header{padding:16px 20px;border-bottom:1px solid #35545b}h1{font-size:22px;margin:0 0 6px;color:#dfc18f}p{font-size:14px;line-height:1.45;margin:0;color:#c6d8d8}iframe{display:block;width:100%;height:calc(100dvh - 115px);min-height:640px;border:0}select{font:inherit;background:#15323a;color:#fff;padding:10px;border-radius:8px}nav button{padding:10px}button:disabled{opacity:.4}button{margin-top:10px;color:#c6d8d8;background:transparent;border:0;text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}</style></head>
+<body><header><h1>Revisión de Deseo · 28 días</h1><p>Vista de revisión con perfil de ejemplo. Sin cuenta. Revisa las prácticas de Deseo día a día. Los registros de prueba se conservan mientras esta página esté abierta.</p><nav aria-label="Día a revisar"><button id="prev" type="button">← Anterior</button> <label for="day">Día </label><select id="day" aria-label="Seleccionar día"></select> <button id="next" type="button">Siguiente →</button></nav><button type="button" id="reset">Reiniciar esta prueba</button></header>
 <script>
 (()=>{'use strict';
+ let day=1;
  const state={'spm-desire-state':JSON.stringify({health:['none'],stimuli:['tactile']})};
  const allowed=new Set(['spm-desire-state','spm-desire-profile','spm-desire-step','spm-desire-origin','spm-desire-today','spm-desire-program','spm-desire-ctx','spm-assessment-log']);
  window.SPM_DESIRE_LAB_HOST={
- getContext:()=>({day:1,origin:'dailyPlan',restriction:'none'}),
+ getContext:()=>({day,origin:'dailyPlan',restriction:'none'}),
  getState:()=>({...state}),
  write:(key,value)=>{if(!allowed.has(key)||typeof value!=='string')return false;state[key]=value;return true;}
  };
  document.getElementById('reset').onclick=()=>location.reload();
+ document.addEventListener('DOMContentLoaded',()=>{
+  const picker=document.getElementById('day'),frame=document.querySelector('iframe'),prev=document.getElementById('prev'),next=document.getElementById('next');
+  for(let n=1;n<=28;n++){const option=document.createElement('option');option.value=n;option.textContent='Día '+n;picker.append(option);}
+  function show(n){
+   const selected=Math.min(28,Math.max(1,Number(n)||1));
+   frame.contentWindow?.dispatchEvent(new Event('pagehide'));
+   day=selected;picker.value=String(day);prev.disabled=day===1;next.disabled=day===28;
+   frame.title='Práctica de Deseo del día '+day+' — demostración';
+   frame.src='desire-lab/index.html?v=20261112-forms2&origin=dailyPlan&reviewDay='+day;
+  }
+  picker.onchange=()=>show(picker.value);prev.onclick=()=>show(day-1);next.onclick=()=>show(day+1);prev.disabled=true;
+ });
 })();
 </script>
-<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-action1&amp;origin=dailyPlan" allow="autoplay"></iframe>
+<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-forms2&amp;origin=dailyPlan" allow="autoplay"></iframe>
 </body></html>
