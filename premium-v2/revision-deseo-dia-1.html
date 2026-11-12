@@ -21,11 +21,11 @@
    frame.contentWindow?.dispatchEvent(new Event('pagehide'));
    day=selected;picker.value=String(day);prev.disabled=day===1;next.disabled=day===28;
    frame.title='Práctica de Deseo del día '+day+' — demostración';
-   frame.src='desire-lab/index.html?v=20261112-forms2&origin=dailyPlan&reviewDay='+day;
+   frame.src='desire-lab/index.html?v=20261112-cards3&origin=dailyPlan&reviewDay='+day;
   }
   picker.onchange=()=>show(picker.value);prev.onclick=()=>show(day-1);next.onclick=()=>show(day+1);prev.disabled=true;
  });
 })();
 </script>
-<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-forms2&amp;origin=dailyPlan" allow="autoplay"></iframe>
+<iframe title="Práctica de Deseo del día 1 — demostración" src="desire-lab/index.html?v=20261112-cards3&amp;origin=dailyPlan" allow="autoplay"></iframe>
 </body></html>
