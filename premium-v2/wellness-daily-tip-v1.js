@@ -14,25 +14,25 @@ const TIPS={
   {id:'nut.10',title:'Revisa una sola mejora',body:'Elige para mañana una cosa de tu alimentación que puedas sostener esta semana. Una mejora pequeña y repetible vale más que una dieta extrema.',cta:'Abrir Nutrición SPM'}
  ],
  movement:[
-  {id:'mov.01',title:'Camina con intención',body:'Si es seguro para ti, realiza hoy 20–30 minutos de caminata a un ritmo que te haga respirar un poco más rápido sin impedirte hablar.',cta:'Abrir Movimiento SPM'},
-  {id:'mov.02',title:'Rompe el tiempo sentado',body:'Cada cierto tiempo, levántate unos minutos, camina o cambia de posición. No necesitas que todo el movimiento ocurra en una sola sesión.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.01',title:'Camina con intención',body:'Si es seguro para ti, camina a un ritmo que te haga respirar un poco más rápido sin impedirte hablar. Elige una duración cómoda y observa cómo te sientes al terminar.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.02',title:'Rompe el tiempo sentado',body:'En una pausa de tus actividades, levántate a tu ritmo. Camina o cambia de posición antes de retomar lo que estabas haciendo.',cta:'Abrir Movimiento SPM'},
   {id:'mov.03',title:'Suma movimiento cotidiano',body:'Hoy elige una oportunidad concreta: caminar una distancia corta, usar escaleras si son seguras para ti o hacer una vuelta adicional.',cta:'Abrir Movimiento SPM'},
-  {id:'mov.04',title:'Movilidad breve',body:'Dedica 5–10 minutos a movilidad suave de cuello, hombros, columna, caderas y tobillos, sin llevar ninguna zona al dolor.',cta:'Abrir Movimiento SPM'},
-  {id:'mov.05',title:'Un poco más de ritmo',body:'En una parte de tu caminata habitual, aumenta el ritmo durante unos minutos y vuelve luego a un paso cómodo.',cta:'Abrir Movimiento SPM'},
-  {id:'mov.06',title:'Fuerza funcional',body:'Si tu condición física lo permite, practica una rutina breve con movimientos básicos como sentarte y levantarte de una silla, empujar una pared o elevar talones.',cta:'Abrir Movimiento SPM'},
-  {id:'mov.07',title:'Muévete después de una comida',body:'Una caminata suave después de una comida puede ser una forma práctica de sumar actividad sin convertirla en un entrenamiento formal.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.04',title:'Movilidad a tu ritmo',body:'Explora movimientos suaves de cuello, hombros, columna, caderas y tobillos a tu ritmo, sin llevar ninguna zona al dolor.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.05',title:'Un poco más de ritmo',body:'En una parte de tu caminata habitual, aumenta el ritmo mientras te resulte cómodo y vuelve luego a tu paso habitual.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.06',title:'Fuerza funcional',body:'Si tu condición física lo permite, practica a tu ritmo movimientos básicos como sentarte y levantarte de una silla, empujar una pared o elevar talones.',cta:'Abrir Movimiento SPM'},
+  {id:'mov.07',title:'Muévete después de una comida',body:'Después de una comida, elige un recorrido cómodo y camina a paso suave. Al terminar, vuelve a tus actividades.',cta:'Abrir Movimiento SPM'},
   {id:'mov.08',title:'Hazlo fácil de repetir',body:'Elige hoy un tipo de movimiento que realmente podrías repetir varias veces por semana. SPM prioriza adherencia sobre intensidad.',cta:'Abrir Movimiento SPM'},
   {id:'mov.09',title:'Observa tu energía',body:'Después de moverte, registra mentalmente cómo quedó tu energía. La actividad debe adaptarse a tu tolerancia, no agotarte por obligación.',cta:'Abrir Movimiento SPM'}
  ],
  sleep:[
   {id:'slp.01',sleepTipId:'sl-horario-01',title:'Protege tu hora de despertar',body:'Intenta mantener mañana una hora de despertar similar a la habitual. La regularidad ayuda a ordenar el ritmo de sueño.',cta:'Abrir Sueño SPM'},
-  {id:'slp.02',sleepTipId:'sl-pantallas-01',title:'Baja la estimulación esta noche',body:'Si puedes, reduce pantallas y luz intensa durante la última 1–2 horas antes de dormir y cambia a una actividad más tranquila.',cta:'Abrir Sueño SPM'},
+  {id:'slp.02',sleepTipId:'sl-pantallas-01',title:'Baja la estimulación esta noche',body:'Si puedes, reduce pantallas y luz intensa al prepararte para dormir y cambia a una actividad más tranquila.',cta:'Abrir Sueño SPM'},
   {id:'slp.03',sleepTipId:'sl-habitacion-01',title:'Prepara la habitación',body:'Haz hoy un ajuste sencillo: menos luz, menos ruido, una temperatura cómoda o retirar una distracción del dormitorio.',cta:'Abrir Sueño SPM'},
-  {id:'slp.04',sleepTipId:'sl-rutina-01',title:'Crea una rutina de cierre',body:'Reserva 30–60 minutos para una secuencia tranquila y repetible: higiene, lectura, música suave, estiramiento o ducha tibia.',cta:'Abrir Sueño SPM'},
+  {id:'slp.04',sleepTipId:'sl-rutina-01',title:'Crea una rutina de cierre',body:'Elige una actividad tranquila que puedas repetir antes de acostarte: higiene, lectura, música suave, estiramiento o ducha tibia. Hazla a tu ritmo y observa cómo te sientes.',cta:'Abrir Sueño SPM'},
   {id:'slp.05',sleepTipId:'sl-cafeina-01',title:'Revisa la cafeína',body:'Si sueles tomar café, té energizante o bebidas estimulantes tarde, prueba adelantar hoy la última toma y observa si cambia tu descanso.',cta:'Abrir Sueño SPM'},
   {id:'slp.06',sleepTipId:'sl-alcohol-01',title:'No uses alcohol para dormir',body:'El alcohol puede dar sueño al inicio pero fragmentar el descanso. Evita usarlo como estrategia para conciliar el sueño.',cta:'Abrir Sueño SPM'},
   {id:'slp.07',sleepTipId:'sl-cena-01',title:'Cena con margen',body:'Si es posible, evita acostarte inmediatamente después de una comida muy abundante. Deja algo de tiempo para que el cuerpo se acomode.',cta:'Abrir Sueño SPM'},
-  {id:'slp.08',sleepTipId:'sl-movimiento-02',title:'Luz natural al comenzar el día',body:'Busca algunos minutos de luz natural durante la mañana cuando sea posible. Es una señal útil para tu ritmo de sueño-vigilia.',cta:'Abrir Sueño SPM'},
+  {id:'slp.08',sleepTipId:'sl-movimiento-02',title:'Luz natural al comenzar el día',body:'Busca luz natural durante la mañana cuando sea posible y por el tiempo que te resulte cómodo. Es una señal útil para tu ritmo de sueño-vigilia.',cta:'Abrir Sueño SPM'},
   {id:'slp.09',sleepTipId:'sl-despertares-02',title:'Si no puedes dormir, evita pelear con el sueño',body:'Si llevas un buen rato despierto y frustrado, sal de la cama un momento, realiza una actividad tranquila con poca luz y vuelve cuando aparezca sueño.',cta:'Abrir Sueño SPM'}
  ]
 };
@@ -47,11 +47,23 @@ function day(){return Number(window.SPM_CURRENT_DAY||document.documentElement.da
 const SCHEDULE={nutrition:[1,4,7,10,13,16,19,22,25,28],movement:[2,5,8,11,14,17,20,23,26],sleep:[1,3,4,6,7,9,10,12,13,15,16,18,19,21,22,24,25,27]};
 TIPS.movement[7]={id:'mov.08',movementId:'swim',title:'Actividad en el agua',body:'Si tienes acceso seguro y es adecuado para ti, elige movimiento suave en el agua. Consulta la ficha de actividad acuática. Si no puedes, elige una caminata cómoda como alternativa.',cta:'Ver actividad en el agua'};
 TIPS.movement[8]={id:'mov.09',movementId:'dance',title:'Bailar y moverte',body:'Elige música que disfrutes y baila a un ritmo cómodo, adaptado a tu movilidad. Puedes hacerlo sentado o de pie. Consulta la ficha de baile y detente si aparece malestar.',cta:'Ver baile y movimiento'};
+const MOVEMENT_STEPS={
+ 'mov.01':['Elige un recorrido seguro para caminar.','Si es seguro para ti, camina durante el tiempo que te resulte cómodo, a un ritmo que te haga respirar un poco más rápido y te permita hablar.','Al terminar, observa cómo se sienten tu cuerpo y tu energía.'],
+ 'mov.02':['En una pausa de tus actividades, levántate a tu ritmo.','Camina o cambia de posición antes de retomar lo que estabas haciendo.'],
+ 'mov.03':['Elige una oportunidad concreta para moverte hoy: caminar una distancia corta, usar escaleras si son seguras para ti o hacer una vuelta adicional.','Incorpora esa opción a una de tus actividades habituales.'],
+ 'mov.04':['Colócate en una postura cómoda para moverte.','Mueve suavemente cuello, hombros, columna, caderas y tobillos.','Mantén los movimientos dentro de un rango cómodo, sin llevar ninguna zona al dolor.'],
+ 'mov.05':['Empieza tu caminata habitual a un paso cómodo.','En una parte del recorrido, aumenta el ritmo mientras te resulte cómodo.','Después vuelve a tu paso cómodo.'],
+ 'mov.06':['Si tu condición física lo permite, elige movimientos básicos como sentarte y levantarte de una silla, empujar una pared o elevar talones.','Practícalos a tu ritmo, adaptando la actividad a tu capacidad. Al terminar, observa cómo te sientes.'],
+ 'mov.07':['Después de una comida, elige un recorrido cómodo.','Camina a paso suave y vuelve a tus actividades al terminar.'],
+ 'mov.08':['Revisa la ficha de actividad acuática. Hazla solo si sabes nadar y en un entorno seguro o supervisado; no nades solo.','Si es adecuado para ti, realiza movimiento suave en el agua.','Si no puedes realizarla, elige una caminata cómoda como alternativa.'],
+ 'mov.09':['Revisa la ficha de baile y elige música que disfrutes.','Baila a un ritmo cómodo, adaptado a tu movilidad. Puedes hacerlo sentado o de pie.','Detente si aparece malestar.']
+};
+TIPS.movement.forEach(t=>{t.steps=MOVEMENT_STEPS[t.id]});
 function tipsFor(d=day()){
  return ORDER.flatMap(cat=>{
   const index=SCHEDULE[cat].indexOf(Number(d));if(index<0)return [];
   const sleep=window.SPM_SLEEP_LIBRARY_V1?.tips?.[index];
-  const tip=cat==='sleep'&&sleep?{id:'slp.'+sleep.id,sleepTipId:sleep.id,title:sleep.title,body:sleep.body+' '+sleep.action,cta:'Abrir Sueño SPM'}:TIPS[cat][index];
+  const tip=cat==='sleep'&&sleep?{id:'slp.'+sleep.id,sleepTipId:sleep.id,title:sleep.title,body:sleep.body+' '+sleep.action,steps:sleep.steps,cta:'Abrir Sueño SPM'}:TIPS[cat][index];
   if(!tip)return [];
   return [{...tip,body:tip.body,category:cat,label:META[cat].label,icon:META[cat].icon,resourceId:META[cat].resourceId,day:Number(d)}];
  });

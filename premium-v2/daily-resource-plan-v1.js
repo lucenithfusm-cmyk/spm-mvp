@@ -50,7 +50,7 @@ function cadence(main,support,c){
  }
  if(story){
   support=support.filter(a=>a.kind!=='recovery');
-  const activity={kind:'recovery',scenario:story.scenario,title:`Recuperación · historia ${story.index}/7 · ${story.title}`,summary:'Mira la historieta de hoy y recorre sus escenas. Elige una idea para manejar la situación sin presión; no necesitas reproducirla físicamente.',label:'RECUPERACIÓN · HISTORIA DE HOY'};
+  const activity={kind:'recovery',scenario:story.scenario,title:`Recuperación · historia ${story.index}/7 · ${story.title}`,summary:'Lee o escucha las cuatro escenas de la historia de hoy. Abre «Practicar y guardar mi respuesta», elige qué harías y registra si la idea te resultó útil.',label:'RECUPERACIÓN · HISTORIA DE HOY'};
   if(main.kind==='recovery')main={...main,...activity};else support.push({...activity,id:'recovery-'+story.scenario});
  }
  if(!['erection','ejaculation'].includes(c.primary)){support=support.map(a=>a.kind==='pelvic'?{...a,optional:!['unsure','no_control','hard_to_relax'].includes(c.answers?.pf_awareness),pelvicPreference:Math.ceil(day/7)%2?'lab':'classic',label:'PISO PÉLVICO · SESIÓN INDICADA'}:a);}

@@ -41,7 +41,8 @@ describe('Paid daily Desire entry',()=>{
     vi.useFakeTimers();
     await click('Iniciar mi práctica');
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Práctica en curso');
-    expect(document.querySelector('.dz-clock')?.textContent).toBe('05:00');
+    expect(document.querySelector('.dz-clock')?.textContent).toBe('00:00');
+    expect(document.querySelector('.dz-clock')?.closest('details')?.open).toBe(false);
     expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
     await act(async()=>vi.advanceTimersByTime(10000));
     await click('Pausar');
@@ -50,8 +51,11 @@ describe('Paid daily Desire entry',()=>{
     await click('Volver a la práctica');
     await click('Reanudar');
     await act(async()=>vi.advanceTimersByTime(290000));
-    expect(document.querySelector('.dz-timer')).toBeNull();
+    expect(document.querySelector('.dz-clock')?.textContent).toBe('05:00');
+    expect(JSON.parse(state['spm-desire-program']!).sessions[0].status).not.toBe('completed');
+    await click('Ya terminé');
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Registra tu experiencia');
+    await act(async()=>(document.querySelector('input[type="checkbox"]') as HTMLInputElement).click());
     await click('Guardar y continuar');
     expect(document.body.textContent).toContain('Ahora amplía tus posibilidades');
     const follow = Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Explorar otro estímulo'))!;
@@ -59,7 +63,7 @@ describe('Paid daily Desire entry',()=>{
     expect(document.querySelector('.dz-steps')?.textContent).toContain('diferente al de la primera práctica');
     expect(document.querySelector('.dz-steps')?.closest('details')?.open).toBe(false);
     await click('Iniciar mi práctica');
-    expect(document.querySelector('.dz-clock')?.textContent).toBe('03:00');
+    expect(document.querySelector('.dz-clock')?.textContent).toBe('00:00');
     await click('Ya terminé');
     const confirm = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
     await act(async()=>confirm.click());
@@ -93,7 +97,7 @@ describe('Paid daily Desire entry',()=>{
   const sessions=JSON.parse(state['spm-desire-program']!).sessions;
   expect(sessions.every((s:any)=>s.status==='interrupted')).toBe(true);
  });
- it('day one begins with five minutes of practice',()=>{
+ it('day one begins with the presence practice',()=>{
   const first=generateToday(initialState,1)[0]!;
   expect(first.practiceId).toBe('presence-5');
  });
@@ -130,7 +134,7 @@ describe('Paid daily Desire entry',()=>{
  it('reopening an interrupted exploration recovers active time without completing it or creating another session',async()=>{
   const sessions=[savedSession('presence-5'),savedSession('explore-new-stimulus',1,'interrupted',87)];
   const state=await reopen(sessions);
-  expect(document.querySelector('.dz-clock')?.textContent).toBe('01:33');
+  expect(document.querySelector('.dz-clock')?.textContent).toBe('01:27');
   expect(Array.from(document.querySelectorAll('button')).some(b=>b.textContent?.includes('Reanudar'))).toBe(true);
   expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
   await click('Reanudar');
@@ -156,5 +160,46 @@ describe('Paid daily Desire entry',()=>{
   const state=await reopen(sessions,2);
   expect(document.querySelector('[aria-label="Instrucciones de la actividad"] h3')?.textContent).toBe(assigned[1]!.title);
   expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
+ });
+
+ it('keeps the day-two map reachable during practice and resumes the same attempt after returning',async()=>{
+  const state=await reopen([],2);
+  vi.useFakeTimers();
+  await click('Iniciar mi práctica');
+  await act(async()=>vi.advanceTimersByTime(4000));
+  const clock=document.querySelector('.dz-clock')?.textContent;
+  await click('Abrir: Mapa de influencia');
+  expect(document.querySelector('[aria-label="Práctica en curso"]')).toBeNull();
+  await click('Dar valor');
+  expect(JSON.parse(state[PROGRAM_KEY]!).influence.stress).toBe(5);
+  await click('Volver a la práctica');
+  expect(document.activeElement?.getAttribute('aria-label')).toBe('Práctica en curso');
+  expect(document.querySelector('.dz-clock')?.textContent).toBe(clock);
+  const paused=JSON.parse(state[PROGRAM_KEY]!).sessions;
+  expect(paused).toHaveLength(1);
+  expect(paused[0]).toMatchObject({practiceId:'pattern-observe',day:2,status:'paused',activeSec:4});
+  await click('Ya terminé');
+  const save=Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Guardar y continuar'))!;
+  expect(save.disabled).toBe(true);
+  await act(async()=>(document.querySelector('input[type="checkbox"]') as HTMLInputElement).click());
+  await click('Guardar y continuar');
+  const completed=JSON.parse(state[PROGRAM_KEY]!).sessions;
+  expect(completed).toHaveLength(1);
+  expect(completed[0]).toMatchObject({id:paused[0].id,status:'completed',activeSec:4});
+  expect(JSON.parse(state[PROGRAM_KEY]!).influence.stress).toBe(5);
+ });
+
+ it('completes a formerly timed practice by explicit confirmation without a minimum duration',async()=>{
+  const state=await reopen([],4);
+  vi.useFakeTimers();
+  await click('Iniciar mi práctica');
+  await click('Ya terminé');
+  const save=Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes('Guardar y continuar'))!;
+  expect(save.disabled).toBe(true);
+  await act(async()=>(document.querySelector('input[type="checkbox"]') as HTMLInputElement).click());
+  await click('Guardar y continuar');
+  const sessions=JSON.parse(state[PROGRAM_KEY]!).sessions;
+  expect(sessions).toHaveLength(1);
+  expect(sessions[0]).toMatchObject({practiceId:'presence-5',day:4,status:'completed',activeSec:0});
  });
 });

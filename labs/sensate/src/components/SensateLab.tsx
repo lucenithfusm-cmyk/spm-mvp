@@ -65,6 +65,7 @@ function useGuide(phases: Phase[], active: boolean) {
     start: () => { setStarted(true); setRunning(true); setDone(false); },
     toggle: () => setRunning(r => !r),
     skip: () => (idx < phases.length - 1 ? goto(idx + 1) : setLeft(0)),
+    finish: () => { setRunning(false); setStarted(true); setDone(true); },
     goto,
     reset: () => { setRunning(false); setStarted(false); setDone(false); goto(0); },
   };
@@ -86,11 +87,12 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
   const total = phases[g.idx].secs;
   return (
     <div className="sf-guide">
+      <p className="sf-small">Realiza la práctica a tu ritmo y presta atención a las sensaciones. Puedes usar el reloj como apoyo o pulsar «Ya realicé la práctica» cuando hayas terminado.</p>
       <div className="sf-phases">
         {phases.map((p, i) => <span key={p.name} className={i === g.idx ? 'on' : i < g.idx || g.done ? 'past' : ''}>{p.name}</span>)}
       </div>
       <div className="sf-ring" style={{ ['--p' as string]: `${((total - g.left) / total) * 100}%` }}>
-        <div><small>{g.done ? 'Completado' : g.phase.name}</small><strong>{fmt(Math.max(g.left, 0))}</strong><small>Fase {g.idx + 1}/{phases.length}</small></div>
+        <div><small>{g.done ? 'Completado' : g.phase.name}</small><strong>{g.done ? '✓' : g.started ? fmt(Math.max(g.left, 0)) : 'A tu ritmo'}</strong><small>{g.done ? 'Práctica realizada' : `Fase ${g.idx + 1}/${phases.length}`}</small></div>
       </div>
       <p className="sf-cue" aria-live="polite">{flash || (g.done ? 'Práctica terminada. Agradezcan el contacto, sin evaluar.' : g.phase.cue)}</p>
       <div className="sf-controls">
@@ -101,6 +103,7 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
           </>
         )}
         {g.done && <button className="sf-btn ghost" onClick={g.reset}>Repetir guía</button>}
+        {!g.done && <button className="sf-btn gold" onClick={g.finish}>Ya realicé la práctica</button>}
       </div>
       {g.started && !g.done && (
         <div className="sf-controls">
@@ -110,7 +113,7 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
           {pressureBack && <button className="sf-btn soft" onClick={() => { pressureBack(); show('Sube la presión: volvemos a contacto no genital. Está bien.'); }}>Sube la presión</button>}
         </div>
       )}
-      <p className="sf-note">Audio guiado de Lenny pendiente para esta práctica: los cues se muestran en texto. Cualquiera puede decir “pausa” en cualquier momento.</p>
+      <p className="sf-note">Las indicaciones de cada fase aparecen en pantalla. Cualquiera puede decir “pausa” en cualquier momento.</p>
     </div>
   );
 }
@@ -238,31 +241,33 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
     ),
     3: (
       <>
-        <h2>Preparación individual · 2–3 min</h2>
+        <h2>Preparación individual a tu ritmo</h2>
         <div className="sf-grid3">
-          <div className="sf-card"><span>Ritmo</span><p>Baja la velocidad de lo que haces. Siéntate o recuéstate.</p></div>
-          <div className="sf-card"><span>Cuerpo</span><p>Suelta mandíbula, hombros y abdomen. Nota la respiración si ya está validada por SPM.</p></div>
-          <div className="sf-card"><span>Intención</span><p>Elige curiosidad, no rendimiento: “voy a notar qué siento”.</p></div>
+          <div className="sf-card"><span>1. Ponte cómodo</span><p>Siéntate o recuéstate y baja el ritmo de lo que haces.</p></div>
+          <div className="sf-card"><span>2. Suelta tensión</span><p>Suelta la mandíbula, los hombros y el abdomen. Observa las sensaciones de tu cuerpo.</p></div>
+          <div className="sf-card"><span>3. Observa</span><p>Nota qué sientes en la piel y el cuerpo, con curiosidad. Dedica a esta observación el tiempo que te resulte cómodo.</p></div>
         </div>
         <div className="sf-panel">
-          <p className="sf-small">Dos marcas rápidas antes de empezar:</p>
+          <p className="sf-small">Antes de hacer los tres pasos, marca cómo te sientes:</p>
           <Slider label="Presencia ahora" value={presenceBefore} onChange={setPB} low="Disperso" high="Presente" />
           <Slider label="Presión ahora" value={pressureBefore} onChange={setPrB} low="Ninguna" high="Mucha" />
         </div>
+        {(!daily || allowed) && <p className="sf-small">{daily && step === dailySteps.at(-1) ? 'Cuando hayas realizado la preparación, pulsa «Guardar y volver a Hoy».' : origin === 'library' && practiceId === 'sf-solo' ? 'Cuando hayas realizado la preparación, pulsa «Finalizar · ← Volver a Biblioteca».' : `Al terminar la preparación, pulsa «${daily ? 'Continuar' : 'Siguiente'}» para ver el siguiente paso.`}</p>}
       </>
     ),
     4: (
       <>
         <h2>Focalización sensorial I · pareja</h2>
         <div className="sf-grid3">
-          <div className="sf-card"><span>10–15 min</span><p>Tiempo suficiente para sentir, corto para no cansar.</p></div>
+          <div className="sf-card"><span>A su ritmo</span><p>Elijan la duración según su comodidad y la experiencia de contacto.</p></div>
           <div className="sf-card"><span>No genital</span><p>Espalda, brazos, manos, cuello, piernas. Zonas genitales y pecho quedan fuera por ahora.</p></div>
-          <div className="sf-card"><span>Turnos</span><p>Una persona toca, la otra recibe. Atención a temperatura, presión, textura y ritmo. Luego intercambian.</p></div>
+          <div className="sf-card"><span>Turnos</span><p>Decidan quién será A, que empieza tocando, y quién será B, que empieza recibiendo. Después intercambian. Noten la temperatura, la presión, la textura y el ritmo.</p></div>
         </div>
+        <p className="sf-small">Pulsa «{daily ? 'Continuar' : 'Siguiente'}» para ver los pasos. Pueden cambiar de turno cuando lo decidan y usar «Iniciar guía» si quieren el apoyo del reloj.</p>
         <Why />
       </>
     ),
-    5: (<><h2>Guía interactiva I</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} />}</>),
+    5: (<><h2>Guía interactiva I</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">La guía práctica está en pausa. Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <><Guide g={g1} phases={G1} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} /><p className="sf-small">Después de pulsar «Ya realicé la práctica», pulsa «{daily ? 'Continuar' : 'Siguiente'}» para registrar cómo te sentiste.</p></>}</>),
     6: (
       <>
         <h2>{practiceId === 'sf-focus-2' ? 'Cierre II' : 'Cierre I'}</h2>
@@ -274,6 +279,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
         </div>
         <p className="sf-small">¿Qué contacto fue más fácil de sentir?</p>
         <div className="sf-chips">{STIMULI.map(s => <button key={s} className={stimuli.includes(s) ? 'on' : ''} onClick={() => toggleStim(s)} aria-pressed={stimuli.includes(s)}>{s}</button>)}</div>
+        {daily && allowed && <p className="sf-small">Marca cómo fue la práctica, elige los contactos que te resultaron más fáciles de sentir y pulsa «Guardar y volver a Hoy».</p>}
       </>
     ),
     7: (
@@ -287,7 +293,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
         <button className="sf-btn ghost" onClick={() => setPracticeId('sf-focus-2')}>{practiceId === 'sf-focus-2' ? '✓ Registrando Focus II' : 'Registrar esta sesión como Focus II'}</button>
       </>
     ),
-    8: (<><h2>Guía interactiva II</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} />}</>),
+    8: (<><h2>Guía interactiva II</h2>{!allowed || (daily && !bothReady) ? <p className="sf-warn">La guía práctica está en pausa. Para practicar, tu programa debe permitirlo y, en pareja, ambos deben desear participar hoy. Puedes elegir la preparación individual.</p> : <><Guide g={g2} phases={G2} intrusions={intrusions} onIntrusion={() => setIntr(i => i + 1)} pressureBack={() => g2.goto(0)} /><p className="sf-small">{daily ? 'Después de pulsar «Ya realicé la práctica», pulsa «Continuar» para registrar cómo te sentiste.' : 'Cuando hayas realizado la práctica, pulsa «Siguiente» para continuar.'}</p></>}</>),
     9: (
       <>
         <h2>Cuando cambia la firmeza</h2>
@@ -316,14 +322,14 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
       <>
         <h2>Comunicación mínima</h2>
         <div className="sf-phrases">{['Más lento', 'Así está bien', 'Prefiero otro contacto', 'Pausa'].map(p => <span key={p}>“{p}”</span>)}</div>
-        <p className="sf-small">Frases cortas, sin explicación. Pedir algo distinto es parte de la práctica.</p>
+        <p className="sf-small">Ensaya estas cuatro frases en voz alta o mentalmente. Pedir algo distinto es parte de la práctica.{daily && ' Después pulsa «Continuar» para volver a observar las sensaciones de tu cuerpo.'}</p>
       </>
     ),
     13: (
       <>
         <h2>Biblioteca</h2>
         <div className="sf-lib">
-          {([['Focus I', 'Contacto no genital por turnos', 5, 'sf-focus-1'], ['Focus II', 'Progresión opcional', 8, 'sf-focus-2'], ['Presencia corporal individual', 'Preparación de 2–3 min', 3, 'sf-solo'], ['Recuperación', 'Cuando cambia la firmeza', 9, 'sf-recovery'], ['Comunicación', 'Cuatro frases mínimas', 12, 'sf-communication']] as const).map(([t, d, n, id]) => (
+          {([['Focus I', 'Contacto no genital por turnos', 5, 'sf-focus-1'], ['Focus II', 'Progresión opcional', 8, 'sf-focus-2'], ['Presencia corporal individual', 'Preparación a tu ritmo', 3, 'sf-solo'], ['Recuperación', 'Cuando cambia la firmeza', 9, 'sf-recovery'], ['Comunicación', 'Cuatro frases mínimas', 12, 'sf-communication']] as const).map(([t, d, n, id]) => (
             <button key={id} onClick={() => openFromLibrary(n, id)}><b>{t}</b><span>{d}</span></button>
           ))}
         </div>
@@ -358,7 +364,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
       </header>
       <div className="sf-progress"><span style={{ width: `${(daily ? (dailyIndex+1)/dailySteps.length : (step+1)/STEPS.length) * 100}%` }} /></div>
       <main className="sf-main">
-        {daily && assignment && <section className="sf-panel" data-daily-assignment><span className="sf-eyebrow">Día {assignment.day} de 28 · Actividad asignada</span><h2>{assignment.title} · {solo && assignment.practiceId==='sf-focus-1' ? 3 : assignment.minutes} min</h2><p>{assignment.summary}</p>{assignment.day!==context.day&&<p>Solo consulta. Tu día actual es {context.day}.</p>}
+        {daily && assignment && <section className="sf-panel" data-daily-assignment><span className="sf-eyebrow">Día {assignment.day} de 28 · Actividad asignada</span><h2>{assignment.title}</h2><p>{assignment.summary}</p>{assignment.day!==context.day&&<p>Solo consulta. Tu día actual es {context.day}.</p>}
         {assignment.practiceId==='sf-focus-1' && <>
           <button className="sf-btn ghost" onClick={()=>{g1.reset();g2.reset();setSolo(true);setBothReady(false);setPracticeId('sf-solo');setDailySteps([2,3]);go(2);}}>Elegir preparación individual</button>
           {solo && <button className="sf-btn ghost" onClick={()=>{setSolo(false);setPracticeId('sf-focus-1');setDailySteps(assignment.steps);go(assignment.steps[0]);}}>Elegir práctica en pareja</button>}

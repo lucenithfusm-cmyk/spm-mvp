@@ -5,7 +5,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Pause, Play, RotateCc
 import { Card, Chips, Cue, Quote, Seg } from './ui';
 import { curriculum } from '@/lib/desire-curriculum';
 import { practices, generateToday, personalLines, rankItems, rankLabel, type TodayCard, type TodayOpts } from '@/lib/desire-engine';
-import { metricLabels, fantasyOpts, evaluate, type DesireState, type Metrics } from '@/lib/desire-data';
+import { metricLabels, fantasyOpts, evaluate, screens, type DesireState, type Metrics } from '@/lib/desire-data';
 import { cueId } from '@/lib/desire-data';
 import {
   bestActivators, baselineMetrics, canCompleteDay, continuity, dayStatus, freezeBaseline, metricKeys, moveRank, sensateGate, upsertSession, weekStats, pendingAttempt,
@@ -45,7 +45,7 @@ export function UrgentCard() {
 }
 
 const fmt = (sec: number) => `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
-const resLabel = (r: string) => resources.find((x) => x[0] === r)?.[1] ?? (r.startsWith('s:') ? `Pantalla ${r.slice(2)} del recorrido` : r === 'progress28' ? 'Progreso 28 días' : r === 'sensate' ? 'Sensate Focus (explicación)' : r === 'context' ? 'Contexto favorable' : r);
+const resLabel = (r: string) => resources.find((x) => x[0] === r)?.[1] ?? (r.startsWith('s:') ? screens[Number(r.slice(2)) - 1] ?? 'Recurso del recorrido' : r === 'progress28' ? 'Progreso 28 días' : r === 'sensate' ? 'Sensate Focus (explicación)' : r === 'context' ? 'Contexto favorable' : r);
 
 /** Measurement input with the correct scale: fantasies 0–4 (frequency labels), monthly frequency as count, otherwise 0–10. N/A allowed. */
 function Measure({ metric, label, value, onChange }: { metric: string; label: string; value: Num; onChange: (v: Num) => void }) {
@@ -54,8 +54,8 @@ function Measure({ metric, label, value, onChange }: { metric: string; label: st
   return <NumSlider label={label} value={value} onChange={onChange} />;
 }
 
-/** Full educational sheet + guided timer + session diary.
- * Completed only when the timer finishes in the foreground, or with an explicit confirmation for untimed practices.
+/** Practice instructions, optional elapsed-time display and session diary.
+ * Completed only after the user explicitly confirms doing the activity; duration is never a requirement.
  * Pause saves and is restored (active time only); leaving while running = interrupted; restart after completion = new attempt id. */
 function SpokenSteps({ text, label = 'Escuchar indicaciones' }: { text: string; label?: string }) {
   const [speaking, setSpeaking] = useState(false);
@@ -74,7 +74,7 @@ function SpokenSteps({ text, label = 'Escuchar indicaciones' }: { text: string; 
     speech.onend = () => setSpeaking(false);
     speech.onerror = () => { setSpeaking(false); setError(true); };
     setSpeaking(true); window.speechSynthesis.speak(speech);
-  }}><Volume2 size={30} />{speaking ? 'Detener audio' : label}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Las indicaciones están debajo.</p>}</>;
+  }}><Volume2 size={30} />{speaking ? 'Detener audio' : label}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Puedes consultar las mismas indicaciones en el paso a paso escrito.</p>}</>;
 }
 
 const desireForms = [
@@ -82,12 +82,12 @@ const desireForms = [
   { id: 'resp', title: 'Me voy conectando', description: 'El interés puede aparecer poco a poco, cuando eliges una experiencia agradable y te sientes a gusto.', name: 'deseo responsivo', audio: 'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.' },
 ];
 const formSteps: Record<string, string[]> = {
-  spont: ['Durante el primer minuto, recuerda una situación reciente que despertó tu interés. Identifica un detalle: una imagen, una voz, un gesto o un ambiente.', 'Durante tres minutos, presta atención a una sensación agradable y cómoda: el contacto de tus manos, la temperatura de tu piel o un aroma. Respira con naturalidad. No busques comprobar tu excitación.', 'En el último minuto, observa qué detalle te ayudó a conectar. Puedes anotarlo al terminar. Si no sentiste interés, también es una observación válida.'],
-  resp: ['Durante el primer minuto, elige una sensación que te resulte agradable y que quieras explorar: sostener una taza tibia, escuchar música suave o acariciar tus manos.', 'Durante tres minutos, disfruta esa sensación sin buscar una respuesta sexual. Nota la temperatura, la textura o el sonido. Si aparece presión o incomodidad, haz una pausa o detente.', 'En el último minuto, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo al terminar. No necesitas sentir deseo para que esta observación tenga valor.'],
+  spont: ['Primero, recuerda una situación reciente que despertó tu interés. Identifica un detalle: una imagen, una voz, un gesto o un ambiente.', 'Presta atención a una sensación agradable y cómoda: el contacto de tus manos, la temperatura de tu piel o un aroma. Respira con naturalidad y explora a tu ritmo.', 'Cuando quieras terminar, observa qué detalle te ayudó a conectar. Puedes anotarlo en tu reflexión. Si no sentiste interés, también es una observación válida.'],
+  resp: ['Elige una sensación que te resulte agradable y que quieras explorar: sostener una taza tibia, escuchar música suave o acariciar tus manos.', 'Disfruta esa sensación a tu ritmo. Nota la temperatura, la textura o el sonido. Si aparece presión o incomodidad, haz una pausa o detente.', 'Cuando quieras terminar, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo en tu reflexión. No necesitas sentir deseo para que esta observación tenga valor.'],
 };
 function DesireForms({ selected, onChoose, disabled = false }: { selected: string; onChoose: (id: string) => void; disabled?: boolean }) {
   return <section className="dz-desire-forms" aria-label="Las dos formas del deseo"><h3>Las dos formas del deseo</h3>
-    <SpokenSteps label="Escuchar explicación" text="Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy no buscamos forzar el deseo, sino reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después verás una práctica de cinco minutos relacionada con tu elección." />
+    <SpokenSteps label="Escuchar explicación" text="Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy vamos a reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después harás una práctica relacionada con tu elección, a tu propio ritmo." />
     <div className="dz-grid2">{desireForms.map(form => <Card key={form.id} className={selected === form.id ? 'accent' : ''}>
       <h3>{form.title}</h3><p>{form.description} <strong className="dz-concept-name">Se llama {form.name}.</strong></p>
       <SpokenSteps label={'Escuchar: ' + form.title} text={form.audio} />
@@ -126,7 +126,6 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
     window.scrollTo({top: 0, behavior: 'auto'});
     stageTop.current?.focus({preventScroll: true});
   }, [stage]);
-  const total = pr.timer?.seconds ?? (parseInt(pr.duration, 10) || 5) * 60;
   const acute = prog.acute || s.health.includes('acute');
   const gate = pid === 'sensate-2' ? sensateGate(prog, s, clinical) : { ok: true, reason: '' };
   const blocked = ctx.centralBlocked || acute || (clinical && !pr.safe) || !gate.ok;
@@ -141,10 +140,9 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   };
   useEffect(() => {
     if (!run) return;
-    const t = setInterval(() => setElapsed((e) => { if (e + 1 >= total) { setRun(false); return total; } return e + 1; }), 1000);
+    const t = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(t);
-  }, [run, total]);
-  useEffect(() => { if (elapsed >= total && pr.timer && live.current.saved !== 'completed') save('completed'); }, [elapsed]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [run]);
   // A restriction appearing while running stops the run (recorded as interrupted).
   useEffect(() => { if (blocked && live.current.run) { setRun(false); save('interrupted'); } }, [blocked]); // eslint-disable-line react-hooks/exhaustive-deps
   // Background tab: pause and save (no time accrues while hidden). Leaving while running: interrupted. Explicit pause is kept.
@@ -158,10 +156,8 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   if (ctx.centralBlocked) return <Card><h3>Práctica en pausa</h3><p>Revisa la indicación de seguridad en SPM Central antes de continuar. El contenido educativo sigue disponible.</p></Card>;
   if (acute) return <UrgentCard />;
   if (clinical && !pr.safe) return <Card className="accent"><span className="dz-eyebrow">Adaptada</span><p>Mientras está pendiente la valoración profesional, SPM no avanza a esta práctica. Puedes seguir con una práctica suave y con todo el contenido educativo.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('presence-5', ctx.origin, day)}>Ir a Explora sin exigencia</button></Card>;
-  if (!gate.ok) return <Card className="accent"><span className="dz-eyebrow">Aún no</span><p>{gate.reason} Repetir la fase I no es un castigo: es parte del proceso.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Hacer {practices['sensate-1']!.title}</button></Card>;
+  if (!gate.ok) return <Card className="accent"><span className="dz-eyebrow">Tu siguiente paso</span><p>{gate.reason} Puedes continuar con la fase I para explorar qué contacto te resulta cómodo.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Hacer {practices['sensate-1']!.title}</button></Card>;
 
-  const phases = pr.timer?.phases ?? [];
-  const phase = phases.length ? phases[Math.min(phases.length - 1, Math.floor((elapsed / total) * phases.length))] : '';
   const sessions = prog.sessions.filter((x) => x.practiceId === pid);
   const hasPartner = prog.hasPartner === 'yes' ? true : prog.hasPartner === 'no' ? false : undefined;
   const lines = personalLines(pid, s, { details: prog.details, conditions: prog.conditions, accel: prog.map.accel, brake: prog.map.brake }, hasPartner);
@@ -172,7 +168,18 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const form = prog.detailNotes['form'] ?? '';
   const steps = firstDay && formSteps[form] ? formSteps[form]! : pr.steps;
   const introduction = form === 'spont' ? 'Vas a reconocer un estímulo que despierta tu interés y explorar una sensación agradable sin presión.' : 'Vas a crear un momento agradable para explorar comodidad y conexión, sin exigir que aparezca deseo.';
-  const instructionAudio = firstDay ? 'Vamos a practicar durante cinco minutos. ' + introduction + ' ' + steps.map((step, i) => ['Primero. ', 'Después. ', 'Para terminar. '][i] + step).join(' ') + ' Cuando estés listo, pulsa Iniciar mi práctica. Puedes parar en cualquier momento.' : steps.join('. ') + '. ' + (pr.exit ?? 'Puedes detenerte en cualquier momento.');
+  const preparation = firstDay ? 'Busca un lugar cómodo y privado. Silencia las notificaciones y ten a mano lo que quieras explorar.' : pr.prep ?? 'Busca un lugar cómodo donde puedas prestar atención a esta actividad.';
+  const ending = 'Haz la actividad a tu ritmo. Cuando hayas realizado los pasos, pulsa Ya terminé · Registrar experiencia, marca Realicé la actividad y pulsa Guardar y continuar. Si quieres, anota qué te aportó o qué descubriste. Tu reflexión y las valoraciones son opcionales.';
+  const instructionAudio = [firstDay ? introduction : pr.purpose, preparation, stage === 'instructions' ? 'Cuando estés listo, pulsa Iniciar mi práctica.' : '', variant === 'partner' ? pr.partnerVariant : '', ...steps.map((step, i) => `Paso ${i + 1}. ${step}`), ending, pr.exit].filter(Boolean).join(' ');
+  const openTool = (r: string) => {
+    if (stage === 'practice' && saved !== 'completed') {
+      // Navigation unmounts this sheet before React commits the paused state.
+      live.current.run = false;
+      setRun(false); save('paused');
+    }
+    ctx.openResource(r);
+  };
+  const resourceButtons = pr.resourceLinks && <div className="dz-lib" aria-label="Herramientas de esta actividad">{pr.resourceLinks.map((r) => <button key={r} type="button" onClick={() => openTool(r)}><ArrowRight size={14} /><span>Abrir: {resLabel(r)}</span></button>)}</div>;
   return (<section className="dz-practice-stage" ref={stageTop} tabIndex={-1} aria-label={stage === 'choice' ? 'Elige cómo aparece tu deseo' : stage === 'instructions' ? 'Instrucciones de la actividad' : stage === 'practice' ? 'Práctica en curso' : stage === 'register' ? 'Registra tu experiencia' : 'Actividad completada'}>
     <p className="dz-eyebrow">Día {day} · {stage === 'choice' ? 'Conoce tu deseo' : stage === 'instructions' ? 'Paso a paso' : stage === 'practice' ? 'Tu práctica' : stage === 'register' ? 'Cómo te fue' : 'Completada'}</p>
     {stage === 'choice' && <DesireForms selected={form} onChoose={id => { restart(); setProg(p => ({...p, detailNotes: {...p.detailNotes, form: id}})); setStage('instructions'); }} />}
@@ -180,22 +187,23 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       {firstDay && <button type="button" className="dz-back" onClick={() => setStage('choice')}><ArrowLeft size={18} /> Cambiar mi elección</button>}
       {!firstDay && <h3>{pr.title}</h3>}
       
-      <p className="dz-muted">Busca privacidad. Silencia las notificaciones del móvil. Puedes usar audífonos.</p>
+      <p>{firstDay ? introduction : pr.purpose}</p>
     {needsReady ? <Card><span className="dz-eyebrow">Antes de ampliar</span><p>La fase I quedó registrada como cómoda. ¿Hoy te sientes con disposición{hasPartner ? ' y hay consentimiento mutuo' : ''} para ampliar?</p>
       <label className="dz-check"><input type="checkbox" checked={ready} onChange={(e) => setReady(e.target.checked)} /> Sí, hoy quiero ampliar y sé que puedo parar en cualquier momento</label>
       {pend && <p className="dz-muted small">Tienes un intento en pausa ({fmt(pend.activeSec)} activos) que se retomará.</p>}
       <button className="dz-btn ghost" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Prefiero repetir la fase I</button></Card> : <>
 
       <SpokenSteps label="Escuchar el paso a paso" text={instructionAudio} />
-      <button type="button" className="dz-btn gold" style={{width: '100%', minHeight: 60}} onClick={() => { if (elapsed >= total) restart(); setStage('practice'); setRun(true); }}><Play size={22} /> Iniciar mi práctica · {pr.duration}</button>
-      <details><summary>Leer el paso a paso</summary><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol></details>
+      <p className="dz-muted"><strong>Antes de empezar:</strong> {preparation}</p>
+      {resourceButtons}
+      <button type="button" className="dz-btn gold" style={{width: '100%', minHeight: 60}} onClick={() => { setStage('practice'); setRun(true); }}><Play size={22} /> Iniciar mi práctica</button>
+      <details><summary>Leer el paso a paso</summary><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol><p><strong>Para terminar:</strong> {ending}</p></details>
     {pr.note && <p className="dz-note">{pr.note}</p>}
     {pr.link && <p className="dz-muted small">{pr.link}</p>}
-    {pr.resourceLinks && <div className="dz-lib">{pr.resourceLinks.map((r) => <button key={r} onClick={() => { if (run) { setRun(false); save('paused'); } ctx.openResource(r); }}><ArrowRight size={14} /><span>Abrir: {resLabel(r)}</span></button>)}</div>}
     {pr.partnerVariant && (hasPartner
       ? <Seg label="Variante" value={variant} opts={[['solo', 'Individual'], ['partner', 'En pareja']]} onChange={setVariant} />
       : <p className="dz-muted small">Variante individual. {pr.partnerVariant.startsWith('Si no') ? pr.partnerVariant : ''}</p>)}
-    {variant === 'partner' && pr.partnerVariant && <p className="dz-note">{pr.partnerVariant} El consentimiento se renueva en cada momento.</p>}
+    {variant === 'partner' && pr.partnerVariant && <p className="dz-note">{pr.partnerVariant}</p>}
 
       {!pr.fields && <details><summary>Registrar cómo me siento antes (opcional)</summary><Measure metric={pr.metric} label={`${mLabel} · antes`} value={before} onChange={setBefore} /></details>}
     <details><summary>Más sobre esta práctica</summary>
@@ -203,7 +211,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
     <dl className="dz-sheet">
       <dt>Propósito</dt><dd>{pr.purpose ?? pr.metricLabel}</dd>
       <dt>Preparación</dt><dd>{pr.prep ?? 'Un momento tranquilo y privado, sin prisa.'}</dd>
-      <dt>Duración</dt><dd>{pr.duration} · breve y opcional, no una obligación</dd>
+      <dt>Tu ritmo</dt><dd>Dedica el tiempo que te resulte útil y cómodo. Puedes terminar cuando hayas realizado los pasos.</dd>
       <dt>Qué observar</dt><dd>{pr.observe ?? pr.metricLabel}</dd>
     </dl>
     {lines.length > 0 && <Card className="accent"><span className="dz-eyebrow">Personalizado con tus datos</span>{lines.map((l) => <p key={l}>{l}</p>)}</Card>}
@@ -212,45 +220,46 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       </>}
     </>}
     {stage === 'practice' && <>
+      {resourceButtons}
+      <p className="dz-muted">Explora a tu ritmo y observa qué te aporta la actividad. Cuando hayas realizado los pasos, puedes registrar tu experiencia.</p>
     <Card className="dz-timer">
-      <span className="dz-eyebrow">{pr.timer ? 'Práctica guiada' : 'Temporizador opcional'}</span>
-      <div className="dz-clock" aria-live="polite">{fmt(Math.max(0, total - elapsed))}</div>
-      {phase && <p className="dz-phase">Fase: <b>{phase}</b></p>}
-      <div className="dz-bar"><span style={{ width: `${(elapsed / total) * 100}%` }} /></div>
+      <span className="dz-eyebrow">A tu ritmo</span>
+      <p>{pr.observe ?? 'Observa cómo te sientes y qué detalle te resulta agradable o útil.'}</p>
+      <details><summary>Ver tiempo transcurrido (opcional)</summary><div className="dz-clock">{fmt(elapsed)}</div></details>
       <div className="dz-row">
-        {!run && elapsed < total && <button className="dz-btn gold" onClick={() => setRun(true)}><Play size={16} /> {elapsed ? 'Reanudar' : 'Iniciar'}</button>}
+        {!run && <button className="dz-btn gold" onClick={() => setRun(true)}><Play size={16} /> {elapsed ? 'Reanudar' : 'Iniciar'}</button>}
         {run && <button className="dz-btn ghost" onClick={() => { setRun(false); save('paused'); setStage('register'); }}><Pause size={16} /> Pausar</button>}
         <button className="dz-btn ghost" disabled={!elapsed && saved !== 'completed'} onClick={() => { restart(); setStage('practice'); }}><RotateCcw size={16} /> {saved === 'completed' ? 'Nuevo intento' : 'Reiniciar'}</button>
         <button className="dz-btn ghost" disabled={saved === 'completed'} onClick={() => { setRun(false); save('interrupted'); setStage('register'); }}><Square size={16} /> Parar</button>
       </div>
       {pend && elapsed > 0 && saved === 'paused' && !run && <p className="dz-muted small">Retomando tu intento en pausa ({fmt(elapsed)} activos).</p>}
-      <Cue id={cueId(pid)}>{phase ? `${phase}. ` : ''}Sin prisa y sin objetivo de rendimiento.</Cue>
+      <Cue id={cueId(pid)}>Presta atención a tu experiencia y vuelve a los pasos cuando lo necesites.</Cue>
     </Card>
 
       <button type="button" className="dz-btn ghost" onClick={() => { if (run) { setRun(false); save('paused'); } setStage('instructions'); }}><ArrowLeft size={18} /> Volver a las instrucciones</button>
-      <details><summary>Recordar el paso a paso</summary><SpokenSteps text={instructionAudio} /><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol></details>
+      <details><summary>Recordar el paso a paso</summary><SpokenSteps text={instructionAudio} /><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol><p><strong>Para terminar:</strong> {ending}</p></details>
       <p className="dz-muted small">{pr.exit}</p>
-      {!pr.timer && <button type="button" className="dz-btn gold" onClick={() => { setRun(false); setSaved(null); setStage('register'); }}>Ya terminé · Registrar experiencia <ArrowRight size={18} /></button>}
+      <button type="button" className="dz-btn gold" onClick={() => { live.current.run = false; setRun(false); setSaved(null); setStage('register'); }}>Ya terminé · Registrar experiencia <ArrowRight size={18} /></button>
     </>}
     {stage === 'register' && <>
       <h3>{saved === 'completed' ? 'Práctica realizada' : '¿Cómo te fue?'}</h3>
-      <p>Los registros son opcionales. Puedes continuar sin responderlos.</p>
+      <p>{saved === 'paused' || saved === 'interrupted' ? 'Puedes guardar cómo te sentiste y retomar la práctica después. Marca Realicé la actividad solo si la terminaste.' : 'Confirma que realizaste la actividad y pulsa Guardar y continuar. Si quieres, también puedes registrar qué te aportó o qué descubriste.'}</p>
     {pr.fields ? <div className="dz-grid2">{pr.fields.map(([k, l]) => <Card key={k}><NumSlider label={l} value={extra[k] ?? null} onChange={(v) => setExtra({ ...extra, [k]: v })} /></Card>)}</div>
       : <div className="dz-grid2">
         <Card><Measure metric={pr.metric} label={`${mLabel} · después`} value={after} onChange={setAfter} /></Card>
       </div>}
     {pr.metric === 'local' && <p className="dz-muted small">Esta medida es propia de la práctica: no se mezcla con las tendencias de deseo.</p>}
     {pid.startsWith('sensate') && <Card><NumSlider label="Comodidad durante la práctica" value={comfort} onChange={setComfort} low="Incómodo" high="Muy cómodo" /><div className="dz-field"><span>La fase I me resultó cómoda</span><div className="dz-chips" role="radiogroup" aria-label="La fase I me resultó cómoda">{([[true, 'Sí'], [false, 'No'], [null, 'N/A']] as const).map(([v, l]) => <button key={l} type="button" role="radio" aria-checked={comfortable === v} className={comfortable === v ? 'on' : ''} onClick={() => setComfortable(v)}>{l}</button>)}</div></div><p className="dz-muted small">La cifra de comodidad es solo un registro opcional. La fase II se abre únicamente si confirmas «Sí»; «No» o N/A no la abren.</p></Card>}
-    <Card><label className="dz-field"><span>Tu reflexión (opcional)</span><textarea className="dz-input" rows={2} maxLength={400} value={refl} onChange={(e) => setRefl(e.target.value)} /></label></Card>
+    <Card><label className="dz-field"><span>Tu reflexión (opcional)</span><textarea className="dz-input" rows={2} maxLength={400} placeholder="¿Qué te aportó esta práctica? ¿Qué descubriste o te gustaría repetir?" value={refl} onChange={(e) => setRefl(e.target.value)} /></label></Card>
 
-      {!pr.timer && saved !== 'completed' && <label className="dz-check"><input type="checkbox" checked={confirm} onChange={e => setConfirm(e.target.checked)} /> Realicé la actividad</label>}
+      {saved !== 'completed' && <label className="dz-check"><input type="checkbox" checked={confirm} onChange={e => setConfirm(e.target.checked)} /> Realicé la actividad</label>}
       {(saved === 'paused' || saved === 'interrupted') && <p>Tu práctica quedó {saved === 'interrupted' ? 'interrumpida' : 'en pausa'}. Puedes registrar cómo te sentiste y retomarla después.</p>}
-      <button type="button" className="dz-btn gold" disabled={!pr.timer && saved !== 'completed' && saved !== 'paused' && saved !== 'interrupted' && !confirm} onClick={() => { save((saved === 'paused' || saved === 'interrupted') && (pr.timer || !confirm) ? saved : 'completed'); setStage('done'); }}>Guardar y continuar <ArrowRight size={18} /></button>
+      <button type="button" className="dz-btn gold" disabled={saved !== 'completed' && saved !== 'paused' && saved !== 'interrupted' && !confirm} onClick={() => { save((saved === 'paused' || saved === 'interrupted') && !confirm ? saved : 'completed'); setStage('done'); }}>Guardar y continuar <ArrowRight size={18} /></button>
       <button type="button" className="dz-btn ghost" onClick={() => setStage('practice')}>Volver a la práctica</button>
     </>}
     {stage === 'done' && <>
       <Card className="accent"><h3><Check size={22} /> {saved === 'completed' ? 'Actividad completada' : 'Experiencia registrada'}</h3><p>{saved === 'completed' ? 'Tu experiencia quedó registrada.' : 'Puedes retomar esta práctica desde Hoy.'}</p></Card>
-      {firstDay && saved === 'completed' ? <Card className="accent"><h3>Ahora amplía tus posibilidades</h3><p>Prueba un estímulo diferente que uses poco y observa cómo te sientes.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('explore-new-stimulus', ctx.origin, day)}>Explorar otro estímulo · 3 min <ArrowRight size={18} /></button></Card> : <button className="dz-btn gold" onClick={async () => { if(host()?.finishDaily) {setHandoffError(false);try{if(!await host()!.finishDaily!(saved === 'completed'))setHandoffError(true);}catch{setHandoffError(true);} } else ctx.go('today','dailyPlan'); }}>Continuar con las actividades de hoy <ArrowRight size={18} /></button>}
+      {firstDay && saved === 'completed' ? <Card className="accent"><h3>Ahora amplía tus posibilidades</h3><p>Prueba un estímulo diferente que uses poco y observa cómo te sientes.</p><button className="dz-btn gold" onClick={() => ctx.openPractice('explore-new-stimulus', ctx.origin, day)}>Explorar otro estímulo <ArrowRight size={18} /></button></Card> : <button className="dz-btn gold" onClick={async () => { if(host()?.finishDaily) {setHandoffError(false);try{if(!await host()!.finishDaily!(saved === 'completed'))setHandoffError(true);}catch{setHandoffError(true);} } else ctx.go('today','dailyPlan'); }}>Continuar con las actividades de hoy <ArrowRight size={18} /></button>}
       {handoffError && <p role="status">No pudimos continuar. Conservamos esta pantalla; pulsa continuar para reintentar.</p>}
       <button type="button" className="dz-btn ghost" onClick={() => setStage('register')}>Revisar mi registro</button>
     </>}
@@ -261,7 +270,11 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
 const A3a = ['Descanso', 'Conexión', 'Caricias', 'Tiempo', 'Novedad', 'Sentirme deseado'];
 const A3b = ['Estrés', 'Presión', 'Cansancio', 'Miedo a fallar', 'Conflictos', 'Distracciones digitales / trabajo'];
 const A4 = ['Menos presión', 'Más tiempo', 'Mejor descanso', 'Más conexión', 'Menos distracciones'];
-const routine = ['Soltar presión', 'Respirar cómodo', 'Elegir conexión'];
+const routine = [
+  ['Soltar presión', 'Nota si aparece una exigencia, como «tengo que sentir deseo». Reconócela y vuelve la atención a cómo estás ahora.'],
+  ['Respirar cómodo', 'Deja caer los hombros y afloja la mandíbula. Respira con naturalidad y suelta el aire despacio, sin forzar el ritmo.'],
+  ['Elegir conexión', 'Presta atención a una sensación agradable: el apoyo del cuerpo, el contacto de tus manos o un sonido suave. Vuelve a ella cuando te distraigas.'],
+];
 const influenceF: [string, string][] = [['stress', 'Estrés'], ['tired', 'Cansancio'], ['partner', 'Conexión con pareja'], ['visual', 'Estímulos visuales'], ['touch', 'Contacto físico'], ['novelty', 'Novedad / variedad'], ['mood', 'Estado de ánimo']];
 const detailGroups: [string, string, string[]][] = [
   ['visual', 'Ver', ['Miradas', 'Ropa', 'Luz', 'Actitud', 'Escenas']],
@@ -305,7 +318,7 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
   const curDay = centralContext().day;
 
   if (view === 'cycle') return (<>
-    <p className="dz-muted">Entender · Entrenar · Aplicar · Consolidar. Cada día: Aprender → Practicar → Medir → Aplicar → Completar. No es un tratamiento ni promete resultados.</p>
+    <p className="dz-muted">Cada día conocerás una idea, harás una práctica y podrás registrar cómo te sentiste. Así irás descubriendo qué favorece tu bienestar y qué quieres repetir.</p>
     <p className="dz-note">Hoy es el día {curDay} de tu programa SPM. Puedes consultar los 28 días; registrar actividades aquí no completa automáticamente el día en Central.</p>
     {[0, 1, 2, 3].map((w) => (
       <div key={w}><h3 className="dz-sub">Semana {w + 1} · {curriculum[w * 7]!.phase}</h3>
@@ -330,7 +343,7 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
         <p>Hoy usamos el checkpoint central de SPM. No hay cuestionario adicional en este módulo.</p></Card>}
       {n === 28 && (() => { const last = [...s.checkins].sort((a, b) => a.day.localeCompare(b.day)).pop(); const c = continuity(prog, clinical, last?.metrics ?? null); return <Card><span className="dz-eyebrow">Continuidad · {({ review: 'revisión profesional', maintenance: 'mantenimiento', adapted: 'ciclo adaptado', insufficient: 'sin comparación' } as const)[c.kind]}</span><p>{c.text}</p></Card>; })()}
       {!acute && <><h3 className="dz-sub">Actividades de hoy (máx. 3)</h3>
-        <div className="dz-route">{cards.map((c) => <Card key={c.practiceId} className="accent"><span className="dz-eyebrow">{c.role === 'driver' ? 'Principal' : c.role === 'modifier' ? 'Modificador' : 'Transferencia'} · {c.durationOrScope}</span><h3>{c.title}</h3><p>{c.whyAssigned}</p><small className="dz-muted">Qué observar: {c.observe}</small>
+        <div className="dz-route">{cards.map((c) => <Card key={c.practiceId} className="accent"><span className="dz-eyebrow">{c.role === 'driver' ? 'Principal' : c.role === 'modifier' ? 'Modificador' : 'Transferencia'} · A tu ritmo</span><h3>{c.title}</h3><p>{c.whyAssigned}</p><small className="dz-muted">Qué observar: {c.observe}</small>
           <button className="dz-btn gold" onClick={() => ctx.openPractice(c.practiceId, origin === 'dailyPlan' ? 'dailyPlan' : 'cycle', n)}>Abrir práctica <ArrowRight size={16} /></button></Card>)}</div></>}
       {d.resources.length > 0 && <><h3 className="dz-sub">Recursos del día</h3><div className="dz-lib">{d.resources.map((r) => { const v = r.startsWith('s:') ? +r.slice(2) : r; const label = resources.find((x) => x[0] === r)?.[1] ?? (r.startsWith('s:') ? `Pantalla ${r.slice(2)} del recorrido` : r === 'progress' ? 'Progreso 28 días' : r === 'sensate' ? 'Sensate Focus' : r === 'context' ? 'Contexto favorable' : r);
         return <button key={r} onClick={() => go(r === 'progress' ? 'progress28' : v)}><ArrowRight size={14} /><span>{label}</span></button>; })}</div></>}
@@ -370,15 +383,16 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
   switch (view) {
     case 'r:concepts': { const form = prog.detailNotes['form'] ?? ''; return <>
       <DesireForms selected={form} onChoose={id => P(p => ({...p, detailNotes: {...p.detailNotes, form: id}}))} />
-      {formSteps[form] && <Card className="accent"><h3>{form === 'spont' ? 'Reconoce lo que despierta tu interés' : 'Crea espacio para conectar'}</h3><ol className="dz-steps">{formSteps[form]!.map(step => <li key={step}>{step}</li>)}</ol><SpokenSteps text={'Vamos a practicar durante cinco minutos. ' + formSteps[form]!.join(' ') + ' Puedes detenerte en cualquier momento.'} /></Card>}
+      {formSteps[form] && <Card className="accent"><h3>{form === 'spont' ? 'Reconoce lo que despierta tu interés' : 'Crea espacio para conectar'}</h3><ol className="dz-steps">{formSteps[form]!.map(step => <li key={step}>{step}</li>)}</ol><SpokenSteps text={'Practica a tu ritmo. ' + formSteps[form]!.join(' ')} /></Card>}
     </>; }
     case 'r:influence': return (<>
-      <p className="dz-lead">Cuánto <em>influye</em> cada factor en tu deseo (0–10)</p><p className="dz-muted">Distinto de tu línea base: aquí mides influencia, no estado.</p>
+      <p className="dz-lead">Cuánto <em>influye</em> cada factor en tu deseo (0–10)</p><p>Revisa cada factor. Mueve su control para indicar cuánto influye en tu deseo: 0 significa nada y 10, mucho. Puedes dejar en N/A lo que no sepas valorar o no corresponda a tu situación.</p>
+      <p className="dz-muted">Piensa en una experiencia concreta y reconoce qué te ayudó o te dificultó conectar. Al volver a la práctica podrás anotarlo en Tu reflexión.</p>
       <div className="dz-grid2">{influenceF.map(([k, l]) => <Card key={k}><NumSlider label={l + (k === 'partner' ? ' (N/A sin pareja)' : '')} value={prog.influence[k] ?? null} onChange={(v) => P((p) => ({ ...p, influence: { ...p.influence, [k]: v } }))} low="Nada" high="Mucho" /></Card>)}</div>
       <p className="dz-saved"><Check size={14} /> Guardado en tu programa SPM</p></>);
     case 'r:map': { const sug = [prog.map.accel[0] && `Incluye "${prog.map.accel[0]}" en tu próxima ventana.`, prog.map.brake[0] && `Reduce un poco "${prog.map.brake[0]}" antes de la intimidad.`].filter(Boolean); return (<>
       <p className="dz-lead">Tu mapa: lo que <em>suma</em> y lo que <em>resta</em></p>
-      <p>Los aceleradores son situaciones que aumentan tu deseo; los frenos son las que lo disminuyen. Elige cuáles reconoces en ti.</p>
+      <p>Los aceleradores son situaciones que favorecen tu deseo; los frenos son las que lo dificultan. Marca las opciones que reconoces en ti; puedes elegir varias. Luego escribe en Mis notas sobre el mapa una cosa que quieras favorecer y otra que quieras reducir.</p>
       <Card className="accel"><span className="dz-eyebrow">Aceleradores</span><Chips opts={A3a} value={prog.map.accel} onChange={(v) => P((p) => ({ ...p, map: { ...p.map, accel: v } }))} /></Card>
       <Card className="brake"><span className="dz-eyebrow">Frenos</span><Chips opts={A3b} value={prog.map.brake} onChange={(v) => P((p) => ({ ...p, map: { ...p.map, brake: v } }))} /></Card>
       {(s.accelerators.length > 0 || s.brakes.length > 0) && <p className="dz-muted small">También en tu mapa del recorrido (pantalla 13, conservado): {[...s.accelerators, ...s.brakes].join(', ')}.</p>}
@@ -386,12 +400,14 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
       <Card><Text label="Mis notas sobre el mapa" value={prog.map.suggestions} onChange={(v) => P((p) => ({ ...p, map: { ...p.map, suggestions: v } }))} /></Card></>); }
     case 'r:conditions': return (<>
       <p className="dz-lead">Condiciones que <em>te ayudan</em></p>
+      <p>Marca las condiciones que te gustaría cuidar. Después recorre los tres pasos de la rutina; al realizar cada uno, pulsa el botón para pasar al siguiente.</p>
       <Card><Chips opts={A4} value={prog.conditions} onChange={(v) => P((p) => ({ ...p, conditions: v }))} /></Card>
       <Card><span className="dz-eyebrow">Rutina previa</span>
-        <ol className="dz-routine">{routine.map((r, i) => <li key={r} className={i < prog.routineStep ? 'done' : i === prog.routineStep ? 'now' : ''}>{i < prog.routineStep && <Check size={14} />} {r}</li>)}</ol>
-        <div className="dz-row">{prog.routineStep < 3 ? <button className="dz-btn gold" onClick={() => P((p) => ({ ...p, routineStep: p.routineStep + 1 }))}>{prog.routineStep === 0 ? 'Empezar' : 'Siguiente paso'}</button> : <p className="dz-saved"><Check size={14} /> Rutina recorrida</p>}
+        <SpokenSteps label="Escuchar la rutina" text={routine.map(([title, instruction], i) => `Paso ${i + 1}. ${title}. ${instruction}`).join(' ')} />
+        <ol className="dz-routine">{routine.map(([title, instruction], i) => <li key={title} className={i < prog.routineStep ? 'done' : i === prog.routineStep ? 'now' : ''}>{i < prog.routineStep && <Check size={14} />}<div><strong>{title}</strong><p>{instruction}</p></div></li>)}</ol>
+        <div className="dz-row">{prog.routineStep < 3 ? <button className="dz-btn gold" onClick={() => P((p) => ({ ...p, routineStep: p.routineStep + 1 }))}>{prog.routineStep < 2 ? 'Ya hice este paso · Siguiente' : 'Terminar la rutina'}</button> : <p className="dz-saved"><Check size={14} /> Rutina recorrida</p>}
           <button className="dz-btn ghost" onClick={() => P((p) => ({ ...p, routineStep: 0 }))}>Reiniciar</button>
-          <button className="dz-btn ghost" onClick={() => ctx.openPractice('breath-routine', origin === 'library' ? 'library' : 'cycle', curDay)}>Con temporizador</button></div></Card></>);
+          <button className="dz-btn ghost" onClick={() => ctx.openPractice('breath-routine', origin === 'library' ? 'library' : 'cycle', curDay)}>Abrir práctica guiada</button></div></Card></>);
     case 'r:details': return (<>
       <p className="dz-lead">Detalles concretos <em>por canal</em></p><p className="dz-muted">Los canales son las formas en que recibes estímulos: lo que ves, escuchas, sientes o imaginas. Marca los detalles que favorecen tu deseo; puedes elegir varios y añadir los tuyos.</p>
       {detailGroups.filter(([k]) => k !== 'partnerFavors' || prog.hasPartner === 'yes').map(([k, l, opts]) => <Card key={k}><span className="dz-eyebrow">{l}</span>
@@ -401,10 +417,12 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
         <Seg label="Elige" value={prog.nextPractice} opts={[['accel', 'Usar un acelerador consistente'], ['brake', 'Reducir un freno'], ['talk', 'Conversar sobre un estímulo útil']]} onChange={(v) => P((p) => ({ ...p, nextPractice: v }))} /></Card></>);
     case 'r:ideas': return (<>
       <p className="dz-lead">Ideas para tu <em>repertorio</em></p>
+      <p>Lee las opciones y elige una que quieras probar en tu próxima práctica. Después puedes regresar aquí e indicar cuánto te sirvió; deja las demás en N/A.</p>
       <div className="dz-grid2">{ideas.map(([k, t, d]) => <Card key={k}><h3>{t}</h3><p>{d}</p><NumSlider label="Utilidad cuando la probé" value={prog.ideasLog[k] ?? null} onChange={(v) => P((p) => ({ ...p, ideasLog: { ...p.ideasLog, [k]: v } }))} low="Nada" high="Mucha" /></Card>)}</div></>);
     case 'r:ranking': { const avail = rankItems.filter(([id]) => id !== 'partner-visual' || prog.hasPartner !== 'no'); return (<>
       <p className="dz-lead">Tu lista de excitación: elige y <em>ordena 1–5</em></p>
-      <p className="dz-muted">El orden decide la práctica principal del Día 9. Lo que quede fuera del top 5 se conserva como preferencia.</p>
+      <p>Marca primero lo que te gusta. Después pulsa el signo + para añadir hasta cinco opciones a tus prioridades. Usa las flechas para colocar arriba las que más te interesan hoy.</p>
+      <p className="dz-muted">Este orden nos ayuda a proponerte una práctica relacionada con tus preferencias.</p>
       <Card><span className="dz-eyebrow">Lo que te gusta</span><Chips opts={avail.map(([id, l]) => [id, l] as const)} value={prog.rankPrefs} onChange={(v) => P((p) => ({ ...p, rankPrefs: v, ranking: p.ranking.filter((x) => v.includes(x)) }))} /></Card>
       <Card><span className="dz-eyebrow">Prioridades (máx. 5)</span>
         <ol className="dz-rank">{prog.ranking.map((r, i) => { const l = rankLabel(r); return <li key={r}><b>{i + 1}</b><span>{l}</span>
@@ -416,38 +434,38 @@ export function CycleView({ view, ctx }: { view: string; ctx: CycleCtx }): React
     case 'r:partner': { const t = prog.partnerTask, set = (k: keyof Program['partnerTask'], v: string | boolean) => P((p) => ({ ...p, partnerTask: { ...p.partnerTask, [k]: v } })); return (<>
       <p className="dz-lead">Descubre qué excita a tu pareja · <em>siempre opcional</em></p>
       <Card><Seg label="¿Tienes pareja con quien quieras hacerlo?" value={prog.hasPartner} opts={[['yes', 'Sí'], ['no', 'No / prefiero no'], ['na', 'Sin responder']]} onChange={(v) => P((p) => ({ ...p, hasPartner: v }))} /></Card>
-      {prog.hasPartner === 'yes' && <Card><ol className="dz-steps"><li>Busquen un momento tranquilo.</li><li>Curiosidad sin juicio.</li><li>Escucha de verdad.</li><li>Abran nuevas posibilidades, solo con interés mutuo.</li></ol>
+      {prog.hasPartner === 'yes' && <Card><ol className="dz-steps"><li>Elijan un momento tranquilo y pregunten si ambos quieren conversar.</li><li>Por turnos, completen la frase «A mí me ayuda a conectar…» con un ejemplo de contacto, ambiente o palabras.</li><li>Escuchen hasta el final y repitan lo que entendieron para comprobarlo.</li><li>Si ambos quieren, acuerden una sola cosa que les gustaría probar. Anótenla abajo.</li></ol>
         <label className="dz-check"><input type="checkbox" checked={t.consent} onChange={(e) => set('consent', e.target.checked)} /> Lo hablamos con consentimiento mutuo y cualquiera puede parar</label>
         <Text label="Momento elegido" value={t.moment} onChange={(v) => set('moment', v)} rows={1} /><Text label="Hallazgos" value={t.findings} onChange={(v) => set('findings', v)} /><Text label="Qué acordamos probar" value={t.agreed} onChange={(v) => set('agreed', v)} /></Card>}
       <Card><span className="dz-eyebrow">Alternativa individual</span><Text label="Qué me gustaría que supiera una pareja (o yo mismo) sobre lo que me ayuda" value={t.solo} onChange={(v) => set('solo', v)} /></Card></>); }
     case 'r:age': { const a = prog.age, set = (k: keyof Program['age'], v: string) => P((p) => ({ ...p, age: { ...p.age, [k]: v } })); return (<>
       <p className="dz-lead">Tu sexualidad también <em>evoluciona</em></p>
-      <p className="dz-muted">Con los años pueden cambiar estímulos, frecuencia, necesidades y disfrute. Adaptar el contexto no significa haber perdido el deseo, ni es un diagnóstico.</p>
+      <p>Con los años pueden cambiar los estímulos, la frecuencia, las necesidades y el disfrute. Piensa en cómo te sientes hoy y escribe un ejemplo en cada apartado que puedas responder.</p>
       <Card><Text label="Qué estímulos siguen funcionando" value={a.still} onChange={(v) => set('still', v)} /><Text label="Qué necesita más presencia o juego previo" value={a.needs} onChange={(v) => set('needs', v)} /><Text label="Qué situaciones ayudan" value={a.helps} onChange={(v) => set('helps', v)} /></Card>
       <Quote>Adaptarte no es rendirte; es aprender cómo responde tu deseo hoy.</Quote></>); }
     case 'r:strategies': return (<><p className="dz-lead">Estrategias para <em>facilitar</em> el deseo</p><div className="dz-grid2">{strategies.map(([t, d]) => <Card key={t}><h3>{t}</h3><p>{d}</p></Card>)}</div></>);
     case 'r:meds': return (<>
       <p className="dz-lead">Medicamentos: <em>solo contexto</em></p>
-      <p className="dz-note">Esta información sirve para conversar con un profesional. SPM no atribuye causas. No suspendas ni cambies ningún tratamiento por tu cuenta. No pedimos dosis.</p>
+      <p>Marca las opciones que correspondan a tu situación. Si has notado algún cambio desde que empezó o cambió un medicamento, descríbelo con tus palabras en el campo de abajo.</p>
       <Card><p><strong>¿Tomas alguno de estos medicamentos?</strong></p><Chips opts={medsOpts} value={prog.meds} onChange={(v) => P((p) => ({ ...p, meds: v.includes('Ninguno') && !prog.meds.includes('Ninguno') ? ['Ninguno'] : v.filter((x) => x !== 'Ninguno' || v.length === 1) }))} /></Card>
       <Card><Text label="Opcional: ¿percibiste algún cambio en el tiempo desde que empezó o cambió? (con tus palabras)" value={prog.medsChange} onChange={(v) => P((p) => ({ ...p, medsChange: v }))} /></Card></>);
     case 'r:mood': return (<>
-      <p className="dz-lead">Ánimo y <em>energía</em></p><p className="dz-muted">Se guarda en la evaluación; no se pregunta entero cada día.</p>
+      <p className="dz-lead">Ánimo y <em>energía</em></p><p>Piensa en cómo te has sentido últimamente. Mueve cada control para indicar cuánto has notado esa sensación; puedes dejar en N/A lo que prefieras omitir.</p>
       <div className="dz-grid2">{moodKeys.map(([k, l]) => <Card key={k}><NumSlider label={l} value={prog.moodLevels[k] ?? null} onChange={(v) => P((p) => ({ ...p, moodLevels: { ...p.moodLevels, [k]: v } }))} low="Nada" high="Mucho" /></Card>)}</div>
       {prog.mood.length > 0 && <Card><span className="dz-eyebrow">Selección anterior (conservada)</span><Chips opts={moodOpts} value={prog.mood} onChange={(v) => P((p) => ({ ...p, mood: v }))} /></Card>}
       <Card><label className="dz-check"><input type="checkbox" checked={prog.acute} onChange={(e) => { const on = e.target.checked; P((p) => ({ ...p, acute: on })); up('health', on ? [...new Set([...s.health, 'acute'])] : s.health.filter((h) => h !== 'acute')); }} /> Tengo pensamientos de hacerme daño, de no querer vivir, o una tristeza que no me deja funcionar</label></Card>
       {acute && <UrgentCard />}</>);
     case 'r:continuity': { const c = prog.continuity, setC = (x: Partial<Program['continuity']>) => P((p) => ({ ...p, continuity: { ...p.continuity, ...x } })); return (<>
       <p className="dz-lead">Objetivos de <em>continuidad</em> · hasta 2</p>
-      <p className="dz-muted">Distinto del plan personal de 3 acciones (pantalla 16), que se conserva.</p>
+      <p>Elige una o dos acciones que quieras mantener después del ciclo. En Qué mantener, escribe cuándo te gustaría practicarlas. En Qué espaciar, anota lo que prefieres hacer con menos frecuencia.</p>
       <Card><Chips opts={contGoals} value={c.goals} onChange={(v) => setC({ goals: v.slice(0, 2) })} max={2} /><p className="dz-muted small">{c.goals.length}/2 elegidos</p></Card>
       <Card><label className="dz-field"><span>Qué mantener</span><textarea className="dz-input" rows={2} maxLength={300} value={c.keep} onChange={(e) => setC({ keep: e.target.value })} /></label>
         <label className="dz-field"><span>Qué espaciar</span><textarea className="dz-input" rows={2} maxLength={300} value={c.space} onChange={(e) => setC({ space: e.target.value })} /></label></Card>
       <button className="dz-btn ghost" onClick={() => go(16)}>Ver plan personal de 3 acciones</button></>); }
     case 'r:ladder': return (<>
-      <p className="dz-lead">Escalera de intimidad <em>sin presión</em></p><p className="dz-muted">Elige el peldaño cómodo hoy. No hay avance automático; bajar siempre está bien.</p>
+      <p className="dz-lead">Escalera de intimidad <em>sin presión</em></p><p>Lee las opciones y pulsa la que te resulte cómoda y te apetezca hoy. Si participará tu pareja, acuerden juntos esa elección. Puedes quedarte en ese nivel o elegir uno más sencillo.</p>
       <ol className="dz-ladder">{ladder.map((l, i) => { const blocked = i > 0 && (clinical || acute) || i > 1 && s.pressure >= 7; return <li key={l}><button aria-pressed={prog.ladder === i} disabled={blocked} className={prog.ladder === i ? 'on' : ''} onClick={() => P((p) => ({ ...p, ladder: i }))}>{i + 1}. {l}{blocked ? ' · en pausa' : ''}</button></li>; })}</ol>
-      <p className="dz-note">Subir requiere comodidad y consentimiento. Con revisión profesional pendiente o presión alta, los peldaños superiores quedan en pausa.</p></>);
+      {(clinical || acute || s.pressure >= 7) && <p className="dz-note">Según tu registro actual, algunos peldaños están en pausa. Puedes elegir una de las opciones disponibles.</p>}</>);
   }
   return null;
 }

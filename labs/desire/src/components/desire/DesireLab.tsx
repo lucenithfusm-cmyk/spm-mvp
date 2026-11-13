@@ -264,11 +264,11 @@ export function DesireLab() {
       <label className="dz-check urgent"><input type="checkbox" checked={s.health.includes('acute')} onChange={(e) => up('health', e.target.checked ? [...s.health, 'acute'] : s.health.filter((x) => x !== 'acute'))} /><span>Tristeza intensa la mayor parte de los días o pensamientos de hacerte daño</span></label>
       {ev.urgent && <div className="dz-alert"><ShieldAlert size={18} /><p>Lo que describes merece atención pronto. Si sientes que puedes hacerte daño, busca ayuda inmediata en urgencias o en la línea de emergencias de tu país. Si no es inmediato, pide cita con un profesional de salud esta semana.</p></div>}
       {!ev.urgent && s.health.length > 0 && <Card className="dz-result"><span className="dz-eyebrow">Lectura prudente</span><p>{recText[ev.rec][1]}</p></Card>}
-      <p className="dz-muted small">Esta lista no diagnostica ningún déficit. Solo ayuda a ver si varias señales se combinan.</p>
+      <p className="dz-muted small">Marca los cambios que reconozcas. Esta información ayuda a adaptar tu recorrido.</p>
       <VideoSlot slot="health" />
     </>); break;
     case 10: body = (<>
-      <p className="dz-lead">Contrastar la función eréctil ayuda a entender qué está influyendo. <em>No es un diagnóstico.</em></p>
+      <p className="dz-lead">Piensa en los últimos meses y responde qué cambios has notado en tus erecciones.</p>
       <Card>
         <Seg label="¿Menos erecciones espontáneas por la mañana?" value={s.morning} opts={triOpts as [DesireState['morning'], string][]} onChange={(v) => up('morning', v)} />
         <Seg label="¿Menos erecciones espontáneas por la noche?" value={s.night} opts={triOpts as [DesireState['night'], string][]} onChange={(v) => up('night', v)} />
@@ -321,7 +321,6 @@ export function DesireLab() {
         {ev.reasons.length > 0 && <ul>{ev.reasons.map((r) => <li key={r}>{r}</li>)}</ul>}
       </Card>
       {ev.urgent && <div className="dz-alert"><ShieldAlert size={18} /><p>Por lo que indicaste, prioriza atención profesional pronto. Si hay riesgo inmediato, acude a urgencias.</p></div>}
-      <p className="dz-note">SPM no diagnostica. Te ayuda a reconocer cuándo conviene una valoración médica.</p>
       <button className="dz-btn gold" onClick={() => go('route')}><Sparkles size={16} /> Ver Tu ruta SPM</button>
     </>); break;
     case 16: body = (<>
@@ -367,7 +366,7 @@ export function DesireLab() {
         })}
       </div>
       {!hasBase && <p className="dz-note">Aún no hay línea base confirmada: el progreso aparece con datos reales. <button className="dz-btn ghost" onClick={() => go('progress28')}>Confirmar línea base</button></p>}
-      {series.length === 1 && <p className="dz-muted">Registra tus controles del día 14 y 28 en Seguimiento para ver la tendencia.</p>}
+      {series.length === 1 && <p className="dz-muted">Los controles de los días 14 y 28 se completan desde Hoy, en tu programa principal. Aquí puedes consultar tus registros de Deseo.</p>}
     </>); break;
     case 20: body = (<>
       <Card className="dz-reminder"><CalendarDays /><div><h3>Recordatorio</h3><p>Vuelve el día 14 y el día 28 para registrar tu evolución. {s.weekly && <>Esta semana: <b>{s.weekly}</b>.</>}</p></div></Card>
@@ -387,10 +386,10 @@ export function DesireLab() {
       <button className="dz-btn ghost" onClick={() => go(`day:${day}`, origin)}>Ver el Día {day} completo</button>
       
       {today.length > 0 ? <div className="dz-route">{today.map((c) => (
-        <Card key={c.practiceId} className="accent"><span className="dz-eyebrow">{c.durationOrScope}</span><h3>{c.title}</h3><p>{c.whyAssigned}</p><small className="dz-muted">Observamos: {c.targetMetric}</small>
+        <Card key={c.practiceId} className="accent"><span className="dz-eyebrow">A tu ritmo</span><h3>{c.title}</h3><p>{c.whyAssigned}</p><small className="dz-muted">Observamos: {c.targetMetric}</small>
           <button className="dz-btn gold" onClick={() => openPractice(c.practiceId, 'dailyPlan')}>Comenzar práctica <ArrowRight size={16} /></button></Card>
       ))}</div> : <div className="dz-lib">
-        {([['Sensate Focus · 15 min', 'sensate'], ['Revisa tus aceleradores y frenos', 13], ['Registro rápido de cómo te sientes', 4]] as [string, View][]).map(([t, v]) => <button key={t} onClick={() => openFrom(v, 'dailyPlan')}><Sparkles size={16} /><span>{t}</span><ArrowRight size={14} /></button>)}
+        {([['Sensate Focus · a tu ritmo', 'sensate'], ['Revisa tus aceleradores y frenos', 13], ['Registro rápido de cómo te sientes', 4]] as [string, View][]).map(([t, v]) => <button key={t} onClick={() => openFrom(v, 'dailyPlan')}><Sparkles size={16} /><span>{t}</span><ArrowRight size={14} /></button>)}
       </div>}
       <button className="dz-btn ghost" onClick={() => go(20)}>Ir al laboratorio completo</button>
     </>); break;
@@ -403,7 +402,7 @@ export function DesireLab() {
     </>); break;
     case 'sensate': body = (<>
       <p className="dz-lead">Contacto sin objetivo: atención a la <em>sensación</em>, no al resultado.</p>
-      <ol className="dz-steps">{['Acuerden un tiempo tranquilo, sin prisa y sin la meta de tener relaciones.', 'Turnos de 10 minutos: uno toca, el otro recibe y solo observa.', 'Empiecen por zonas no genitales: manos, espalda, brazos.', 'Describan qué se sintió agradable, sin evaluar.', 'Si no tienes pareja, practica autocontacto consciente con la misma actitud.'].map((t) => <li key={t}>{t}</li>)}</ol>
+      <ol className="dz-steps">{['Busquen un lugar cómodo y acuerden qué contacto les apetece. Dedíquenle el tiempo que les resulte agradable.', 'Si participan dos personas, elijan quién empieza a tocar y quién recibe. Cambien de turno cuando lo acuerden.', 'Empiecen por zonas no genitales, como manos, espalda o brazos. Quien recibe puede pedir un cambio de presión o indicar que quiere parar.', 'Presten atención a la temperatura, la textura y la presión del contacto. Al terminar, compartan qué se sintió agradable.', 'Si la haces individualmente, apoya o desliza suavemente tus manos sobre brazos o manos y observa esas mismas sensaciones.'].map((t) => <li key={t}>{t}</li>)}</ol>
       <Cue id={cueId('sensate-attention')}>Lleva la atención a la temperatura, la presión y la textura.</Cue>
     </>); break;
     case 'route': body = (<>
@@ -413,7 +412,7 @@ export function DesireLab() {
       <h3 className="dz-sub">Esto es lo que SPM va a trabajar contigo</h3>
       <div className="dz-route">{route.priorities.map((p, i) => { const pr = practices[p.id]!; const log = s.practiceLog[p.id]; return (
         <Card key={p.id} className="accent dz-prio"><span className="dz-eyebrow">Prioridad {i + 1} · {p.role === 'driver' ? 'Driver principal' : p.role === 'modifier' ? 'Modificador' : 'Transferencia'}</span>
-          <dl><dt>Qué detectamos</dt><dd>{p.detected}</dd><dt>Por qué importa</dt><dd>{p.why}</dd><dt>Práctica asignada</dt><dd><b>{pr.title}</b> · {pr.duration}</dd><dt>Qué vamos a observar</dt><dd>{pr.metricLabel}</dd></dl>
+          <dl><dt>Qué detectamos</dt><dd>{p.detected}</dd><dt>Por qué importa</dt><dd>{p.why}</dd><dt>Práctica asignada</dt><dd><b>{pr.title}</b> · A tu ritmo</dd><dt>Qué vamos a observar</dt><dd>{pr.metricLabel}</dd></dl>
           {log && <small className="dz-saved"><Check size={14} /> Realizada {log.done} {log.done === 1 ? 'vez' : 'veces'}</small>}
           <button className="dz-btn gold" onClick={() => openPractice(p.id, 'route')}>Comenzar práctica <ArrowRight size={16} /></button>
         </Card>); })}</div>
@@ -456,6 +455,7 @@ export function DesireLab() {
         )}
         {view !== 1 && !(pid === 'presence-5' && pDay === 1) && <h2 className="dz-h">{heading}</h2>}
         <section className="dz-body" key={String(view)}>{central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <DoctorDesireVideo />}{body}</section>
+        {retPractice && retPractice !== String(view) && <div className="dz-row"><button type="button" className="dz-btn gold" onClick={() => { const r = retPractice; setRetPractice(''); setView(r); }}><ArrowLeft size={16} /> Volver a la práctica</button></div>}
         {central.origin !== 'dailyPlan' && (view === 1 || view === 20) && <ProgramVideos key={String(view)} route="desire" />}
       </main>
       {origin === 'lab' && typeof view === 'number' && (
@@ -465,7 +465,7 @@ export function DesireLab() {
           <button disabled={n >= 20} onClick={() => go(n + 1)}>Siguiente <ArrowRight size={16} /></button>
         </nav>
       )}
-      <footer className="dz-sitefoot">SPM · Salud sexual masculina · Contenido educativo, no diagnóstico</footer>
+      <footer className="dz-sitefoot">SPM · Tu bienestar sexual, paso a paso</footer>
     </div>
   );
 }

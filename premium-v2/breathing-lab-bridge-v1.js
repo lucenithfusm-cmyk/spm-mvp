@@ -54,7 +54,7 @@ async function open(opts={}){
  try{
   const value=await window.SPM_BREATHING_RECORDS.read(captured);if(token!==generation||scopeOf(ctx())!==captured)return false;if(!validState(value))throw Error('Invalid state');state=clone(value);
   window.SPM_BREATHING_LAB_HOST={flush,close,openControl:async()=>{if(await close())window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261013-daily1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-breathing-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;
@@ -65,7 +65,7 @@ function mount(){
  plan.querySelectorAll('.dayCard').forEach(card=>{
   const d=Number(card.querySelector('.dayNum')?.textContent||c.day),a=window.SPM_DAILY_SUPPORT?.activity('breathing',d,c),existing=card.querySelector('[data-breathing-daily]');
   if(!a){existing?.remove();return;}const b=existing||document.createElement('button');b.type='button';b.className='btn sec';b.dataset.breathingDaily='1';
-  const label=a.title+' · '+a.minutes+' min';if(b.textContent!==label)b.textContent=label;b.disabled=d!==Number(c.day);b.title=b.disabled?'Actividad del día '+d:'Abrir la actividad asignada';
+  const label=a.title+' · A tu ritmo';if(b.textContent!==label)b.textContent=label;b.disabled=d!==Number(c.day);b.title=b.disabled?'Actividad del día '+d:'Abrir la actividad asignada';
   b.onclick=()=>open({origin:'dailyPlan',day:d});if(!existing)(card.querySelector('.dayBody')||card).appendChild(b);
  });
 }

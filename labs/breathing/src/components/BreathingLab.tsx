@@ -98,15 +98,24 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
       )}
 
       <main className="bl-main" key={step}>
-        {daily && assignment && <section className="bl-note teal" data-daily-assignment><b>{assignment.title} · {assignment.minutes} min</b><p>{assignment.summary}</p>{assignment.day !== context.day && <p>Consulta del día {assignment.day}. Tu día actual es {context.day}; la práctica está deshabilitada.</p>}</section>}
+        {daily && assignment && <section className="bl-note teal" data-daily-assignment><b>{assignment.title}</b><p>{assignment.summary}</p>{assignment.day !== context.day && <p>Consulta del día {assignment.day}. Tu día actual es {context.day}; la práctica está deshabilitada.</p>}</section>}
         {origin === 'library' && (
           <button className="bl-back-lib" onClick={() => go(13)}><ArrowLeft size={16} /> Volver a la biblioteca</button>
         )}
         <p className="bl-kicker"><span />{scr.kicker}</p>
-        <h1 className="bl-h1">{scr.title}</h1>
+        <h1 className="bl-h1">{daily && [7, 10, 11, 12].includes(step) ? 'Respira a tu ritmo' : scr.title}</h1>
 
         {step === 0 && <Welcome onStart={() => go(1)} />}
-        <Trainer n={step + 1} text={trainerLines[step] ?? ""} />
+        {daily && assignment && [4, 7, 10, 11, 12].includes(step) ? (
+          <div className="bl-note teal">
+            <b>Cómo hacer la práctica</b>
+            {practiceAllowed && assignment.day === context.day ? <ol>
+              <li>Pulsa «Iniciar» y sigue la guía visual.</li>
+              <li>{assignment.day === 3 && step === 4 ? 'Usa el ritmo como apoyo: inhala durante cuatro segundos y exhala durante seis, sin pausa entre ambos. Repite a tu ritmo.' : 'Respira con comodidad y observa cómo se mueve el abdomen. Usa la guía como apoyo y nota si te ayuda a soltar tensión.'}</li>
+              <li>Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica · Registrar». Indica cómo te sentiste y pulsa «Guardar registro».</li>
+            </ol> : <p>Esta práctica permite observar la respiración y reconocer qué te ayuda a soltar tensión, a tu ritmo.</p>}
+          </div>
+        ) : <Trainer n={step + 1} text={trainerLines[step] ?? ""} />}
 
         {step === 1 && <Compare />}
         {step === 2 && <Locate onPractice={() => go(4)} />}
@@ -163,7 +172,7 @@ function Trainer({ n, text }: { n: number; text: string }) {
 
 function PracticeBlock({ id, noHold, setNoHold, onSave, goSafety, ...rest }: { id: string; noHold: boolean; setNoHold: (v: boolean) => void; onSave: (s: Session) => Promise<void>; goSafety: () => void } & Partial<React.ComponentProps<typeof BreathPacer>>) {
   const recordId = useRef<string | null>(null);
-  const [secs, setSecs] = useState(0);
+  const [secs, setSecs] = useState<number | null>(null);
   const [comfort, setComfort] = useState(4);
   const [dizzy, setDizzy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -172,8 +181,9 @@ function PracticeBlock({ id, noHold, setNoHold, onSave, goSafety, ...rest }: { i
   const finish = useCallback((s: number) => { recordId.current = null; setSecs(s); setSaved(false); }, []);
   return (
     <section className="bl-practice">
+      <p className="bl-p">Usa el ritmo y la guía como apoyo para notar tu respiración. Puedes cerrar la práctica cuando la hayas realizado y registrar cómo te sentiste.</p>
       <BreathPacer pattern={PATTERN_426} noHold={noHold} onNoHold={setNoHold} onFinish={finish} {...rest} />
-      {secs > 0 && (
+      {secs !== null && (
         <div className="bl-checkin">
           <h3>¿Cómo te sentiste?</h3>
           <div className="bl-scale">

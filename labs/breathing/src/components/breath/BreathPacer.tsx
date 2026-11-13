@@ -100,8 +100,6 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
   const scale = !started || done ? .62 : cur.scale;
   const phases: Phase[] = p.hold ? ['inhale', 'hold', 'exhale'] : ['inhale', 'exhale'];
   const phaseProgress = done ? 100 : started ? cur.progress * 100 : 0;
-  const cycleProgress = done ? 100 : ((elapsed % length) / length) * 100;
-  const sessionProgress = (elapsed / total) * 100;
   const style = { '--s': scale, '--t': running ? '.1s' : '0s' } as React.CSSProperties;
 
   return (
@@ -129,16 +127,14 @@ export function BreathPacer({ pattern, noHold, onNoHold, lockNoHold, durationSec
         {phases.map((phase) => <span key={phase} className={started && !done && cur.phase === phase ? 'on' : ''}><em>{p[phase]}<small>s</small></em>{LABEL[phase]}</span>)}
       </div>
       <div className="bl-session-progress">
-        <div className="bl-time"><span>Sesión</span><b>{fmt(elapsed)} <em>/ {fmt(total)}</em></b></div>
-        <div className="bl-session-bar" role="progressbar" aria-label="Progreso de sesión" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.floor(sessionProgress)}><span style={{ width: `${sessionProgress}%` }} /></div>
-        <div className="bl-time"><span>Ciclo {Math.min(Math.floor(elapsed / length) + 1, total / length)} / {total / length}</span><span>{Math.floor(sessionProgress)}%</span></div>
-        <div className="bl-cycle-bar" role="progressbar" aria-label="Progreso de ciclo" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.floor(cycleProgress)}><span style={{ width: `${cycleProgress}%` }} /></div>
+        <div className="bl-time"><span>Tiempo en la guía opcional</span><b>{fmt(elapsed)}</b></div>
+        <div className="bl-time"><span>Ciclo {Math.min(Math.floor(elapsed / length) + 1, total / length)}</span></div>
       </div>
       <div className="bl-controls">
         <Button variant="spmGold" className="bl-btn gold" onClick={running ? pause : start}>{running ? <Pause size={17} /> : <Play size={17} />}{running ? 'Pausar' : done ? 'Repetir' : started ? 'Reanudar' : 'Iniciar'}</Button>
         <Button variant="outline" className="bl-btn ghost" onClick={reset} disabled={!started && !done}><RotateCcw size={16} /> Reiniciar</Button>
       </div>
-      {!running && elapsedMs > 0 && !done && onFinish && <Button variant="link" className="bl-link" onClick={() => { pause(); setDone(true); onFinish(Math.floor(elapsed)); }}>Terminar y registrar</Button>}
+      {started && !done && onFinish && <Button variant="link" className="bl-link" onClick={() => { pause(); setDone(true); onFinish(elapsedRef.current / 1000); }}>Ya realicé la práctica · Registrar</Button>}
       {!lockNoHold && onNoHold && <label className="bl-toggle"><input type="checkbox" checked={noHold} onChange={(e) => onNoHold(e.target.checked)} /><span className="bl-switch" /><span>Sin pausa (4·6) — si las retenciones te marean</span></label>}
     </div>
   );

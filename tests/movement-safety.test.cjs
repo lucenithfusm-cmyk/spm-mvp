@@ -90,6 +90,19 @@ test('a new safety flag between opening and saving prevents a routine record',as
   assert.ok(h.d.querySelector('[data-movement-safety]'));
  }finally{h.close()}
 });
+
+for(const entered of ['0.25','','0'])test(`movement saves the reported duration ${entered||'(not measured)'} without a minimum-minute requirement`,async()=>{
+ const h=await harness();
+ try{
+  h.d.querySelector('[data-activity="walk"]').click();
+  assert.ok(h.d.querySelector('#srActivityDetail .sr-move-photo-visual'),'Use the photo without the old duration baked into the original card');
+  h.d.querySelector('#srMinutes').value=entered;h.d.querySelector('#srEffort').value='3';
+  h.d.querySelector('#srMoveSave').click();await tick();
+  assert.equal(h.saved.length,1);assert.equal(h.saved[0].minutes,entered===''?null:Number(entered));assert.equal(h.saved[0].day,12);
+  assert.equal(h.w.SPM_RESOURCES.restricted(h.c),false);
+  if(entered===''){h.w.SPM_RESOURCES.open('history',12);assert.ok(!h.d.querySelector('#srContent').textContent.includes('0 min registrados'));}
+ }finally{h.close()}
+});
 test('return from a restricted library keeps the wellness origin',async()=>{
  const h=await harness({safety:'review'});
  try{
