@@ -1,0 +1,584 @@
+{
+  "voice": "Lenny - Clear & Professional",
+  "voiceId": "050c403a43e047c796f8a6257ed2533e",
+  "provider": "HeyGen Voice",
+  "generationSpeed": 0.95,
+  "playbackRate": 1,
+  "generatedAt": "2026-11-13",
+  "entries": [
+    {
+      "id": "instruction.daily.4-6",
+      "name": "daily-instructions-4-6-20261113",
+      "steps": [
+        "Pulsa «Iniciar» y sigue la guía visual.",
+        "Usa el ritmo como apoyo: inhala durante cuatro segundos y exhala durante seis, sin pausa entre ambos. Repite a tu ritmo.",
+        "Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica · Registrar». Indica cómo te sentiste y pulsa «Guardar registro»."
+      ],
+      "title": "Cómo hacer la práctica",
+      "text": "Cómo hacer la práctica. Pulsa «Iniciar» y sigue la guía visual. Usa el ritmo como apoyo: inhala durante cuatro segundos y exhala durante seis, sin pausa entre ambos. Repite a tu ritmo. Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica; Registrar». Indica cómo te sentiste y pulsa «Guardar registro».",
+      "url": "audio/daily-instructions-4-6-20261113.mp3",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=0468cfae72784113a066ce05d7c8c4e8.mp3",
+      "duration": 21.863741496598642,
+      "wordTimings": [
+        {
+          "text": "Cómo",
+          "start_time": 0.256,
+          "end_time": 0.512
+        },
+        {
+          "text": "hacer",
+          "start_time": 0.555,
+          "end_time": 0.768
+        },
+        {
+          "text": "la",
+          "start_time": 0.811,
+          "end_time": 0.853
+        },
+        {
+          "text": "práctica",
+          "start_time": 0.896,
+          "end_time": 1.28
+        },
+        {
+          "text": "Pulsa",
+          "start_time": 1.707,
+          "end_time": 2.048
+        },
+        {
+          "text": "Iniciar",
+          "start_time": 2.133,
+          "end_time": 2.56
+        },
+        {
+          "text": "y",
+          "start_time": 2.816,
+          "end_time": 2.944
+        },
+        {
+          "text": "sigue",
+          "start_time": 2.987,
+          "end_time": 3.285
+        },
+        {
+          "text": "la",
+          "start_time": 3.328,
+          "end_time": 3.413
+        },
+        {
+          "text": "guía",
+          "start_time": 3.456,
+          "end_time": 3.669
+        },
+        {
+          "text": "visual",
+          "start_time": 3.712,
+          "end_time": 4.011
+        },
+        {
+          "text": "Usa",
+          "start_time": 4.48,
+          "end_time": 4.6507
+        },
+        {
+          "text": "el",
+          "start_time": 4.736,
+          "end_time": 4.7787
+        },
+        {
+          "text": "ritmo",
+          "start_time": 4.821,
+          "end_time": 5.077
+        },
+        {
+          "text": "como",
+          "start_time": 5.12,
+          "end_time": 5.333
+        },
+        {
+          "text": "apoyo",
+          "start_time": 5.376,
+          "end_time": 5.76
+        },
+        {
+          "text": "inhala",
+          "start_time": 6.059,
+          "end_time": 6.485
+        },
+        {
+          "text": "durante",
+          "start_time": 6.528,
+          "end_time": 6.741
+        },
+        {
+          "text": "cuatro",
+          "start_time": 6.869,
+          "end_time": 7.2107
+        },
+        {
+          "text": "segundos",
+          "start_time": 7.253,
+          "end_time": 7.765
+        },
+        {
+          "text": "y",
+          "start_time": 7.936,
+          "end_time": 8.1067
+        },
+        {
+          "text": "exhala",
+          "start_time": 8.149,
+          "end_time": 8.533
+        },
+        {
+          "text": "durante",
+          "start_time": 8.576,
+          "end_time": 8.789
+        },
+        {
+          "text": "seis",
+          "start_time": 8.96,
+          "end_time": 9.173
+        },
+        {
+          "text": "sin",
+          "start_time": 9.6,
+          "end_time": 9.7707
+        },
+        {
+          "text": "pausa",
+          "start_time": 9.813,
+          "end_time": 10.1547
+        },
+        {
+          "text": "entre",
+          "start_time": 10.24,
+          "end_time": 10.4107
+        },
+        {
+          "text": "ambos",
+          "start_time": 10.453,
+          "end_time": 10.752
+        },
+        {
+          "text": "Repite",
+          "start_time": 11.307,
+          "end_time": 11.5627
+        },
+        {
+          "text": "a",
+          "start_time": 11.648,
+          "end_time": 11.6907
+        },
+        {
+          "text": "tu",
+          "start_time": 11.733,
+          "end_time": 11.861
+        },
+        {
+          "text": "ritmo",
+          "start_time": 11.861,
+          "end_time": 12.117
+        },
+        {
+          "text": "Cuando",
+          "start_time": 12.41,
+          "end_time": 12.709
+        },
+        {
+          "text": "hayas",
+          "start_time": 12.752,
+          "end_time": 12.965
+        },
+        {
+          "text": "realizado",
+          "start_time": 13.008,
+          "end_time": 13.477
+        },
+        {
+          "text": "la",
+          "start_time": 13.52,
+          "end_time": 13.6477
+        },
+        {
+          "text": "práctica",
+          "start_time": 13.69,
+          "end_time": 14.032
+        },
+        {
+          "text": "pulsa",
+          "start_time": 14.416,
+          "end_time": 14.714
+        },
+        {
+          "text": "Ya",
+          "start_time": 14.928,
+          "end_time": 15.3117
+        },
+        {
+          "text": "realicé",
+          "start_time": 15.397,
+          "end_time": 15.866
+        },
+        {
+          "text": "la",
+          "start_time": 15.909,
+          "end_time": 15.9517
+        },
+        {
+          "text": "práctica",
+          "start_time": 15.994,
+          "end_time": 16.336
+        },
+        {
+          "text": "Registrar",
+          "start_time": 16.805,
+          "end_time": 17.402
+        },
+        {
+          "text": "Indica",
+          "start_time": 17.914,
+          "end_time": 18.298
+        },
+        {
+          "text": "cómo",
+          "start_time": 18.426,
+          "end_time": 18.6397
+        },
+        {
+          "text": "te",
+          "start_time": 18.725,
+          "end_time": 18.81
+        },
+        {
+          "text": "sentiste",
+          "start_time": 18.853,
+          "end_time": 19.408
+        },
+        {
+          "text": "y",
+          "start_time": 19.536,
+          "end_time": 19.706
+        },
+        {
+          "text": "pulsa",
+          "start_time": 19.749,
+          "end_time": 20.09
+        },
+        {
+          "text": "Guardar",
+          "start_time": 20.261,
+          "end_time": 20.858
+        },
+        {
+          "text": "registro",
+          "start_time": 20.944,
+          "end_time": 21.37
+        }
+      ],
+      "measuredDuration": 21.890563,
+      "sha256": "d33a83e8ec7ccdadd032351b06eef8f6ef2d2e4f27074bce166804ea1b361ca4",
+      "bytes": 350249
+    },
+    {
+      "id": "instruction.daily.flexible",
+      "name": "daily-instructions-flexible-20261113",
+      "steps": [
+        "Pulsa «Iniciar» y sigue la guía visual.",
+        "Respira con comodidad y observa cómo se mueve el abdomen. Usa la guía como apoyo y nota si te ayuda a soltar tensión.",
+        "Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica · Registrar». Indica cómo te sentiste y pulsa «Guardar registro»."
+      ],
+      "title": "Cómo hacer la práctica",
+      "text": "Cómo hacer la práctica. Pulsa «Iniciar» y sigue la guía visual. Respira con comodidad y observa cómo se mueve el abdomen. Usa la guía como apoyo y nota si te ayuda a soltar tensión. Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica; Registrar». Indica cómo te sentiste y pulsa «Guardar registro».",
+      "url": "audio/daily-instructions-flexible-20261113.mp3",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=65547e098eac4da18c9d1e7944df78c1.mp3",
+      "duration": 21.483968253968257,
+      "wordTimings": [
+        {
+          "text": "Cómo",
+          "start_time": 0.256,
+          "end_time": 0.512
+        },
+        {
+          "text": "hacer",
+          "start_time": 0.555,
+          "end_time": 0.768
+        },
+        {
+          "text": "la",
+          "start_time": 0.811,
+          "end_time": 0.896
+        },
+        {
+          "text": "práctica",
+          "start_time": 0.939,
+          "end_time": 1.28
+        },
+        {
+          "text": "Pulsa",
+          "start_time": 1.92,
+          "end_time": 2.261
+        },
+        {
+          "text": "Iniciar",
+          "start_time": 2.347,
+          "end_time": 2.773
+        },
+        {
+          "text": "y",
+          "start_time": 3.072,
+          "end_time": 3.157
+        },
+        {
+          "text": "sigue",
+          "start_time": 3.2,
+          "end_time": 3.541
+        },
+        {
+          "text": "la",
+          "start_time": 3.584,
+          "end_time": 3.6267
+        },
+        {
+          "text": "guía",
+          "start_time": 3.669,
+          "end_time": 3.8827
+        },
+        {
+          "text": "visual",
+          "start_time": 3.925,
+          "end_time": 4.224
+        },
+        {
+          "text": "Respira",
+          "start_time": 4.779,
+          "end_time": 5.205
+        },
+        {
+          "text": "con",
+          "start_time": 5.291,
+          "end_time": 5.376
+        },
+        {
+          "text": "comodidad",
+          "start_time": 5.419,
+          "end_time": 5.973
+        },
+        {
+          "text": "y",
+          "start_time": 6.144,
+          "end_time": 6.229
+        },
+        {
+          "text": "observa",
+          "start_time": 6.272,
+          "end_time": 6.656
+        },
+        {
+          "text": "cómo",
+          "start_time": 6.699,
+          "end_time": 6.9547
+        },
+        {
+          "text": "se",
+          "start_time": 6.997,
+          "end_time": 7.125
+        },
+        {
+          "text": "mueve",
+          "start_time": 7.168,
+          "end_time": 7.381
+        },
+        {
+          "text": "el",
+          "start_time": 7.424,
+          "end_time": 7.4667
+        },
+        {
+          "text": "abdomen",
+          "start_time": 7.509,
+          "end_time": 7.893
+        },
+        {
+          "text": "Usa",
+          "start_time": 8.235,
+          "end_time": 8.6187
+        },
+        {
+          "text": "la",
+          "start_time": 8.661,
+          "end_time": 8.789
+        },
+        {
+          "text": "guía",
+          "start_time": 8.832,
+          "end_time": 9.0027
+        },
+        {
+          "text": "como",
+          "start_time": 9.045,
+          "end_time": 9.216
+        },
+        {
+          "text": "apoyo",
+          "start_time": 9.259,
+          "end_time": 9.685
+        },
+        {
+          "text": "y",
+          "start_time": 9.813,
+          "end_time": 9.984
+        },
+        {
+          "text": "nota",
+          "start_time": 10.027,
+          "end_time": 10.2827
+        },
+        {
+          "text": "si",
+          "start_time": 10.325,
+          "end_time": 10.453
+        },
+        {
+          "text": "te",
+          "start_time": 10.496,
+          "end_time": 10.581
+        },
+        {
+          "text": "ayuda",
+          "start_time": 10.624,
+          "end_time": 10.88
+        },
+        {
+          "text": "a",
+          "start_time": 10.923,
+          "end_time": 10.965
+        },
+        {
+          "text": "soltar",
+          "start_time": 11.008,
+          "end_time": 11.3067
+        },
+        {
+          "text": "tensión",
+          "start_time": 11.349,
+          "end_time": 11.776
+        },
+        {
+          "text": "Cuando",
+          "start_time": 12.062,
+          "end_time": 12.318
+        },
+        {
+          "text": "hayas",
+          "start_time": 12.361,
+          "end_time": 12.574
+        },
+        {
+          "text": "realizado",
+          "start_time": 12.617,
+          "end_time": 13.086
+        },
+        {
+          "text": "la",
+          "start_time": 13.129,
+          "end_time": 13.214
+        },
+        {
+          "text": "práctica",
+          "start_time": 13.257,
+          "end_time": 13.598
+        },
+        {
+          "text": "pulsa",
+          "start_time": 14.025,
+          "end_time": 14.366
+        },
+        {
+          "text": "Ya",
+          "start_time": 14.579,
+          "end_time": 15.006
+        },
+        {
+          "text": "realicé",
+          "start_time": 15.049,
+          "end_time": 15.518
+        },
+        {
+          "text": "la",
+          "start_time": 15.561,
+          "end_time": 15.603
+        },
+        {
+          "text": "práctica",
+          "start_time": 15.646,
+          "end_time": 15.987
+        },
+        {
+          "text": "Registrar",
+          "start_time": 16.414,
+          "end_time": 16.969
+        },
+        {
+          "text": "Indica",
+          "start_time": 17.395,
+          "end_time": 17.8647
+        },
+        {
+          "text": "cómo",
+          "start_time": 17.993,
+          "end_time": 18.206
+        },
+        {
+          "text": "te",
+          "start_time": 18.249,
+          "end_time": 18.334
+        },
+        {
+          "text": "sentiste",
+          "start_time": 18.377,
+          "end_time": 18.889
+        },
+        {
+          "text": "y",
+          "start_time": 19.017,
+          "end_time": 19.23
+        },
+        {
+          "text": "pulsa",
+          "start_time": 19.273,
+          "end_time": 19.614
+        },
+        {
+          "text": "Guardar",
+          "start_time": 19.87,
+          "end_time": 20.382
+        },
+        {
+          "text": "registro",
+          "start_time": 20.467,
+          "end_time": 20.894
+        }
+      ],
+      "measuredDuration": 21.524875,
+      "sha256": "4cfee857765d854bab351ee1038971fa06a98f82600010debc2edefd94f4f740",
+      "bytes": 344398
+    }
+  ],
+  "settings": {
+    "language": "es",
+    "model": "server-selected (not returned)",
+    "speed": 0.95,
+    "outputFormat": {
+      "encoding": "mp3",
+      "num_channels": 1,
+      "sample_rate_hertz": 44100,
+      "bitrate_bps": 128000
+    }
+  },
+  "review": {
+    "transcript": "Words and timings checked against the three displayed steps.",
+    "listening": "Full human listening review not claimed.",
+    "validation": "Exact submitted text matches returned word timings; MP3 decoding, duration and hashes validated."
+  }
+}

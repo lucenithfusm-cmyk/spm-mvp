@@ -1,10 +1,12 @@
 import { claimPlayback, registerPlayback } from './breath-playback';
 import manifest from '@/assets/audio/lenny-manifest.json';
+import dailyInstructions from '@/assets/audio/daily-instructions-manifest.json';
 // SPM official voice: Lenny — Clear & Professional (HeyGen, voice 050c403a43e047c796f8a6257ed2533e, 0.95x).
 // The approved HeyGen assets and exact IDs are preserved in lenny-manifest.json.
 // Missing ID = silence + visible text cue. No browser TTS is used, so a female voice can never play under the male trainer.
 export const audioFiles: Record<string, string> = {
   ...Object.fromEntries(manifest.entries.map(({ id, url }) => [id, url])),
+  ...Object.fromEntries(dailyInstructions.entries.map(({ id, url }) => [id, url])),
 };
 
 const initial = { muted: false, id: null as string | null, error: null as string | null };

@@ -91,6 +91,7 @@ for(const focus of [1,2])test(`daily Focus ${focus} can be explicitly completed 
    for(let i=0;i<3;i++)await act(async()=>button('Continuar →').click());
   }
   expect(button('Iniciar guía')).toBeTruthy();expect(button('Continuar →').disabled).toBe(true);
+  expect(el.querySelector('.sf-ring strong')?.textContent).toBe(focus===1?'1:00':'2:00');
   await act(async()=>button('Ya realicé la práctica').click());
   expect(button('Continuar →').disabled).toBe(false);
   await act(async()=>button('Continuar →').click());

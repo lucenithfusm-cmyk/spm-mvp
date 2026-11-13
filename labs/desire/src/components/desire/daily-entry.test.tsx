@@ -42,7 +42,7 @@ describe('Paid daily Desire entry',()=>{
     await click('Iniciar mi práctica');
     expect(document.activeElement?.getAttribute('aria-label')).toBe('Práctica en curso');
     expect(document.querySelector('.dz-clock')?.textContent).toBe('00:00');
-    expect(document.querySelector('.dz-clock')?.closest('details')?.open).toBe(false);
+    expect(document.querySelector('.dz-clock')?.closest('details')).toBeNull();
     expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
     await act(async()=>vi.advanceTimersByTime(10000));
     await click('Pausar');

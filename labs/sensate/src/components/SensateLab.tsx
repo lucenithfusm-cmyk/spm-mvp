@@ -91,8 +91,9 @@ function Guide({ g, phases, intrusions, onIntrusion, pressureBack }: { g: Return
       <div className="sf-phases">
         {phases.map((p, i) => <span key={p.name} className={i === g.idx ? 'on' : i < g.idx || g.done ? 'past' : ''}>{p.name}</span>)}
       </div>
+      <span className="sf-eyebrow">Cronómetro opcional</span>
       <div className="sf-ring" style={{ ['--p' as string]: `${((total - g.left) / total) * 100}%` }}>
-        <div><small>{g.done ? 'Completado' : g.phase.name}</small><strong>{g.done ? '✓' : g.started ? fmt(Math.max(g.left, 0)) : 'A tu ritmo'}</strong><small>{g.done ? 'Práctica realizada' : `Fase ${g.idx + 1}/${phases.length}`}</small></div>
+        <div><small>{g.done ? 'Completado' : g.phase.name}</small><strong>{g.done ? '✓' : fmt(Math.max(g.left, 0))}</strong><small>{g.done ? 'Práctica realizada' : `Fase ${g.idx + 1}/${phases.length}`}</small></div>
       </div>
       <p className="sf-cue" aria-live="polite">{flash || (g.done ? 'Práctica terminada. Agradezcan el contacto, sin evaluar.' : g.phase.cue)}</p>
       <div className="sf-controls">

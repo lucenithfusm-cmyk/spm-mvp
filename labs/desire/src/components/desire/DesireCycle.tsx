@@ -223,9 +223,9 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       {resourceButtons}
       <p className="dz-muted">Explora a tu ritmo y observa qué te aporta la actividad. Cuando hayas realizado los pasos, puedes registrar tu experiencia.</p>
     <Card className="dz-timer">
-      <span className="dz-eyebrow">A tu ritmo</span>
+      <span className="dz-eyebrow">Cronómetro opcional</span>
       <p>{pr.observe ?? 'Observa cómo te sientes y qué detalle te resulta agradable o útil.'}</p>
-      <details><summary>Ver tiempo transcurrido (opcional)</summary><div className="dz-clock">{fmt(elapsed)}</div></details>
+      <div className="dz-clock" role="timer" aria-label="Tiempo transcurrido">{fmt(elapsed)}</div>
       <div className="dz-row">
         {!run && <button className="dz-btn gold" onClick={() => setRun(true)}><Play size={16} /> {elapsed ? 'Reanudar' : 'Iniciar'}</button>}
         {run && <button className="dz-btn ghost" onClick={() => { setRun(false); save('paused'); setStage('register'); }}><Pause size={16} /> Pausar</button>}

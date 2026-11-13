@@ -4,10 +4,12 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { BreathingLab } from './BreathingLab';
 import type { CentralContext } from '@/lib/central';
+import { playAudio, stopAudio, setAudioMuted } from '@/lib/breath-audio';
 
 const state: Record<string, string> = {};
 const flush = vi.fn(), recordDaily = vi.fn(), close = vi.fn();
 let context: CentralContext, hasRecordDaily = true;
+let audioState: { muted: boolean; id: string | null; error: string | null };
 let root: Root | undefined, el: HTMLDivElement | undefined;
 
 vi.mock('@/lib/central', () => ({
@@ -19,11 +21,11 @@ vi.mock('@/lib/central', () => ({
   },
 }));
 vi.mock('@/lib/breath-audio', () => ({
-  AUDIO_IDS: { screen: (n: number) => `screen.${n}` }, hasAudio: () => false,
+  AUDIO_IDS: { screen: (n: number) => `screen.${n}` }, hasAudio: (id: string) => ['instruction.daily.4-6', 'instruction.daily.flexible'].includes(id),
   playAudio: vi.fn(), stopAudio: vi.fn(), setAudioMuted: vi.fn(),
 }));
 vi.mock('@/lib/use-breath-audio', () => ({
-  useBreathAudio: () => ({ muted: false, id: null, error: null }),
+  useBreathAudio: () => audioState,
 }));
 vi.mock('@/components/breath/DemoVideo', () => ({ DemoVideo: () => null }));
 vi.mock('@/components/breath/BreathPacer', () => ({
@@ -38,6 +40,9 @@ beforeEach(() => {
   flush.mockReset().mockResolvedValue(undefined);
   recordDaily.mockReset().mockResolvedValue(true);
   close.mockReset().mockResolvedValue(true);
+  vi.mocked(playAudio).mockReset().mockReturnValue(true);
+  vi.mocked(stopAudio).mockReset(); vi.mocked(setAudioMuted).mockReset();
+  audioState = { muted: false, id: null, error: null };
   hasRecordDaily = true;
   context = {
     day: 3, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
@@ -109,4 +114,41 @@ test('an older daily host without recordDaily keeps the existing save behavior',
   expect(flush).toHaveBeenCalledTimes(1);
   expect(recordDaily).not.toHaveBeenCalled();
   expect(el!.textContent).toContain('Guardado en tu programa');
+});
+
+for (const [day, step, audioId, middleStep] of [
+  [3, 4, 'instruction.daily.4-6', 'Usa el ritmo como apoyo: inhala durante cuatro segundos y exhala durante seis, sin pausa entre ambos. Repite a tu ritmo.'],
+  [10, 11, 'instruction.daily.flexible', 'Respira con comodidad y observa cómo se mueve el abdomen. Usa la guía como apoyo y nota si te ayuda a soltar tensión.'],
+] as const) test(`day ${day} narrates the current instructions and keeps the practice duration flexible`, async () => {
+  context = {
+    day, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
+    activity: { id: `breath-${day}`, day, title: 'Respiración', summary: 'A tu ritmo.', steps: [step], minutes: 2 },
+  };
+  await mount();
+  expect(Array.from(el!.querySelectorAll('.bl-main ol li'), li => li.textContent)).toEqual([
+    'Pulsa «Iniciar» y sigue la guía visual.',
+    middleStep,
+    'Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica · Registrar». Indica cómo te sentiste y pulsa «Guardar registro».',
+  ]);
+  expect(el!.textContent).not.toMatch(/cinco ciclos|dos minutos|cinco minutos|pausa dos/i);
+  const listen = button('Escuchar instrucción');
+  expect(listen).toBeTruthy(); expect(listen.disabled).toBe(false); expect(listen.getAttribute('aria-pressed')).toBe('false');
+  await click('Escuchar instrucción');
+  expect(playAudio).toHaveBeenCalledTimes(1); expect(vi.mocked(playAudio).mock.calls[0]?.[0]).toBe(audioId);
+  expect(flush).not.toHaveBeenCalled(); expect(recordDaily).not.toHaveBeenCalled(); expect(JSON.parse(state['spmb-sessions']!)).toEqual([]);
+  audioState = { muted: false, id: audioId, error: null };
+  await act(async () => root!.render(<BreathingLab practiceAllowed />));
+  expect(button('Detener instrucción').getAttribute('aria-pressed')).toBe('true');
+  await click('Detener instrucción'); expect(stopAudio).toHaveBeenCalled();
+  await click('Confirmar experiencia de prueba'); await click('Guardar registro');
+  expect(JSON.parse(state['spmb-sessions']!)).toMatchObject([{ day, seconds: 0.25 }]);
+  expect(recordDaily).toHaveBeenCalledTimes(1); expect(close).not.toHaveBeenCalled();
+});
+
+test('the new instruction button respects the existing mute setting', async () => {
+  audioState = { muted: true, id: null, error: null };
+  await mount();
+  expect(button('Escuchar instrucción').disabled).toBe(true);
+  await click('Escuchar instrucción'); expect(playAudio).not.toHaveBeenCalled();
+  expect(recordDaily).not.toHaveBeenCalled();
 });

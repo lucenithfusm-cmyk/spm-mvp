@@ -53,6 +53,16 @@ describe('Exclusive SPM playback', () => {
     expect(manifest.generationSpeed).toBe(0.95);
     for (const entry of manifest.entries) expect(audioFiles[entry.id]).toBe(entry.url);
   });
+  test('both current daily instructions have separate MP3s and preserve all 22 original recordings', () => {
+    const dailyIds = ['instruction.daily.4-6', 'instruction.daily.flexible'];
+    expect(Object.keys(audioFiles).sort()).toEqual([...manifest.entries.map(entry => entry.id), ...dailyIds].sort());
+    for (const id of dailyIds) {
+      expect(audioFiles[id]).toMatch(/\.mp3(?:[?#]|$)/i);
+      expect(manifest.entries.some(entry => entry.url === audioFiles[id])).toBe(false);
+    }
+    expect(audioFiles[dailyIds[0]]).not.toBe(audioFiles[dailyIds[1]]);
+    for (const entry of manifest.entries) expect(audioFiles[entry.id]).toBe(entry.url);
+  });
   test('mute stops active audio and prevents new cues', () => {
     const previous = globalThis.window;
     const sounds = [];

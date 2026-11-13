@@ -53,6 +53,7 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
 .bl-trainer img{width:92px;height:112px;object-fit:cover;object-position:center top;border-radius:calc(var(--radius) - 2px);border:1px solid color-mix(in oklab,var(--gold) 40%,transparent)}
 .bl-trainer-name{font-size:9px;letter-spacing:2px;font-weight:800;color:var(--gold)}.bl-trainer p{font-size:14px;margin:6px 0 10px;opacity:.92}
 .bl-audio{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--gold);min-height:36px;padding:0 12px;border-radius:999px;border:1px solid color-mix(in oklab,var(--gold) 40%,transparent)}.bl-audio:disabled{color:var(--muted-foreground);border-color:var(--border);opacity:1}
+.bl-practice-instructions>b{flex-basis:100%}.bl-instruction-audio{width:100%;min-height:52px;justify-content:center;gap:10px;font-size:16px;margin:6px 0}.bl-instruction-audio[aria-pressed="true"]{outline:2px solid var(--gold);outline-offset:2px}
 
 .bl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;font-weight:800;font-size:14px;transition:transform .15s,background .2s}
 .bl-btn:active{transform:scale(.97)}.bl-btn.gold{background:var(--gold);color:var(--navy)}.bl-btn.teal{background:var(--teal);color:var(--navy)}.bl-btn.ghost{border:1px solid var(--border);color:var(--foreground)}.bl-btn.wide{width:100%}

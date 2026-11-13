@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import trainer from '@/assets/spm-trainer.jpg';
 import toracicImg from '@/assets/respiracion-toracica-premium.jpg.asset.json';
 import diaphragmaticImg from '@/assets/respiracion-diafragmatica-premium.jpg.asset.json';
+import dailyInstructions from '@/assets/audio/daily-instructions-manifest.json';
 import { screens, trainerLines, library, plan, weeks, PATTERN_426, type Session, type Competency } from '@/lib/breath-data';
 import { AUDIO_IDS, hasAudio, playAudio, stopAudio, setAudioMuted } from '@/lib/breath-audio';
 import { useBreathAudio } from '@/lib/use-breath-audio';
@@ -108,14 +109,7 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
 
         {step === 0 && <Welcome onStart={() => go(1)} />}
         {daily && assignment && [4, 7, 10, 11, 12].includes(step) ? (
-          <div className="bl-note teal">
-            <b>Cómo hacer la práctica</b>
-            {practiceAllowed && assignment.day === context.day ? <ol>
-              <li>Pulsa «Iniciar» y sigue la guía visual.</li>
-              <li>{assignment.day === 3 && step === 4 ? 'Usa el ritmo como apoyo: inhala durante cuatro segundos y exhala durante seis, sin pausa entre ambos. Repite a tu ritmo.' : 'Respira con comodidad y observa cómo se mueve el abdomen. Usa la guía como apoyo y nota si te ayuda a soltar tensión.'}</li>
-              <li>Cuando hayas realizado la práctica, pulsa «Ya realicé la práctica · Registrar». Indica cómo te sentiste y pulsa «Guardar registro».</li>
-            </ol> : <p>Esta práctica permite observar la respiración y reconocer qué te ayuda a soltar tensión, a tu ritmo.</p>}
-          </div>
+          <DailyPracticeInstructions withoutHold={assignment.day === 3 && step === 4} allowed={practiceAllowed && assignment.day === context.day} />
         ) : <Trainer n={step + 1} text={trainerLines[step] ?? ""} />}
 
         {step === 1 && <Compare />}
@@ -147,6 +141,24 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
         <button className="bl-btn teal" onClick={() => go(step + 1)} disabled={step === screens.length - 1}>Siguiente <ArrowRight size={16} /></button>
       </footer></>}
       {daily && <div className="bl-daily-library"><button className="bl-link" onClick={() => host()?.openLibrary()}>Consultar biblioteca completa</button><p>Consultar esta actividad no completa automáticamente el día.</p></div>}
+    </div>
+  );
+}
+
+function DailyPracticeInstructions({ withoutHold, allowed }: { withoutHold: boolean; allowed: boolean }) {
+  const instruction = dailyInstructions.entries.find(item => item.id === (withoutHold ? 'instruction.daily.4-6' : 'instruction.daily.flexible'))!;
+  const audio = useBreathAudio();
+  const playing = audio.id === instruction.id;
+  useEffect(() => () => stopAudio(), [instruction.id]);
+  return (
+    <div className="bl-note teal bl-practice-instructions">
+      <b>{instruction.title}</b>
+      {allowed ? <>
+        <Button type="button" variant="ghost" className="bl-audio bl-instruction-audio" aria-pressed={playing} disabled={audio.muted || !hasAudio(instruction.id)} onClick={() => playing ? stopAudio() : playAudio(instruction.id)}>
+          <Volume2 size={24} aria-hidden="true" />{playing ? 'Detener instrucción' : 'Escuchar instrucción'}
+        </Button>
+        <ol>{instruction.steps.map(text => <li key={text}>{text}</li>)}</ol>
+      </> : <p>Esta práctica permite observar la respiración y reconocer qué te ayuda a soltar tensión, a tu ritmo.</p>}
     </div>
   );
 }
