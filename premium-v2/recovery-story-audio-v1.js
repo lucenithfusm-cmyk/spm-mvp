@@ -1,73 +1,73 @@
 // Complete recorded Spanish stories; cues mark patient, doctor, patient, doctor.
 window.SPM_RECOVERY_STORY_AUDIO={
   "condom": {
-    "src": "assets/audio/recovery-story-condom-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-condom-es-20261113-female1.mp3",
     "cues": [
       0.0,
       5.78,
-      10.649796,
-      12.240658
+      10.597551,
+      12.188413
     ],
-    "duration": 21.305147
+    "duration": 20.991678
   },
   "before": {
-    "src": "assets/audio/recovery-story-before-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-before-es-20261113-female1.mp3",
     "cues": [
       0.0,
       8.17,
-      15.155714,
-      19.319841
+      15.286327,
+      19.450454
     ],
-    "duration": 28.175351
+    "duration": 27.888005
   },
   "during": {
-    "src": "assets/audio/recovery-story-during-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-during-es-20261113-female1.mp3",
     "cues": [
       0.0,
       7.12,
-      14.575918,
-      18.123719
+      14.549796,
+      18.097596
     ],
-    "duration": 27.63229
+    "duration": 27.162086
   },
   "early": {
-    "src": "assets/audio/recovery-story-early-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-early-es-20261113-female1.mp3",
     "cues": [
       0.0,
       5.72,
-      15.00449,
-      19.517188
+      15.10898,
+      19.621678
     ],
-    "duration": 30.932698
+    "duration": 31.58576
   },
   "urge": {
-    "src": "assets/audio/recovery-story-urge-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-urge-es-20261113-female1.mp3",
     "cues": [
       0.0,
       7.16,
-      16.627347,
-      20.531474
+      16.287755,
+      20.191882
     ],
-    "duration": 32.208209
+    "duration": 31.450658
   },
   "partner": {
-    "src": "assets/audio/recovery-story-partner-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-partner-es-20261113-female1.mp3",
     "cues": [
       0.0,
       5.67,
-      14.353673,
-      17.811474
+      13.935714,
+      17.393515
     ],
-    "duration": 31.003311
+    "duration": 29.618821
   },
   "next": {
-    "src": "assets/audio/recovery-story-next-es-20261113.mp3",
+    "src": "assets/audio/recovery-story-next-es-20261113-female1.mp3",
     "cues": [
       0.0,
       7.24,
-      17.778367,
-      22.506168
+      17.438776,
+      22.166576
     ],
-    "duration": 35.489025
+    "duration": 35.123311
   }
 };
