@@ -19,7 +19,12 @@ async function check(){
   const {data}=await db.auth.getSession();if(!data.session){login();return;}
   const result=await window.SPM_PAYMENTS.status(db,order,transaction);
   $('#paymentReference').textContent='Referencia: '+result.reference;
-  if(result.status==='APPROVED'&&result.environment==='prod'&&result.planId){window.SPM_PROGRAM_ENTRY?.remember();show('Tu programa está listo.','Confirmamos tu pago de $149.000 COP. Te damos la bienvenida: conoce tu Performance Map, tus áreas de trabajo y el primer día de tu ruta.');link('Ver mi bienvenida y evaluación','live.html?welcome=1');}
+  if(result.status==='APPROVED'&&result.environment==='prod'&&result.planId){
+   window.SPM_PROGRAM_ENTRY?.remember();
+   let configuration=null;try{configuration=await window.SPM_PAYMENTS.configuration();}catch{}
+   if(configuration?.paused===true){show('Tu pago está confirmado.','Confirmamos tu pago de $149.000 COP. El acceso al programa está temporalmente en pausa. Tu compra seguirá vigente. Cuando habilitemos nuevamente el programa, podrás ingresar con tu usuario y contraseña y comenzar tu ruta desde el día 1, con tus 28 días completos disponibles.');link('Ver el aviso del programa','program-paused.html');}
+   else{show(configuration?'Tu programa está listo.':'Tu pago está confirmado.',configuration?'Confirmamos tu pago de $149.000 COP. Te damos la bienvenida: conoce tu Performance Map, tus áreas de trabajo y el primer día de tu ruta.':'Confirmamos tu pago de $149.000 COP. Tu compra sigue vigente. Puedes consultar tu programa desde tu cuenta.');link('Ver mi bienvenida y evaluación','live.html?welcome=1');}
+  }
   else if(result.status==='APPROVED'&&result.environment==='test'){show('Pago de prueba aprobado.','La transacción se registró en el entorno de pruebas. No se cobró dinero real ni se activó un programa comercial.');link('Volver a la evaluación','free-assessment.html');}
   else if(['DECLINED','ERROR','VOIDED','EXPIRED'].includes(result.status)){show(result.status==='VOIDED'?'El pago fue anulado.':'El pago no quedó aprobado.','Tu evaluación se conserva. Puedes volver al cierre comercial y revisar el estado antes de iniciar un nuevo intento.');link('Volver a mi evaluación guardada','free-assessment.html');retry();}
   else{show('El pago sigue pendiente.','Aún no recibimos una aprobación. No pagues de nuevo: puedes cerrar esta pantalla y volver a comprobar el estado desde este mismo enlace.');retry();}

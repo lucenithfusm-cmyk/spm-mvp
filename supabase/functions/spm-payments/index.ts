@@ -3,6 +3,9 @@ import {AMOUNT,CURRENCY,verifyEvent,validTransaction,checkoutURL} from '../_shar
 import '../_shared/assessment-policy.js';
 import questions from '../_shared/question-catalog.json' with {type:'json'};
 const policy=(globalThis as any).SPM_ASSESSMENT_POLICY;
+// Temporary purchase pause. Re-enable only together with the approved public reopening.
+// Existing payment verification, webhooks and paid access stay available.
+const PURCHASES_PAUSED=true;
 function config(environment:string){
  if(!['test','prod'].includes(environment))return null;
  const prefix='WOMPI_'+environment.toUpperCase()+'_';
@@ -40,8 +43,9 @@ Deno.serve(async(req:Request)=>{
   const headers=cors(req);if(!headers)return json({error:'origin_not_allowed'},403);
   if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
   const mode=env('WOMPI_MODE'),c=config(mode);
-  if(path.endsWith('/config')&&req.method==='GET')return json({ready:!!c,environment:c?mode:'off',amountInCents:AMOUNT,currency:CURRENCY},200,headers);
+  if(path.endsWith('/config')&&req.method==='GET')return json({ready:!!c&&!PURCHASES_PAUSED,paused:PURCHASES_PAUSED,environment:c?mode:'off',amountInCents:AMOUNT,currency:CURRENCY},200,headers);
   if(req.method!=='POST')return json({error:'method_not_allowed'},405,headers);
+  if(path.endsWith('/checkout')&&PURCHASES_PAUSED)return json({error:'payments_paused',paused:true},503,headers);
   const db=admin(),user=await userFor(req,db);if(!user)return json({error:'sign_in_required'},401,headers);
   const body=await bodyFor(req);
   if(path.endsWith('/latest')){

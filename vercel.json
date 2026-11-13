@@ -1,0 +1,26 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "^/(?:index\\.html|Index\\.html|preview-v21\\.html)?$",
+      "dest": "/premium-v2/program-paused.html",
+      "headers": { "Cache-Control": "no-store, max-age=0" }
+    },
+    {
+      "src": "^/(?:28-dias|spm-central)(?:/index\\.html)?/?$",
+      "dest": "/premium-v2/program-paused.html",
+      "headers": { "Cache-Control": "no-store, max-age=0" }
+    },
+    {
+      "src": "^/premium-v2(?:/(?:index|live|live-v4|live-stable|free-assessment|evaluacion|commercial-pilot)(?:\\.html)?)?/?$",
+      "dest": "/premium-v2/program-paused.html",
+      "headers": { "Cache-Control": "no-store, max-age=0" }
+    },
+    {
+      "src": "^/premium-v2/program-paused\\.html$",
+      "headers": { "Cache-Control": "no-store, max-age=0" },
+      "continue": true
+    },
+    { "handle": "filesystem" }
+  ]
+}
