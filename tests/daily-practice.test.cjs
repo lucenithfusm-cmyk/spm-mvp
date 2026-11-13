@@ -287,6 +287,32 @@ test('a finished EP modal shows a working next-activity button and closes throug
  }finally{h.close();}
 });
 
+test('day 3 sleep audio keeps only the introduction in Today and its card without changing written steps',async()=>{
+ const h=harness('desire',3);try{
+  await wait();h.w.SPM_DAILY_PRACTICE.open();const d=h.w.document,library=h.w.SPM_SLEEP_LIBRARY_V1,spoken=[];
+  h.w.SpeechSynthesisUtterance=function(text){this.text=text};
+  h.w.speechSynthesis={getVoices:()=>[],cancel(){},speak:utterance=>spoken.push(utterance.text)};
+  const tip=library.tips.find(t=>t.id==='sl-horario-02'),intro='Si quieres acostarte antes, haz cambios pequeños que puedas sostener. No hay una hora exacta que sirva para todos.';
+  assert.equal(tip.body,intro);
+  assert.equal(tip.action,'Si quieres acostarte antes, elige para esta noche una hora un poco más temprana que te resulte cómoda.');
+  assert.deepEqual(Array.from(tip.steps),[tip.action,'Organiza tus pendientes para poder acostarte a esa hora.']);
+  assert.equal(h.w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='wellness-sleep').tip.body,`${intro} ${tip.action}`);
+  const dailyButton=d.querySelector('.is-sleep [data-spm-speak]');assert(dailyButton);dailyButton.click();
+  assert.equal(spoken.at(-1),intro);
+  await h.w.SPM_DAILY_PRACTICE.launch('wellness-sleep');
+  const detailButton=d.querySelector('.slModal [data-spm-speak]');assert(detailButton);detailButton.click();
+  assert.equal(spoken.at(-1),`${tip.title}. ${intro}`);
+  assert.deepEqual(Array.from(d.querySelectorAll('.slModal .slSteps li'),li=>li.textContent),Array.from(tip.steps));
+  d.querySelector('[data-sl-library]').click();d.querySelector('[data-sl-cat="horario"]').click();
+  const libraryButton=d.querySelector('[data-sl-tip="sl-horario-02"]').parentElement.querySelector('[data-spm-speak]');assert(libraryButton);libraryButton.click();
+  assert.deepEqual(spoken,[intro,`${tip.title}. ${intro}`,`${tip.title}. ${intro}`]);
+  for(const other of library.tips.filter(t=>t.id!==tip.id)){
+   assert.equal(library.dailyAudio(other.id),`${other.body} ${other.action}`);
+   assert.equal(library.audio(other),`${other.title}. ${other.body} ${other.steps.map((s,i)=>`Paso ${i+1}. ${s}`).join(' ')}`);
+  }
+ }finally{h.close();}
+});
+
 test('Today shows the existing sleep design and practical nutrition with its library link',async()=>{
  const h=harness('desire',1);try{
   await wait();h.w.SPM_DAILY_PRACTICE.open();const d=h.w.document;

@@ -34,7 +34,9 @@ function stop(root){
  if(root&&(!current||!within(root,current.button)))return;
  const previous=current;current=null;
  if(previous){releaseAudio(previous);reset(previous.button);}
- try{window.speechSynthesis?.cancel();}catch{}
+ // Muted story videos also emit play. Stop only narration owned here;
+ // canceling an unrelated utterance would skip the doctor's story turn.
+ if(previous?.utterance)try{window.speechSynthesis?.cancel();}catch{}
 }
 function button(text,name='Escuchar indicación',options={}){
  const compact=options?.compact===true;
@@ -98,6 +100,9 @@ function speak(button){
  stop();status(button,'');
  // Pause before assigning current: a program player may also stop narration.
  pauseMedia(button.ownerDocument);
+ // A deliberate request for a new instruction replaces the current voice.
+ // Passive media events must never cancel speech owned by another player.
+ try{window.speechSynthesis?.cancel();}catch{}
  const src=button.dataset.spmAudioSrc;
  if(src)playRecording(button,src);else speakNative(button);
 }
