@@ -17,8 +17,18 @@ detalle con el video.
 La indicación posterior de la usuaria prioriza el audio. Cada acción muestra
 «Ponlo en práctica», su título y una bocina circular. El contexto, los tres
 pasos y la aclaración completa están en «Leer instrucciones», cerrado por
-defecto. La bocina narra ese mismo contenido con el sistema de voz existente;
-no hay una segunda versión de las instrucciones que pueda quedar desactualizada.
+defecto. La bocina reproduce un MP3 propio de la acción con ese mismo contenido.
+Las doce grabaciones se generaron a partir de `actionNarration`, con la voz
+Rocío de HeyGen Voice, en español. El manifiesto
+`video-action-audio-20261113.json` conserva el guion exacto, la procedencia,
+la duración medida, los hashes y los tiempos por palabra. La prueba de
+correspondencia impide publicar un guion distinto al de su grabación.
+
+La primera prueba en el navegador remoto detectó que la síntesis nativa no
+podía reproducirse. Por ello el recurso principal pasó a ser un MP3 servido
+por la aplicación, independiente de las voces instaladas en el dispositivo.
+La síntesis nativa se conserva como respaldo; si ambos recursos fallan, se
+abre el texto con un aviso accesible.
 
 Se retiraron las descripciones extensas de la tarjeta de selección y de la
 pantalla diaria del video. Los formularios antiguos de escribir una idea ya no
@@ -61,7 +71,7 @@ los puntos 5 a 11 de la lista de correcciones.
 
 ## Verificación automatizada
 
-`node --test tests/video-actions.test.cjs`: 12 pruebas aprobadas. Incluyen los 12
+`node --test tests/video-actions.test.cjs`: 15 pruebas aprobadas. Incluyen los 12
 videos, confirmación sin escritura, notas históricas, fallo y reintento, lectura
 fallida, cambios de cuenta/plan/día/seguridad, correspondencia de acciones y
 bibliotecas sin escrituras de progreso. La octava prueba cubre la carga tardía
@@ -71,8 +81,16 @@ biblioteca tras nuevos cambios del DOM y abre la acción correspondiente.
 La revisión de audio añade controles de texto cerrado por defecto, narración
 completa por video, alternancia escuchar/detener, documentos iframe sin
 controladores duplicados, parada al navegar, eventos tardíos de voz y apertura
-del texto con aviso accesible si el audio falla. La síntesis se simula en estas
-pruebas; no se afirma haber validado una grabación ni una voz específica.
+del texto con aviso accesible si el audio falla. Cubre también los archivos
+MP3, la correspondencia entre guion y grabación, la alternancia de reproducción,
+el final natural, errores de archivo, rechazos de reproducción y el respaldo.
+La reproducción y la síntesis se simulan en las pruebas automatizadas.
+
+Los doce archivos se descargaron y conservaron sin modificar. FFprobe confirmó
+MP3 mono a 44,1 kHz, con duraciones de 27 a 40 segundos. La secuencia de
+caracteres alineada por el proveedor coincide exactamente con los doce guiones.
+Estos controles de integridad y reproducción no equivalen a una revisión
+auditiva humana de todas las grabaciones.
 
 Las suites existentes `daily-practice`, `program-videos` y `program-review`
 suman otras 35 pruebas aprobadas con la corrección de audio. Los tres escenarios de navegador

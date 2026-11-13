@@ -23,15 +23,22 @@ function label(button,text,pressed=false){
  const copy=button.querySelector('b');if(copy)copy.textContent=text;
 }
 function reset(button){label(button,button.dataset.audioLabel||'Escuchar indicación');}
+function releaseAudio(record){
+ const audio=record?.audio;if(!audio)return;
+ audio.onended=null;audio.onerror=null;audio.onpause=null;
+ try{audio.pause();}catch{}
+ audio.removeAttribute('src');try{audio.load();}catch{}
+ audio.remove();
+}
 function stop(root){
  if(root&&(!current||!within(root,current.button)))return;
  const previous=current;current=null;
- if(previous)reset(previous.button);
+ if(previous){releaseAudio(previous);reset(previous.button);}
  try{window.speechSynthesis?.cancel();}catch{}
 }
 function button(text,name='Escuchar indicación',options={}){
  const compact=options?.compact===true;
- return `<button type="button" class="spm-audio-action${compact?' spm-audio-action--compact':''}" data-spm-speak="${esc(text)}" data-audio-label="${esc(name)}"${compact?' data-audio-compact="true"':''} aria-label="${esc(name)}" title="${esc(name)}" aria-pressed="false"><span aria-hidden="true">${icon}</span><b>${esc(name)}</b></button>`;
+ return `<button type="button" class="spm-audio-action${compact?' spm-audio-action--compact':''}" data-spm-speak="${esc(text)}" data-audio-label="${esc(name)}"${compact?' data-audio-compact="true"':''}${options?.src?` data-spm-audio-src="${esc(options.src)}"`:''} aria-label="${esc(name)}" title="${esc(name)}" aria-pressed="false"><span aria-hidden="true">${icon}</span><b>${esc(name)}</b></button>`;
 }
 function status(button,message){
  let notice=button.nextElementSibling;
@@ -51,15 +58,11 @@ function pauseMedia(doc){
  try{window.SPM_PROGRAM_VIDEOS?.pause();}catch{}
  for(const owner of new Set([document,doc]))for(const media of owner.querySelectorAll('audio,video')){try{media.pause();}catch{}}
 }
-function speak(button){
- if(current?.button===button){stop();return;}
- stop();status(button,'');
+function speakNative(button){
  const synthesis=window.speechSynthesis,Utterance=window.SpeechSynthesisUtterance;
  if(!synthesis||typeof synthesis.speak!=='function'||typeof Utterance!=='function'){
   reveal(button,'El audio no está disponible. Puedes leer las instrucciones.',false);return;
  }
- // Pause before assigning current: a program player may also stop narration.
- pauseMedia(button.ownerDocument);
  let utterance;
  try{
   utterance=new Utterance(button.dataset.spmSpeak||'');utterance.lang='es-CO';utterance.rate=.92;
@@ -78,6 +81,26 @@ function speak(button){
   reveal(button,'No pudimos reproducir el audio. Puedes leer las instrucciones o reintentar.');
  }
 }
+function playRecording(button,src){
+ const doc=button.ownerDocument,audio=doc.createElement('audio'),record={button,audio};
+ audio.dataset.spmActionAudio='';audio.hidden=true;audio.setAttribute('aria-hidden','true');audio.preload='none';audio.src=src;
+ const finish=()=>{if(current!==record)return;current=null;releaseAudio(record);reset(button);};
+ const fallback=()=>{if(current!==record)return;current=null;releaseAudio(record);speakNative(button);};
+ audio.onended=finish;audio.onpause=()=>{if(audio.error)fallback();else finish();};audio.onerror=fallback;
+ // Keep the player in its owning document so browsers and QA can observe playback.
+ // There is no autoplay: this function is reached only from a speaker-button click.
+ (doc.body||doc.documentElement).appendChild(audio);
+ current=record;label(button,'Detener audio',true);
+ try{audio.play()?.catch(fallback);}catch{fallback();}
+}
+function speak(button){
+ if(current?.button===button){stop();return;}
+ stop();status(button,'');
+ // Pause before assigning current: a program player may also stop narration.
+ pauseMedia(button.ownerDocument);
+ const src=button.dataset.spmAudioSrc;
+ if(src)playRecording(button,src);else speakNative(button);
+}
 const css=`
 .spm-audio-action{display:flex!important;align-items:center;gap:12px;min-height:64px;padding:9px 16px!important;margin:12px 0;border:1px solid #bc9a5f!important;border-radius:16px!important;background:linear-gradient(125deg,#2d3027,#132b31)!important;color:#f2ddb3!important;cursor:pointer;font:inherit;text-align:left}
 .spm-audio-action>span{display:grid;place-items:center;width:46px;height:46px;flex:0 0 46px;background:#e0bd7b;color:#092229;border-radius:50%}
@@ -89,7 +112,13 @@ const css=`
 function install(doc=document){
  if(!doc||installed.has(doc))return;
  const onClick=event=>{const target=event.target?.closest?.('[data-spm-speak]');if(target)speak(target);};
- const onPlay=event=>{if(event.target?.matches?.('audio,video'))stop();};
+ const onPlay=event=>{
+  const media=event.target;if(!media?.matches?.('audio,video'))return;
+  // A managed recording is our narration; delayed events from an old one must
+  // also leave the current narration alone.
+  if(media.hasAttribute('data-spm-action-audio'))return;
+  stop();
+ };
  const stopDocument=()=>{if(doc===document)stop();else stop(doc);};
  const onHidden=()=>{if(doc.hidden)stopDocument();};
  const win=doc.defaultView;
