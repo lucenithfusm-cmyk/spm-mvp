@@ -20,8 +20,13 @@ const sensate={
  26:{id:'sensate-consolidate',title:'Consolidar una práctica cómoda',summary:'Repite la práctica sensorial que resulte cómoda, sin obligación de avanzar.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1',optionalProgression:true}
 };
 const routes={breathing:['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed'],sensate:['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed']};
+const firstErectionPractice={id:'breath-start',title:'Mi primera práctica: respira y suelta',summary:'Suelta mandíbula, hombros y abdomen. Después, sigue la guía de respiración a tu ritmo y registra cómo te sentiste.',steps:[6,10],minutes:2};
 function relevant(lab,c){return !!c&&routes[lab]?.some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
-function activity(lab,day,c){const item=({breathing,sensate})[lab]?.[Number(day)];return item&&relevant(lab,c)?{...item,steps:[...item.steps],day:Number(day),lab}:null;}
+function activity(lab,day,c){
+ const n=Number(day),first=lab==='breathing'&&n===1&&c?.primary==='erection';
+ const item=first?firstErectionPractice:({breathing,sensate})[lab]?.[n];
+ return item&&relevant(lab,c)?{...item,steps:[...item.steps],day:n,lab,...(first?{guide:window.SPM_PELVIC_GUIDANCE?.firstPractice?.(),optional:c.completed?.includes(1)===true}:{})}:null;
+}
 function assignments(day,c){return ['breathing','sensate'].map(lab=>activity(lab,day,c)).filter(Boolean);}
 window.SPM_DAILY_SUPPORT={activity,assignments,relevant};
 })();

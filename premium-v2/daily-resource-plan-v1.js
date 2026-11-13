@@ -17,10 +17,9 @@ const videoPlan=[
 ];
 function videoFor(day,c){const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;return videoPlan.find(([d,key,routes])=>d===Number(day)&&(routes.includes(primary)||(key==='dr-low-desire'&&primary==='ejaculation'&&window.SPM_ERECTION_DAILY?.lowDesire(c))))?.[1];}
 function pelvicDays(c){
- // A maintenance difficulty selects more technique sessions, not a diagnosis of weakness.
- const a=c.answers||{},extra=c.primary==='erection'&&[1,2].includes(Number(a.e_maint))&&a.pf_awareness!=='hard_to_relax'&&!(Number(a.pf_tension)>=4);
- const weekdays=extra?[2,4,6]:[2,6];
- return Array.from({length:28},(_,i)=>i+1).filter(d=>weekdays.includes((d-1)%7+1));
+ // The separate contraction module keeps exactly two potential sessions weekly.
+ // Eligibility is verified from the patient's saved readiness before execution.
+ return Array.from({length:28},(_,i)=>i+1).filter(d=>[2,6].includes((d-1)%7+1));
 }
 // Seven distinct educational stories, shared by all routes. Today opens only
 // the assigned story; Library keeps all seven available without advancing a day.
@@ -39,13 +38,13 @@ function recoveryFor(day,primary){
 function cadence(main,support,c){
  const day=Number(c.day),story=recoveryFor(day,c.primary);
  if(['erection','ejaculation'].includes(c.primary)){
-  // Two Lab sessions per week, never on EP's 1/3/5 training days.
+  // Two sessions in the separate contraction module, never on EP's 1/3/5 days.
   support=support.filter(a=>a.kind!=='pelvic');
   const days=pelvicDays(c),slot=days.indexOf(day),weekly=days.length/4;
   if(slot>=0){
-   const pelvic={kind:'pelvic',title:`Piso pélvico · semana ${Math.ceil(day/7)} · sesión ${slot%weekly+1}/${weekly}`,summary:'Sesión indicada: aprende con el Lab si aún te cuesta reconocer o soltar la musculatura. Cuando la técnica sea cómoda, alterna con el entrenamiento clásico. Una sola rutina por sesión, según tus registros.',pelvicPreference:slot%2===0?'classic':'lab',label:'PISO PÉLVICO · SESIÓN PROGRAMADA'};
+   const pelvic={kind:'pelvic',title:'Tu sesión de contracciones de piso pélvico',summary:'Abre el módulo de entrenamiento. Primero se comprueba que la técnica y la relajación estén preparadas.',pelvicIntent:'scheduled',pelvicPreference:'classic',optional:true,optionalLabel:`SEGÚN TU PREPARACIÓN / PAUTA · SESIÓN ${slot%weekly+1}/${weekly} DE LA SEMANA ${Math.ceil(day/7)}`};
    if(main.kind==='pelvic'||(c.primary==='erection'&&day===6))main={...main,...pelvic};
-   else support.push({...pelvic,id:'support-pelvic',optional:false});
+   else support.push({...pelvic,id:'support-pelvic'});
   }
  }
  if(story){
@@ -53,7 +52,11 @@ function cadence(main,support,c){
   const activity={kind:'recovery',scenario:story.scenario,title:`Recuperación · historia ${story.index}/7 · ${story.title}`,summary:'Lee o escucha las cuatro escenas de la historia de hoy. Abre «Practicar y guardar mi respuesta», elige qué harías y registra si la idea te resultó útil.',label:'RECUPERACIÓN · HISTORIA DE HOY'};
   if(main.kind==='recovery')main={...main,...activity};else support.push({...activity,id:'recovery-'+story.scenario});
  }
- if(!['erection','ejaculation'].includes(c.primary)){support=support.map(a=>a.kind==='pelvic'?{...a,optional:!['unsure','no_control','hard_to_relax'].includes(c.answers?.pf_awareness),pelvicPreference:Math.ceil(day/7)%2?'lab':'classic',label:'PISO PÉLVICO · SESIÓN INDICADA'}:a);}
+ if(c.primary==='desire')support=support.filter(a=>a.kind!=='pelvic');
+ if(!['erection','ejaculation','desire'].includes(c.primary)){support=support.map(a=>a.kind==='pelvic'?{...a,optional:!['unsure','no_control','hard_to_relax'].includes(c.answers?.pf_awareness),pelvicPreference:Math.ceil(day/7)%2?'lab':'classic',label:'PISO PÉLVICO · SESIÓN INDICADA'}:a);}
+ // The daily Lab has a different purpose from the contraction module. It stays
+ // available on every day, including scheduled training days, without adding load.
+ if(['erection','ejaculation','desire'].includes(c.primary))support.push({id:'pelvic-daily-lab',kind:'pelvic',title:'Reconoce y suelta tu piso pélvico',summary:'Conciencia, relajación y coordinación con tu respiración, a tu ritmo.',pelvicIntent:'daily-relax',pelvicPreference:'lab',optional:true,optionalLabel:'LAB DIARIO · OPCIONAL'});
  return {main,support};
 }
 function compose(main,support,c){

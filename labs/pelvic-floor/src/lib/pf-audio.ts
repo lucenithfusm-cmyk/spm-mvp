@@ -8,14 +8,14 @@ export type AudioKind = 'narration' | 'cue';
 type Entry = { src: string; kind: AudioKind; duration: number };
 
 // Duraciones de los MP3 locales (segundos). Narrativos ya a 0.95x desde HeyGen; cues a 1x.
-const N = (id: string, d: number): [string, Entry] => [id, { src: `audio/pf/${id}.mp3`, kind: 'narration', duration: d }];
+const N = (id: string, d: number): [string, Entry] => [id, { src: `audio/pf/${id}-20261113-v2.mp3`, kind: 'narration', duration: d }];
 const C = (id: string, d: number): [string, Entry] => [id, { src: `audio/pf/${id}.mp3`, kind: 'cue', duration: d }];
 
 export const AUDIO_MANIFEST: Record<string, Entry> = Object.fromEntries([
-  N('pf.s01.welcome', 7.57551), N('pf.s02.map', 7.88898), N('pf.s03.awareness', 8.724898), N('pf.s04.breath', 5.773061),
-  N('pf.s05.relax', 6.661224), N('pf.s06.technique', 7.209796), N('pf.s07.guided', 6.817959), N('pf.s08.coordination', 6.086531),
-  N('pf.s09.fine', 6.060408), N('pf.s10.transfer', 7.836735), N('pf.s11.overload', 6.452245), N('pf.s12.library', 6.582857),
-  N('pf.s13.plan', 7.340408), N('pf.s14.progress', 4.780408), N('pf.s15.safety', 4.884898), N('pf.s16.close', 5.407347),
+  N('pf.s01.welcome', 35.082438), N('pf.s02.map', 31.764875), N('pf.s03.awareness', 34.481625), N('pf.s04.breath', 37.355063),
+  N('pf.s05.relax', 36.336313), N('pf.s06.technique', 35.631), N('pf.s07.guided', 36.832625), N('pf.s08.coordination', 33.906938),
+  N('pf.s09.fine', 35.604875), N('pf.s10.transfer', 36.911), N('pf.s11.overload', 35.7355), N('pf.s12.library', 36.64975),
+  N('pf.s13.plan', 33.98525), N('pf.s14.progress', 34.40325), N('pf.s15.safety', 49.031813), N('pf.s16.close', 36.96325),
   C('pf.cue.percibe', 0.940408), C('pf.cue.respira', 1.07102), C('pf.cue.suelta', 1.018776), C('pf.cue.exhala-eleva', 1.410612),
   C('pf.cue.inhala-suelta', 1.541224), C('pf.cue.rapida', 0.809796), C('pf.cue.suelta-rapida', 1.018776), C('pf.cue.contrae', 1.227755),
   C('pf.cue.sosten', 1.044898), C('pf.cue.suelta-total', 1.619592),

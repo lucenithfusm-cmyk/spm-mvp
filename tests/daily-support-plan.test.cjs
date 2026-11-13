@@ -14,10 +14,10 @@ function setup(primary='erection',day=10){
  return {w,writes,c,setContext:x=>{c=x;w.dispatchEvent(new w.Event('spm:resourcecontext'))},close:()=>w.close()};
 }
 const wait=()=>new Promise(r=>setTimeout(r,40));
-test('all three routes have alternating sessions over four weeks, with no extra review-day sessions',()=>{
+test('all three routes keep the breathing schedule and DE starts with its own day-one practice',()=>{
  for(const route of ['erection','ejaculation','desire']){const h=setup(route);try{
   const plan=h.w.SPM_DAILY_SUPPORT;
-  assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('breathing',d,h.c)),[3,6,10,13,17,20,24,27]);
+  assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('breathing',d,h.c)),route==='erection'?[1,3,6,10,13,17,20,24,27]:[3,6,10,13,17,20,24,27]);
   assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('sensate',d,h.c)),[4,8,12,16,19,23,26]);
   for(let d=1;d<=28;d++){
    const items=plan.assignments(d,h.c);assert.ok(items.length<=1);
@@ -32,7 +32,7 @@ test('all three routes have alternating sessions over four weeks, with no extra 
 test('daily buttons match schedule and only the authoritative current day is actionable',async()=>{
  const h=setup();try{await wait();
   const w=h.w,breaths=[...w.document.querySelectorAll('[data-breathing-daily]')],sensate=[...w.document.querySelectorAll('[data-sensate-daily]')];
-  assert.equal(breaths.length,8);assert.equal(sensate.length,7);assert.equal(breaths.filter(x=>!x.disabled).length,1);assert.equal(sensate.filter(x=>!x.disabled).length,0);
+  assert.equal(breaths.length,9);assert.equal(sensate.length,7);assert.equal(breaths.filter(x=>!x.disabled).length,1);assert.equal(sensate.filter(x=>!x.disabled).length,0);
   await w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
   assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'daily');assert.deepEqual([...w.SPM_BREATHING_LAB_HOST.getContext().activity.steps],[11]);
   await w.SPM_BREATHING_LAB_HOST.openLibrary();assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'library');assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().activity,null);await w.SPM_BREATHING_LAB.close();

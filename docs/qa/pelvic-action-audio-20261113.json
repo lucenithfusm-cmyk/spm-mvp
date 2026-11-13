@@ -1,0 +1,2159 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Entradas de Lab diario, fuerza por pauta separada y primera práctica de respiración del día 1 DE.",
+  "voiceId": "050c403a43e047c796f8a6257ed2533e",
+  "voiceName": "Lenny - Clear & Professional",
+  "language": "es",
+  "generationSpeed": 0.95,
+  "playbackRate": 1,
+  "entries": [
+    {
+      "id": "pelvic.entry.daily",
+      "text": "Hoy vamos a reconocer, relajar y coordinar el piso pélvico. Abre la práctica guiada y elige una postura cómoda, con la espalda y los pies apoyados, o recostado con las rodillas dobladas. Primero, mira la zona señalada en la imagen. Después, afloja la mandíbula, el abdomen y los glúteos. Respira con comodidad, sin retener el aire ni empujar hacia abajo. Sigue la guía para observar el movimiento de tu respiración y permitir que la zona pélvica se suelte, sin apretarla. No necesitas sentir un movimiento grande ni lograr una respuesta sexual. Cuando hayas practicado, registra lo que notaste, aunque te haya costado percibir la zona. Si aparece dolor o aumenta la tensión, detente y regístralo. Puedes volver a esta práctica cada día, a tu ritmo.",
+      "duration": 47.777938,
+      "sourceDuration": 47.74097505668934,
+      "voiceId": "050c403a43e047c796f8a6257ed2533e",
+      "src": "premium-v2/assets/audio/pelvic/pelvic-lab-daily-20261113.mp3",
+      "sizeBytes": 764447,
+      "sha256": "5b5112a053890748e05404e45597492dbab7e10ad2efd3292d8722eee171d5fb",
+      "generatedAt": "2026-11-13T21:47:14.276Z",
+      "generation": {
+        "provider": "HeyGen Voice",
+        "tool": "create_speech_without_player",
+        "voiceName": "Lenny - Clear & Professional",
+        "voiceMode": "instant",
+        "catalogStatus": "ACTIVE",
+        "catalogLanguage": "en",
+        "language": "es",
+        "speed": 0.95,
+        "playbackRate": 1,
+        "modelRequested": null,
+        "modelReturned": null,
+        "modelSelection": "Omitido; selección del servidor, no identificada en el resultado.",
+        "outputFormat": {
+          "encoding": "mp3",
+          "num_channels": 1,
+          "sample_rate_hertz": 44100,
+          "bitrate_bps": 128000
+        },
+        "withTimestamps": true,
+        "synthesisCalls": 1,
+        "localAudioEdits": [],
+        "sourceToFinal": "Bytes originales del MP3 de HeyGen copiados íntegros; sin recorte, conversión ni cambio de velocidad o tono."
+      },
+      "timing": {
+        "source": "Marcas originales de palabra de HeyGen.",
+        "coordinateSystem": "Segundos desde el inicio del MP3 original, sin modificar.",
+        "boundsAndOrderValidated": true,
+        "firstWordStartSeconds": 0.171,
+        "lastWordEndSeconds": 47.492,
+        "tailAfterLastWordSeconds": 0.285938,
+        "words": [
+          {
+            "text": "Hoy",
+            "start_time": 0.171,
+            "end_time": 0.469
+          },
+          {
+            "text": "vamos",
+            "start_time": 0.555,
+            "end_time": 0.768
+          },
+          {
+            "text": "a",
+            "start_time": 0.811,
+            "end_time": 0.896
+          },
+          {
+            "text": "reconocer",
+            "start_time": 0.939,
+            "end_time": 1.451
+          },
+          {
+            "text": "relajar",
+            "start_time": 1.877,
+            "end_time": 2.3467
+          },
+          {
+            "text": "y",
+            "start_time": 2.56,
+            "end_time": 2.816
+          },
+          {
+            "text": "coordinar",
+            "start_time": 2.859,
+            "end_time": 3.328
+          },
+          {
+            "text": "el",
+            "start_time": 3.456,
+            "end_time": 3.541
+          },
+          {
+            "text": "piso",
+            "start_time": 3.584,
+            "end_time": 3.797
+          },
+          {
+            "text": "pélvico",
+            "start_time": 3.84,
+            "end_time": 4.224
+          },
+          {
+            "text": "Abre",
+            "start_time": 4.736,
+            "end_time": 5.1627
+          },
+          {
+            "text": "la",
+            "start_time": 5.205,
+            "end_time": 5.2907
+          },
+          {
+            "text": "práctica",
+            "start_time": 5.333,
+            "end_time": 5.632
+          },
+          {
+            "text": "guiada",
+            "start_time": 5.803,
+            "end_time": 6.0587
+          },
+          {
+            "text": "y",
+            "start_time": 6.315,
+            "end_time": 6.528
+          },
+          {
+            "text": "elige",
+            "start_time": 6.571,
+            "end_time": 6.8267
+          },
+          {
+            "text": "una",
+            "start_time": 6.869,
+            "end_time": 6.997
+          },
+          {
+            "text": "postura",
+            "start_time": 7.04,
+            "end_time": 7.3387
+          },
+          {
+            "text": "cómoda",
+            "start_time": 7.381,
+            "end_time": 7.765
+          },
+          {
+            "text": "con",
+            "start_time": 8.064,
+            "end_time": 8.192
+          },
+          {
+            "text": "la",
+            "start_time": 8.235,
+            "end_time": 8.32
+          },
+          {
+            "text": "espalda",
+            "start_time": 8.363,
+            "end_time": 8.789
+          },
+          {
+            "text": "y",
+            "start_time": 8.832,
+            "end_time": 8.875
+          },
+          {
+            "text": "los",
+            "start_time": 8.917,
+            "end_time": 9.0027
+          },
+          {
+            "text": "pies",
+            "start_time": 9.045,
+            "end_time": 9.173
+          },
+          {
+            "text": "apoyados",
+            "start_time": 9.216,
+            "end_time": 9.813
+          },
+          {
+            "text": "o",
+            "start_time": 9.984,
+            "end_time": 10.325
+          },
+          {
+            "text": "recostado",
+            "start_time": 10.368,
+            "end_time": 10.88
+          },
+          {
+            "text": "con",
+            "start_time": 10.923,
+            "end_time": 11.008
+          },
+          {
+            "text": "las",
+            "start_time": 11.051,
+            "end_time": 11.136
+          },
+          {
+            "text": "rodillas",
+            "start_time": 11.179,
+            "end_time": 11.52
+          },
+          {
+            "text": "dobladas",
+            "start_time": 11.563,
+            "end_time": 11.989
+          },
+          {
+            "text": "Primero",
+            "start_time": 12.6,
+            "end_time": 12.984
+          },
+          {
+            "text": "mira",
+            "start_time": 13.326,
+            "end_time": 13.539
+          },
+          {
+            "text": "la",
+            "start_time": 13.582,
+            "end_time": 13.667
+          },
+          {
+            "text": "zona",
+            "start_time": 13.71,
+            "end_time": 13.923
+          },
+          {
+            "text": "señalada",
+            "start_time": 13.966,
+            "end_time": 14.392
+          },
+          {
+            "text": "en",
+            "start_time": 14.478,
+            "end_time": 14.52
+          },
+          {
+            "text": "la",
+            "start_time": 14.563,
+            "end_time": 14.648
+          },
+          {
+            "text": "imagen",
+            "start_time": 14.691,
+            "end_time": 14.99
+          },
+          {
+            "text": "Después",
+            "start_time": 15.331,
+            "end_time": 15.715
+          },
+          {
+            "text": "afloja",
+            "start_time": 16.056,
+            "end_time": 16.611
+          },
+          {
+            "text": "la",
+            "start_time": 16.654,
+            "end_time": 16.739
+          },
+          {
+            "text": "mandíbula",
+            "start_time": 16.782,
+            "end_time": 17.336
+          },
+          {
+            "text": "el",
+            "start_time": 17.635,
+            "end_time": 17.8057
+          },
+          {
+            "text": "abdomen",
+            "start_time": 17.848,
+            "end_time": 18.36
+          },
+          {
+            "text": "y",
+            "start_time": 18.446,
+            "end_time": 18.616
+          },
+          {
+            "text": "los",
+            "start_time": 18.659,
+            "end_time": 18.744
+          },
+          {
+            "text": "glúteos",
+            "start_time": 18.787,
+            "end_time": 19.171
+          },
+          {
+            "text": "Respira",
+            "start_time": 19.683,
+            "end_time": 20.067
+          },
+          {
+            "text": "con",
+            "start_time": 20.152,
+            "end_time": 20.2377
+          },
+          {
+            "text": "comodidad",
+            "start_time": 20.28,
+            "end_time": 20.792
+          },
+          {
+            "text": "sin",
+            "start_time": 21.176,
+            "end_time": 21.347
+          },
+          {
+            "text": "retener",
+            "start_time": 21.39,
+            "end_time": 21.603
+          },
+          {
+            "text": "el",
+            "start_time": 21.731,
+            "end_time": 21.859
+          },
+          {
+            "text": "aire",
+            "start_time": 21.902,
+            "end_time": 22.115
+          },
+          {
+            "text": "ni",
+            "start_time": 22.243,
+            "end_time": 22.4137
+          },
+          {
+            "text": "empujar",
+            "start_time": 22.456,
+            "end_time": 22.84
+          },
+          {
+            "text": "hacia",
+            "start_time": 22.883,
+            "end_time": 23.0537
+          },
+          {
+            "text": "abajo",
+            "start_time": 23.096,
+            "end_time": 23.395
+          },
+          {
+            "text": "Sigue",
+            "start_time": 23.883,
+            "end_time": 24.181
+          },
+          {
+            "text": "la",
+            "start_time": 24.224,
+            "end_time": 24.309
+          },
+          {
+            "text": "guía",
+            "start_time": 24.352,
+            "end_time": 24.565
+          },
+          {
+            "text": "para",
+            "start_time": 24.608,
+            "end_time": 24.821
+          },
+          {
+            "text": "observar",
+            "start_time": 24.864,
+            "end_time": 25.205
+          },
+          {
+            "text": "el",
+            "start_time": 25.248,
+            "end_time": 25.2905
+          },
+          {
+            "text": "movimiento",
+            "start_time": 25.333,
+            "end_time": 25.845
+          },
+          {
+            "text": "de",
+            "start_time": 25.888,
+            "end_time": 25.93
+          },
+          {
+            "text": "tu",
+            "start_time": 25.973,
+            "end_time": 26.101
+          },
+          {
+            "text": "respiración",
+            "start_time": 26.144,
+            "end_time": 26.7839
+          },
+          {
+            "text": "y",
+            "start_time": 26.954,
+            "end_time": 27.21
+          },
+          {
+            "text": "permitir",
+            "start_time": 27.253,
+            "end_time": 27.637
+          },
+          {
+            "text": "que",
+            "start_time": 27.68,
+            "end_time": 27.765
+          },
+          {
+            "text": "la",
+            "start_time": 27.808,
+            "end_time": 27.8505
+          },
+          {
+            "text": "zona",
+            "start_time": 27.893,
+            "end_time": 28.1065
+          },
+          {
+            "text": "pélvica",
+            "start_time": 28.149,
+            "end_time": 28.533
+          },
+          {
+            "text": "se",
+            "start_time": 28.661,
+            "end_time": 28.789
+          },
+          {
+            "text": "suelte",
+            "start_time": 28.832,
+            "end_time": 29.131
+          },
+          {
+            "text": "sin",
+            "start_time": 29.429,
+            "end_time": 29.5999
+          },
+          {
+            "text": "apretarla",
+            "start_time": 29.642,
+            "end_time": 30.154
+          },
+          {
+            "text": "No",
+            "start_time": 30.581,
+            "end_time": 30.709
+          },
+          {
+            "text": "necesitas",
+            "start_time": 30.752,
+            "end_time": 31.178
+          },
+          {
+            "text": "sentir",
+            "start_time": 31.221,
+            "end_time": 31.5199
+          },
+          {
+            "text": "un",
+            "start_time": 31.562,
+            "end_time": 31.6479
+          },
+          {
+            "text": "movimiento",
+            "start_time": 31.691,
+            "end_time": 32.117
+          },
+          {
+            "text": "grande",
+            "start_time": 32.16,
+            "end_time": 32.5439
+          },
+          {
+            "text": "ni",
+            "start_time": 32.715,
+            "end_time": 32.885
+          },
+          {
+            "text": "lograr",
+            "start_time": 32.928,
+            "end_time": 33.1839
+          },
+          {
+            "text": "una",
+            "start_time": 33.269,
+            "end_time": 33.397
+          },
+          {
+            "text": "respuesta",
+            "start_time": 33.44,
+            "end_time": 33.8239
+          },
+          {
+            "text": "sexual",
+            "start_time": 33.867,
+            "end_time": 34.251
+          },
+          {
+            "text": "Cuando",
+            "start_time": 34.821,
+            "end_time": 35.119
+          },
+          {
+            "text": "hayas",
+            "start_time": 35.162,
+            "end_time": 35.2898
+          },
+          {
+            "text": "practicado",
+            "start_time": 35.333,
+            "end_time": 35.93
+          },
+          {
+            "text": "registra",
+            "start_time": 36.228,
+            "end_time": 36.6978
+          },
+          {
+            "text": "lo",
+            "start_time": 36.783,
+            "end_time": 36.868
+          },
+          {
+            "text": "que",
+            "start_time": 36.911,
+            "end_time": 36.9538
+          },
+          {
+            "text": "notaste",
+            "start_time": 36.996,
+            "end_time": 37.423
+          },
+          {
+            "text": "aunque",
+            "start_time": 37.636,
+            "end_time": 37.935
+          },
+          {
+            "text": "te",
+            "start_time": 37.978,
+            "end_time": 38.063
+          },
+          {
+            "text": "haya",
+            "start_time": 38.106,
+            "end_time": 38.276
+          },
+          {
+            "text": "costado",
+            "start_time": 38.319,
+            "end_time": 38.66
+          },
+          {
+            "text": "percibir",
+            "start_time": 38.703,
+            "end_time": 39.1298
+          },
+          {
+            "text": "la",
+            "start_time": 39.172,
+            "end_time": 39.2578
+          },
+          {
+            "text": "zona",
+            "start_time": 39.3,
+            "end_time": 39.556
+          },
+          {
+            "text": "Si",
+            "start_time": 40.111,
+            "end_time": 40.239
+          },
+          {
+            "text": "aparece",
+            "start_time": 40.282,
+            "end_time": 40.5378
+          },
+          {
+            "text": "dolor",
+            "start_time": 40.666,
+            "end_time": 40.965
+          },
+          {
+            "text": "o",
+            "start_time": 41.093,
+            "end_time": 41.1778
+          },
+          {
+            "text": "aumenta",
+            "start_time": 41.221,
+            "end_time": 41.6045
+          },
+          {
+            "text": "la",
+            "start_time": 41.647,
+            "end_time": 41.6898
+          },
+          {
+            "text": "tensión",
+            "start_time": 41.733,
+            "end_time": 42.202
+          },
+          {
+            "text": "detente",
+            "start_time": 42.543,
+            "end_time": 43.1405
+          },
+          {
+            "text": "y",
+            "start_time": 43.311,
+            "end_time": 43.567
+          },
+          {
+            "text": "regístralo",
+            "start_time": 43.61,
+            "end_time": 44.122
+          },
+          {
+            "text": "Puedes",
+            "start_time": 44.676,
+            "end_time": 44.932
+          },
+          {
+            "text": "volver",
+            "start_time": 44.975,
+            "end_time": 45.231
+          },
+          {
+            "text": "a",
+            "start_time": 45.274,
+            "end_time": 45.359
+          },
+          {
+            "text": "esta",
+            "start_time": 45.402,
+            "end_time": 45.5298
+          },
+          {
+            "text": "práctica",
+            "start_time": 45.572,
+            "end_time": 45.9138
+          },
+          {
+            "text": "cada",
+            "start_time": 46.042,
+            "end_time": 46.2978
+          },
+          {
+            "text": "día",
+            "start_time": 46.426,
+            "end_time": 46.639
+          },
+          {
+            "text": "a",
+            "start_time": 46.895,
+            "end_time": 46.98
+          },
+          {
+            "text": "tu",
+            "start_time": 47.023,
+            "end_time": 47.151
+          },
+          {
+            "text": "ritmo",
+            "start_time": 47.194,
+            "end_time": 47.492
+          }
+        ]
+      },
+      "qa": {
+        "completeDecodePassed": true,
+        "decodeErrors": [],
+        "providerCharactersMatchExactScript": true,
+        "providerWordsMatchExactScript": true,
+        "asr": {
+          "engine": "faster-whisper",
+          "model": "small",
+          "language": "es",
+          "scriptPromptUsed": false,
+          "fullRecordingTranscribed": true,
+          "normalizedTokensExactMatch": false,
+          "differences": [
+            {
+              "operation": "replace",
+              "expected": "registralo",
+              "observed": "registra"
+            }
+          ],
+          "endingRecovered": true,
+          "lastAsrEndSeconds": 47.5,
+          "reviewNote": "ASR recupera las indicaciones de no retener el aire, no empujar, no apretar y detenerse ante dolor o aumento de tensión. Reconoce «registra» donde el texto aprobado dice «regístralo». Final completo; esta variante no permite afirmar un fallo acústico sin escucha.",
+          "selectedPassages": []
+        },
+        "humanListeningPerformed": false,
+        "limitations": [
+          "Control técnico y transcripción automática; no hubo audición humana. No se afirma validación auditiva de naturalidad, prosodia o pronunciación.",
+          "La voz se verifica por el catálogo ACTIVE y el ID solicitado; no por comparación auditiva.",
+          "Los resultados ASR pueden contener errores de reconocimiento; las diferencias se conservan sin atribuirles automáticamente un defecto de la grabación.",
+          "Las marcas de palabras se verificaron en orden y límites; no se ajustaron mediante escucha."
+        ]
+      }
+    },
+    {
+      "id": "pelvic.entry.strength",
+      "text": "Esta es tu sesión de contracción y fuerza del piso pélvico, disponible cuando corresponde a tu pauta. Abre el entrenamiento y sigue las repeticiones y los descansos que aparecen en pantalla. El gesto es cerrar y elevar suavemente hacia dentro, como si quisieras evitar la salida de un gas. Respira con normalidad, sin apretar los glúteos ni empujar con el abdomen. Después de cada contracción, suelta por completo antes de continuar. No practiques interrumpiendo el chorro de orina. Si aparece dolor, aumenta la tensión o no consigues relajar, detén la sesión y registra lo ocurrido. Este entrenamiento tiene dos sesiones por semana en tu recorrido. El Pelvic Floor Lab diario te acompaña por separado con conciencia, relajación y coordinación.",
+      "duration": 46.628563,
+      "sourceDuration": 46.59668934240362,
+      "voiceId": "050c403a43e047c796f8a6257ed2533e",
+      "src": "premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3",
+      "sizeBytes": 746057,
+      "sha256": "4a012940125a33ff76b635c9b741bcdd564ee2739a07d44aeec3497bb77c578e",
+      "generatedAt": "2026-11-13T21:47:21.162Z",
+      "generation": {
+        "provider": "HeyGen Voice",
+        "tool": "create_speech_without_player",
+        "voiceName": "Lenny - Clear & Professional",
+        "voiceMode": "instant",
+        "catalogStatus": "ACTIVE",
+        "catalogLanguage": "en",
+        "language": "es",
+        "speed": 0.95,
+        "playbackRate": 1,
+        "modelRequested": null,
+        "modelReturned": null,
+        "modelSelection": "Omitido; selección del servidor, no identificada en el resultado.",
+        "outputFormat": {
+          "encoding": "mp3",
+          "num_channels": 1,
+          "sample_rate_hertz": 44100,
+          "bitrate_bps": 128000
+        },
+        "withTimestamps": true,
+        "synthesisCalls": 1,
+        "localAudioEdits": [],
+        "sourceToFinal": "Bytes originales del MP3 de HeyGen copiados íntegros; sin recorte, conversión ni cambio de velocidad o tono."
+      },
+      "timing": {
+        "source": "Marcas originales de palabra de HeyGen.",
+        "coordinateSystem": "Segundos desde el inicio del MP3 original, sin modificar.",
+        "boundsAndOrderValidated": true,
+        "firstWordStartSeconds": 0.213,
+        "lastWordEndSeconds": 46.333,
+        "tailAfterLastWordSeconds": 0.295563,
+        "words": [
+          {
+            "text": "Esta",
+            "start_time": 0.213,
+            "end_time": 0.555
+          },
+          {
+            "text": "es",
+            "start_time": 0.597,
+            "end_time": 0.64
+          },
+          {
+            "text": "tu",
+            "start_time": 0.683,
+            "end_time": 0.768
+          },
+          {
+            "text": "sesión",
+            "start_time": 0.811,
+            "end_time": 1.152
+          },
+          {
+            "text": "de",
+            "start_time": 1.195,
+            "end_time": 1.28
+          },
+          {
+            "text": "contracción",
+            "start_time": 1.323,
+            "end_time": 1.9627
+          },
+          {
+            "text": "y",
+            "start_time": 2.048,
+            "end_time": 2.176
+          },
+          {
+            "text": "fuerza",
+            "start_time": 2.219,
+            "end_time": 2.56
+          },
+          {
+            "text": "del",
+            "start_time": 2.603,
+            "end_time": 2.688
+          },
+          {
+            "text": "piso",
+            "start_time": 2.731,
+            "end_time": 2.9867
+          },
+          {
+            "text": "pélvico",
+            "start_time": 3.072,
+            "end_time": 3.499
+          },
+          {
+            "text": "disponible",
+            "start_time": 3.84,
+            "end_time": 4.352
+          },
+          {
+            "text": "cuando",
+            "start_time": 4.523,
+            "end_time": 4.736
+          },
+          {
+            "text": "corresponde",
+            "start_time": 4.779,
+            "end_time": 5.205
+          },
+          {
+            "text": "a",
+            "start_time": 5.291,
+            "end_time": 5.333
+          },
+          {
+            "text": "tu",
+            "start_time": 5.376,
+            "end_time": 5.461
+          },
+          {
+            "text": "pauta",
+            "start_time": 5.504,
+            "end_time": 5.803
+          },
+          {
+            "text": "Abre",
+            "start_time": 6.229,
+            "end_time": 6.613
+          },
+          {
+            "text": "el",
+            "start_time": 6.656,
+            "end_time": 6.6987
+          },
+          {
+            "text": "entrenamiento",
+            "start_time": 6.741,
+            "end_time": 7.3387
+          },
+          {
+            "text": "y",
+            "start_time": 7.467,
+            "end_time": 7.5947
+          },
+          {
+            "text": "sigue",
+            "start_time": 7.637,
+            "end_time": 7.893
+          },
+          {
+            "text": "las",
+            "start_time": 7.936,
+            "end_time": 8.064
+          },
+          {
+            "text": "repeticiones",
+            "start_time": 8.107,
+            "end_time": 8.789
+          },
+          {
+            "text": "y",
+            "start_time": 8.875,
+            "end_time": 8.917
+          },
+          {
+            "text": "los",
+            "start_time": 8.96,
+            "end_time": 9.045
+          },
+          {
+            "text": "descansos",
+            "start_time": 9.088,
+            "end_time": 9.6
+          },
+          {
+            "text": "que",
+            "start_time": 9.685,
+            "end_time": 9.728
+          },
+          {
+            "text": "aparecen",
+            "start_time": 9.771,
+            "end_time": 10.155
+          },
+          {
+            "text": "en",
+            "start_time": 10.197,
+            "end_time": 10.24
+          },
+          {
+            "text": "pantalla",
+            "start_time": 10.283,
+            "end_time": 10.752
+          },
+          {
+            "text": "El",
+            "start_time": 11.277,
+            "end_time": 11.4048
+          },
+          {
+            "text": "gesto",
+            "start_time": 11.447,
+            "end_time": 11.746
+          },
+          {
+            "text": "es",
+            "start_time": 11.789,
+            "end_time": 11.8315
+          },
+          {
+            "text": "cerrar",
+            "start_time": 11.874,
+            "end_time": 12.258
+          },
+          {
+            "text": "y",
+            "start_time": 12.472,
+            "end_time": 12.514
+          },
+          {
+            "text": "elevar",
+            "start_time": 12.557,
+            "end_time": 12.855
+          },
+          {
+            "text": "suavemente",
+            "start_time": 12.941,
+            "end_time": 13.666
+          },
+          {
+            "text": "hacia",
+            "start_time": 13.837,
+            "end_time": 14.05
+          },
+          {
+            "text": "dentro",
+            "start_time": 14.093,
+            "end_time": 14.434
+          },
+          {
+            "text": "como",
+            "start_time": 14.775,
+            "end_time": 14.946
+          },
+          {
+            "text": "si",
+            "start_time": 14.989,
+            "end_time": 15.1168
+          },
+          {
+            "text": "quisieras",
+            "start_time": 15.159,
+            "end_time": 15.5008
+          },
+          {
+            "text": "evitar",
+            "start_time": 15.586,
+            "end_time": 15.9275
+          },
+          {
+            "text": "la",
+            "start_time": 15.97,
+            "end_time": 16.055
+          },
+          {
+            "text": "salida",
+            "start_time": 16.098,
+            "end_time": 16.439
+          },
+          {
+            "text": "de",
+            "start_time": 16.482,
+            "end_time": 16.525
+          },
+          {
+            "text": "un",
+            "start_time": 16.567,
+            "end_time": 16.61
+          },
+          {
+            "text": "gas",
+            "start_time": 16.653,
+            "end_time": 16.823
+          },
+          {
+            "text": "Respira",
+            "start_time": 17.421,
+            "end_time": 17.805
+          },
+          {
+            "text": "con",
+            "start_time": 17.848,
+            "end_time": 17.9755
+          },
+          {
+            "text": "normalidad",
+            "start_time": 18.018,
+            "end_time": 18.573
+          },
+          {
+            "text": "sin",
+            "start_time": 19.042,
+            "end_time": 19.2128
+          },
+          {
+            "text": "apretar",
+            "start_time": 19.256,
+            "end_time": 19.554
+          },
+          {
+            "text": "los",
+            "start_time": 19.597,
+            "end_time": 19.7248
+          },
+          {
+            "text": "glúteos",
+            "start_time": 19.767,
+            "end_time": 20.279
+          },
+          {
+            "text": "ni",
+            "start_time": 20.407,
+            "end_time": 20.535
+          },
+          {
+            "text": "empujar",
+            "start_time": 20.578,
+            "end_time": 20.919
+          },
+          {
+            "text": "con",
+            "start_time": 21.005,
+            "end_time": 21.09
+          },
+          {
+            "text": "el",
+            "start_time": 21.133,
+            "end_time": 21.175
+          },
+          {
+            "text": "abdomen",
+            "start_time": 21.218,
+            "end_time": 21.645
+          },
+          {
+            "text": "Después",
+            "start_time": 22.137,
+            "end_time": 22.521
+          },
+          {
+            "text": "de",
+            "start_time": 22.564,
+            "end_time": 22.649
+          },
+          {
+            "text": "cada",
+            "start_time": 22.692,
+            "end_time": 22.8199
+          },
+          {
+            "text": "contracción",
+            "start_time": 22.948,
+            "end_time": 23.545
+          },
+          {
+            "text": "suelta",
+            "start_time": 23.929,
+            "end_time": 24.313
+          },
+          {
+            "text": "por",
+            "start_time": 24.356,
+            "end_time": 24.441
+          },
+          {
+            "text": "completo",
+            "start_time": 24.527,
+            "end_time": 24.9106
+          },
+          {
+            "text": "antes",
+            "start_time": 25.039,
+            "end_time": 25.2519
+          },
+          {
+            "text": "de",
+            "start_time": 25.295,
+            "end_time": 25.4226
+          },
+          {
+            "text": "continuar",
+            "start_time": 25.465,
+            "end_time": 25.849
+          },
+          {
+            "text": "No",
+            "start_time": 26.361,
+            "end_time": 26.489
+          },
+          {
+            "text": "practiques",
+            "start_time": 26.532,
+            "end_time": 27.001
+          },
+          {
+            "text": "interrumpiendo",
+            "start_time": 27.129,
+            "end_time": 27.7266
+          },
+          {
+            "text": "el",
+            "start_time": 27.769,
+            "end_time": 27.8119
+          },
+          {
+            "text": "chorro",
+            "start_time": 27.855,
+            "end_time": 28.111
+          },
+          {
+            "text": "de",
+            "start_time": 28.153,
+            "end_time": 28.1959
+          },
+          {
+            "text": "orina",
+            "start_time": 28.239,
+            "end_time": 28.452
+          },
+          {
+            "text": "Si",
+            "start_time": 29.077,
+            "end_time": 29.248
+          },
+          {
+            "text": "aparece",
+            "start_time": 29.291,
+            "end_time": 29.5466
+          },
+          {
+            "text": "dolor",
+            "start_time": 29.675,
+            "end_time": 29.973
+          },
+          {
+            "text": "aumenta",
+            "start_time": 30.315,
+            "end_time": 30.741
+          },
+          {
+            "text": "la",
+            "start_time": 30.784,
+            "end_time": 30.869
+          },
+          {
+            "text": "tensión",
+            "start_time": 30.912,
+            "end_time": 31.424
+          },
+          {
+            "text": "o",
+            "start_time": 31.595,
+            "end_time": 31.765
+          },
+          {
+            "text": "no",
+            "start_time": 31.808,
+            "end_time": 31.936
+          },
+          {
+            "text": "consigues",
+            "start_time": 31.979,
+            "end_time": 32.405
+          },
+          {
+            "text": "relajar",
+            "start_time": 32.448,
+            "end_time": 32.875
+          },
+          {
+            "text": "detén",
+            "start_time": 33.301,
+            "end_time": 33.685
+          },
+          {
+            "text": "la",
+            "start_time": 33.728,
+            "end_time": 33.813
+          },
+          {
+            "text": "sesión",
+            "start_time": 33.856,
+            "end_time": 34.2826
+          },
+          {
+            "text": "y",
+            "start_time": 34.411,
+            "end_time": 34.581
+          },
+          {
+            "text": "registra",
+            "start_time": 34.624,
+            "end_time": 35.093
+          },
+          {
+            "text": "lo",
+            "start_time": 35.136,
+            "end_time": 35.264
+          },
+          {
+            "text": "ocurrido",
+            "start_time": 35.307,
+            "end_time": 35.733
+          },
+          {
+            "text": "Este",
+            "start_time": 36.16,
+            "end_time": 36.629
+          },
+          {
+            "text": "entrenamiento",
+            "start_time": 36.672,
+            "end_time": 37.184
+          },
+          {
+            "text": "tiene",
+            "start_time": 37.269,
+            "end_time": 37.397
+          },
+          {
+            "text": "dos",
+            "start_time": 37.525,
+            "end_time": 37.781
+          },
+          {
+            "text": "sesiones",
+            "start_time": 37.909,
+            "end_time": 38.293
+          },
+          {
+            "text": "por",
+            "start_time": 38.379,
+            "end_time": 38.5066
+          },
+          {
+            "text": "semana",
+            "start_time": 38.549,
+            "end_time": 38.933
+          },
+          {
+            "text": "en",
+            "start_time": 38.976,
+            "end_time": 39.019
+          },
+          {
+            "text": "tu",
+            "start_time": 39.061,
+            "end_time": 39.1466
+          },
+          {
+            "text": "recorrido",
+            "start_time": 39.189,
+            "end_time": 39.659
+          },
+          {
+            "text": "El",
+            "start_time": 40.189,
+            "end_time": 40.317
+          },
+          {
+            "text": "Pelvic",
+            "start_time": 40.36,
+            "end_time": 40.701
+          },
+          {
+            "text": "Floor",
+            "start_time": 40.744,
+            "end_time": 40.957
+          },
+          {
+            "text": "Lab",
+            "start_time": 41,
+            "end_time": 41.213
+          },
+          {
+            "text": "diario",
+            "start_time": 41.299,
+            "end_time": 41.725
+          },
+          {
+            "text": "te",
+            "start_time": 41.811,
+            "end_time": 41.896
+          },
+          {
+            "text": "acompaña",
+            "start_time": 41.939,
+            "end_time": 42.365
+          },
+          {
+            "text": "por",
+            "start_time": 42.408,
+            "end_time": 42.536
+          },
+          {
+            "text": "separado",
+            "start_time": 42.579,
+            "end_time": 43.0907
+          },
+          {
+            "text": "con",
+            "start_time": 43.176,
+            "end_time": 43.304
+          },
+          {
+            "text": "conciencia",
+            "start_time": 43.347,
+            "end_time": 44.115
+          },
+          {
+            "text": "relajación",
+            "start_time": 44.413,
+            "end_time": 45.139
+          },
+          {
+            "text": "y",
+            "start_time": 45.352,
+            "end_time": 45.5227
+          },
+          {
+            "text": "coordinación",
+            "start_time": 45.565,
+            "end_time": 46.333
+          }
+        ]
+      },
+      "qa": {
+        "completeDecodePassed": true,
+        "decodeErrors": [],
+        "providerCharactersMatchExactScript": true,
+        "providerWordsMatchExactScript": true,
+        "asr": {
+          "engine": "faster-whisper",
+          "model": "small",
+          "language": "es",
+          "scriptPromptUsed": false,
+          "fullRecordingTranscribed": true,
+          "normalizedTokensExactMatch": false,
+          "differences": [
+            {
+              "operation": "replace",
+              "expected": "dentro",
+              "observed": "adentro"
+            },
+            {
+              "operation": "replace",
+              "expected": "tension",
+              "observed": "atencion"
+            }
+          ],
+          "endingRecovered": true,
+          "lastAsrEndSeconds": 46.24,
+          "reviewNote": "ASR reconoce «adentro» por «dentro» y «la atención» por «la tensión»; la segunda variante persiste en el pasaje aislado. Recupera respiración normal, liberación completa, no interrumpir la orina, detenerse si no puede relajar y las dos sesiones semanales. Variantes documentadas; sin audición humana.",
+          "selectedPassages": [
+            {
+              "startSeconds": 28.727,
+              "endSeconds": 36.083,
+              "transcript": "Si aparece dolor, aumenta la atención o no consigues relajar, detén la sesión y registra lo ocurrido.",
+              "scriptPromptUsed": false
+            }
+          ]
+        },
+        "humanListeningPerformed": false,
+        "limitations": [
+          "Control técnico y transcripción automática; no hubo audición humana. No se afirma validación auditiva de naturalidad, prosodia o pronunciación.",
+          "La voz se verifica por el catálogo ACTIVE y el ID solicitado; no por comparación auditiva.",
+          "Los resultados ASR pueden contener errores de reconocimiento; las diferencias se conservan sin atribuirles automáticamente un defecto de la grabación.",
+          "Las marcas de palabras se verificaron en orden y límites; no se ajustaron mediante escucha."
+        ]
+      }
+    },
+    {
+      "id": "erection.day1.first-practice",
+      "text": "Vamos a empezar con una práctica que puedes hacer desde hoy: respira y suelta. Abre la actividad y siéntate con la espalda apoyada y los pies en el suelo, o recuéstate en una posición cómoda. Primero, recorre las tres zonas de la pantalla: mandíbula, hombros y abdomen. Afloja cada una con suavidad, sin forzar. Después, pulsa Continuar para abrir la guía de respiración. Inicia la práctica y deja entrar y salir el aire con comodidad, sin retenerlo. Usa el movimiento de la guía como apoyo; puedes respirar a tu propio ritmo. Si te distraes, vuelve a notar el apoyo de tu cuerpo y el paso del aire. No necesitas comprobar una erección ni sentir un cambio inmediato. Cuando hayas practicado, registra cómo te sentiste. Si aparece mareo o incomodidad, detente y vuelve a respirar con naturalidad.",
+      "duration": 51.800813,
+      "sourceDuration": 51.75151927437641,
+      "voiceId": "050c403a43e047c796f8a6257ed2533e",
+      "src": "premium-v2/assets/audio/pelvic/de-day1-first-practice-20261113.mp3",
+      "sizeBytes": 828813,
+      "sha256": "48fb74138c800ef8e39242d8ee8245a8265337abc2cd4093aed262162ec65c13",
+      "generatedAt": "2026-11-13T21:47:27.861Z",
+      "generation": {
+        "provider": "HeyGen Voice",
+        "tool": "create_speech_without_player",
+        "voiceName": "Lenny - Clear & Professional",
+        "voiceMode": "instant",
+        "catalogStatus": "ACTIVE",
+        "catalogLanguage": "en",
+        "language": "es",
+        "speed": 0.95,
+        "playbackRate": 1,
+        "modelRequested": null,
+        "modelReturned": null,
+        "modelSelection": "Omitido; selección del servidor, no identificada en el resultado.",
+        "outputFormat": {
+          "encoding": "mp3",
+          "num_channels": 1,
+          "sample_rate_hertz": 44100,
+          "bitrate_bps": 128000
+        },
+        "withTimestamps": true,
+        "synthesisCalls": 1,
+        "localAudioEdits": [],
+        "sourceToFinal": "Bytes originales del MP3 de HeyGen copiados íntegros; sin recorte, conversión ni cambio de velocidad o tono."
+      },
+      "timing": {
+        "source": "Marcas originales de palabra de HeyGen.",
+        "coordinateSystem": "Segundos desde el inicio del MP3 original, sin modificar.",
+        "boundsAndOrderValidated": true,
+        "firstWordStartSeconds": 0.256,
+        "lastWordEndSeconds": 51.362,
+        "tailAfterLastWordSeconds": 0.438813,
+        "words": [
+          {
+            "text": "Vamos",
+            "start_time": 0.256,
+            "end_time": 0.555
+          },
+          {
+            "text": "a",
+            "start_time": 0.597,
+            "end_time": 0.64
+          },
+          {
+            "text": "empezar",
+            "start_time": 0.683,
+            "end_time": 0.9387
+          },
+          {
+            "text": "con",
+            "start_time": 0.981,
+            "end_time": 1.0667
+          },
+          {
+            "text": "una",
+            "start_time": 1.109,
+            "end_time": 1.237
+          },
+          {
+            "text": "práctica",
+            "start_time": 1.28,
+            "end_time": 1.621
+          },
+          {
+            "text": "que",
+            "start_time": 1.749,
+            "end_time": 1.877
+          },
+          {
+            "text": "puedes",
+            "start_time": 1.92,
+            "end_time": 2.133
+          },
+          {
+            "text": "hacer",
+            "start_time": 2.176,
+            "end_time": 2.432
+          },
+          {
+            "text": "desde",
+            "start_time": 2.517,
+            "end_time": 2.773
+          },
+          {
+            "text": "hoy",
+            "start_time": 2.816,
+            "end_time": 2.944
+          },
+          {
+            "text": "respira",
+            "start_time": 3.413,
+            "end_time": 4.0107
+          },
+          {
+            "text": "y",
+            "start_time": 4.181,
+            "end_time": 4.48
+          },
+          {
+            "text": "suelta",
+            "start_time": 4.523,
+            "end_time": 4.907
+          },
+          {
+            "text": "Abre",
+            "start_time": 5.376,
+            "end_time": 5.717
+          },
+          {
+            "text": "la",
+            "start_time": 5.803,
+            "end_time": 5.845
+          },
+          {
+            "text": "actividad",
+            "start_time": 5.888,
+            "end_time": 6.357
+          },
+          {
+            "text": "y",
+            "start_time": 6.528,
+            "end_time": 6.656
+          },
+          {
+            "text": "siéntate",
+            "start_time": 6.699,
+            "end_time": 6.997
+          },
+          {
+            "text": "con",
+            "start_time": 7.125,
+            "end_time": 7.211
+          },
+          {
+            "text": "la",
+            "start_time": 7.253,
+            "end_time": 7.3387
+          },
+          {
+            "text": "espalda",
+            "start_time": 7.381,
+            "end_time": 7.765
+          },
+          {
+            "text": "apoyada",
+            "start_time": 7.808,
+            "end_time": 8.149
+          },
+          {
+            "text": "y",
+            "start_time": 8.405,
+            "end_time": 8.491
+          },
+          {
+            "text": "los",
+            "start_time": 8.533,
+            "end_time": 8.6187
+          },
+          {
+            "text": "pies",
+            "start_time": 8.661,
+            "end_time": 8.832
+          },
+          {
+            "text": "en",
+            "start_time": 8.917,
+            "end_time": 8.96
+          },
+          {
+            "text": "el",
+            "start_time": 9.003,
+            "end_time": 9.045
+          },
+          {
+            "text": "suelo",
+            "start_time": 9.088,
+            "end_time": 9.429
+          },
+          {
+            "text": "o",
+            "start_time": 9.685,
+            "end_time": 9.941
+          },
+          {
+            "text": "recuéstate",
+            "start_time": 9.984,
+            "end_time": 10.4107
+          },
+          {
+            "text": "en",
+            "start_time": 10.581,
+            "end_time": 10.624
+          },
+          {
+            "text": "una",
+            "start_time": 10.667,
+            "end_time": 10.752
+          },
+          {
+            "text": "posición",
+            "start_time": 10.795,
+            "end_time": 11.1787
+          },
+          {
+            "text": "cómoda",
+            "start_time": 11.221,
+            "end_time": 11.605
+          },
+          {
+            "text": "Primero",
+            "start_time": 12.171,
+            "end_time": 12.555
+          },
+          {
+            "text": "recorre",
+            "start_time": 12.939,
+            "end_time": 13.323
+          },
+          {
+            "text": "las",
+            "start_time": 13.366,
+            "end_time": 13.493
+          },
+          {
+            "text": "tres",
+            "start_time": 13.579,
+            "end_time": 13.749
+          },
+          {
+            "text": "zonas",
+            "start_time": 13.877,
+            "end_time": 14.0908
+          },
+          {
+            "text": "de",
+            "start_time": 14.133,
+            "end_time": 14.219
+          },
+          {
+            "text": "la",
+            "start_time": 14.261,
+            "end_time": 14.304
+          },
+          {
+            "text": "pantalla",
+            "start_time": 14.347,
+            "end_time": 14.774
+          },
+          {
+            "text": "mandíbula",
+            "start_time": 15.115,
+            "end_time": 15.712
+          },
+          {
+            "text": "hombros",
+            "start_time": 15.968,
+            "end_time": 16.438
+          },
+          {
+            "text": "y",
+            "start_time": 16.608,
+            "end_time": 16.6935
+          },
+          {
+            "text": "abdomen",
+            "start_time": 16.736,
+            "end_time": 17.163
+          },
+          {
+            "text": "Afloja",
+            "start_time": 17.504,
+            "end_time": 18.144
+          },
+          {
+            "text": "cada",
+            "start_time": 18.187,
+            "end_time": 18.3148
+          },
+          {
+            "text": "una",
+            "start_time": 18.443,
+            "end_time": 18.613
+          },
+          {
+            "text": "con",
+            "start_time": 18.656,
+            "end_time": 18.784
+          },
+          {
+            "text": "suavidad",
+            "start_time": 18.827,
+            "end_time": 19.296
+          },
+          {
+            "text": "sin",
+            "start_time": 19.68,
+            "end_time": 19.893
+          },
+          {
+            "text": "forzar",
+            "start_time": 19.936,
+            "end_time": 20.277
+          },
+          {
+            "text": "Después",
+            "start_time": 20.96,
+            "end_time": 21.302
+          },
+          {
+            "text": "pulsa",
+            "start_time": 21.771,
+            "end_time": 22.0268
+          },
+          {
+            "text": "Continuar",
+            "start_time": 22.112,
+            "end_time": 22.624
+          },
+          {
+            "text": "para",
+            "start_time": 22.752,
+            "end_time": 22.965
+          },
+          {
+            "text": "abrir",
+            "start_time": 23.008,
+            "end_time": 23.221
+          },
+          {
+            "text": "la",
+            "start_time": 23.264,
+            "end_time": 23.349
+          },
+          {
+            "text": "guía",
+            "start_time": 23.392,
+            "end_time": 23.605
+          },
+          {
+            "text": "de",
+            "start_time": 23.648,
+            "end_time": 23.733
+          },
+          {
+            "text": "respiración",
+            "start_time": 23.776,
+            "end_time": 24.331
+          },
+          {
+            "text": "Inicia",
+            "start_time": 24.73,
+            "end_time": 25.1567
+          },
+          {
+            "text": "la",
+            "start_time": 25.199,
+            "end_time": 25.327
+          },
+          {
+            "text": "práctica",
+            "start_time": 25.37,
+            "end_time": 25.711
+          },
+          {
+            "text": "y",
+            "start_time": 25.967,
+            "end_time": 26.095
+          },
+          {
+            "text": "deja",
+            "start_time": 26.138,
+            "end_time": 26.394
+          },
+          {
+            "text": "entrar",
+            "start_time": 26.437,
+            "end_time": 26.735
+          },
+          {
+            "text": "y",
+            "start_time": 26.949,
+            "end_time": 26.991
+          },
+          {
+            "text": "salir",
+            "start_time": 27.034,
+            "end_time": 27.29
+          },
+          {
+            "text": "el",
+            "start_time": 27.333,
+            "end_time": 27.418
+          },
+          {
+            "text": "aire",
+            "start_time": 27.461,
+            "end_time": 27.631
+          },
+          {
+            "text": "con",
+            "start_time": 27.759,
+            "end_time": 27.887
+          },
+          {
+            "text": "comodidad",
+            "start_time": 27.93,
+            "end_time": 28.442
+          },
+          {
+            "text": "sin",
+            "start_time": 28.783,
+            "end_time": 28.954
+          },
+          {
+            "text": "retenerlo",
+            "start_time": 28.997,
+            "end_time": 29.466
+          },
+          {
+            "text": "Usa",
+            "start_time": 29.978,
+            "end_time": 30.447
+          },
+          {
+            "text": "el",
+            "start_time": 30.49,
+            "end_time": 30.5327
+          },
+          {
+            "text": "movimiento",
+            "start_time": 30.575,
+            "end_time": 31.0447
+          },
+          {
+            "text": "de",
+            "start_time": 31.13,
+            "end_time": 31.215
+          },
+          {
+            "text": "la",
+            "start_time": 31.258,
+            "end_time": 31.3007
+          },
+          {
+            "text": "guía",
+            "start_time": 31.343,
+            "end_time": 31.5567
+          },
+          {
+            "text": "como",
+            "start_time": 31.599,
+            "end_time": 31.8127
+          },
+          {
+            "text": "apoyo",
+            "start_time": 31.855,
+            "end_time": 32.239
+          },
+          {
+            "text": "puedes",
+            "start_time": 32.581,
+            "end_time": 32.8367
+          },
+          {
+            "text": "respirar",
+            "start_time": 32.879,
+            "end_time": 33.3487
+          },
+          {
+            "text": "a",
+            "start_time": 33.391,
+            "end_time": 33.434
+          },
+          {
+            "text": "tu",
+            "start_time": 33.477,
+            "end_time": 33.562
+          },
+          {
+            "text": "propio",
+            "start_time": 33.605,
+            "end_time": 33.903
+          },
+          {
+            "text": "ritmo",
+            "start_time": 33.946,
+            "end_time": 34.202
+          },
+          {
+            "text": "Si",
+            "start_time": 34.743,
+            "end_time": 34.956
+          },
+          {
+            "text": "te",
+            "start_time": 34.999,
+            "end_time": 35.084
+          },
+          {
+            "text": "distraes",
+            "start_time": 35.127,
+            "end_time": 35.639
+          },
+          {
+            "text": "vuelve",
+            "start_time": 36.023,
+            "end_time": 36.492
+          },
+          {
+            "text": "a",
+            "start_time": 36.535,
+            "end_time": 36.5776
+          },
+          {
+            "text": "notar",
+            "start_time": 36.62,
+            "end_time": 36.791
+          },
+          {
+            "text": "el",
+            "start_time": 36.834,
+            "end_time": 36.876
+          },
+          {
+            "text": "apoyo",
+            "start_time": 36.919,
+            "end_time": 37.303
+          },
+          {
+            "text": "de",
+            "start_time": 37.346,
+            "end_time": 37.388
+          },
+          {
+            "text": "tu",
+            "start_time": 37.431,
+            "end_time": 37.559
+          },
+          {
+            "text": "cuerpo",
+            "start_time": 37.602,
+            "end_time": 37.943
+          },
+          {
+            "text": "y",
+            "start_time": 38.071,
+            "end_time": 38.114
+          },
+          {
+            "text": "el",
+            "start_time": 38.156,
+            "end_time": 38.199
+          },
+          {
+            "text": "paso",
+            "start_time": 38.284,
+            "end_time": 38.583
+          },
+          {
+            "text": "del",
+            "start_time": 38.626,
+            "end_time": 38.711
+          },
+          {
+            "text": "aire",
+            "start_time": 38.754,
+            "end_time": 38.924
+          },
+          {
+            "text": "No",
+            "start_time": 39.351,
+            "end_time": 39.5216
+          },
+          {
+            "text": "necesitas",
+            "start_time": 39.564,
+            "end_time": 39.948
+          },
+          {
+            "text": "comprobar",
+            "start_time": 40.034,
+            "end_time": 40.46
+          },
+          {
+            "text": "una",
+            "start_time": 40.503,
+            "end_time": 40.631
+          },
+          {
+            "text": "erección",
+            "start_time": 40.674,
+            "end_time": 41.1856
+          },
+          {
+            "text": "ni",
+            "start_time": 41.314,
+            "end_time": 41.4416
+          },
+          {
+            "text": "sentir",
+            "start_time": 41.484,
+            "end_time": 41.783
+          },
+          {
+            "text": "un",
+            "start_time": 41.826,
+            "end_time": 41.911
+          },
+          {
+            "text": "cambio",
+            "start_time": 41.954,
+            "end_time": 42.295
+          },
+          {
+            "text": "inmediato",
+            "start_time": 42.338,
+            "end_time": 42.722
+          },
+          {
+            "text": "Cuando",
+            "start_time": 43.106,
+            "end_time": 43.3616
+          },
+          {
+            "text": "hayas",
+            "start_time": 43.404,
+            "end_time": 43.6176
+          },
+          {
+            "text": "practicado",
+            "start_time": 43.66,
+            "end_time": 44.3
+          },
+          {
+            "text": "registra",
+            "start_time": 44.514,
+            "end_time": 44.983
+          },
+          {
+            "text": "cómo",
+            "start_time": 45.026,
+            "end_time": 45.239
+          },
+          {
+            "text": "te",
+            "start_time": 45.282,
+            "end_time": 45.367
+          },
+          {
+            "text": "sentiste",
+            "start_time": 45.41,
+            "end_time": 45.879
+          },
+          {
+            "text": "Si",
+            "start_time": 46.412,
+            "end_time": 46.54
+          },
+          {
+            "text": "aparece",
+            "start_time": 46.583,
+            "end_time": 46.839
+          },
+          {
+            "text": "mareo",
+            "start_time": 47.01,
+            "end_time": 47.351
+          },
+          {
+            "text": "o",
+            "start_time": 47.522,
+            "end_time": 47.607
+          },
+          {
+            "text": "incomodidad",
+            "start_time": 47.65,
+            "end_time": 48.29
+          },
+          {
+            "text": "detente",
+            "start_time": 48.759,
+            "end_time": 49.3137
+          },
+          {
+            "text": "y",
+            "start_time": 49.484,
+            "end_time": 49.6977
+          },
+          {
+            "text": "vuelve",
+            "start_time": 49.74,
+            "end_time": 49.996
+          },
+          {
+            "text": "a",
+            "start_time": 50.039,
+            "end_time": 50.0817
+          },
+          {
+            "text": "respirar",
+            "start_time": 50.124,
+            "end_time": 50.551
+          },
+          {
+            "text": "con",
+            "start_time": 50.636,
+            "end_time": 50.764
+          },
+          {
+            "text": "naturalidad",
+            "start_time": 50.807,
+            "end_time": 51.362
+          }
+        ]
+      },
+      "qa": {
+        "completeDecodePassed": true,
+        "decodeErrors": [],
+        "providerCharactersMatchExactScript": true,
+        "providerWordsMatchExactScript": true,
+        "asr": {
+          "engine": "faster-whisper",
+          "model": "small",
+          "language": "es",
+          "scriptPromptUsed": false,
+          "fullRecordingTranscribed": true,
+          "normalizedTokensExactMatch": false,
+          "differences": [
+            {
+              "operation": "replace",
+              "expected": "usa",
+              "observed": "use"
+            },
+            {
+              "operation": "replace",
+              "expected": "notar",
+              "observed": "anotar"
+            }
+          ],
+          "endingRecovered": true,
+          "lastAsrEndSeconds": 51.38,
+          "reviewNote": "ASR reconoce «Use» por «Usa» y «anotar» por «notar». Recupera las tres zonas, Continuar, no retener el aire, ritmo propio, no comprobar una erección y detenerse ante mareo o incomodidad. Final completo.",
+          "selectedPassages": []
+        },
+        "humanListeningPerformed": false,
+        "limitations": [
+          "Control técnico y transcripción automática; no hubo audición humana. No se afirma validación auditiva de naturalidad, prosodia o pronunciación.",
+          "La voz se verifica por el catálogo ACTIVE y el ID solicitado; no por comparación auditiva.",
+          "Los resultados ASR pueden contener errores de reconocimiento; las diferencias se conservan sin atribuirles automáticamente un defecto de la grabación.",
+          "Las marcas de palabras se verificaron en orden y límites; no se ajustaron mediante escucha."
+        ]
+      }
+    }
+  ]
+}

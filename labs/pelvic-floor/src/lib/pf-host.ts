@@ -1,10 +1,18 @@
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 
-type Restriction = 'review' | 'relax' | 'awareness' | 'ready';
+export type Restriction = 'review' | 'relax' | 'awareness' | 'ready';
+export type HostContext = {
+  day: number;
+  origin: 'dailyPlan' | 'erectile' | 'library';
+  restriction: Restriction;
+  intent?: 'daily-relax' | 'scheduled' | 'library';
+  activityId?: string | null;
+};
 type Host = {
   getState(): Record<string, unknown>;
   write(key: string, value: unknown): boolean;
-  getContext(): { day: number; origin: 'dailyPlan' | 'erectile' | 'library'; restriction: Restriction };
+  getContext(): HostContext;
+  onResult?(result: Record<string, unknown>): boolean;
   close(): Promise<boolean | undefined>;
 };
 function resolveHost(): Host | null {
@@ -21,10 +29,21 @@ export function load<T>(key: string, fallback: T): T {
   return value === undefined ? fallback : value as T;
 }
 export function save(key: string, value: unknown) { return host?.write(key, value) ?? false; }
+export function readContext(): HostContext | null {
+  try { return host?.getContext() ?? null; } catch { return null; }
+}
+export function contextKey(context: HostContext | null): string {
+  return JSON.stringify(context ? [context.day, context.origin, context.intent ?? '', context.activityId ?? ''] : null);
+}
 const subscribe = (fn: () => void) => {
   window.addEventListener('spm:pelvic-context', fn);
   return () => window.removeEventListener('spm:pelvic-context', fn);
 };
 export function useRestriction(): Restriction {
-  return useSyncExternalStore(subscribe, () => host?.getContext().restriction ?? 'review');
+  return useSyncExternalStore(subscribe, () => readContext()?.restriction ?? 'review');
+}
+export function useHostContext(): HostContext | null {
+  // A primitive snapshot avoids returning a new object on each external-store read.
+  const snapshot = useSyncExternalStore(subscribe, () => JSON.stringify(readContext()), () => 'null');
+  return useMemo(() => JSON.parse(snapshot) as HostContext | null, [snapshot]);
 }

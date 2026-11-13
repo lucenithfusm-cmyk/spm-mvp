@@ -54,7 +54,7 @@ async function closeActivities(){
     if(window[name]?.close&&await window[name].close()===false)return false;
   }
   window.SPM_FIRMNESS_GUIDE?.close();
-  window.SPM_SLEEP_LIBRARY_V1?.close();window.SPM_WELLNESS_LIBRARY_V1?.close?.();window.SPM_PELVIC_V2?.close();
+  window.SPM_SLEEP_LIBRARY_V1?.close();window.SPM_WELLNESS_LIBRARY_V1?.close?.();if(window.SPM_PELVIC_V2?.close()===false)return false;
   // These legacy modules expose their safe close action as a button, not as an API.
   for(const selector of ['#spmDeModal.on .deClose','#spmEcModal.on .ecClose','#epAssessModal.on #epAClose','.deg:not([hidden]) .degClose','dialog[open] [data-sr-close]','dialog[open] [data-wellness-close]'])document.querySelector(selector)?.click();
   window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_PROGRAM_VIDEOS?.pause();window.SPM_TECHNIQUE_CLIPS?.pause();window.speechSynthesis?.cancel();
@@ -91,6 +91,12 @@ function installRecords(){
     read:async()=>clone(current().resource),
     save:async(value,expected)=>{assertScope(expected);assertDay(value.day);const rows=current().resource,index=rows.findIndex(r=>r.id===value.id);if(index<0)rows.push(clone(value));else rows[index]=clone(value);}
   };
+  window.SPM_SAVE_MODULE=async({day:saveDay,moduleKey,metricValue=null,metadata={}})=>{
+    const expected=scope();assertScope(expected);assertDay(saveDay);
+    const value={id:'module:'+moduleKey+':'+saveDay,day:saveDay,moduleKey,metricValue,metadata:clone(metadata)};
+    const rows=current().resource,index=rows.findIndex(r=>r.id===value.id);if(index<0)rows.push(value);else rows[index]=value;
+    return {ok:true};
+  };
   window.SPM_EP_RECORDS={
     read:async(expected)=>{assertScope(expected);return clone(current().ep);},
     save:async(value,expected)=>{assertScope(expected);assertDay(value.day);const rows=current().ep,index=rows.findIndex(r=>r.day===value.day);if(index<0)rows.push(clone(value));else rows[index]=clone(value);}
@@ -98,14 +104,14 @@ function installRecords(){
   window.SPM_COMPLETE_DAILY_PRACTICE=async(completedDay,expected)=>{assertScope(expected);assertDay(completedDay);const c=context();if(!c.completed.includes(day))c.completed.push(day);};
 }
 const scripts=[
-  'engine.js','modules.js?v=20261113-closing1','daily-support-plan-v1.js?v=20261113-instructions1','practice-audio-v1.js?v=20261113-recovery-audio1','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
+  'engine.js','modules.js?v=20261113-closing1','pelvic-guidance-v1.js?v=20261113-pelvic-action1','daily-support-plan-v1.js?v=20261113-pelvic-action1','practice-audio-v1.js?v=20261113-recovery-audio1','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
   'firmness-guide-v1.js?v=20261113-firmness-1','spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-firmness-1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
   'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261113-instructions1',
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js?v=20261113-firmness-1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261113-firmness-1','erectile-guided-v3.js','erectile-central-v3.js',
-  'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-instructions3',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-firmness-1','daily-practice-v1.js?v=20261113-erection456-1'
+  'pelvic-module-rebuild-v2.js?v=20261113-pelvic-action1','pelvic-guided-v3-hotfix.js?v=20261113-pelvic-action1','pelvic-lab-bridge-v1.js?v=20261113-pelvic-action1','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-instructions3',
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-pelvic-action1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-firmness-1','daily-practice-v1.js?v=20261113-pelvic-action1'
 ];
 async function boot(){
   try{

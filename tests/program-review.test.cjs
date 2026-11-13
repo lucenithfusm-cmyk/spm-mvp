@@ -242,43 +242,54 @@ test('a slow daily-record load cannot open and then discard an erection response
   }finally{h.close();}
 });
 
-test('day six recorded guidance keeps the assigned pelvic session and breathing separate',async()=>{
+test('day six keeps daily awareness, conditional strength and breathing as separate activities',async()=>{
   const h=await harness('?programa=erection&dia=6');try{
     const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
-    const main=api.assignments().find(a=>a.id==='main');
-    assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'lab');
-    assert.equal(w.SPM_ERECTION_PRACTICE.supports(c,main),false);
-    const card=w.document.querySelector('[data-activity="main"]'),guide=card.querySelector('[data-daily-pelvic-guide]');
-    assert.ok(guide);assert.equal(card.querySelector('[data-spm-speak]'),null);
-    assert.equal(guide.querySelector('audio').getAttribute('src'),'/premium-v2/assets/audio/erection/erection-day-6-20261113.mp3');
+    const main=api.assignments().find(a=>a.id==='main'),lab=api.assignments().find(a=>a.id==='pelvic-daily-lab');
+    assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
+    assert.equal(lab.pelvicIntent,'daily-relax');assert.equal(lab.optional,true);assert.equal(w.SPM_ERECTION_PRACTICE.supports(c,main),false);
+    const card=w.document.querySelector('[data-activity="pelvic-daily-lab"]'),guide=card.querySelector('[data-daily-recorded-guide]');
+    assert.ok(guide);assert.equal(card.querySelector('[data-spm-speak]'),null);assert.equal(card.querySelector('[data-daily-confirm]'),null);
+    assert.equal(guide.querySelector('audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-lab-daily-20261113.mp3');
+    assert.equal(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3');
     assert.equal(guide.querySelector('[data-checkpoint-audio-transcript]').open,false);
     guide.querySelector('[data-checkpoint-audio-toggle]').click();await wait();
-    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0,'listening is not a completed pelvic session');
-    await api.launch('main');
-    assert.equal(guide.querySelector('[data-checkpoint-audio-toggle]').dataset.state,'idle','starting the trainer stops the entry narration');
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0,'listening does not complete a practice');
+    await api.launch('pelvic-daily-lab');
+    assert.equal(guide.querySelector('[data-checkpoint-audio-toggle]').dataset.state,'idle','opening the Lab stops the entry narration');
     assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
-    assert.equal(w.document.querySelector('[data-erection-practice]'),null);
-    assert.equal(w.document.querySelector('#spmDeModal.on'),null);
-    assert.equal(w.SPM_RESOURCE_CONTEXT().day,6);
-    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);
-    assert.ok(api.nextActivities().some(a=>a.id==='main'));assert.ok(api.nextActivities().some(a=>a.id==='breath-release'));
-    assert.equal(w.document.querySelector('#spmDailyComplete').disabled,true);
+    assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().intent,'daily-relax');assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().activityId,'pelvic-daily-lab');
+    assert.equal(w.document.querySelector('[data-erection-practice]'),null);assert.equal(w.document.querySelector('#spmDeModal.on'),null);
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);assert.equal(w.SPM_RESOURCE_CONTEXT().day,6);
+    assert.ok(api.nextActivities().some(a=>a.id==='breath-release'));assert.equal(w.document.querySelector('#spmDailyComplete').disabled,true);
     await w.SPM_PELVIC_LAB.close();
-
+    await api.launch('main');assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+    assert.match(w.document.querySelector('.spm-pf-choice').textContent,/necesitas reconocer/);
+    await w.SPM_PELVIC_LAB.close();
     const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
     w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
-    w.SPM_PELVIC_V2.open=opts=>calls.push(opts);
+    w.SPM_PELVIC_V2.open=opts=>{calls.push(opts);return true;};
     w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
-    assert.equal(api.assignments().find(a=>a.id==='main').pelvicPreference,'classic');
-    await api.launch('main');assert.equal(calls.length,1);assert.equal(calls[0].readiness(),'ready');
-    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
-    const originalRead=w.SPM_PELVIC_RECORDS.read;
-    w.SPM_PELVIC_RECORDS.read=async()=>({'pf-overload':[0]});
-    await api.launch('main');
-    assert.equal(calls.length,1,'a prior overload keeps classic paused even with that calendar preference');
-    assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
+    await api.launch('main');assert.equal(calls.length,1);assert.equal(calls[0].readiness(),'ready');assert.equal(calls[0].intent,'scheduled');
+    const originalRead=w.SPM_PELVIC_RECORDS.read;w.SPM_PELVIC_RECORDS.read=async()=>({'pf-overload':[0]});
+    await api.launch('main');assert.equal(calls.length,1,'overload keeps strength paused');
+    assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);assert.match(w.document.querySelector('.spm-pf-choice').textContent,/contracciones están en pausa/);
     await w.SPM_PELVIC_LAB.close();w.SPM_PELVIC_RECORDS.read=originalRead;w.SPM_PELVIC_V2.open=originalClassic;
     assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+});
+
+test('DE day one includes an actionable body-release and no-hold breathing practice with Lenny guidance',async()=>{
+  const h=await harness('?programa=erection&dia=1');try{
+    const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+    const activity=api.assignments().find(a=>a.id==='breath-start');assert.ok(activity);assert.equal(activity.optional,false);assert.equal(activity.steps.join(','),'6,10');
+    const card=w.document.querySelector('[data-activity="breath-start"]');assert.match(card.textContent,/Mi primera práctica: respira y suelta/);
+    assert.equal(card.querySelector('audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/de-day1-first-practice-20261113.mp3');
+    await api.launch('breath-start');assert.ok(w.document.querySelector('.spm-breathing-modal[open] iframe'));
+    assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().activity.id,'breath-start');assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().activity.steps.join(','),'6,10');
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,1)).length,0);assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
+    await w.SPM_BREATHING_LAB.close();await w.SPM_PROGRAM_REVIEW.select('ejaculation',1);await wait();
+    assert.equal(api.assignments().some(a=>a.id==='breath-start'),false);assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
 

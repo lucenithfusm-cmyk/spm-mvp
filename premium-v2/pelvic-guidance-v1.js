@@ -1,0 +1,16 @@
+(()=>{'use strict';
+// Recorded Lenny guidance shared by the daily cards; viewing never records a practice.
+const daily={
+  "script": "Hoy vamos a reconocer, relajar y coordinar el piso pélvico. Abre la práctica guiada y elige una postura cómoda, con la espalda y los pies apoyados, o recostado con las rodillas dobladas. Primero, mira la zona señalada en la imagen. Después, afloja la mandíbula, el abdomen y los glúteos. Respira con comodidad, sin retener el aire ni empujar hacia abajo. Sigue la guía para observar el movimiento de tu respiración y permitir que la zona pélvica se suelte, sin apretarla. No necesitas sentir un movimiento grande ni lograr una respuesta sexual. Cuando hayas practicado, registra lo que notaste, aunque te haya costado percibir la zona. Si aparece dolor o aumenta la tensión, detente y regístralo. Puedes volver a esta práctica cada día, a tu ritmo.",
+  "audioSrc": "/premium-v2/assets/audio/pelvic/pelvic-lab-daily-20261113.mp3"
+};
+const strength={
+  "script": "Esta es tu sesión de contracción y fuerza del piso pélvico, disponible cuando corresponde a tu pauta. Abre el entrenamiento y sigue las repeticiones y los descansos que aparecen en pantalla. El gesto es cerrar y elevar suavemente hacia dentro, como si quisieras evitar la salida de un gas. Respira con normalidad, sin apretar los glúteos ni empujar con el abdomen. Después de cada contracción, suelta por completo antes de continuar. No practiques interrumpiendo el chorro de orina. Si aparece dolor, aumenta la tensión o no consigues relajar, detén la sesión y registra lo ocurrido. Este entrenamiento tiene dos sesiones por semana en tu recorrido. El Pelvic Floor Lab diario te acompaña por separado con conciencia, relajación y coordinación.",
+  "audioSrc": "/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3"
+};
+const first={
+  "script": "Vamos a empezar con una práctica que puedes hacer desde hoy: respira y suelta. Abre la actividad y siéntate con la espalda apoyada y los pies en el suelo, o recuéstate en una posición cómoda. Primero, recorre las tres zonas de la pantalla: mandíbula, hombros y abdomen. Afloja cada una con suavidad, sin forzar. Después, pulsa Continuar para abrir la guía de respiración. Inicia la práctica y deja entrar y salir el aire con comodidad, sin retenerlo. Usa el movimiento de la guía como apoyo; puedes respirar a tu propio ritmo. Si te distraes, vuelve a notar el apoyo de tu cuerpo y el paso del aire. No necesitas comprobar una erección ni sentir un cambio inmediato. Cuando hayas practicado, registra cómo te sentiste. Si aparece mareo o incomodidad, detente y vuelve a respirar con naturalidad.",
+  "audioSrc": "/premium-v2/assets/audio/pelvic/de-day1-first-practice-20261113.mp3"
+};
+window.SPM_PELVIC_GUIDANCE={definition:intent=>({...((intent==='scheduled')?strength:daily)}),firstPractice:()=>({...first})};
+})();

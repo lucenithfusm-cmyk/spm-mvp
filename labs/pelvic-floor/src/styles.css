@@ -152,3 +152,115 @@ button.guided-step{text-align:left;color:inherit;font:inherit;cursor:pointer;min
 
 
 .pf-technique-clip{float:right;width:min(240px,40%);margin:0 0 20px 24px;padding:14px;border:1px solid #b5a37d;border-radius:16px;background:#0b252d;color:#edf8f6}.pf-technique-clip video{display:block;width:100%;max-height:340px;aspect-ratio:9/16;object-fit:contain;border-radius:10px;background:#000}.pf-main:has(.pf-technique-clip){display:flow-root}@media(max-width:600px){.pf-technique-clip{float:none;width:100%;max-width:280px;margin:16px auto}}
+
+/* ===== Daily action Lab: direct practice and optional explanations ===== */
+.pf-action-lab{font-size:18px;line-height:1.65;padding-bottom:120px}
+.pf-action-lab button,.pf-action-lab input,.pf-action-lab select,.pf-action-lab summary{font-family:inherit;font-size:18px;line-height:1.45}
+.pf-action-lab button{cursor:pointer}.pf-action-lab button:disabled{cursor:not-allowed;opacity:.45}
+.pf-action-lab button:focus-visible,.pf-action-lab summary:focus-visible,.pf-action-lab input:focus-visible{outline:3px solid var(--pf-gold);outline-offset:4px}
+.pf-action-lab .pf-main{max-width:1040px;padding:32px 28px 40px;outline:none}
+.pf-action-lab .pf-top-in,.pf-action-lab .pf-nav-in{max-width:1040px;padding-left:28px;padding-right:28px}
+.pf-action-lab .pf-top-in{min-height:82px}.pf-action-lab .pf-brand{text-align:left;min-height:48px}
+.pf-action-lab .pf-mark{width:44px;height:44px;font-size:14px}.pf-action-lab .pf-brand b{font-size:19px;line-height:1.3}
+.pf-action-lab .pf-brand small{font-size:10px;letter-spacing:1.35px;margin-top:4px}.pf-action-lab .pf-count{font-size:12px;letter-spacing:1px}
+.pf-action-lab .pf-screen-heading{max-width:780px;margin-bottom:24px}.pf-action-lab .pf-kicker{font-size:12px;letter-spacing:1.9px}
+.pf-action-lab h1{font-size:clamp(32px,5vw,48px);line-height:1.14;letter-spacing:-.025em;margin:12px 0 16px}
+.pf-action-lab h2{font-size:clamp(23px,3vw,28px);line-height:1.3;margin:0 0 18px;letter-spacing:-.01em}
+.pf-action-lab h3{font-size:22px;line-height:1.35}.pf-action-lab p{margin-top:0}
+.pf-action-lab .pf-lead{font-size:20px;line-height:1.6;margin:0;max-width:740px}
+.pf-action-lab .pf-small,.pf-action-lab .pf-anat-cap{font-size:18px;line-height:1.6}
+.pf-action-lab .pf-card{padding:26px;border-radius:22px;margin-top:24px;background:linear-gradient(145deg,var(--pf-card),var(--pf-bg2))}
+.pf-action-lab .pf-btn{min-height:58px;padding:14px 24px;font-size:18px;line-height:1.4;border-radius:14px}
+.pf-action-lab .pf-full{width:100%;margin-top:22px}.pf-action-lab .pf-full+.pf-full{margin-top:12px}
+.pf-action-lab .pf-ctrls{gap:14px;margin-top:26px}.pf-action-lab .pf-ctrls>.pf-btn{flex:1;min-width:200px}
+.pf-action-lab .pf-back{min-height:54px;font-size:18px;line-height:1.5;padding:12px 4px}
+.pf-action-lab .pf-trainer{grid-template-columns:68px minmax(0,1fr);gap:16px;padding:18px 20px;margin:0 0 30px;border-radius:18px;align-items:center}
+.pf-action-lab .pf-trainer img{width:68px;height:78px;object-position:center 20%;border-radius:12px}.pf-action-lab .pf-trainer-main{min-width:0}
+.pf-action-lab .pf-trainer .pf-kicker{font-size:11px;letter-spacing:1.3px}.pf-action-lab .pf-audio{display:block;margin-top:8px}
+.pf-action-lab .pf-audio button{display:inline-flex;width:auto;height:auto;min-height:52px;gap:12px;padding:10px 18px;border-radius:12px;font-size:18px;text-align:left;color:var(--pf-text)!important}
+.pf-action-lab .pf-audio button span{color:var(--pf-gold)}.pf-action-lab .pf-audio>span{display:block;font-size:16px;margin-top:8px}
+.pf-action-lab .pf-transcript{grid-column:1/-1;border-top:1px solid var(--pf-line);padding-top:12px}
+.pf-action-lab summary{cursor:pointer;color:var(--pf-gold);font-weight:650;min-height:42px;display:list-item;list-style-position:inside;padding:8px 0}
+.pf-action-lab .pf-transcript p{font-size:18px;line-height:1.8;margin:16px 0 6px;max-width:78ch;color:var(--pf-mute)}
+.pf-action-lab .pf-details{margin-top:24px;padding:16px 20px;border:1px solid var(--pf-line);border-radius:16px;background:color-mix(in oklch,var(--pf-card) 40%,transparent)}
+.pf-action-lab .pf-details[open]{padding-bottom:22px}.pf-action-lab .pf-details p{font-size:18px;line-height:1.75;color:var(--pf-mute);margin:16px 0 0}
+.pf-action-lab .pf-action-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;gap:12px;padding:0;margin:0 0 24px}
+.pf-action-lab .pf-action-path li{font-size:15px;line-height:1.4;color:var(--pf-mute);border-top:2px solid var(--pf-line);padding:14px 0 0}
+.pf-action-lab .pf-action-path li>span{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid var(--pf-line);border-radius:50%;margin-right:7px;font-size:14px;font-weight:700}
+.pf-action-lab .pf-action-path li.on{border-color:var(--pf-gold);color:var(--pf-text)}.pf-action-lab .pf-action-path li.on>span{background:var(--pf-gold);color:var(--pf-bg);border-color:var(--pf-gold)}.pf-action-lab .pf-action-path li.done{border-color:var(--pf-teal);color:var(--pf-teal)}
+.pf-action-lab .pf-practice-entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}.pf-action-lab .pf-practice-entry .pf-card{margin:0}
+.pf-action-lab .pf-preparation .pf-small{text-align:center;margin-top:14px}
+.pf-action-lab .pf-instructions{padding-left:1.4em;margin:16px 0;line-height:1.7}.pf-action-lab .pf-instructions li{padding-left:7px;margin:0 0 16px;font-size:18px}.pf-action-lab .pf-instructions li:last-child{margin-bottom:0}
+.pf-action-lab .pf-anatomy-wrap{min-width:0;max-width:560px;width:100%;margin:0 auto}.pf-action-lab .pf-anat{max-height:440px;aspect-ratio:1;border-radius:22px}
+.pf-action-lab .pf-chip{font-size:18px;letter-spacing:0;line-height:1.4;padding:8px 12px;border-radius:12px}
+.pf-action-lab .pf-anat-label{align-items:flex-start;flex-wrap:wrap;left:14px;right:14px;bottom:14px}.pf-action-lab .pf-anat-label button{min-height:44px;background:color-mix(in oklch,var(--pf-bg) 92%,transparent);border:1px solid var(--pf-gold)}
+.pf-action-lab .pf-anat-cap{margin:12px 0 0;min-height:28px;color:var(--pf-teal)}
+.pf-action-lab .pf-floor.st-breathe{transform:translateY(.8%) scaleX(1.04) scaleY(1.08);opacity:.75;transition-duration:1.8s}.pf-action-lab .pf-floor.st-down{transform:translateY(0) scaleY(1);opacity:.4;transition-duration:1.8s}.pf-action-lab .pf-dir.st-breathe .a-down{opacity:.45}
+.pf-action-lab .pf-seq{padding:26px;margin-top:0}.pf-action-lab .pf-seq .pf-anatomy-wrap{max-width:480px}
+.pf-action-lab .pf-phase-buttons{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.pf-action-lab .pf-phase-buttons button{flex:1;min-width:130px;min-height:60px;padding:12px;border:1px solid var(--pf-line);border-radius:14px;background:var(--pf-bg2);font-weight:650}
+.pf-action-lab .pf-phase-buttons button.on{border-color:var(--pf-teal);background:var(--pf-teal-soft);color:var(--pf-teal)}
+.pf-action-lab .pf-phase-buttons button>span{display:inline-grid;place-items:center;border:1px solid currentColor;border-radius:50%;width:28px;height:28px;margin-right:10px;font-size:16px}
+.pf-action-lab .pf-phase{font-size:32px;margin:28px 0 10px}.pf-action-lab .pf-cue{font-size:20px;line-height:1.65;min-height:70px;max-width:650px;margin:0 auto 18px;color:var(--pf-text)}
+.pf-action-lab .pf-clock{display:flex;justify-content:center;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;border:1px solid var(--pf-line);border-radius:12px;margin:18px auto 0;width:fit-content;font-size:16px;color:var(--pf-mute)}.pf-action-lab .pf-clock output{font-size:24px;font-weight:750;font-variant-numeric:tabular-nums;color:var(--pf-gold)}
+.pf-action-lab .pf-visual-note{margin-top:24px;text-align:center;color:var(--pf-mute)}.pf-action-lab .pf-finish{margin-top:26px}.pf-action-lab .pf-stop{margin:10px auto 0;text-align:center;justify-content:center;color:var(--pf-mute)!important}
+.pf-action-lab .pf-check{font-size:18px;line-height:1.55;gap:14px;min-height:64px;padding:17px 18px;margin-top:12px;border-radius:14px;align-items:center}.pf-action-lab .pf-check i{width:26px;height:26px;font-size:17px}.pf-action-lab .pf-check small{display:block;font-size:18px;font-weight:400;color:var(--pf-mute);line-height:1.55;margin-top:6px}
+.pf-action-lab .pf-yn{border:0;padding:0;margin:28px 0}.pf-action-lab .pf-yn legend{font-size:21px;line-height:1.5;margin:0 0 14px;padding:0;width:100%}
+.pf-action-lab .pf-seg{gap:8px;padding:5px;border-radius:15px}.pf-action-lab .pf-seg button{font-size:18px;min-height:54px;padding:10px 16px;border-radius:11px}
+.pf-action-lab .pf-alert,.pf-action-lab .pf-ok{font-size:18px;line-height:1.7;padding:20px 22px;margin-top:24px;border-radius:16px}.pf-action-lab .pf-alert p:last-child,.pf-action-lab .pf-ok p:last-child{margin-bottom:0}
+.pf-action-lab .pf-result{text-align:center;padding:34px}.pf-action-lab .pf-result-symbol{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;border:1px solid var(--pf-teal);background:var(--pf-teal-soft);font-size:30px;margin:0 auto 20px;color:var(--pf-teal)}.pf-action-lab .pf-result>p{max-width:680px;margin:16px auto;font-size:18px;line-height:1.7}
+.pf-action-lab .pf-result-caution{border-color:var(--pf-warn)}.pf-action-lab .pf-result-caution .pf-result-symbol{border-color:var(--pf-warn);color:var(--pf-warn);background:var(--pf-warn-soft)}
+.pf-action-lab .pf-anchor{margin:0 0 28px;min-width:0}.pf-action-lab .pf-anchor legend{font-size:22px;font-weight:700;line-height:1.4;padding:0 8px}
+.pf-action-lab .pf-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.pf-action-lab .pf-lib{margin:0;padding:24px;min-height:150px;border-radius:18px}.pf-action-lab .pf-lib h2{font-size:23px;line-height:1.4;margin:12px 0 0}.pf-action-lab .pf-lib>span:last-child{font-size:28px;color:var(--pf-gold)}
+.pf-action-lab .pf-tag{font-size:12px;line-height:1.5;letter-spacing:1.1px}.pf-action-lab .pf-screen-links{display:grid;gap:8px;margin-top:16px}.pf-action-lab .pf-screen-links button{text-align:left;min-height:52px;border-top:1px solid var(--pf-line);padding:12px 0;color:var(--pf-text)}.pf-action-lab .pf-options>.pf-details{margin-top:14px}
+.pf-action-lab .pf-rating{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:18px}.pf-action-lab .pf-rating button{min-height:56px;border:1px solid var(--pf-line);border-radius:12px;font-size:20px;font-weight:700}.pf-action-lab .pf-rating button.on{background:var(--pf-teal);color:var(--pf-bg);border-color:var(--pf-teal)}
+.pf-action-lab .pf-history{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:18px}.pf-action-lab .pf-history li{padding-bottom:18px;border-bottom:1px solid var(--pf-line);font-size:18px}.pf-action-lab .pf-history p{margin:8px 0 4px;color:var(--pf-mute)}.pf-action-lab .pf-history small{font-size:17px;color:var(--pf-mute)}
+.pf-action-lab .pf-safety-list{padding-left:1.25em;margin:20px 0 0;line-height:1.65}.pf-action-lab .pf-safety-list li{padding-left:6px;margin-bottom:18px;font-size:18px}.pf-action-lab .pf-urgent{margin-top:0}.pf-action-lab .pf-urgent h2{color:var(--pf-warn)}
+.pf-action-lab .pf-nav{padding:12px 0 calc(12px + env(safe-area-inset-bottom))}.pf-action-lab .pf-nav-in{padding-top:0;padding-bottom:0}.pf-action-lab .pf-nav-in .pf-btn{flex:1}
+.pf-action-lab .pf-wide{width:min(1000px,calc(100vw - 28px));height:min(90dvh,900px);max-width:100%;max-height:94dvh;margin:auto;border:1px solid var(--pf-line);border-radius:20px;padding:24px;color:var(--pf-text);overflow:auto;box-sizing:border-box}.pf-action-lab .pf-wide::backdrop{background:#020c14e8}.pf-action-lab .pf-wide .pf-anatomy-wrap{max-width:620px;display:block;flex:1}.pf-action-lab .pf-wide .pf-anat{max-height:65dvh;aspect-ratio:1;width:auto}.pf-action-lab .pf-wide .pf-side{flex:none;width:100%;text-align:center}.pf-action-lab .pf-wide h2{margin:0 0 10px}.pf-action-lab .pf-wide .pf-full{margin-top:14px}
+@media(max-width:700px){
+ .pf-action-lab{padding-bottom:118px}.pf-action-lab .pf-main{padding:24px 18px 32px}.pf-action-lab .pf-top-in,.pf-action-lab .pf-nav-in{padding-left:18px;padding-right:18px}.pf-action-lab .pf-top-in{min-height:76px;gap:10px}.pf-action-lab .pf-brand b{font-size:18px}.pf-action-lab .pf-brand small{font-size:9px;letter-spacing:.6px}.pf-action-lab .pf-count{font-size:11px;white-space:normal;text-align:right;max-width:76px;line-height:1.4}
+ .pf-action-lab .pf-practice-entry{grid-template-columns:minmax(0,1fr);gap:22px}.pf-action-lab .pf-anatomy-wrap{max-width:460px}.pf-action-lab .pf-anat{max-height:390px}.pf-action-lab .pf-card,.pf-action-lab .pf-seq{padding:22px 18px}.pf-action-lab .pf-action-path{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}.pf-action-lab .pf-action-path li{font-size:16px}.pf-action-lab .pf-library-grid{grid-template-columns:minmax(0,1fr);gap:14px}.pf-action-lab .pf-lib{min-height:128px;padding:22px}
+ .pf-action-lab .pf-trainer{grid-template-columns:54px minmax(0,1fr);padding:16px 14px;gap:12px}.pf-action-lab .pf-trainer img{width:54px;height:74px}.pf-action-lab .pf-trainer .pf-kicker{font-size:10px;letter-spacing:.7px}.pf-action-lab .pf-audio button{padding:10px 12px;font-size:18px;gap:8px;min-height:54px}.pf-action-lab .pf-phase-buttons{gap:8px}.pf-action-lab .pf-phase-buttons button{min-width:0;flex:1;padding:12px 6px;font-size:18px}.pf-action-lab .pf-phase-buttons button>span{display:none}
+ .pf-action-lab .pf-ctrls{flex-direction:column}.pf-action-lab .pf-ctrls>.pf-btn{width:100%;min-width:0}.pf-action-lab .pf-clock{gap:10px;font-size:16px;padding:12px}.pf-action-lab .pf-nav-in{gap:10px}.pf-action-lab .pf-nav-in .pf-btn{padding:12px 10px;font-size:18px}.pf-action-lab .pf-rating{grid-template-columns:repeat(4,minmax(0,1fr))}.pf-action-lab .pf-seg button{padding:10px 8px;font-size:18px}.pf-action-lab .pf-check{padding:16px 14px}.pf-action-lab .pf-result{padding:28px 20px}
+}
+@media(prefers-reduced-motion:reduce){.pf-action-lab *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Optional visual support for the daily, self-paced practice. */
+.pf-action-lab .pf-posture-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0 18px}
+.pf-action-lab .pf-posture-options button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:140px;padding:14px 12px;border:1px solid var(--pf-line);border-radius:16px;background:var(--pf-bg);font-weight:700;overflow:hidden}
+.pf-action-lab .pf-posture-options button.on{border-color:var(--pf-gold);background:color-mix(in oklch,var(--pf-gold) 8%,var(--pf-bg));box-shadow:inset 0 0 0 1px var(--pf-gold)}
+.pf-action-lab .pf-posture-options button>i{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--pf-line);border-radius:50%;font-size:14px;font-style:normal;color:var(--pf-bg)}
+.pf-action-lab .pf-posture-options button.on>i{border-color:var(--pf-gold);background:var(--pf-gold)}
+.pf-action-lab .pf-posture-picture{display:block;width:100%;max-width:176px;height:96px;margin-bottom:10px}
+.pf-action-lab .pf-posture-support{stroke:var(--pf-mute);stroke-width:3;opacity:.55}
+.pf-action-lab .pf-posture-person{stroke:var(--pf-text);stroke-width:9}
+.pf-action-lab .pf-posture-person:is(circle){fill:var(--pf-text);stroke-width:1}
+.pf-action-lab .pf-posture-contact{stroke:var(--pf-gold);stroke-width:4}
+.pf-action-lab .pf-posture-cushion{stroke:var(--pf-gold);stroke-width:1.5;fill:color-mix(in oklch,var(--pf-gold) 14%,transparent)}
+.pf-action-lab .pf-posture-cue{min-height:90px;margin:0 0 16px;font-size:19px;line-height:1.6;color:var(--pf-text)}
+.pf-action-lab .pf-breath-companion{text-align:left;margin-top:24px}
+.pf-action-lab .pf-breath-companion>summary{font-size:18px;line-height:1.5;min-height:48px}
+.pf-action-lab .pf-breath-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:24px;align-items:center;margin-top:22px}
+.pf-action-lab .pf-breath-diagram{display:block;width:100%;max-width:280px;max-height:300px;margin:0 auto;overflow:visible}
+.pf-action-lab .pf-breath-body{fill:none;stroke:var(--pf-mute);stroke-width:2.5;stroke-linecap:round;opacity:.6}
+.pf-action-lab .pf-breath-midline{fill:none;stroke:var(--pf-line);stroke-width:1;stroke-dasharray:3 5}
+.pf-action-lab .pf-breath-ribs{fill:none;stroke:var(--pf-text);stroke-width:2;stroke-linecap:round;transform-box:view-box;transform-origin:110px 65px;transition:transform 1.4s ease-in-out}
+.pf-action-lab .pf-breath-diaphragm{fill:color-mix(in oklch,var(--pf-gold) 32%,transparent);stroke:var(--pf-gold);stroke-width:1.6;transform-box:view-box;transform-origin:110px 90px;transition:transform 1.4s ease-in-out}
+.pf-action-lab .pf-breath-pelvis{fill:none;stroke:var(--pf-mute);stroke-width:4;stroke-linecap:round;opacity:.65}
+.pf-action-lab .pf-breath-floor{fill:color-mix(in oklch,var(--pf-teal) 40%,transparent);stroke:var(--pf-teal);stroke-width:1.6;transform-box:view-box;transform-origin:110px 180px;transition:transform 1.4s ease-in-out}
+.pf-action-lab [data-breath-phase="inhale"] .pf-breath-ribs{transform:scaleX(1.07)}
+.pf-action-lab [data-breath-phase="inhale"] .pf-breath-diaphragm{transform:translateY(7px) scaleY(.8)}
+.pf-action-lab [data-breath-phase="inhale"] .pf-breath-floor{transform:translateY(3px) scaleX(1.04) scaleY(1.12)}
+.pf-action-lab .pf-breath-dot-ribs{fill:var(--pf-text)}.pf-action-lab .pf-breath-dot-diaphragm{fill:var(--pf-gold)}.pf-action-lab .pf-breath-dot-floor{fill:var(--pf-teal)}
+.pf-action-lab .pf-breath-explanation{min-width:0}.pf-action-lab .pf-breath-explanation .pf-kicker{font-size:11px;letter-spacing:1.1px}.pf-action-lab .pf-breath-explanation h3{font-size:25px;line-height:1.35;margin:12px 0 22px}
+.pf-action-lab .pf-breath-key{display:grid;gap:18px;list-style:none;padding:0;margin:0}.pf-action-lab .pf-breath-key li{display:flex;align-items:flex-start;gap:12px;font-size:18px;line-height:1.5;color:var(--pf-mute)}
+.pf-action-lab .pf-breath-key i{width:10px;height:10px;margin-top:8px;flex:0 0 auto;border-radius:50%}.pf-action-lab .pf-breath-key b{display:block;font-size:18px;color:var(--pf-text);margin-bottom:3px}
+.pf-action-lab .pf-breath-key-ribs{background:var(--pf-text)}.pf-action-lab .pf-breath-key-diaphragm{background:var(--pf-gold)}.pf-action-lab .pf-breath-key-floor{background:var(--pf-teal)}
+.pf-action-lab .pf-breath-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:26px}.pf-action-lab .pf-breath-choices button{display:flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:12px 14px;border:1px solid var(--pf-line);border-radius:12px;font-size:18px;font-weight:650;line-height:1.45}
+.pf-action-lab .pf-breath-choices button[aria-pressed="true"]{border-color:var(--pf-gold);background:color-mix(in oklch,var(--pf-gold) 12%,var(--pf-bg));color:var(--pf-gold)}
+.pf-action-lab .pf-breath-choices button>span{font-size:24px;font-weight:400;color:var(--pf-gold)}
+.pf-action-lab .pf-breath-companion>.pf-small{font-size:17px;line-height:1.65;margin-top:18px}
+@media(max-width:600px){
+ .pf-action-lab .pf-posture-options{gap:10px}.pf-action-lab .pf-posture-options button{padding:12px 8px;min-height:132px}.pf-action-lab .pf-posture-picture{height:84px}.pf-action-lab .pf-posture-cue{min-height:0;font-size:19px}
+ .pf-action-lab .pf-breath-layout{grid-template-columns:minmax(0,1fr);gap:20px}.pf-action-lab .pf-breath-diagram{max-width:210px;max-height:232px}.pf-action-lab .pf-breath-explanation h3{margin-bottom:18px}.pf-action-lab .pf-breath-key{gap:14px}.pf-action-lab .pf-breath-choices{grid-template-columns:minmax(0,1fr);gap:10px}
+}
