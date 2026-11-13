@@ -21,7 +21,7 @@ function harness(scenario='before',options={}){
   if(delay>=1000){watchdogs.push(()=>callback(...args));return 1000000+watchdogs.length;}
   return schedule(callback,delay,...args);
  };
- const starts=[],canceled=[],media=new WeakMap();
+ const starts=[],canceled=[],mediaPlays=[],media=new WeakMap();
  const mediaState=el=>{if(!media.has(el))media.set(el,{paused:true,time:0});return media.get(el);};
  Object.defineProperties(w.HTMLMediaElement.prototype,{
   paused:{configurable:true,get(){return mediaState(this).paused;}},
@@ -31,7 +31,7 @@ function harness(scenario='before',options={}){
   ended:{configurable:true,get(){return mediaState(this).time>=20;}},
  });
  w.HTMLMediaElement.prototype.play=function(){
-  const state=mediaState(this);if(state.paused){state.paused=false;if(this.matches('audio.spm-patient-story-audio'))starts.push('P');this.dispatchEvent(new w.Event('play'));}return Promise.resolve();
+  const state=mediaState(this);if(state.paused){state.paused=false;mediaPlays.push(this);if(this.matches('audio.spm-patient-story-audio'))starts.push('P');this.dispatchEvent(new w.Event('play'));}return Promise.resolve();
  };
  w.HTMLMediaElement.prototype.pause=function(){const state=mediaState(this);if(!state.paused){state.paused=true;this.dispatchEvent(new w.Event('pause'));}};
  w.HTMLMediaElement.prototype.load=function(){w.setTimeout(()=>this.dispatchEvent(new w.Event('loadedmetadata')),0);};
@@ -59,11 +59,15 @@ function harness(scenario='before',options={}){
   setReportedPending(value){reportedPending=value;},
  };
  w.speechSynthesis=synthesis;w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
+ if(options.noSpeech){delete w.speechSynthesis;delete w.SpeechSynthesisUtterance;}
+ if(options.recorded)w.SPM_RECOVERY_STORY_AUDIO={
+  [scenario]:{src:`assets/audio/recovery-story-${scenario}-es-20261113.mp3`,cues:[0,4,10,14],duration:20},
+ };
  // Match the production order: shared narration registers its capture handler
  // before Recovery registers its own story controls.
  w.eval(read('practice-audio-v1.js'));w.eval(read('recovery-audio-controller-staging-v10.js'));
  const story=d.querySelector('.spm-v4'),audio=story.querySelector('audio');
- return {w,d,story,audio,synthesis,starts,canceled,
+ return {w,d,story,audio,synthesis,starts,canceled,mediaPlays,
   activeTurn:()=>Number(story.querySelector('.spm-v4-card.active')?.dataset.turn??-1),
   status:()=>story.querySelector('.spm-v4-status').textContent,
   play:()=>story.querySelector('.spm-v4-play').click(),
@@ -88,6 +92,52 @@ for(const scenario of ['before','condom','during','early','urge','partner','next
   assert.deepEqual(h.starts,['P','D','P','D']);assert.deepEqual(h.canceled.filter(text=>text.startsWith('Doctor')),[]);
   h.synthesis.end();await until(()=>h.status().includes('Historia finalizada'),'A successfully completed story did not finish');
   assert.equal(h.story.querySelector('.spm-v4-wave').classList.contains('playing'),false);
+ }finally{h.close();}
+});
+
+for(const scenario of ['before','condom','during','early','urge','partner','next'])test(`${scenario}: one complete recording plays all four turns, pauses and finishes without speech synthesis`,async()=>{
+ const h=harness(scenario,{recorded:true,noSpeech:true});try{
+  h.play();const audio=h.story.querySelector('audio.spm-recovery-story-audio');
+  assert.ok(audio);assert.equal(audio.getAttribute('src'),`assets/audio/recovery-story-${scenario}-es-20261113.mp3`);
+  assert.equal(audio.paused,false);assert.equal(audio.muted,false);assert.equal(h.activeTurn(),0);
+  assert.equal(h.audio.paused,true,'The separate patient-only recording must stay stopped');assert.deepEqual(h.starts,[]);
+  const seen=[h.activeTurn()];
+  for(const cue of [4,10,14]){
+   audio.currentTime=cue;audio.dispatchEvent(new h.w.Event('timeupdate'));seen.push(h.activeTurn());
+   const video=h.story.querySelector('.spm-v4-card.active video');assert.equal(video.paused,false);assert.equal(video.muted,true);
+   if(cue===4){
+    h.pause();assert.equal(audio.paused,true);assert.equal(video.paused,true);assert.match(h.story.querySelector('.spm-v4-pause').textContent,/Continuar audio/);
+    h.pause();assert.equal(audio.paused,false);assert.equal(video.paused,false);assert.equal(audio.currentTime,4);assert.equal(h.activeTurn(),1);
+   }
+  }
+  assert.deepEqual(seen,[0,1,2,3]);assert.equal(h.mediaPlays.filter(el=>el===audio).length,2,'One start and one resume must use the same recording');
+  audio.currentTime=20;audio.dispatchEvent(new h.w.Event('timeupdate'));
+  assert.doesNotMatch(h.status(),/Historia finalizada/,'Only ended, not a time threshold, finishes playback');
+  audio.dispatchEvent(new h.w.Event('ended'));assert.match(h.status(),/Historia finalizada/);
+  assert.equal(audio.paused,true);assert.equal(h.story.querySelector('.spm-v4-wave').classList.contains('playing'),false);
+  h.pause();assert.equal(audio.paused,true,'A finished story must not resume with the pause control');
+  h.play();assert.equal(h.story.querySelectorAll('audio.spm-recovery-story-audio').length,1);assert.equal(audio.currentTime,0);assert.equal(h.activeTurn(),0);
+ }finally{h.close();}
+});
+
+test('a complete recording error stops at its turn and ignores late ended or timeupdate events',async()=>{
+ const h=harness('before',{recorded:true,noSpeech:true});try{
+  h.play();const audio=h.story.querySelector('audio.spm-recovery-story-audio');
+  audio.currentTime=4;audio.dispatchEvent(new h.w.Event('timeupdate'));assert.equal(h.activeTurn(),1);
+  audio.dispatchEvent(new h.w.Event('error'));assert.equal(audio.paused,true);assert.match(h.status(),/reintentar/);
+  audio.currentTime=20;audio.dispatchEvent(new h.w.Event('timeupdate'));audio.dispatchEvent(new h.w.Event('ended'));
+  assert.equal(h.activeTurn(),1);assert.doesNotMatch(h.status(),/Historia finalizada/);assert.match(h.status(),/reintentar/);
+  assert.equal(h.story.querySelector('.spm-v4-wave').classList.contains('playing'),false);
+  h.play();assert.equal(audio.currentTime,0);assert.equal(audio.paused,false);assert.equal(h.activeTurn(),0);
+ }finally{h.close();}
+});
+
+test('closing a complete recording removes its listeners so late media events cannot advance or finish it',async()=>{
+ const h=harness('before',{recorded:true,noSpeech:true});try{
+  h.play();const audio=h.story.querySelector('audio.spm-recovery-story-audio');
+  h.w.dispatchEvent(new h.w.Event('pagehide'));assert.equal(audio.paused,true);
+  const status=h.status();audio.currentTime=14;audio.dispatchEvent(new h.w.Event('timeupdate'));audio.dispatchEvent(new h.w.Event('ended'));audio.dispatchEvent(new h.w.Event('error'));
+  assert.equal(h.activeTurn(),0);assert.equal(h.status(),status);assert.doesNotMatch(h.status(),/Historia finalizada/);
  }finally{h.close();}
 });
 

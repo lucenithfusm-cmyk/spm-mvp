@@ -13,6 +13,14 @@ The shared instruction narrator captured every media `play` event and called `sp
 
 The instruction narrator now cancels only an utterance it owns. A deliberate click to start a new instruction still replaces the active voice. Recovery advances a spoken turn on `onend`, not on an error or a silent synthesis state. A failed turn stops the story and offers retry. The watchdog does not interrupt active or pending speech.
 
+## Complete recorded stories
+
+Live verification exposed a second dependency: native browser speech was unavailable in the test browser, including for an independent Sleep instruction. Spanish Recovery therefore now prefers one complete MP3 per story. Each contains the two original patient segments and both Doctor interventions, in order. Four measured cue times synchronize the story cards and decorative video. Pause and resume operate on the same audio element; only its `ended` event completes playback.
+
+The fourteen Doctor takes use Lenny — Clear & Professional, the existing program narration voice, in Spanish at the previously used generation speed of 0.95 and playback rate of 1. Approved Doctor scripts are unchanged. Provider-aligned words match the exact submitted text. The source takes, provenance, measured cue times and reproducible assembly script are retained in the repository. The original patient files remain byte-identical.
+
+`scripts/build-recovery-story-audio.py` builds the seven MP3s and `recovery-story-audio-v1.js`. English and the legacy Spanish path without a recording manifest keep their original voice path.
+
 ## Coverage
 
 Every story contains four ordered turns: patient, Doctor SPM, patient, Doctor SPM.
@@ -29,7 +37,7 @@ Every story contains four ordered turns: patient, Doctor SPM, patient, Doctor SP
 
 ## Verification before deployment
 
-- `tests/recovery-audio.test.cjs`: 14 passing integration/regression tests with the real two controllers and simulated speech/media. Covers all seven sequences, pause/resume, ownership, MP3 and speech errors, English queue cleanup, and missing speech completion.
+- `tests/recovery-audio.test.cjs`: 23 passing integration/regression tests with the real two controllers and simulated speech/media. Covers all seven recorded stories without any speech API, all seven legacy sequences, pause/resume, ownership, MP3 and speech errors, English queue cleanup, and missing speech completion.
 - `tests/daily-practice.test.cjs`: 32 passing, including the actual text submitted to speech synthesis from all three Sleep entry points and unchanged narration for the other cards.
 - `tests/program-review.test.cjs`: 5 passing.
 - `tests/program-videos.test.cjs`: 5 passing.
@@ -37,4 +45,4 @@ Every story contains four ordered turns: patient, Doctor SPM, patient, Doctor SP
 - Live range requests returned HTTP 206, expected MIME types and valid file signatures for all seven patient MP3s and both recovery videos.
 - JavaScript syntax checks and `git diff --check` passed.
 
-The regression suite simulates media events; it is not a listening test on an iPhone. No patient records, story scripts, approved voice assets, questionnaires, practice clocks or completion rules were changed.
+The regression suite simulates media events; it is not a listening test on an iPhone. No audio-listening API was available for a subjective voice-quality review. All source and assembled MP3s were decoded, measured and checked against their manifests. No patient records, story scripts, existing voice assets, questionnaires, practice clocks or practice-completion rules were changed.
