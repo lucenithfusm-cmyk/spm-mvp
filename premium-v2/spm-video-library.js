@@ -181,5 +181,7 @@ function decorateDays(){document.querySelectorAll('.dayCard').forEach(c=>{
 })}
 const style=document.createElement('style');style.textContent='.spmVideoGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}.spmVideoCard{border:1px solid var(--line);border-radius:16px;padding:16px;background:#08171b;display:flex;flex-direction:column;justify-content:space-between;gap:14px}.spmVideoCard h3{margin:10px 0 6px}.spmVideoCard .btn{align-self:flex-start}';document.head.appendChild(style);
 function run(){mountLibrary();decorateDays();bind()}
-document.addEventListener('DOMContentLoaded',()=>{run();new MutationObserver(run).observe(document.body,{childList:true,subtree:true})});window.SPM_VIDEO_LIBRARY=videos;
+function start(){run();new MutationObserver(run).observe(document.body,{childList:true,subtree:true});}
+window.SPM_VIDEO_LIBRARY=videos;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

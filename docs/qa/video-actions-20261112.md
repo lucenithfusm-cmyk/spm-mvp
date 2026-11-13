@@ -47,14 +47,27 @@ los puntos 5 a 11 de la lista de correcciones.
 
 ## Verificación automatizada
 
-`node --test tests/video-actions.test.cjs`: 7 pruebas aprobadas. Incluyen los 12
+`node --test tests/video-actions.test.cjs`: 8 pruebas aprobadas. Incluyen los 12
 videos, confirmación sin escritura, notas históricas, fallo y reintento, lectura
 fallida, cambios de cuenta/plan/día/seguridad, correspondencia de acciones y
-bibliotecas sin escrituras de progreso.
+bibliotecas sin escrituras de progreso. La octava prueba cubre la carga tardía
+del catálogo en la página de revisión: monta los 12 videos, no duplica la
+biblioteca tras nuevos cambios del DOM y abre la acción correspondiente.
 
 Las suites existentes `daily-practice`, `program-videos`, `program-review` y
 `daily-entry` suman otras 39 pruebas aprobadas. Los tres escenarios de navegador
 que rellenaban una reflexión de video se actualizaron al nuevo comportamiento.
+
+## Verificación en la versión publicada
+
+En el revisor con perfil de ejemplo, el día 1 muestra la acción, tres pasos y
+ningún campo de texto. Una confirmación sin marcar no guarda; marcarla y guardar
+registra solo el video y mantiene el día 1. Se revisaron el espacio entre pasos,
+la carga del video y la ausencia de desbordamiento horizontal.
+
+Durante esta revisión se detectó que el catálogo cargado después de
+DOMContentLoaded no montaba la biblioteca general. El arranque ahora funciona
+tanto durante la carga inicial como después de ella.
 
 ## Criterio editorial
 

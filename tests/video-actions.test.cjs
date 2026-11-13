@@ -213,3 +213,41 @@ test('the same actions accompany program-library videos without recording practi
     assert.deepEqual(h.c.completed,[]);
   }finally{h.close();}
 });
+
+test('loading the video catalog after the document is complete mounts one working library with all twelve action summaries',async()=>{
+  const dom=new JSDOM('<main id="plan"></main>',{
+    url:'https://spm.test/premium-v2/revision-programas-28-dias.html',runScripts:'outside-only',pretendToBeVisual:true
+  });
+  const w=dom.window,observers=[],NativeObserver=w.MutationObserver;
+  w.MutationObserver=class extends NativeObserver{constructor(fn){super(fn);observers.push(this);}};
+  w.HTMLMediaElement.prototype.pause=function(){};
+  w.HTMLMediaElement.prototype.load=function(){};
+  w.HTMLMediaElement.prototype.play=function(){return Promise.resolve();};
+  try{
+    await new Promise(resolve=>{
+      if(w.document.readyState==='complete')resolve();
+      else w.addEventListener('load',resolve,{once:true});
+    });
+    assert.equal(w.document.readyState,'complete');
+    w.eval(read('spm-video-library.js'));
+    w.eval(read('spm-inline-video-player.js'));
+    const library=w.document.querySelector('#spmVideoLibrary');
+    assert.ok(library,'The reviewer loads this script after DOMContentLoaded');
+    assert.equal(library.querySelectorAll('button.spmPlay').length,12);
+    assert.equal(library.querySelectorAll('.spm-video-action-preview').length,12);
+    for(const card of library.querySelectorAll('.spmVideoCard')){
+      const key=card.querySelector('[data-key]').dataset.key;
+      const video=w.SPM_VIDEO_LIBRARY.find(item=>item.key===key);
+      assert.ok(card.querySelector('.spm-video-action-preview').textContent.includes(video.action.title));
+    }
+    w.document.querySelector('#plan').appendChild(w.document.createElement('section'));
+    await settle();
+    assert.equal(w.document.querySelectorAll('#spmVideoLibrary').length,1);
+    assert.equal(library.querySelectorAll('button.spmPlay').length,12);
+    library.querySelector('[data-key="partner-communication"]').click();
+    const action=w.document.querySelector('#spmVideoModal.on [data-video-action]');
+    assert.ok(action);
+    assert.equal(action.dataset.videoAction,'partner-communication');
+    assert.ok(action.textContent.includes(w.SPM_VIDEO_LIBRARY.find(video=>video.key==='partner-communication').action.title));
+  }finally{observers.forEach(observer=>observer.disconnect());w.close();}
+});
