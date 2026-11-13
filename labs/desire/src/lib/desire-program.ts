@@ -116,8 +116,12 @@ export function sensateGate(p: Program, s: Pick<DesireState, 'pressure' | 'healt
   return { ok: true, reason: '' };
 }
 export const sensateIOk = (p: Program, s: Pick<DesireState, 'pressure' | 'health'> = { pressure: 0, health: [] }, clinical = false) => sensateGate(p, s, clinical).ok;
-/** Pending (explicitly paused) attempt for the same practice/day, to resume with its active time. */
-export const pendingAttempt = (p: Program, pid: string, day: number) => [...p.sessions].reverse().find((x) => x.practiceId === pid && x.day === day && x.status === 'paused');
+/** Resume the latest unfinished attempt for this practice/day, including leaving
+ * the Lab while it was running. A later completion supersedes an older pause. */
+export const pendingAttempt = (p: Program, pid: string, day: number) => {
+  const latest = [...p.sessions].reverse().find((x) => x.practiceId === pid && x.day === day);
+  return latest && latest.status !== 'completed' ? latest : undefined;
+};
 /** Best activators by recorded usefulness (after − before), only completed sessions with real data. */
 export function bestActivators(p: Program, n = 2): string[] {
   const agg: Record<string, number[]> = {};

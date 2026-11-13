@@ -66,11 +66,15 @@ button.guided-step{text-align:left;color:inherit;font:inherit;cursor:pointer;min
 .dz-main{max-width:1080px;margin:auto;padding:22px 20px 40px}
 .dz-body{display:flex;flex-direction:column;gap:16px;animation:dzIn .35s ease-out}
 @keyframes dzIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.dz-h{font-size:clamp(24px,4vw,36px);margin:4px 0 18px;font-weight:750}
+.dz-h{font-size:clamp(26px,4vw,36px);margin:4px 0 18px;font-weight:800;line-height:1.2;color:#fff}
 .dz-eyebrow{display:block;color:var(--gold);font-size:10px;letter-spacing:1.8px;font-weight:800;text-transform:uppercase;margin-bottom:8px}
 .dz-lead{font-size:clamp(18px,2.4vw,24px);line-height:1.45;margin:0;font-weight:600}.dz-lead em,.dz-hero em{font-style:normal;color:var(--gold)}
 .dz-card{background:var(--dz-surface);border:1px solid var(--dz-line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
-.dz-card h3{margin:0;font-size:17px}.dz-card p{margin:0;color:var(--dz-muted);font-size:14px;line-height:1.6}
+.dz-body h3{font-size:clamp(21px,3.2vw,25px);font-weight:800;line-height:1.25;color:#fff}
+.dz-card h3{margin:0}.dz-card p{margin:0;color:var(--dz-muted);font-size:14px;line-height:1.6}
+.dz-desire-forms>h3{font-size:clamp(27px,4.8vw,34px);margin:0 0 18px}
+.dz-desire-forms>.dz-grid2{margin-top:18px}
+.dz-concept-name{font-weight:800;color:#fff}
 .dz-card.accent{background:linear-gradient(160deg,var(--dz-surface-2),var(--dz-surface));border-color:color-mix(in oklab,var(--dz-teal) 45%,transparent)}
 .dz-card.accel{border-color:color-mix(in oklab,var(--dz-teal) 55%,transparent)}.dz-card.brake{border-color:color-mix(in oklab,var(--dz-rose) 55%,transparent)}
 .dz-grid2,.dz-grid3,.dz-myths{display:grid;gap:14px;grid-template-columns:1fr}

@@ -5,6 +5,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { DesireLab } from './DesireLab';
 import { initialState, STORAGE } from '@/lib/desire-data';
 import { generateToday } from '@/lib/desire-engine';
+import { initialProgram, PROGRAM_KEY, type Session } from '@/lib/desire-program';
 let root: Root | undefined;
 const click = async (text: string) => { const b=Array.from(document.querySelectorAll('button')).find(b=>b.textContent?.includes(text)); expect(b).toBeTruthy(); await act(async()=>b!.click()); };
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -95,5 +96,65 @@ describe('Paid daily Desire entry',()=>{
  it('day one begins with five minutes of practice',()=>{
   const first=generateToday(initialState,1)[0]!;
   expect(first.practiceId).toBe('presence-5');
+ });
+
+ const savedSession = (practiceId: string, day = 1, status: Session['status'] = 'completed', activeSec = 300): Session => ({
+  id: `${practiceId}-${day}`, practiceId, day, date: '2026-11-12', variant: 'solo', status, activeSec,
+  metricKey: 'local', before: 4, after: null, reflection: 'Una sensación cómoda',
+ });
+ const reopen = async (sessions: Session[], day = 1) => {
+  const state: Record<string,string> = {
+   [STORAGE.state]: JSON.stringify({...initialState,health:['none'],stimuli:['touch']}),
+   [PROGRAM_KEY]: JSON.stringify({...initialProgram,sessions,detailNotes:{form:'resp'}}),
+  };
+  Object.defineProperty(window,'parent',{configurable:true,value:{SPM_DESIRE_LAB_HOST:{
+   getContext:()=>({day,origin:'dailyPlan',restriction:'none'}), getState:()=>state,
+   write:(k:string,v:string)=>{state[k]=v;return true;},
+  }}});
+  window.history.replaceState(null,'','/');window.scrollTo=vi.fn();document.body.innerHTML='<div id="root"></div>';
+  root=createRoot(document.getElementById('root')!);
+  await act(async()=>root!.render(<StrictMode><DesireLab/></StrictMode>));
+  return state;
+ };
+
+ it('reopening after day-one presence continues with exploration and preserves the chosen form',async()=>{
+  const sessions=[savedSession('presence-5')];
+  const state=await reopen(sessions);
+  expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
+  expect(document.querySelector('.dz-steps')?.textContent).toContain('diferente al de la primera práctica');
+  expect(document.querySelector('.dz-timer')).toBeNull();
+  expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
+  expect(JSON.parse(state[PROGRAM_KEY]!).detailNotes.form).toBe('resp');
+ });
+
+ it('reopening an interrupted exploration recovers active time without completing it or creating another session',async()=>{
+  const sessions=[savedSession('presence-5'),savedSession('explore-new-stimulus',1,'interrupted',87)];
+  const state=await reopen(sessions);
+  expect(document.querySelector('.dz-clock')?.textContent).toBe('01:33');
+  expect(Array.from(document.querySelectorAll('button')).some(b=>b.textContent?.includes('Reanudar'))).toBe(true);
+  expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
+  await click('Reanudar');
+  await click('Pausar');
+  const saved=JSON.parse(state[PROGRAM_KEY]!);
+  expect(saved.sessions).toHaveLength(2);
+  expect(saved.sessions[1]).toMatchObject({id:'explore-new-stimulus-1',status:'paused',activeSec:87,reflection:'Una sensación cómoda'});
+ });
+
+ it('does not automatically repeat the two day-one exercises after both are complete',async()=>{
+  const sessions=[savedSession('presence-5'),savedSession('explore-new-stimulus')];
+  const state=await reopen(sessions);
+  expect(document.querySelector('[aria-label="Las dos formas del deseo"]')).toBeNull();
+  expect(document.querySelector('[aria-label="Instrucciones de la actividad"]')).toBeNull();
+  expect(document.querySelector('[aria-label="Práctica en curso"]')).toBeNull();
+  expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
+ });
+
+ it('opens the first incomplete assigned practice on another day without repeating the completed one',async()=>{
+  const assigned=generateToday({...initialState,health:['none'],stimuli:['touch']},2);
+  expect(assigned.length).toBeGreaterThan(1);
+  const sessions=[savedSession(assigned[0]!.practiceId,2)];
+  const state=await reopen(sessions,2);
+  expect(document.querySelector('[aria-label="Instrucciones de la actividad"] h3')?.textContent).toBe(assigned[1]!.title);
+  expect(JSON.parse(state[PROGRAM_KEY]!).sessions).toEqual(sessions);
  });
 });

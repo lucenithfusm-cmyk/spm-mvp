@@ -115,9 +115,16 @@ export function DesireLab() {
     let c = todayFor(st, pg, d);
     if (safeOnly) c = c.filter((x) => practices[x.practiceId]!.safe);
     setToday(c); lsSet(STORAGE.today, JSON.stringify(c));
-    const pick = (want && c.find((x) => x.practiceId === want)) || c[0];
+    // Day one is the existing two-step guided practice: presence, then the
+    // exploration opened by its completion card. Reopening must continue that
+    // sequence rather than reset the completed presence exercise.
+    const assigned = d === 1 && c.some((x) => x.practiceId === 'presence-5')
+      ? ['presence-5', 'explore-new-stimulus']
+      : c.map((x) => x.practiceId);
+    const pending = assigned.filter((id) => !pg.sessions.some((x) => x.day === d && x.practiceId === id && x.status === 'completed'));
+    const pick = want && pending.includes(want) ? want : pending[0];
     setPDay(d);
-    setView(pick ? `p:${pick.practiceId}` : 'today');
+    setView(pick ? `p:${pick}` : 'today');
   }
   const ev = useMemo(() => evaluate(s), [s]);
   const change = freqChange(s);

@@ -2,10 +2,27 @@ import { describe, expect, it } from 'vitest';
 import { curriculum } from './desire-curriculum';
 import { generateToday, practices, interpret } from './desire-engine';
 import { initialState, evaluate, type DesireState } from './desire-data';
-import { bestActivators, canCompleteDay, dayStatus, freezeBaseline, initialProgram, migrateProgram, moveRank, sensateIOk, upsertSession, type Session } from './desire-program';
+import { bestActivators, canCompleteDay, dayStatus, freezeBaseline, initialProgram, migrateProgram, moveRank, pendingAttempt, sensateIOk, upsertSession, type Session } from './desire-program';
 
 const S = (o: Partial<DesireState>): DesireState => ({ ...initialState, ...o });
 const sess = (o: Partial<Session>): Session => ({ id: 'x', day: 1, date: '2026-10-03', practiceId: 'presence-5', variant: 'solo', status: 'completed', activeSec: 300, metricKey: 'pressure', before: null, after: null, reflection: '', ...o });
+
+describe('resuming saved attempts', () => {
+  it.each(['paused', 'interrupted'] as const)('recovers the latest %s attempt with its time and observations intact', (status) => {
+    const attempt = sess({ id: 'resume', status, activeSec: 87, reflection: 'Una sensación cómoda', before: 4 });
+    const p = { ...initialProgram, sessions: [attempt, sess({ id: 'other-day', day: 2, status: 'paused' })] };
+    const before = JSON.stringify(p);
+    expect(pendingAttempt(p, 'presence-5', 1)).toBe(attempt);
+    expect(JSON.stringify(p)).toBe(before);
+    expect(pendingAttempt(p, 'visual-explore', 1)).toBeUndefined();
+  });
+
+  it('does not revive an old pause after a later completion', () => {
+    const p = { ...initialProgram, sessions: [sess({ id: 'old', status: 'paused', activeSec: 30 }), sess({ id: 'done' })] };
+    expect(pendingAttempt(p, 'presence-5', 1)).toBeUndefined();
+    expect(p.sessions).toHaveLength(2);
+  });
+});
 
 describe('curriculum', () => {
   it('has 28 distinct days in 4 phases, every practice resolvable', () => {

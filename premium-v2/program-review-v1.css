@@ -1,0 +1,21 @@
+[hidden]{display:none!important}
+body{margin:0;background:#07171f;color:#f7fafc;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.review-header,#plan{width:min(100% - 32px,1000px);margin:0 auto}
+.review-header{padding:30px 0 10px}
+.review-kicker{color:#c5a46c;font-size:11px;font-weight:800;letter-spacing:.12em}
+.review-header h1{margin:9px 0;font-size:clamp(28px,5vw,40px);line-height:1.15;font-weight:800;color:#fff}
+.review-header p{margin:8px 0;color:#c4d0d5;line-height:1.55}
+.review-notice{margin-top:16px;padding:13px 16px;border:1px solid #594b35;border-radius:14px;background:#c5a46c0c;color:#e5d4b7;font-size:13px;line-height:1.55}
+.review-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:20px}
+.review-controls label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:700;color:#e3e9ed}
+.review-program{flex:1 1 260px}.review-day{flex:0 1 120px}
+.review-controls select{width:100%;min-height:48px;padding:11px 34px 11px 12px;border:1px solid #43606d;border-radius:12px;background:#112e3d;color:#fff;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+.review-arrows{display:flex;gap:8px}.review-arrows button{min-height:48px;padding:10px 15px}
+.review-controls :focus-visible,#reviewReset:focus-visible{outline:3px solid #c5a46c;outline-offset:3px}
+.review-controls :disabled,#reviewReset:disabled{opacity:.45;cursor:wait}
+#reviewStatus{min-height:24px;font-size:14px}#reviewStatus[data-error="true"]{color:#ffcebf}
+#reviewReset{margin:3px 0 10px;border:0;padding:5px 0;background:none;color:#d9be92;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.review-about{font-size:13px;color:#a7bec9}.review-about summary{cursor:pointer}.review-about p{max-width:760px}
+#plan{display:block;padding:10px 0 40px}#spmDailyCoach{display:none!important}
+#plan .spm-daily-activity h3{font-size:clamp(22px,4vw,26px);font-weight:800;color:#fff;line-height:1.2}
+@media(max-width:540px){.review-header,#plan{width:calc(100% - 24px)}.review-header{padding-top:22px}.review-controls{gap:10px}.review-program{flex-basis:100%}.review-day{flex:1}.review-arrows{flex:2}.review-arrows button{flex:1;min-width:0;padding:10px 8px;font-size:13px}}

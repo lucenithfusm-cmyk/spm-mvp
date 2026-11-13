@@ -78,20 +78,18 @@ function SpokenSteps({ text, label = 'Escuchar indicaciones' }: { text: string; 
 }
 
 const desireForms = [
-  { id: 'spont', title: 'Me dan ganas', description: 'El interés aparece antes de empezar: una idea, un recuerdo o una situación despierta tus ganas. Se llama deseo espontáneo.', audio: 'A veces las ganas aparecen antes de iniciar cualquier contacto. Por ejemplo, recuerdas un momento agradable y notas interés. A esto lo llamamos deseo espontáneo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a reconocer qué despierta ese interés y a disfrutarlo sin convertirlo en una obligación.' },
-  { id: 'resp', title: 'Me voy conectando', description: 'El interés puede aparecer poco a poco, cuando eliges una experiencia agradable y te sientes a gusto. Se llama deseo responsivo.', audio: 'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.' },
+  { id: 'spont', title: 'Me dan ganas', description: 'El interés aparece antes de empezar: una idea, un recuerdo o una situación despierta tus ganas.', name: 'deseo espontáneo', audio: 'A veces las ganas aparecen antes de iniciar cualquier contacto. Por ejemplo, recuerdas un momento agradable y notas interés. A esto lo llamamos deseo espontáneo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a reconocer qué despierta ese interés y a disfrutarlo sin convertirlo en una obligación.' },
+  { id: 'resp', title: 'Me voy conectando', description: 'El interés puede aparecer poco a poco, cuando eliges una experiencia agradable y te sientes a gusto.', name: 'deseo responsivo', audio: 'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.' },
 ];
 const formSteps: Record<string, string[]> = {
   spont: ['Durante el primer minuto, recuerda una situación reciente que despertó tu interés. Identifica un detalle: una imagen, una voz, un gesto o un ambiente.', 'Durante tres minutos, presta atención a una sensación agradable y cómoda: el contacto de tus manos, la temperatura de tu piel o un aroma. Respira con naturalidad. No busques comprobar tu excitación.', 'En el último minuto, observa qué detalle te ayudó a conectar. Puedes anotarlo al terminar. Si no sentiste interés, también es una observación válida.'],
   resp: ['Durante el primer minuto, elige una sensación que te resulte agradable y que quieras explorar: sostener una taza tibia, escuchar música suave o acariciar tus manos.', 'Durante tres minutos, disfruta esa sensación sin buscar una respuesta sexual. Nota la temperatura, la textura o el sonido. Si aparece presión o incomodidad, haz una pausa o detente.', 'En el último minuto, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo al terminar. No necesitas sentir deseo para que esta observación tenga valor.'],
 };
 function DesireForms({ selected, onChoose, disabled = false }: { selected: string; onChoose: (id: string) => void; disabled?: boolean }) {
-  return <section aria-label="Las dos formas del deseo"><h3>Las dos formas del deseo</h3>
-    
-    
+  return <section className="dz-desire-forms" aria-label="Las dos formas del deseo"><h3>Las dos formas del deseo</h3>
     <SpokenSteps label="Escuchar explicación" text="Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy no buscamos forzar el deseo, sino reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después verás una práctica de cinco minutos relacionada con tu elección." />
     <div className="dz-grid2">{desireForms.map(form => <Card key={form.id} className={selected === form.id ? 'accent' : ''}>
-      <h3>{form.title}</h3><p>{form.description}</p>
+      <h3>{form.title}</h3><p>{form.description} <strong className="dz-concept-name">Se llama {form.name}.</strong></p>
       <SpokenSteps label={'Escuchar: ' + form.title} text={form.audio} />
       <button type="button" className="dz-btn gold" disabled={disabled} aria-pressed={selected === form.id} aria-label={'Se parece a mí hoy: ' + form.title} onClick={() => onChoose(form.id)}>{selected === form.id && <Check size={18} />} Se parece a mí hoy</button>
     </Card>)}</div>

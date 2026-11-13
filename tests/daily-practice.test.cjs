@@ -31,6 +31,25 @@ test('Today opens the real current session and keeps the library intact',async()
  h.w.SPM_DAILY_PRACTICE.library();assert.equal(h.w.document.querySelector('#plan').dataset.spmDailyView,'library');assert.ok(h.w.document.querySelector('#original-library'));assert.equal(h.c.day,12);
  }finally{h.close()}
 });
+test('Desire day one has one entry button and keeps audio and recording inside its practice',async()=>{
+ const h=harness('desire',1);try{await wait();const card=h.w.document.querySelector('[data-activity="main"]');
+ assert.equal(card.querySelectorAll('button').length,1);
+ assert.equal(card.querySelector('[data-daily-open]').textContent,'Iniciar mi práctica de hoy');
+ assert.equal(card.querySelector('[data-spm-speak]'),null);
+ assert.equal(card.querySelector('[data-daily-confirm]'),null);
+ assert.ok(h.w.document.querySelector('.is-nutrition [data-nutrition-library]'));
+ card.querySelector('button').click();await wait();assert.equal(h.opens.at(-1)[0],'DESIRE');assert.equal(h.opens.at(-1)[1].origin,'dailyPlan');
+ assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
+ h.w.SPM_DAILY_PRACTICE.showContinuation();const resume=h.w.document.querySelector('[data-next-record]');assert.equal(resume.textContent,'Retomar mi práctica');resume.click();await wait();
+ assert.equal(h.opens.at(-1)[0],'DESIRE');assert.equal(h.writes.length,0);assert.equal(h.w.document.querySelector('#spmDailyWorkspace form'),null);
+ }finally{h.close()}
+});
+test('other Desire days retain their audio and route registration through the actual practice',async()=>{
+ const h=harness('desire',2);try{await wait();const card=h.w.document.querySelector('[data-activity="main"]');
+ assert.ok(card.querySelector('[data-spm-speak]'));card.querySelector('[data-daily-confirm]').click();await wait();
+ assert.equal(h.opens.at(-1)[0],'DESIRE');assert.equal(h.writes.length,0);assert.equal(h.w.document.querySelector('#spmDailyWorkspace form'),null);
+ }finally{h.close()}
+});
 test('saving one activity does not complete or advance the day; stale and restricted writes fail',async()=>{
  const h=harness();try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,true);
  await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='review';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
