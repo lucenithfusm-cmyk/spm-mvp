@@ -1,0 +1,3174 @@
+{
+  "generatedAt": "2026-11-13",
+  "provider": "HeyGen Voice",
+  "voice": {
+    "id": "050c403a43e047c796f8a6257ed2533e",
+    "name": "Lenny - Clear & Professional",
+    "status": "ACTIVE"
+  },
+  "settings": {
+    "language": "es",
+    "speed": 0.95,
+    "model": "server-selected (not returned)",
+    "outputFormat": {
+      "encoding": "mp3",
+      "num_channels": 1,
+      "sample_rate_hertz": 44100,
+      "bitrate_bps": 128000
+    }
+  },
+  "review": {
+    "source": "Exact SPM_PROGRAM_CHECKPOINT.narrations output. Same approved Lenny voice; speed applied once in synthesis, not again during playback.",
+    "validation": "Provider character alignment matches each full script. File hashes, decode, duration and live playback checked separately.",
+    "limitation": "Technical checks are not a full human listening review."
+  },
+  "actions": [
+    {
+      "milestone": 1,
+      "text": "Vamos a conocer tu punto de partida. Busca un momento tranquilo y piensa en cómo te has sentido durante los últimos siete días. En cada aspecto, elige la opción que describa tu experiencia: cero, ausencia; uno, bajo; dos, aceptable; tres, satisfactorio; cuatro, sin dificultades. No es un examen ni una meta que debas alcanzar. Solo valora la firmeza, el control eyaculatorio o la comodidad si has podido observarlos. Si no tuviste ocasión o un aspecto no aplica, elige «No evaluable o no aplica». Esa opción es distinta de cero y no cuenta como una dificultad. No necesitas tener una relación sexual ni hacer una prueba para responder. Si ya tenías un registro con la escala anterior, lo conservaremos; responde de nuevo con esta escala. Puedes añadir notas si quieres; no son obligatorias. Al terminar, pulsa «Guardar mi punto de partida». Puedes volver a escuchar la explicación y continuar tus actividades a tu ritmo. Este registro es educativo, no un diagnóstico. Mantén las indicaciones de tus profesionales y no cambies tus medicamentos por este programa.",
+      "path": "premium-v2/assets/audio/checkpoint/checkpoint-1-v2.mp3",
+      "audioUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=b88e1f906c374c34b76b12c247ff644b.mp3",
+      "duration": 69.52498866213153,
+      "wordTimings": [
+        {
+          "text": "Vamos",
+          "start_time": 0.213,
+          "end_time": 0.5547
+        },
+        {
+          "text": "a",
+          "start_time": 0.597,
+          "end_time": 0.6827
+        },
+        {
+          "text": "conocer",
+          "start_time": 0.725,
+          "end_time": 1.024
+        },
+        {
+          "text": "tu",
+          "start_time": 1.067,
+          "end_time": 1.237
+        },
+        {
+          "text": "punto",
+          "start_time": 1.28,
+          "end_time": 1.493
+        },
+        {
+          "text": "de",
+          "start_time": 1.579,
+          "end_time": 1.621
+        },
+        {
+          "text": "partida",
+          "start_time": 1.664,
+          "end_time": 2.048
+        },
+        {
+          "text": "Busca",
+          "start_time": 2.987,
+          "end_time": 3.328
+        },
+        {
+          "text": "un",
+          "start_time": 3.371,
+          "end_time": 3.413
+        },
+        {
+          "text": "momento",
+          "start_time": 3.456,
+          "end_time": 3.7547
+        },
+        {
+          "text": "tranquilo",
+          "start_time": 3.797,
+          "end_time": 4.309
+        },
+        {
+          "text": "y",
+          "start_time": 4.437,
+          "end_time": 4.6507
+        },
+        {
+          "text": "piensa",
+          "start_time": 4.693,
+          "end_time": 5.0347
+        },
+        {
+          "text": "en",
+          "start_time": 5.077,
+          "end_time": 5.12
+        },
+        {
+          "text": "cómo",
+          "start_time": 5.163,
+          "end_time": 5.504
+        },
+        {
+          "text": "te",
+          "start_time": 5.589,
+          "end_time": 5.675
+        },
+        {
+          "text": "has",
+          "start_time": 5.717,
+          "end_time": 5.76
+        },
+        {
+          "text": "sentido",
+          "start_time": 5.845,
+          "end_time": 6.272
+        },
+        {
+          "text": "durante",
+          "start_time": 6.315,
+          "end_time": 6.5707
+        },
+        {
+          "text": "los",
+          "start_time": 6.699,
+          "end_time": 6.784
+        },
+        {
+          "text": "últimos",
+          "start_time": 6.827,
+          "end_time": 7.2107
+        },
+        {
+          "text": "siete",
+          "start_time": 7.296,
+          "end_time": 7.4667
+        },
+        {
+          "text": "días",
+          "start_time": 7.552,
+          "end_time": 7.808
+        },
+        {
+          "text": "En",
+          "start_time": 8.343,
+          "end_time": 8.471
+        },
+        {
+          "text": "cada",
+          "start_time": 8.514,
+          "end_time": 8.6846
+        },
+        {
+          "text": "aspecto",
+          "start_time": 8.813,
+          "end_time": 9.197
+        },
+        {
+          "text": "elige",
+          "start_time": 9.538,
+          "end_time": 9.9219
+        },
+        {
+          "text": "la",
+          "start_time": 9.965,
+          "end_time": 10.0499
+        },
+        {
+          "text": "opción",
+          "start_time": 10.093,
+          "end_time": 10.3486
+        },
+        {
+          "text": "que",
+          "start_time": 10.391,
+          "end_time": 10.4766
+        },
+        {
+          "text": "describa",
+          "start_time": 10.519,
+          "end_time": 10.8179
+        },
+        {
+          "text": "tu",
+          "start_time": 10.946,
+          "end_time": 11.0739
+        },
+        {
+          "text": "experiencia",
+          "start_time": 11.117,
+          "end_time": 11.671
+        },
+        {
+          "text": "cero",
+          "start_time": 11.97,
+          "end_time": 12.354
+        },
+        {
+          "text": "ausencia",
+          "start_time": 12.61,
+          "end_time": 13.293
+        },
+        {
+          "text": "uno",
+          "start_time": 13.463,
+          "end_time": 13.89
+        },
+        {
+          "text": "bajo",
+          "start_time": 14.231,
+          "end_time": 14.615
+        },
+        {
+          "text": "dos",
+          "start_time": 14.999,
+          "end_time": 15.298
+        },
+        {
+          "text": "aceptable",
+          "start_time": 15.682,
+          "end_time": 16.194
+        },
+        {
+          "text": "tres",
+          "start_time": 16.791,
+          "end_time": 17.047
+        },
+        {
+          "text": "satisfactorio",
+          "start_time": 17.431,
+          "end_time": 18.242
+        },
+        {
+          "text": "cuatro",
+          "start_time": 18.626,
+          "end_time": 19.01
+        },
+        {
+          "text": "sin",
+          "start_time": 19.351,
+          "end_time": 19.5219
+        },
+        {
+          "text": "dificultades",
+          "start_time": 19.565,
+          "end_time": 20.077
+        },
+        {
+          "text": "No",
+          "start_time": 20.759,
+          "end_time": 20.973
+        },
+        {
+          "text": "es",
+          "start_time": 21.015,
+          "end_time": 21.058
+        },
+        {
+          "text": "un",
+          "start_time": 21.101,
+          "end_time": 21.143
+        },
+        {
+          "text": "examen",
+          "start_time": 21.186,
+          "end_time": 21.655
+        },
+        {
+          "text": "ni",
+          "start_time": 21.698,
+          "end_time": 21.783
+        },
+        {
+          "text": "una",
+          "start_time": 21.826,
+          "end_time": 21.9539
+        },
+        {
+          "text": "meta",
+          "start_time": 21.997,
+          "end_time": 22.2099
+        },
+        {
+          "text": "que",
+          "start_time": 22.295,
+          "end_time": 22.3806
+        },
+        {
+          "text": "debas",
+          "start_time": 22.423,
+          "end_time": 22.6366
+        },
+        {
+          "text": "alcanzar",
+          "start_time": 22.679,
+          "end_time": 23.149
+        },
+        {
+          "text": "Solo",
+          "start_time": 23.635,
+          "end_time": 23.848
+        },
+        {
+          "text": "valora",
+          "start_time": 23.891,
+          "end_time": 24.232
+        },
+        {
+          "text": "la",
+          "start_time": 24.275,
+          "end_time": 24.36
+        },
+        {
+          "text": "firmeza",
+          "start_time": 24.403,
+          "end_time": 24.744
+        },
+        {
+          "text": "el",
+          "start_time": 25.256,
+          "end_time": 25.384
+        },
+        {
+          "text": "control",
+          "start_time": 25.427,
+          "end_time": 25.5976
+        },
+        {
+          "text": "eyaculatorio",
+          "start_time": 25.811,
+          "end_time": 26.408
+        },
+        {
+          "text": "o",
+          "start_time": 26.707,
+          "end_time": 26.963
+        },
+        {
+          "text": "la",
+          "start_time": 27.006,
+          "end_time": 27.048
+        },
+        {
+          "text": "comodidad",
+          "start_time": 27.091,
+          "end_time": 27.6029
+        },
+        {
+          "text": "si",
+          "start_time": 27.731,
+          "end_time": 27.816
+        },
+        {
+          "text": "has",
+          "start_time": 27.859,
+          "end_time": 27.9016
+        },
+        {
+          "text": "podido",
+          "start_time": 27.944,
+          "end_time": 28.2856
+        },
+        {
+          "text": "observarlos",
+          "start_time": 28.328,
+          "end_time": 28.883
+        },
+        {
+          "text": "Si",
+          "start_time": 29.523,
+          "end_time": 29.6509
+        },
+        {
+          "text": "no",
+          "start_time": 29.694,
+          "end_time": 29.7789
+        },
+        {
+          "text": "tuviste",
+          "start_time": 29.822,
+          "end_time": 30.12
+        },
+        {
+          "text": "ocasión",
+          "start_time": 30.163,
+          "end_time": 30.632
+        },
+        {
+          "text": "o",
+          "start_time": 30.846,
+          "end_time": 30.931
+        },
+        {
+          "text": "un",
+          "start_time": 30.974,
+          "end_time": 31.0589
+        },
+        {
+          "text": "aspecto",
+          "start_time": 31.102,
+          "end_time": 31.4429
+        },
+        {
+          "text": "no",
+          "start_time": 31.528,
+          "end_time": 31.614
+        },
+        {
+          "text": "aplica",
+          "start_time": 31.656,
+          "end_time": 31.998
+        },
+        {
+          "text": "elige",
+          "start_time": 32.339,
+          "end_time": 32.7656
+        },
+        {
+          "text": "No",
+          "start_time": 33.022,
+          "end_time": 33.32
+        },
+        {
+          "text": "evaluable",
+          "start_time": 33.363,
+          "end_time": 33.8749
+        },
+        {
+          "text": "o",
+          "start_time": 34.131,
+          "end_time": 34.3869
+        },
+        {
+          "text": "no",
+          "start_time": 34.43,
+          "end_time": 34.5576
+        },
+        {
+          "text": "aplica",
+          "start_time": 34.6,
+          "end_time": 34.984
+        },
+        {
+          "text": "Esa",
+          "start_time": 35.35,
+          "end_time": 35.6918
+        },
+        {
+          "text": "opción",
+          "start_time": 35.734,
+          "end_time": 36.033
+        },
+        {
+          "text": "es",
+          "start_time": 36.076,
+          "end_time": 36.118
+        },
+        {
+          "text": "distinta",
+          "start_time": 36.161,
+          "end_time": 36.7158
+        },
+        {
+          "text": "de",
+          "start_time": 36.801,
+          "end_time": 36.886
+        },
+        {
+          "text": "cero",
+          "start_time": 36.929,
+          "end_time": 37.2278
+        },
+        {
+          "text": "y",
+          "start_time": 37.313,
+          "end_time": 37.569
+        },
+        {
+          "text": "no",
+          "start_time": 37.612,
+          "end_time": 37.697
+        },
+        {
+          "text": "cuenta",
+          "start_time": 37.74,
+          "end_time": 38.1238
+        },
+        {
+          "text": "como",
+          "start_time": 38.166,
+          "end_time": 38.337
+        },
+        {
+          "text": "una",
+          "start_time": 38.38,
+          "end_time": 38.5078
+        },
+        {
+          "text": "dificultad",
+          "start_time": 38.55,
+          "end_time": 39.062
+        },
+        {
+          "text": "No",
+          "start_time": 39.575,
+          "end_time": 39.745
+        },
+        {
+          "text": "necesitas",
+          "start_time": 39.788,
+          "end_time": 40.2145
+        },
+        {
+          "text": "tener",
+          "start_time": 40.257,
+          "end_time": 40.385
+        },
+        {
+          "text": "una",
+          "start_time": 40.513,
+          "end_time": 40.641
+        },
+        {
+          "text": "relación",
+          "start_time": 40.684,
+          "end_time": 41.0678
+        },
+        {
+          "text": "sexual",
+          "start_time": 41.111,
+          "end_time": 41.4945
+        },
+        {
+          "text": "ni",
+          "start_time": 41.751,
+          "end_time": 41.8785
+        },
+        {
+          "text": "hacer",
+          "start_time": 41.921,
+          "end_time": 42.1345
+        },
+        {
+          "text": "una",
+          "start_time": 42.177,
+          "end_time": 42.305
+        },
+        {
+          "text": "prueba",
+          "start_time": 42.348,
+          "end_time": 42.7318
+        },
+        {
+          "text": "para",
+          "start_time": 42.775,
+          "end_time": 42.9025
+        },
+        {
+          "text": "responder",
+          "start_time": 42.945,
+          "end_time": 43.244
+        },
+        {
+          "text": "Si",
+          "start_time": 43.997,
+          "end_time": 44.168
+        },
+        {
+          "text": "ya",
+          "start_time": 44.211,
+          "end_time": 44.296
+        },
+        {
+          "text": "tenías",
+          "start_time": 44.339,
+          "end_time": 44.552
+        },
+        {
+          "text": "un",
+          "start_time": 44.595,
+          "end_time": 44.68
+        },
+        {
+          "text": "registro",
+          "start_time": 44.723,
+          "end_time": 45.2348
+        },
+        {
+          "text": "con",
+          "start_time": 45.277,
+          "end_time": 45.363
+        },
+        {
+          "text": "la",
+          "start_time": 45.405,
+          "end_time": 45.4908
+        },
+        {
+          "text": "escala",
+          "start_time": 45.533,
+          "end_time": 45.789
+        },
+        {
+          "text": "anterior",
+          "start_time": 45.875,
+          "end_time": 46.216
+        },
+        {
+          "text": "lo",
+          "start_time": 46.557,
+          "end_time": 46.6428
+        },
+        {
+          "text": "conservaremos",
+          "start_time": 46.685,
+          "end_time": 47.325
+        },
+        {
+          "text": "responde",
+          "start_time": 47.709,
+          "end_time": 48.008
+        },
+        {
+          "text": "de",
+          "start_time": 48.136,
+          "end_time": 48.1788
+        },
+        {
+          "text": "nuevo",
+          "start_time": 48.221,
+          "end_time": 48.477
+        },
+        {
+          "text": "con",
+          "start_time": 48.563,
+          "end_time": 48.648
+        },
+        {
+          "text": "esta",
+          "start_time": 48.691,
+          "end_time": 48.904
+        },
+        {
+          "text": "escala",
+          "start_time": 48.947,
+          "end_time": 49.203
+        },
+        {
+          "text": "Puedes",
+          "start_time": 49.8,
+          "end_time": 50.013
+        },
+        {
+          "text": "añadir",
+          "start_time": 50.056,
+          "end_time": 50.3548
+        },
+        {
+          "text": "notas",
+          "start_time": 50.44,
+          "end_time": 50.781
+        },
+        {
+          "text": "si",
+          "start_time": 50.824,
+          "end_time": 50.909
+        },
+        {
+          "text": "quieres",
+          "start_time": 50.952,
+          "end_time": 51.251
+        },
+        {
+          "text": "no",
+          "start_time": 51.592,
+          "end_time": 51.7628
+        },
+        {
+          "text": "son",
+          "start_time": 51.805,
+          "end_time": 51.976
+        },
+        {
+          "text": "obligatorias",
+          "start_time": 52.019,
+          "end_time": 52.616
+        },
+        {
+          "text": "Al",
+          "start_time": 53.085,
+          "end_time": 53.1708
+        },
+        {
+          "text": "terminar",
+          "start_time": 53.213,
+          "end_time": 53.555
+        },
+        {
+          "text": "pulsa",
+          "start_time": 53.896,
+          "end_time": 54.237
+        },
+        {
+          "text": "Guardar",
+          "start_time": 54.451,
+          "end_time": 55.133
+        },
+        {
+          "text": "mi",
+          "start_time": 55.219,
+          "end_time": 55.304
+        },
+        {
+          "text": "punto",
+          "start_time": 55.347,
+          "end_time": 55.6028
+        },
+        {
+          "text": "de",
+          "start_time": 55.688,
+          "end_time": 55.7308
+        },
+        {
+          "text": "partida",
+          "start_time": 55.773,
+          "end_time": 56.157
+        },
+        {
+          "text": "Puedes",
+          "start_time": 56.599,
+          "end_time": 56.855
+        },
+        {
+          "text": "volver",
+          "start_time": 56.898,
+          "end_time": 57.154
+        },
+        {
+          "text": "a",
+          "start_time": 57.197,
+          "end_time": 57.239
+        },
+        {
+          "text": "escuchar",
+          "start_time": 57.282,
+          "end_time": 57.623
+        },
+        {
+          "text": "la",
+          "start_time": 57.666,
+          "end_time": 57.751
+        },
+        {
+          "text": "explicación",
+          "start_time": 57.794,
+          "end_time": 58.434
+        },
+        {
+          "text": "y",
+          "start_time": 58.605,
+          "end_time": 58.7327
+        },
+        {
+          "text": "continuar",
+          "start_time": 58.775,
+          "end_time": 59.202
+        },
+        {
+          "text": "tus",
+          "start_time": 59.245,
+          "end_time": 59.3727
+        },
+        {
+          "text": "actividades",
+          "start_time": 59.415,
+          "end_time": 59.97
+        },
+        {
+          "text": "a",
+          "start_time": 60.098,
+          "end_time": 60.183
+        },
+        {
+          "text": "tu",
+          "start_time": 60.226,
+          "end_time": 60.311
+        },
+        {
+          "text": "ritmo",
+          "start_time": 60.354,
+          "end_time": 60.653
+        },
+        {
+          "text": "Este",
+          "start_time": 61.037,
+          "end_time": 61.378
+        },
+        {
+          "text": "registro",
+          "start_time": 61.463,
+          "end_time": 61.89
+        },
+        {
+          "text": "es",
+          "start_time": 61.933,
+          "end_time": 61.975
+        },
+        {
+          "text": "educativo",
+          "start_time": 62.018,
+          "end_time": 62.615
+        },
+        {
+          "text": "no",
+          "start_time": 62.914,
+          "end_time": 63.085
+        },
+        {
+          "text": "un",
+          "start_time": 63.127,
+          "end_time": 63.2127
+        },
+        {
+          "text": "diagnóstico",
+          "start_time": 63.255,
+          "end_time": 63.853
+        },
+        {
+          "text": "Mantén",
+          "start_time": 64.395,
+          "end_time": 64.736
+        },
+        {
+          "text": "las",
+          "start_time": 64.779,
+          "end_time": 64.9068
+        },
+        {
+          "text": "indicaciones",
+          "start_time": 64.992,
+          "end_time": 65.589
+        },
+        {
+          "text": "de",
+          "start_time": 65.632,
+          "end_time": 65.717
+        },
+        {
+          "text": "tus",
+          "start_time": 65.76,
+          "end_time": 65.845
+        },
+        {
+          "text": "profesionales",
+          "start_time": 65.888,
+          "end_time": 66.485
+        },
+        {
+          "text": "y",
+          "start_time": 66.784,
+          "end_time": 66.9548
+        },
+        {
+          "text": "no",
+          "start_time": 66.997,
+          "end_time": 67.125
+        },
+        {
+          "text": "cambies",
+          "start_time": 67.168,
+          "end_time": 67.509
+        },
+        {
+          "text": "tus",
+          "start_time": 67.595,
+          "end_time": 67.7228
+        },
+        {
+          "text": "medicamentos",
+          "start_time": 67.765,
+          "end_time": 68.448
+        },
+        {
+          "text": "por",
+          "start_time": 68.491,
+          "end_time": 68.619
+        },
+        {
+          "text": "este",
+          "start_time": 68.661,
+          "end_time": 68.8748
+        },
+        {
+          "text": "programa",
+          "start_time": 68.917,
+          "end_time": 69.216
+        }
+      ],
+      "verifiedFile": {
+        "size": 1113025,
+        "duration": 69.564063,
+        "sha256": "ec0f4556253dda3454aa99a9f5c74154becc70cbf1ed973bd68044ed5d3879af",
+        "codec": {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 1
+        }
+      }
+    },
+    {
+      "milestone": 14,
+      "text": "Llevas dos semanas aprendiendo a reconocer tu cuerpo y sus respuestas. Los cambios pueden ser graduales y variar entre personas. No observar todavía una mejoría no significa por sí solo que estés perdiendo el tiempo. Revisemos tu comodidad y lo que has aprendido para ajustar el proceso, sin forzar ni prometer resultados. Busca un momento tranquilo y piensa en cómo te has sentido durante los últimos siete días. En cada aspecto, elige la opción que describa tu experiencia: cero, ausencia; uno, bajo; dos, aceptable; tres, satisfactorio; cuatro, sin dificultades. No es un examen ni una meta que debas alcanzar. Solo valora la firmeza, el control eyaculatorio o la comodidad si has podido observarlos. Si no tuviste ocasión o un aspecto no aplica, elige «No evaluable o no aplica». Esa opción es distinta de cero y no cuenta como una dificultad. No necesitas tener una relación sexual ni hacer una prueba para responder. Si ya tenías un registro con la escala anterior, lo conservaremos; responde de nuevo con esta escala. Puedes añadir notas si quieres; no son obligatorias. Al terminar, pulsa «Guardar mi seguimiento». Podrás consultar tus respuestas junto a las de tu punto de partida. Este registro es educativo, no un diagnóstico. Mantén las indicaciones de tus profesionales y no cambies tus medicamentos por este programa.",
+      "path": "premium-v2/assets/audio/checkpoint/checkpoint-14-v2.mp3",
+      "audioUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=37eaa1e7cae944048cf27fc2abaa9bf4.mp3",
+      "duration": 84.42913832199547,
+      "wordTimings": [
+        {
+          "text": "Llevas",
+          "start_time": 0.213,
+          "end_time": 0.597
+        },
+        {
+          "text": "dos",
+          "start_time": 0.64,
+          "end_time": 0.9387
+        },
+        {
+          "text": "semanas",
+          "start_time": 1.024,
+          "end_time": 1.4507
+        },
+        {
+          "text": "aprendiendo",
+          "start_time": 1.536,
+          "end_time": 2.048
+        },
+        {
+          "text": "a",
+          "start_time": 2.091,
+          "end_time": 2.133
+        },
+        {
+          "text": "reconocer",
+          "start_time": 2.176,
+          "end_time": 2.6027
+        },
+        {
+          "text": "tu",
+          "start_time": 2.645,
+          "end_time": 2.773
+        },
+        {
+          "text": "cuerpo",
+          "start_time": 2.816,
+          "end_time": 3.2
+        },
+        {
+          "text": "y",
+          "start_time": 3.285,
+          "end_time": 3.328
+        },
+        {
+          "text": "sus",
+          "start_time": 3.371,
+          "end_time": 3.4987
+        },
+        {
+          "text": "respuestas",
+          "start_time": 3.541,
+          "end_time": 4.096
+        },
+        {
+          "text": "Los",
+          "start_time": 5.077,
+          "end_time": 5.376
+        },
+        {
+          "text": "cambios",
+          "start_time": 5.419,
+          "end_time": 5.76
+        },
+        {
+          "text": "pueden",
+          "start_time": 5.803,
+          "end_time": 6.016
+        },
+        {
+          "text": "ser",
+          "start_time": 6.059,
+          "end_time": 6.229
+        },
+        {
+          "text": "graduales",
+          "start_time": 6.272,
+          "end_time": 6.784
+        },
+        {
+          "text": "y",
+          "start_time": 7.04,
+          "end_time": 7.168
+        },
+        {
+          "text": "variar",
+          "start_time": 7.211,
+          "end_time": 7.509
+        },
+        {
+          "text": "entre",
+          "start_time": 7.595,
+          "end_time": 7.765
+        },
+        {
+          "text": "personas",
+          "start_time": 7.808,
+          "end_time": 8.149
+        },
+        {
+          "text": "No",
+          "start_time": 8.85,
+          "end_time": 9.1057
+        },
+        {
+          "text": "observar",
+          "start_time": 9.148,
+          "end_time": 9.532
+        },
+        {
+          "text": "todavía",
+          "start_time": 9.575,
+          "end_time": 9.959
+        },
+        {
+          "text": "una",
+          "start_time": 10.002,
+          "end_time": 10.1297
+        },
+        {
+          "text": "mejoría",
+          "start_time": 10.172,
+          "end_time": 10.599
+        },
+        {
+          "text": "no",
+          "start_time": 10.727,
+          "end_time": 11.1537
+        },
+        {
+          "text": "significa",
+          "start_time": 11.196,
+          "end_time": 11.58
+        },
+        {
+          "text": "por",
+          "start_time": 11.666,
+          "end_time": 11.836
+        },
+        {
+          "text": "sí",
+          "start_time": 11.879,
+          "end_time": 12.007
+        },
+        {
+          "text": "solo",
+          "start_time": 12.05,
+          "end_time": 12.348
+        },
+        {
+          "text": "que",
+          "start_time": 12.434,
+          "end_time": 12.5617
+        },
+        {
+          "text": "estés",
+          "start_time": 12.604,
+          "end_time": 12.775
+        },
+        {
+          "text": "perdiendo",
+          "start_time": 12.818,
+          "end_time": 13.2017
+        },
+        {
+          "text": "el",
+          "start_time": 13.244,
+          "end_time": 13.287
+        },
+        {
+          "text": "tiempo",
+          "start_time": 13.33,
+          "end_time": 13.586
+        },
+        {
+          "text": "Revisemos",
+          "start_time": 14.012,
+          "end_time": 14.4817
+        },
+        {
+          "text": "tu",
+          "start_time": 14.567,
+          "end_time": 14.652
+        },
+        {
+          "text": "comodidad",
+          "start_time": 14.695,
+          "end_time": 15.207
+        },
+        {
+          "text": "y",
+          "start_time": 15.378,
+          "end_time": 15.42
+        },
+        {
+          "text": "lo",
+          "start_time": 15.463,
+          "end_time": 15.548
+        },
+        {
+          "text": "que",
+          "start_time": 15.591,
+          "end_time": 15.676
+        },
+        {
+          "text": "has",
+          "start_time": 15.719,
+          "end_time": 15.804
+        },
+        {
+          "text": "aprendido",
+          "start_time": 15.847,
+          "end_time": 16.359
+        },
+        {
+          "text": "para",
+          "start_time": 16.402,
+          "end_time": 16.572
+        },
+        {
+          "text": "ajustar",
+          "start_time": 16.615,
+          "end_time": 16.956
+        },
+        {
+          "text": "el",
+          "start_time": 16.999,
+          "end_time": 17.0417
+        },
+        {
+          "text": "proceso",
+          "start_time": 17.084,
+          "end_time": 17.511
+        },
+        {
+          "text": "sin",
+          "start_time": 17.938,
+          "end_time": 18.108
+        },
+        {
+          "text": "forzar",
+          "start_time": 18.151,
+          "end_time": 18.535
+        },
+        {
+          "text": "ni",
+          "start_time": 18.706,
+          "end_time": 18.8337
+        },
+        {
+          "text": "prometer",
+          "start_time": 18.876,
+          "end_time": 19.26
+        },
+        {
+          "text": "resultados",
+          "start_time": 19.303,
+          "end_time": 19.9
+        },
+        {
+          "text": "Busca",
+          "start_time": 20.48,
+          "end_time": 20.822
+        },
+        {
+          "text": "un",
+          "start_time": 20.864,
+          "end_time": 20.907
+        },
+        {
+          "text": "momento",
+          "start_time": 20.95,
+          "end_time": 21.2058
+        },
+        {
+          "text": "tranquilo",
+          "start_time": 21.248,
+          "end_time": 21.7178
+        },
+        {
+          "text": "y",
+          "start_time": 21.846,
+          "end_time": 22.0165
+        },
+        {
+          "text": "piensa",
+          "start_time": 22.059,
+          "end_time": 22.4005
+        },
+        {
+          "text": "en",
+          "start_time": 22.443,
+          "end_time": 22.5285
+        },
+        {
+          "text": "cómo",
+          "start_time": 22.571,
+          "end_time": 22.87
+        },
+        {
+          "text": "te",
+          "start_time": 22.913,
+          "end_time": 23.041
+        },
+        {
+          "text": "has",
+          "start_time": 23.083,
+          "end_time": 23.1258
+        },
+        {
+          "text": "sentido",
+          "start_time": 23.211,
+          "end_time": 23.68
+        },
+        {
+          "text": "durante",
+          "start_time": 23.723,
+          "end_time": 23.936
+        },
+        {
+          "text": "los",
+          "start_time": 24.064,
+          "end_time": 24.1498
+        },
+        {
+          "text": "últimos",
+          "start_time": 24.192,
+          "end_time": 24.619
+        },
+        {
+          "text": "siete",
+          "start_time": 24.662,
+          "end_time": 24.9178
+        },
+        {
+          "text": "días",
+          "start_time": 25.003,
+          "end_time": 25.216
+        },
+        {
+          "text": "En",
+          "start_time": 25.726,
+          "end_time": 25.896
+        },
+        {
+          "text": "cada",
+          "start_time": 25.939,
+          "end_time": 26.0668
+        },
+        {
+          "text": "aspecto",
+          "start_time": 26.238,
+          "end_time": 26.622
+        },
+        {
+          "text": "elige",
+          "start_time": 26.92,
+          "end_time": 27.219
+        },
+        {
+          "text": "la",
+          "start_time": 27.304,
+          "end_time": 27.3468
+        },
+        {
+          "text": "opción",
+          "start_time": 27.39,
+          "end_time": 27.688
+        },
+        {
+          "text": "que",
+          "start_time": 27.731,
+          "end_time": 27.816
+        },
+        {
+          "text": "describa",
+          "start_time": 27.859,
+          "end_time": 28.2
+        },
+        {
+          "text": "tu",
+          "start_time": 28.285,
+          "end_time": 28.413
+        },
+        {
+          "text": "experiencia",
+          "start_time": 28.456,
+          "end_time": 29.011
+        },
+        {
+          "text": "cero",
+          "start_time": 29.395,
+          "end_time": 29.736
+        },
+        {
+          "text": "ausencia",
+          "start_time": 30.078,
+          "end_time": 30.718
+        },
+        {
+          "text": "uno",
+          "start_time": 30.931,
+          "end_time": 31.315
+        },
+        {
+          "text": "bajo",
+          "start_time": 31.613,
+          "end_time": 32.04
+        },
+        {
+          "text": "dos",
+          "start_time": 32.424,
+          "end_time": 32.723
+        },
+        {
+          "text": "aceptable",
+          "start_time": 33.064,
+          "end_time": 33.619
+        },
+        {
+          "text": "tres",
+          "start_time": 34.216,
+          "end_time": 34.429
+        },
+        {
+          "text": "satisfactorio",
+          "start_time": 34.856,
+          "end_time": 35.667
+        },
+        {
+          "text": "cuatro",
+          "start_time": 36.179,
+          "end_time": 36.52
+        },
+        {
+          "text": "sin",
+          "start_time": 36.861,
+          "end_time": 37.032
+        },
+        {
+          "text": "dificultades",
+          "start_time": 37.075,
+          "end_time": 37.587
+        },
+        {
+          "text": "No",
+          "start_time": 38.312,
+          "end_time": 38.483
+        },
+        {
+          "text": "es",
+          "start_time": 38.526,
+          "end_time": 38.568
+        },
+        {
+          "text": "un",
+          "start_time": 38.611,
+          "end_time": 38.6535
+        },
+        {
+          "text": "examen",
+          "start_time": 38.739,
+          "end_time": 39.166
+        },
+        {
+          "text": "ni",
+          "start_time": 39.208,
+          "end_time": 39.2935
+        },
+        {
+          "text": "una",
+          "start_time": 39.336,
+          "end_time": 39.464
+        },
+        {
+          "text": "meta",
+          "start_time": 39.507,
+          "end_time": 39.72
+        },
+        {
+          "text": "que",
+          "start_time": 39.848,
+          "end_time": 39.8908
+        },
+        {
+          "text": "debas",
+          "start_time": 39.934,
+          "end_time": 40.1468
+        },
+        {
+          "text": "alcanzar",
+          "start_time": 40.19,
+          "end_time": 40.616
+        },
+        {
+          "text": "Solo",
+          "start_time": 41.098,
+          "end_time": 41.3117
+        },
+        {
+          "text": "valora",
+          "start_time": 41.354,
+          "end_time": 41.696
+        },
+        {
+          "text": "la",
+          "start_time": 41.738,
+          "end_time": 41.781
+        },
+        {
+          "text": "firmeza",
+          "start_time": 41.824,
+          "end_time": 42.208
+        },
+        {
+          "text": "el",
+          "start_time": 42.634,
+          "end_time": 42.7197
+        },
+        {
+          "text": "control",
+          "start_time": 42.805,
+          "end_time": 42.933
+        },
+        {
+          "text": "eyaculatorio",
+          "start_time": 43.104,
+          "end_time": 43.7437
+        },
+        {
+          "text": "o",
+          "start_time": 43.957,
+          "end_time": 44.213
+        },
+        {
+          "text": "la",
+          "start_time": 44.256,
+          "end_time": 44.298
+        },
+        {
+          "text": "comodidad",
+          "start_time": 44.341,
+          "end_time": 44.853
+        },
+        {
+          "text": "si",
+          "start_time": 44.981,
+          "end_time": 45.066
+        },
+        {
+          "text": "has",
+          "start_time": 45.109,
+          "end_time": 45.194
+        },
+        {
+          "text": "podido",
+          "start_time": 45.237,
+          "end_time": 45.578
+        },
+        {
+          "text": "observarlos",
+          "start_time": 45.621,
+          "end_time": 46.176
+        },
+        {
+          "text": "Si",
+          "start_time": 46.773,
+          "end_time": 46.944
+        },
+        {
+          "text": "no",
+          "start_time": 46.986,
+          "end_time": 47.029
+        },
+        {
+          "text": "tuviste",
+          "start_time": 47.072,
+          "end_time": 47.37
+        },
+        {
+          "text": "ocasión",
+          "start_time": 47.413,
+          "end_time": 47.925
+        },
+        {
+          "text": "o",
+          "start_time": 48.053,
+          "end_time": 48.138
+        },
+        {
+          "text": "un",
+          "start_time": 48.181,
+          "end_time": 48.2237
+        },
+        {
+          "text": "aspecto",
+          "start_time": 48.266,
+          "end_time": 48.65
+        },
+        {
+          "text": "no",
+          "start_time": 48.736,
+          "end_time": 48.864
+        },
+        {
+          "text": "aplica",
+          "start_time": 48.906,
+          "end_time": 49.248
+        },
+        {
+          "text": "elige",
+          "start_time": 49.546,
+          "end_time": 50.0157
+        },
+        {
+          "text": "No",
+          "start_time": 50.272,
+          "end_time": 50.485
+        },
+        {
+          "text": "evaluable",
+          "start_time": 50.528,
+          "end_time": 50.997
+        },
+        {
+          "text": "o",
+          "start_time": 51.253,
+          "end_time": 51.466
+        },
+        {
+          "text": "no",
+          "start_time": 51.509,
+          "end_time": 51.594
+        },
+        {
+          "text": "aplica",
+          "start_time": 51.637,
+          "end_time": 52.021
+        },
+        {
+          "text": "Esa",
+          "start_time": 52.427,
+          "end_time": 52.683
+        },
+        {
+          "text": "opción",
+          "start_time": 52.726,
+          "end_time": 53.024
+        },
+        {
+          "text": "es",
+          "start_time": 53.067,
+          "end_time": 53.152
+        },
+        {
+          "text": "distinta",
+          "start_time": 53.195,
+          "end_time": 53.707
+        },
+        {
+          "text": "de",
+          "start_time": 53.792,
+          "end_time": 53.8777
+        },
+        {
+          "text": "cero",
+          "start_time": 53.92,
+          "end_time": 54.219
+        },
+        {
+          "text": "y",
+          "start_time": 54.304,
+          "end_time": 54.39
+        },
+        {
+          "text": "no",
+          "start_time": 54.432,
+          "end_time": 54.5177
+        },
+        {
+          "text": "cuenta",
+          "start_time": 54.56,
+          "end_time": 54.9017
+        },
+        {
+          "text": "como",
+          "start_time": 54.944,
+          "end_time": 55.115
+        },
+        {
+          "text": "una",
+          "start_time": 55.158,
+          "end_time": 55.2857
+        },
+        {
+          "text": "dificultad",
+          "start_time": 55.328,
+          "end_time": 55.84
+        },
+        {
+          "text": "No",
+          "start_time": 56.395,
+          "end_time": 56.608
+        },
+        {
+          "text": "necesitas",
+          "start_time": 56.651,
+          "end_time": 57.035
+        },
+        {
+          "text": "tener",
+          "start_time": 57.12,
+          "end_time": 57.248
+        },
+        {
+          "text": "una",
+          "start_time": 57.334,
+          "end_time": 57.4617
+        },
+        {
+          "text": "relación",
+          "start_time": 57.504,
+          "end_time": 57.888
+        },
+        {
+          "text": "sexual",
+          "start_time": 57.931,
+          "end_time": 58.315
+        },
+        {
+          "text": "ni",
+          "start_time": 58.571,
+          "end_time": 58.699
+        },
+        {
+          "text": "hacer",
+          "start_time": 58.742,
+          "end_time": 58.912
+        },
+        {
+          "text": "una",
+          "start_time": 58.955,
+          "end_time": 59.083
+        },
+        {
+          "text": "prueba",
+          "start_time": 59.126,
+          "end_time": 59.467
+        },
+        {
+          "text": "para",
+          "start_time": 59.51,
+          "end_time": 59.68
+        },
+        {
+          "text": "responder",
+          "start_time": 59.723,
+          "end_time": 60.022
+        },
+        {
+          "text": "Si",
+          "start_time": 60.605,
+          "end_time": 60.8189
+        },
+        {
+          "text": "ya",
+          "start_time": 60.861,
+          "end_time": 60.9469
+        },
+        {
+          "text": "tenías",
+          "start_time": 60.989,
+          "end_time": 61.2029
+        },
+        {
+          "text": "un",
+          "start_time": 61.245,
+          "end_time": 61.3309
+        },
+        {
+          "text": "registro",
+          "start_time": 61.373,
+          "end_time": 61.8
+        },
+        {
+          "text": "con",
+          "start_time": 61.843,
+          "end_time": 61.971
+        },
+        {
+          "text": "la",
+          "start_time": 62.014,
+          "end_time": 62.056
+        },
+        {
+          "text": "escala",
+          "start_time": 62.099,
+          "end_time": 62.3549
+        },
+        {
+          "text": "anterior",
+          "start_time": 62.398,
+          "end_time": 62.739
+        },
+        {
+          "text": "lo",
+          "start_time": 63.123,
+          "end_time": 63.1655
+        },
+        {
+          "text": "conservaremos",
+          "start_time": 63.208,
+          "end_time": 63.848
+        },
+        {
+          "text": "responde",
+          "start_time": 64.317,
+          "end_time": 64.7869
+        },
+        {
+          "text": "de",
+          "start_time": 64.915,
+          "end_time": 64.957
+        },
+        {
+          "text": "nuevo",
+          "start_time": 65,
+          "end_time": 65.2989
+        },
+        {
+          "text": "con",
+          "start_time": 65.341,
+          "end_time": 65.4269
+        },
+        {
+          "text": "esta",
+          "start_time": 65.469,
+          "end_time": 65.6829
+        },
+        {
+          "text": "escala",
+          "start_time": 65.725,
+          "end_time": 66.024
+        },
+        {
+          "text": "Puedes",
+          "start_time": 66.493,
+          "end_time": 66.749
+        },
+        {
+          "text": "añadir",
+          "start_time": 66.792,
+          "end_time": 67.133
+        },
+        {
+          "text": "notas",
+          "start_time": 67.176,
+          "end_time": 67.4749
+        },
+        {
+          "text": "si",
+          "start_time": 67.517,
+          "end_time": 67.6029
+        },
+        {
+          "text": "quieres",
+          "start_time": 67.645,
+          "end_time": 67.944
+        },
+        {
+          "text": "no",
+          "start_time": 68.285,
+          "end_time": 68.413
+        },
+        {
+          "text": "son",
+          "start_time": 68.456,
+          "end_time": 68.584
+        },
+        {
+          "text": "obligatorias",
+          "start_time": 68.627,
+          "end_time": 69.181
+        },
+        {
+          "text": "Al",
+          "start_time": 69.608,
+          "end_time": 69.7789
+        },
+        {
+          "text": "terminar",
+          "start_time": 69.822,
+          "end_time": 70.163
+        },
+        {
+          "text": "pulsa",
+          "start_time": 70.504,
+          "end_time": 70.8455
+        },
+        {
+          "text": "Guardar",
+          "start_time": 71.016,
+          "end_time": 71.4855
+        },
+        {
+          "text": "mi",
+          "start_time": 71.528,
+          "end_time": 71.6135
+        },
+        {
+          "text": "seguimiento",
+          "start_time": 71.656,
+          "end_time": 72.168
+        },
+        {
+          "text": "Podrás",
+          "start_time": 72.612,
+          "end_time": 72.9529
+        },
+        {
+          "text": "consultar",
+          "start_time": 72.996,
+          "end_time": 73.422
+        },
+        {
+          "text": "tus",
+          "start_time": 73.465,
+          "end_time": 73.6356
+        },
+        {
+          "text": "respuestas",
+          "start_time": 73.678,
+          "end_time": 74.19
+        },
+        {
+          "text": "junto",
+          "start_time": 74.276,
+          "end_time": 74.489
+        },
+        {
+          "text": "a",
+          "start_time": 74.574,
+          "end_time": 74.6169
+        },
+        {
+          "text": "las",
+          "start_time": 74.66,
+          "end_time": 74.7449
+        },
+        {
+          "text": "de",
+          "start_time": 74.788,
+          "end_time": 74.83
+        },
+        {
+          "text": "tu",
+          "start_time": 74.873,
+          "end_time": 74.9156
+        },
+        {
+          "text": "punto",
+          "start_time": 74.958,
+          "end_time": 75.214
+        },
+        {
+          "text": "de",
+          "start_time": 75.257,
+          "end_time": 75.342
+        },
+        {
+          "text": "partida",
+          "start_time": 75.385,
+          "end_time": 75.769
+        },
+        {
+          "text": "Este",
+          "start_time": 76.153,
+          "end_time": 76.494
+        },
+        {
+          "text": "registro",
+          "start_time": 76.537,
+          "end_time": 76.9209
+        },
+        {
+          "text": "es",
+          "start_time": 77.006,
+          "end_time": 77.0489
+        },
+        {
+          "text": "educativo",
+          "start_time": 77.092,
+          "end_time": 77.646
+        },
+        {
+          "text": "no",
+          "start_time": 77.945,
+          "end_time": 78.1156
+        },
+        {
+          "text": "un",
+          "start_time": 78.158,
+          "end_time": 78.2436
+        },
+        {
+          "text": "diagnóstico",
+          "start_time": 78.286,
+          "end_time": 78.884
+        },
+        {
+          "text": "Mantén",
+          "start_time": 79.481,
+          "end_time": 79.822
+        },
+        {
+          "text": "las",
+          "start_time": 79.865,
+          "end_time": 79.95
+        },
+        {
+          "text": "indicaciones",
+          "start_time": 80.036,
+          "end_time": 80.59
+        },
+        {
+          "text": "de",
+          "start_time": 80.633,
+          "end_time": 80.676
+        },
+        {
+          "text": "tus",
+          "start_time": 80.718,
+          "end_time": 80.846
+        },
+        {
+          "text": "profesionales",
+          "start_time": 80.889,
+          "end_time": 81.486
+        },
+        {
+          "text": "y",
+          "start_time": 81.657,
+          "end_time": 81.9129
+        },
+        {
+          "text": "no",
+          "start_time": 81.956,
+          "end_time": 82.0836
+        },
+        {
+          "text": "cambies",
+          "start_time": 82.126,
+          "end_time": 82.4676
+        },
+        {
+          "text": "tus",
+          "start_time": 82.51,
+          "end_time": 82.638
+        },
+        {
+          "text": "medicamentos",
+          "start_time": 82.681,
+          "end_time": 83.3209
+        },
+        {
+          "text": "por",
+          "start_time": 83.364,
+          "end_time": 83.534
+        },
+        {
+          "text": "este",
+          "start_time": 83.577,
+          "end_time": 83.7476
+        },
+        {
+          "text": "programa",
+          "start_time": 83.79,
+          "end_time": 84.132
+        }
+      ],
+      "verifiedFile": {
+        "size": 1351680,
+        "duration": 84.48,
+        "sha256": "b39ead682ab7809e68eec271715258aa713ec08f49a8567cc4dcffd835e9d9a0",
+        "codec": {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 1
+        }
+      }
+    },
+    {
+      "milestone": 28,
+      "text": "Estos 28 días son un ciclo inicial de aprendizaje, no una fecha límite para cambiar tu respuesta sexual. Conserva las prácticas que te resultaron cómodas y útiles, y repítelas con constancia según tu plan. El progreso puede variar; no necesitas provocar una respuesta sexual para demostrarlo. Si la dificultad persiste, empeora o te preocupa, consulta para valorar sus causas y si necesitas tratamiento adicional. Busca un momento tranquilo y piensa en cómo te has sentido durante los últimos siete días. En cada aspecto, elige la opción que describa tu experiencia: cero, ausencia; uno, bajo; dos, aceptable; tres, satisfactorio; cuatro, sin dificultades. No es un examen ni una meta que debas alcanzar. Solo valora la firmeza, el control eyaculatorio o la comodidad si has podido observarlos. Si no tuviste ocasión o un aspecto no aplica, elige «No evaluable o no aplica». Esa opción es distinta de cero y no cuenta como una dificultad. No necesitas tener una relación sexual ni hacer una prueba para responder. Si ya tenías un registro con la escala anterior, lo conservaremos; responde de nuevo con esta escala. Puedes añadir notas si quieres; no son obligatorias. Al terminar, pulsa «Guardar mi evaluación». Tu informe final estará disponible aunque prefieras dejar esta evaluación para después. Este registro es educativo, no un diagnóstico. Mantén las indicaciones de tus profesionales y no cambies tus medicamentos por este programa.",
+      "path": "premium-v2/assets/audio/checkpoint/checkpoint-28-v2.mp3",
+      "audioUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=0e717c10bad8426b88d511ad4bd34c13.mp3",
+      "duration": 92.7254195011338,
+      "wordTimings": [
+        {
+          "text": "Estos",
+          "start_time": 0.213,
+          "end_time": 0.597
+        },
+        {
+          "text": "28",
+          "start_time": 0.64,
+          "end_time": 0.8716285714285714
+        },
+        {
+          "text": "días",
+          "start_time": 0.9874428571428572,
+          "end_time": 1.4507
+        },
+        {
+          "text": "son",
+          "start_time": 1.579,
+          "end_time": 1.707
+        },
+        {
+          "text": "un",
+          "start_time": 1.749,
+          "end_time": 1.792
+        },
+        {
+          "text": "ciclo",
+          "start_time": 1.835,
+          "end_time": 2.2187
+        },
+        {
+          "text": "inicial",
+          "start_time": 2.261,
+          "end_time": 2.6027
+        },
+        {
+          "text": "de",
+          "start_time": 2.731,
+          "end_time": 2.816
+        },
+        {
+          "text": "aprendizaje",
+          "start_time": 2.859,
+          "end_time": 3.456
+        },
+        {
+          "text": "no",
+          "start_time": 3.84,
+          "end_time": 4.053
+        },
+        {
+          "text": "una",
+          "start_time": 4.096,
+          "end_time": 4.224
+        },
+        {
+          "text": "fecha",
+          "start_time": 4.267,
+          "end_time": 4.5227
+        },
+        {
+          "text": "límite",
+          "start_time": 4.608,
+          "end_time": 4.9067
+        },
+        {
+          "text": "para",
+          "start_time": 5.035,
+          "end_time": 5.205
+        },
+        {
+          "text": "cambiar",
+          "start_time": 5.248,
+          "end_time": 5.589
+        },
+        {
+          "text": "tu",
+          "start_time": 5.632,
+          "end_time": 5.76
+        },
+        {
+          "text": "respuesta",
+          "start_time": 5.803,
+          "end_time": 6.1867
+        },
+        {
+          "text": "sexual",
+          "start_time": 6.229,
+          "end_time": 6.613
+        },
+        {
+          "text": "Conserva",
+          "start_time": 7.268,
+          "end_time": 7.652
+        },
+        {
+          "text": "las",
+          "start_time": 7.694,
+          "end_time": 7.7796
+        },
+        {
+          "text": "prácticas",
+          "start_time": 7.822,
+          "end_time": 8.334
+        },
+        {
+          "text": "que",
+          "start_time": 8.42,
+          "end_time": 8.505
+        },
+        {
+          "text": "te",
+          "start_time": 8.548,
+          "end_time": 8.6329
+        },
+        {
+          "text": "resultaron",
+          "start_time": 8.676,
+          "end_time": 9.1449
+        },
+        {
+          "text": "cómodas",
+          "start_time": 9.188,
+          "end_time": 9.6996
+        },
+        {
+          "text": "y",
+          "start_time": 9.828,
+          "end_time": 10.0409
+        },
+        {
+          "text": "útiles",
+          "start_time": 10.126,
+          "end_time": 10.468
+        },
+        {
+          "text": "y",
+          "start_time": 10.852,
+          "end_time": 11.0649
+        },
+        {
+          "text": "repítelas",
+          "start_time": 11.108,
+          "end_time": 11.5769
+        },
+        {
+          "text": "con",
+          "start_time": 11.662,
+          "end_time": 11.79
+        },
+        {
+          "text": "constancia",
+          "start_time": 11.833,
+          "end_time": 12.4729
+        },
+        {
+          "text": "según",
+          "start_time": 12.516,
+          "end_time": 12.772
+        },
+        {
+          "text": "tu",
+          "start_time": 12.857,
+          "end_time": 12.942
+        },
+        {
+          "text": "plan",
+          "start_time": 12.985,
+          "end_time": 13.156
+        },
+        {
+          "text": "El",
+          "start_time": 13.668,
+          "end_time": 13.966
+        },
+        {
+          "text": "progreso",
+          "start_time": 14.009,
+          "end_time": 14.3929
+        },
+        {
+          "text": "puede",
+          "start_time": 14.478,
+          "end_time": 14.6916
+        },
+        {
+          "text": "variar",
+          "start_time": 14.734,
+          "end_time": 15.033
+        },
+        {
+          "text": "no",
+          "start_time": 15.289,
+          "end_time": 15.502
+        },
+        {
+          "text": "necesitas",
+          "start_time": 15.545,
+          "end_time": 15.9716
+        },
+        {
+          "text": "provocar",
+          "start_time": 16.057,
+          "end_time": 16.441
+        },
+        {
+          "text": "una",
+          "start_time": 16.484,
+          "end_time": 16.6116
+        },
+        {
+          "text": "respuesta",
+          "start_time": 16.654,
+          "end_time": 17.0809
+        },
+        {
+          "text": "sexual",
+          "start_time": 17.124,
+          "end_time": 17.5076
+        },
+        {
+          "text": "para",
+          "start_time": 17.636,
+          "end_time": 17.806
+        },
+        {
+          "text": "demostrarlo",
+          "start_time": 17.806,
+          "end_time": 18.361
+        },
+        {
+          "text": "Si",
+          "start_time": 18.809,
+          "end_time": 18.98
+        },
+        {
+          "text": "la",
+          "start_time": 19.022,
+          "end_time": 19.065
+        },
+        {
+          "text": "dificultad",
+          "start_time": 19.108,
+          "end_time": 19.6196
+        },
+        {
+          "text": "persiste",
+          "start_time": 19.705,
+          "end_time": 20.217
+        },
+        {
+          "text": "empeora",
+          "start_time": 20.516,
+          "end_time": 21.113
+        },
+        {
+          "text": "o",
+          "start_time": 21.198,
+          "end_time": 21.284
+        },
+        {
+          "text": "te",
+          "start_time": 21.326,
+          "end_time": 21.4116
+        },
+        {
+          "text": "preocupa",
+          "start_time": 21.454,
+          "end_time": 21.924
+        },
+        {
+          "text": "consulta",
+          "start_time": 22.265,
+          "end_time": 22.8196
+        },
+        {
+          "text": "para",
+          "start_time": 22.905,
+          "end_time": 23.0756
+        },
+        {
+          "text": "valorar",
+          "start_time": 23.118,
+          "end_time": 23.4596
+        },
+        {
+          "text": "sus",
+          "start_time": 23.502,
+          "end_time": 23.63
+        },
+        {
+          "text": "causas",
+          "start_time": 23.758,
+          "end_time": 24.142
+        },
+        {
+          "text": "y",
+          "start_time": 24.356,
+          "end_time": 24.4836
+        },
+        {
+          "text": "si",
+          "start_time": 24.526,
+          "end_time": 24.6116
+        },
+        {
+          "text": "necesitas",
+          "start_time": 24.654,
+          "end_time": 25.166
+        },
+        {
+          "text": "tratamiento",
+          "start_time": 25.209,
+          "end_time": 25.721
+        },
+        {
+          "text": "adicional",
+          "start_time": 25.764,
+          "end_time": 26.062
+        },
+        {
+          "text": "Busca",
+          "start_time": 26.821,
+          "end_time": 27.12
+        },
+        {
+          "text": "un",
+          "start_time": 27.163,
+          "end_time": 27.205
+        },
+        {
+          "text": "momento",
+          "start_time": 27.248,
+          "end_time": 27.5039
+        },
+        {
+          "text": "tranquilo",
+          "start_time": 27.547,
+          "end_time": 28.101
+        },
+        {
+          "text": "y",
+          "start_time": 28.229,
+          "end_time": 28.357
+        },
+        {
+          "text": "piensa",
+          "start_time": 28.4,
+          "end_time": 28.741
+        },
+        {
+          "text": "en",
+          "start_time": 28.784,
+          "end_time": 28.826
+        },
+        {
+          "text": "cómo",
+          "start_time": 28.869,
+          "end_time": 29.125
+        },
+        {
+          "text": "te",
+          "start_time": 29.21,
+          "end_time": 29.296
+        },
+        {
+          "text": "has",
+          "start_time": 29.338,
+          "end_time": 29.381
+        },
+        {
+          "text": "sentido",
+          "start_time": 29.466,
+          "end_time": 29.893
+        },
+        {
+          "text": "durante",
+          "start_time": 29.936,
+          "end_time": 30.149
+        },
+        {
+          "text": "los",
+          "start_time": 30.32,
+          "end_time": 30.405
+        },
+        {
+          "text": "últimos",
+          "start_time": 30.448,
+          "end_time": 30.8319
+        },
+        {
+          "text": "siete",
+          "start_time": 30.917,
+          "end_time": 31.1305
+        },
+        {
+          "text": "días",
+          "start_time": 31.216,
+          "end_time": 31.515
+        },
+        {
+          "text": "En",
+          "start_time": 32.016,
+          "end_time": 32.1439
+        },
+        {
+          "text": "cada",
+          "start_time": 32.187,
+          "end_time": 32.357
+        },
+        {
+          "text": "aspecto",
+          "start_time": 32.485,
+          "end_time": 32.869
+        },
+        {
+          "text": "elige",
+          "start_time": 33.211,
+          "end_time": 33.509
+        },
+        {
+          "text": "la",
+          "start_time": 33.595,
+          "end_time": 33.6799
+        },
+        {
+          "text": "opción",
+          "start_time": 33.723,
+          "end_time": 34.0639
+        },
+        {
+          "text": "que",
+          "start_time": 34.107,
+          "end_time": 34.1919
+        },
+        {
+          "text": "describa",
+          "start_time": 34.235,
+          "end_time": 34.5759
+        },
+        {
+          "text": "tu",
+          "start_time": 34.704,
+          "end_time": 34.8319
+        },
+        {
+          "text": "experiencia",
+          "start_time": 34.875,
+          "end_time": 35.472
+        },
+        {
+          "text": "cero",
+          "start_time": 35.813,
+          "end_time": 36.197
+        },
+        {
+          "text": "ausencia",
+          "start_time": 36.496,
+          "end_time": 37.136
+        },
+        {
+          "text": "uno",
+          "start_time": 37.392,
+          "end_time": 37.819
+        },
+        {
+          "text": "bajo",
+          "start_time": 38.16,
+          "end_time": 38.587
+        },
+        {
+          "text": "dos",
+          "start_time": 38.928,
+          "end_time": 39.269
+        },
+        {
+          "text": "aceptable",
+          "start_time": 39.653,
+          "end_time": 40.208
+        },
+        {
+          "text": "tres",
+          "start_time": 40.805,
+          "end_time": 41.019
+        },
+        {
+          "text": "satisfactorio",
+          "start_time": 41.403,
+          "end_time": 42.341
+        },
+        {
+          "text": "cuatro",
+          "start_time": 42.811,
+          "end_time": 43.195
+        },
+        {
+          "text": "sin",
+          "start_time": 43.493,
+          "end_time": 43.6639
+        },
+        {
+          "text": "dificultades",
+          "start_time": 43.707,
+          "end_time": 44.261
+        },
+        {
+          "text": "No",
+          "start_time": 44.944,
+          "end_time": 45.115
+        },
+        {
+          "text": "es",
+          "start_time": 45.157,
+          "end_time": 45.2
+        },
+        {
+          "text": "un",
+          "start_time": 45.243,
+          "end_time": 45.285
+        },
+        {
+          "text": "examen",
+          "start_time": 45.328,
+          "end_time": 45.797
+        },
+        {
+          "text": "ni",
+          "start_time": 45.84,
+          "end_time": 45.9679
+        },
+        {
+          "text": "una",
+          "start_time": 46.011,
+          "end_time": 46.0959
+        },
+        {
+          "text": "meta",
+          "start_time": 46.139,
+          "end_time": 46.3519
+        },
+        {
+          "text": "que",
+          "start_time": 46.48,
+          "end_time": 46.565
+        },
+        {
+          "text": "debas",
+          "start_time": 46.608,
+          "end_time": 46.7786
+        },
+        {
+          "text": "alcanzar",
+          "start_time": 46.864,
+          "end_time": 47.333
+        },
+        {
+          "text": "Solo",
+          "start_time": 47.687,
+          "end_time": 47.9427
+        },
+        {
+          "text": "valora",
+          "start_time": 48.028,
+          "end_time": 48.284
+        },
+        {
+          "text": "la",
+          "start_time": 48.327,
+          "end_time": 48.369
+        },
+        {
+          "text": "firmeza",
+          "start_time": 48.412,
+          "end_time": 48.796
+        },
+        {
+          "text": "el",
+          "start_time": 49.265,
+          "end_time": 49.393
+        },
+        {
+          "text": "control",
+          "start_time": 49.436,
+          "end_time": 49.564
+        },
+        {
+          "text": "eyaculatorio",
+          "start_time": 49.777,
+          "end_time": 50.417
+        },
+        {
+          "text": "o",
+          "start_time": 50.673,
+          "end_time": 50.801
+        },
+        {
+          "text": "la",
+          "start_time": 50.844,
+          "end_time": 50.929
+        },
+        {
+          "text": "comodidad",
+          "start_time": 50.972,
+          "end_time": 51.441
+        },
+        {
+          "text": "si",
+          "start_time": 51.569,
+          "end_time": 51.655
+        },
+        {
+          "text": "has",
+          "start_time": 51.697,
+          "end_time": 51.74
+        },
+        {
+          "text": "podido",
+          "start_time": 51.783,
+          "end_time": 52.081
+        },
+        {
+          "text": "observarlos",
+          "start_time": 52.124,
+          "end_time": 52.636
+        },
+        {
+          "text": "Si",
+          "start_time": 53.191,
+          "end_time": 53.276
+        },
+        {
+          "text": "no",
+          "start_time": 53.319,
+          "end_time": 53.404
+        },
+        {
+          "text": "tuviste",
+          "start_time": 53.447,
+          "end_time": 53.745
+        },
+        {
+          "text": "ocasión",
+          "start_time": 53.788,
+          "end_time": 54.257
+        },
+        {
+          "text": "o",
+          "start_time": 54.385,
+          "end_time": 54.428
+        },
+        {
+          "text": "un",
+          "start_time": 54.471,
+          "end_time": 54.513
+        },
+        {
+          "text": "aspecto",
+          "start_time": 54.556,
+          "end_time": 54.94
+        },
+        {
+          "text": "no",
+          "start_time": 54.983,
+          "end_time": 55.153
+        },
+        {
+          "text": "aplica",
+          "start_time": 55.196,
+          "end_time": 55.537
+        },
+        {
+          "text": "elige",
+          "start_time": 55.879,
+          "end_time": 56.2627
+        },
+        {
+          "text": "No",
+          "start_time": 56.391,
+          "end_time": 56.561
+        },
+        {
+          "text": "evaluable",
+          "start_time": 56.604,
+          "end_time": 57.0307
+        },
+        {
+          "text": "o",
+          "start_time": 57.287,
+          "end_time": 57.5
+        },
+        {
+          "text": "no",
+          "start_time": 57.543,
+          "end_time": 57.671
+        },
+        {
+          "text": "aplica",
+          "start_time": 57.713,
+          "end_time": 58.055
+        },
+        {
+          "text": "Esa",
+          "start_time": 58.504,
+          "end_time": 58.803
+        },
+        {
+          "text": "opción",
+          "start_time": 58.846,
+          "end_time": 59.144
+        },
+        {
+          "text": "es",
+          "start_time": 59.187,
+          "end_time": 59.2298
+        },
+        {
+          "text": "distinta",
+          "start_time": 59.272,
+          "end_time": 59.827
+        },
+        {
+          "text": "de",
+          "start_time": 59.912,
+          "end_time": 59.9978
+        },
+        {
+          "text": "cero",
+          "start_time": 60.04,
+          "end_time": 60.296
+        },
+        {
+          "text": "y",
+          "start_time": 60.424,
+          "end_time": 60.552
+        },
+        {
+          "text": "no",
+          "start_time": 60.595,
+          "end_time": 60.723
+        },
+        {
+          "text": "cuenta",
+          "start_time": 60.766,
+          "end_time": 61.1498
+        },
+        {
+          "text": "como",
+          "start_time": 61.192,
+          "end_time": 61.32
+        },
+        {
+          "text": "una",
+          "start_time": 61.406,
+          "end_time": 61.491
+        },
+        {
+          "text": "dificultad",
+          "start_time": 61.534,
+          "end_time": 62.046
+        },
+        {
+          "text": "No",
+          "start_time": 62.643,
+          "end_time": 62.8138
+        },
+        {
+          "text": "necesitas",
+          "start_time": 62.856,
+          "end_time": 63.3258
+        },
+        {
+          "text": "tener",
+          "start_time": 63.368,
+          "end_time": 63.496
+        },
+        {
+          "text": "una",
+          "start_time": 63.624,
+          "end_time": 63.752
+        },
+        {
+          "text": "relación",
+          "start_time": 63.795,
+          "end_time": 64.179
+        },
+        {
+          "text": "sexual",
+          "start_time": 64.222,
+          "end_time": 64.6058
+        },
+        {
+          "text": "ni",
+          "start_time": 64.862,
+          "end_time": 64.947
+        },
+        {
+          "text": "hacer",
+          "start_time": 64.99,
+          "end_time": 65.203
+        },
+        {
+          "text": "una",
+          "start_time": 65.246,
+          "end_time": 65.3738
+        },
+        {
+          "text": "prueba",
+          "start_time": 65.416,
+          "end_time": 65.7578
+        },
+        {
+          "text": "para",
+          "start_time": 65.8,
+          "end_time": 65.928
+        },
+        {
+          "text": "responder",
+          "start_time": 65.971,
+          "end_time": 66.312
+        },
+        {
+          "text": "Si",
+          "start_time": 66.935,
+          "end_time": 67.148
+        },
+        {
+          "text": "ya",
+          "start_time": 67.191,
+          "end_time": 67.276
+        },
+        {
+          "text": "tenías",
+          "start_time": 67.319,
+          "end_time": 67.5746
+        },
+        {
+          "text": "un",
+          "start_time": 67.617,
+          "end_time": 67.7026
+        },
+        {
+          "text": "registro",
+          "start_time": 67.745,
+          "end_time": 68.2146
+        },
+        {
+          "text": "con",
+          "start_time": 68.257,
+          "end_time": 68.385
+        },
+        {
+          "text": "la",
+          "start_time": 68.428,
+          "end_time": 68.4706
+        },
+        {
+          "text": "escala",
+          "start_time": 68.513,
+          "end_time": 68.812
+        },
+        {
+          "text": "anterior",
+          "start_time": 68.855,
+          "end_time": 69.196
+        },
+        {
+          "text": "lo",
+          "start_time": 69.58,
+          "end_time": 69.708
+        },
+        {
+          "text": "conservaremos",
+          "start_time": 69.751,
+          "end_time": 70.348
+        },
+        {
+          "text": "responde",
+          "start_time": 70.732,
+          "end_time": 71.073
+        },
+        {
+          "text": "de",
+          "start_time": 71.201,
+          "end_time": 71.2866
+        },
+        {
+          "text": "nuevo",
+          "start_time": 71.329,
+          "end_time": 71.5426
+        },
+        {
+          "text": "con",
+          "start_time": 71.585,
+          "end_time": 71.713
+        },
+        {
+          "text": "esta",
+          "start_time": 71.756,
+          "end_time": 71.9266
+        },
+        {
+          "text": "escala",
+          "start_time": 71.969,
+          "end_time": 72.268
+        },
+        {
+          "text": "Puedes",
+          "start_time": 72.823,
+          "end_time": 73.0786
+        },
+        {
+          "text": "añadir",
+          "start_time": 73.121,
+          "end_time": 73.42
+        },
+        {
+          "text": "notas",
+          "start_time": 73.505,
+          "end_time": 73.804
+        },
+        {
+          "text": "si",
+          "start_time": 73.889,
+          "end_time": 73.9746
+        },
+        {
+          "text": "quieres",
+          "start_time": 74.017,
+          "end_time": 74.316
+        },
+        {
+          "text": "no",
+          "start_time": 74.657,
+          "end_time": 74.828
+        },
+        {
+          "text": "son",
+          "start_time": 74.871,
+          "end_time": 75.041
+        },
+        {
+          "text": "obligatorias",
+          "start_time": 75.084,
+          "end_time": 75.639
+        },
+        {
+          "text": "Al",
+          "start_time": 76.108,
+          "end_time": 76.2786
+        },
+        {
+          "text": "terminar",
+          "start_time": 76.321,
+          "end_time": 76.748
+        },
+        {
+          "text": "pulsa",
+          "start_time": 77.089,
+          "end_time": 77.4306
+        },
+        {
+          "text": "Guardar",
+          "start_time": 77.644,
+          "end_time": 78.241
+        },
+        {
+          "text": "mi",
+          "start_time": 78.327,
+          "end_time": 78.412
+        },
+        {
+          "text": "evaluación",
+          "start_time": 78.455,
+          "end_time": 78.967
+        },
+        {
+          "text": "Tu",
+          "start_time": 79.459,
+          "end_time": 79.5447
+        },
+        {
+          "text": "informe",
+          "start_time": 79.587,
+          "end_time": 79.843
+        },
+        {
+          "text": "final",
+          "start_time": 79.886,
+          "end_time": 80.014
+        },
+        {
+          "text": "estará",
+          "start_time": 80.185,
+          "end_time": 80.526
+        },
+        {
+          "text": "disponible",
+          "start_time": 80.569,
+          "end_time": 80.9527
+        },
+        {
+          "text": "aunque",
+          "start_time": 81.166,
+          "end_time": 81.4647
+        },
+        {
+          "text": "prefieras",
+          "start_time": 81.507,
+          "end_time": 81.8487
+        },
+        {
+          "text": "dejar",
+          "start_time": 81.891,
+          "end_time": 82.19
+        },
+        {
+          "text": "esta",
+          "start_time": 82.233,
+          "end_time": 82.403
+        },
+        {
+          "text": "evaluación",
+          "start_time": 82.446,
+          "end_time": 82.8727
+        },
+        {
+          "text": "para",
+          "start_time": 82.915,
+          "end_time": 83.043
+        },
+        {
+          "text": "después",
+          "start_time": 83.086,
+          "end_time": 83.427
+        },
+        {
+          "text": "Este",
+          "start_time": 83.939,
+          "end_time": 84.4087
+        },
+        {
+          "text": "registro",
+          "start_time": 84.451,
+          "end_time": 84.835
+        },
+        {
+          "text": "es",
+          "start_time": 84.921,
+          "end_time": 84.963
+        },
+        {
+          "text": "educativo",
+          "start_time": 85.006,
+          "end_time": 85.561
+        },
+        {
+          "text": "no",
+          "start_time": 85.902,
+          "end_time": 86.0727
+        },
+        {
+          "text": "un",
+          "start_time": 86.115,
+          "end_time": 86.2007
+        },
+        {
+          "text": "diagnóstico",
+          "start_time": 86.243,
+          "end_time": 86.841
+        },
+        {
+          "text": "Mantén",
+          "start_time": 87.386,
+          "end_time": 87.77
+        },
+        {
+          "text": "las",
+          "start_time": 87.813,
+          "end_time": 87.898
+        },
+        {
+          "text": "indicaciones",
+          "start_time": 87.984,
+          "end_time": 88.5809
+        },
+        {
+          "text": "de",
+          "start_time": 88.624,
+          "end_time": 88.7089
+        },
+        {
+          "text": "tus",
+          "start_time": 88.752,
+          "end_time": 88.8369
+        },
+        {
+          "text": "profesionales",
+          "start_time": 88.88,
+          "end_time": 89.4769
+        },
+        {
+          "text": "y",
+          "start_time": 89.733,
+          "end_time": 89.946
+        },
+        {
+          "text": "no",
+          "start_time": 89.989,
+          "end_time": 90.1169
+        },
+        {
+          "text": "cambies",
+          "start_time": 90.16,
+          "end_time": 90.5436
+        },
+        {
+          "text": "tus",
+          "start_time": 90.586,
+          "end_time": 90.7569
+        },
+        {
+          "text": "medicamentos",
+          "start_time": 90.8,
+          "end_time": 91.482
+        },
+        {
+          "text": "por",
+          "start_time": 91.568,
+          "end_time": 91.696
+        },
+        {
+          "text": "este",
+          "start_time": 91.738,
+          "end_time": 91.9089
+        },
+        {
+          "text": "programa",
+          "start_time": 91.952,
+          "end_time": 92.293
+        }
+      ],
+      "verifiedFile": {
+        "size": 1484173,
+        "duration": 92.760813,
+        "sha256": "941e051f1580ba778e9cac00c371dd2d9f0cba8f7bbc55dffae39e0d5326f1d0",
+        "codec": {
+          "codec_name": "mp3",
+          "sample_rate": "44100",
+          "channels": 1
+        }
+      }
+    }
+  ]
+}

@@ -14,7 +14,8 @@ assert.equal(audit.erection.flatMap(d=>d.items).filter(a=>a.kind==='pelvic').len
 for(const day of [1,14,28]){
 await page.evaluate(d=>{SPM_RESTORED_CONTEXT.plan.current_day=d;window.dispatchEvent(new Event('spm:resourcecontext'));SPM_DAILY_PRACTICE.open();},day);
 await page.locator('[data-daily-open="program-checkpoint"]').click();if(day===28)await page.locator('[data-checkpoint-edit]').click();await page.locator('[data-program-checkpoint]').waitFor();
-for(const key of ['firmness','control','desire','confidence','comfort','sleep','skill'])await page.locator(`[name="${key}"]`).selectOption(key==='control'?'na':String(day===1?4:day===14?5:6));
+for(const key of ['firmness','control','desire','confidence','comfort','sleep','skill'])await page.locator(`[name="${key}"]`).selectOption(key==='control'?'na':String(day===1?1:day===14?2:4));
+await page.locator('[data-program-checkpoint] details').filter({has:page.locator('[name="reflection"]')}).locator('summary').click();
 await page.locator('[name="reflection"]').fill('Reconozco mejor mi cuerpo.');await page.locator('[name="continuity"]').fill('Continuar las prácticas cómodas.');
 await page.locator('[data-program-checkpoint] button[type=submit]').click();await page.locator('[data-program-report]').waitFor();assert.match(await page.locator('[data-program-report]').innerText(),/Sin dato \/ no evaluable/);
 }

@@ -201,7 +201,20 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  test('checkpoint cannot be marked complete without its actual answers',async()=>{const h=harness('wellbeing',14);try{await wait();await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',{confirmed:true}));assert.equal(h.writes.length,0);
  const record={checkpointVersion:1,metrics:Object.fromEntries(Array.from(h.w.SPM_PROGRAM_CHECKPOINT.metrics,([key])=>[key,null])),reflection:'No evaluable',continuity:'Continuar con comodidad'};
  await h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',record);assert.equal(h.writes.length,1);assert.equal(h.c.day,14);
+ const current={...record,checkpointVersion:2,scaleMax:4,milestone:14,submittedDay:14,metrics:{...record.metrics,confidence:4}};
+ await h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',current);assert.equal(h.writes.length,2);assert.equal(h.writes[1][1].checkpointVersion,2);assert.equal(h.writes[1][1].metrics.confidence,4);
+ await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('program-checkpoint',{...current,metrics:{...current.metrics,confidence:5}}));assert.equal(h.writes.length,2);assert.deepEqual(h.c.completed,[]);
  }finally{h.close();}});
+
+test('checkpoint entry has one action and no summary text, speaker or shortcut registration',async()=>{
+ for(const day of [1,14,28]){
+  const h=harness('desire',day);try{await wait();const card=h.w.document.querySelector('[data-activity="program-checkpoint"]');
+   assert.ok(card);assert.equal(card.querySelector('[data-spm-speak],.spm-audio-action'),null);assert.equal(card.querySelector('[data-daily-confirm]'),null);
+   assert.equal(card.querySelector('p'),null);assert.equal(card.querySelectorAll('button').length,1);assert.ok(card.querySelector('[data-daily-open="program-checkpoint"]'));
+   assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
+  }finally{h.close();}
+ }
+});
 
  test('missing followups do not prevent completion or final report in any domain',async()=>{const h=harness();try{await wait();for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [14,28]){const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});assert.equal(items[0].optional,true);assert.ok(items.filter(a=>a.kind==='program-checkpoint'||a.kind==='ep-checkpoint').every(a=>a.optional));assert.ok(items.some(a=>!a.optional));}}finally{h.close();}});
 test('continuation uses actual pending assignments in all six routes and excludes completed tasks',async()=>{

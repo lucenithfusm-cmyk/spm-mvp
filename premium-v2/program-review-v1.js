@@ -83,6 +83,7 @@ function installRecords(){
   };
   window.SPM_DAILY_RECORDS={
     read:async(expected,readDay)=>{assertScope(expected);if(!validDay(readDay))throw Error('Día inválido.');return clone(current().daily[Number(readDay)]||{});},
+    readCheckpoints:async(expected)=>{assertScope(expected);return Object.entries(current().daily).filter(([,items])=>items['program-checkpoint']).map(([d,items])=>({day_number:Number(d),metadata:clone(items['program-checkpoint'])})).sort((a,b)=>a.day_number-b.day_number);},
     save:async(id,value,expected,saveDay)=>{assertScope(expected);assertDay(saveDay);current().daily[day]??=Object.create(null);current().daily[day][id]=clone(value);}
   };
   window.SPM_RESOURCE_RECORDS={
@@ -103,7 +104,7 @@ const scripts=[
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js','erectile-function-premium.js',
   'erectile-platform-v2.js','erectile-library-v3.js','erectile-guided-v3.js','erectile-central-v3.js',
   'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-visual1','sensate-lab-bridge-v1.js','breathing-lab-bridge-v1.js',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-video-audio2','program-checkpoint-v1.js','daily-practice-v1.js?v=20261113-video-audio2'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-video-audio2','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-checkpoint2','daily-practice-v1.js?v=20261113-checkpoint2'
 ];
 async function boot(){
   try{

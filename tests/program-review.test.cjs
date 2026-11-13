@@ -93,3 +93,28 @@ test('invalid query choices normalize safely and completion stays within the sel
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
+test('review recovers a midpoint answered on day 18 and isolates its version 2 values by program',async()=>{
+  const h=await harness('?programa=desire&dia=18');try{
+    const {w}=h,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+    await w.SPM_PROGRAM_CHECKPOINT.open({id:'program-checkpoint',title:'Seguimiento'});
+    const form=w.document.querySelector('[data-program-checkpoint]');assert.ok(form);
+    for(const select of form.querySelectorAll('select'))select.value=select.name==='control'?'na':'3';
+    await form.onsubmit({preventDefault(){}});await wait();
+    const rows=await w.SPM_DAILY_RECORDS.readCheckpoints(scope);
+    assert.equal(rows.length,1);assert.equal(rows[0].day_number,18);assert.equal(rows[0].metadata.milestone,14);
+    assert.equal(rows[0].metadata.checkpointVersion,2);assert.equal(rows[0].metadata.scaleMax,4);assert.equal(rows[0].metadata.metrics.control,null);
+    await assert.rejects(w.SPM_DAILY_RECORDS.readCheckpoints('another:plan'));
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('desire',19),true);await wait();
+    assert.equal(w.SPM_DAILY_PRACTICE.assignments().some(item=>item.kind==='program-checkpoint'),false,'answered midpoint does not return as a reminder');
+    await w.SPM_PROGRAM_CHECKPOINT.open({id:'program-checkpoint',title:'Seguimiento'});
+    assert.ok(w.document.querySelector('[data-program-report]'));assert.match(w.document.body.textContent,/respondido el día 18/);
+    assert.equal(w.document.querySelector('[data-program-checkpoint]'),null);
+    await w.SPM_PROGRAM_REVIEW.select('erection',19);await wait();const other=w.SPM_RESOURCE_CONTEXT();
+    assert.equal((await w.SPM_DAILY_RECORDS.readCheckpoints(other.userId+':'+other.planId)).length,0);
+    await w.SPM_PROGRAM_REVIEW.select('desire',28);await wait();
+    await w.SPM_PROGRAM_CHECKPOINT.open({id:'program-checkpoint',title:'Informe'});
+    assert.match(w.document.querySelector('[data-program-report]').textContent,/3\s*\/\s*4/);
+    assert.equal((await w.SPM_DAILY_RECORDS.readCheckpoints(scope)).length,1);assert.equal(w.SPM_RESOURCE_CONTEXT().day,28);
+    assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+});
