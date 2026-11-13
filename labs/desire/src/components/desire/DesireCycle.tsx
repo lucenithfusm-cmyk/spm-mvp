@@ -173,7 +173,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
   const steps = firstDay && formSteps[form] ? formSteps[form]! : pr.steps;
   const introduction = form === 'spont' ? 'Vas a reconocer un estímulo que despierta tu interés y explorar una sensación agradable sin presión.' : 'Vas a crear un momento agradable para explorar comodidad y conexión, sin exigir que aparezca deseo.';
   const instructionAudio = firstDay ? 'Vamos a practicar durante cinco minutos. ' + introduction + ' ' + steps.map((step, i) => ['Primero. ', 'Después. ', 'Para terminar. '][i] + step).join(' ') + ' Cuando estés listo, pulsa Iniciar mi práctica. Puedes parar en cualquier momento.' : steps.join('. ') + '. ' + (pr.exit ?? 'Puedes detenerte en cualquier momento.');
-  return (<section ref={stageTop} tabIndex={-1} aria-label={stage === 'choice' ? 'Elige cómo aparece tu deseo' : stage === 'instructions' ? 'Instrucciones de la actividad' : stage === 'practice' ? 'Práctica en curso' : stage === 'register' ? 'Registra tu experiencia' : 'Actividad completada'}>
+  return (<section className="dz-practice-stage" ref={stageTop} tabIndex={-1} aria-label={stage === 'choice' ? 'Elige cómo aparece tu deseo' : stage === 'instructions' ? 'Instrucciones de la actividad' : stage === 'practice' ? 'Práctica en curso' : stage === 'register' ? 'Registra tu experiencia' : 'Actividad completada'}>
     <p className="dz-eyebrow">Día {day} · {stage === 'choice' ? 'Conoce tu deseo' : stage === 'instructions' ? 'Paso a paso' : stage === 'practice' ? 'Tu práctica' : stage === 'register' ? 'Cómo te fue' : 'Completada'}</p>
     {stage === 'choice' && <DesireForms selected={form} onChoose={id => { restart(); setProg(p => ({...p, detailNotes: {...p.detailNotes, form: id}})); setStage('instructions'); }} />}
     {stage === 'instructions' && <>
@@ -187,7 +187,7 @@ export function PracticeSheet({ pid, day, ctx, why }: { pid: string; day: number
       <button className="dz-btn ghost" onClick={() => ctx.openPractice('sensate-1', ctx.origin, day)}>Prefiero repetir la fase I</button></Card> : <>
 
       <SpokenSteps label="Escuchar el paso a paso" text={instructionAudio} />
-      <button type="button" className="dz-btn gold" style={{width: '100%', minHeight: 60, marginTop: 16}} onClick={() => { if (elapsed >= total) restart(); setStage('practice'); setRun(true); }}><Play size={22} /> Iniciar mi práctica · {pr.duration}</button>
+      <button type="button" className="dz-btn gold" style={{width: '100%', minHeight: 60}} onClick={() => { if (elapsed >= total) restart(); setStage('practice'); setRun(true); }}><Play size={22} /> Iniciar mi práctica · {pr.duration}</button>
       <details><summary>Leer el paso a paso</summary><ol className="dz-steps">{steps.map(x => <li key={x}>{x}</li>)}</ol></details>
     {pr.note && <p className="dz-note">{pr.note}</p>}
     {pr.link && <p className="dz-muted small">{pr.link}</p>}
