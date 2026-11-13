@@ -99,7 +99,7 @@ function installRecords(){
 const scripts=[
   'engine.js','modules.js?v=20261113-nextday1','daily-support-plan-v1.js','practice-audio-v1.js?v=20261113-video-audio2','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
   'spm-resources-content.js','spm-resources.js?v=20261113-recetario2','spm-visual-cards-staging-v4.js','spm-nutrition-premium-images-v1.js',
-  'nutrition-daily-cards-v1.js?v=20261113-nextday1','sleep-library-v1.js','wellness-library-v1.js','wellness-daily-tip-v1.js?v=20261113-nextday1',
+  'nutrition-daily-cards-v1.js?v=20261113-gift1','sleep-library-v1.js','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261113-nextday1',
   'recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js',
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js','erectile-function-premium.js',
   'erectile-platform-v2.js','erectile-library-v3.js','erectile-guided-v3.js','erectile-central-v3.js',
