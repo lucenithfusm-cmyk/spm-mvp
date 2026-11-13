@@ -32,7 +32,8 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   assert.equal(await video.getAttribute('controls'),'');assert.match(await video.getAttribute('src'),/dr-spm-performance-anxiety-content\.mp4$/);assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);checks+=3;
   if(h264)await video.evaluate(v=>v.play());await p.locator('[data-daily-view="library"]').click();assert.equal(await video.evaluate(v=>v.paused),true);checks++;
   await p.locator('[data-daily-view="today"]').click();await p.locator('[data-daily-open="de-video-dr-performance-anxiety"]').click();
-  await p.locator('[name=reflection]').fill('Volver a las sensaciones y reducir la vigilancia.');await p.locator('[name=confirmed]').check();await p.locator('#spmDailyWorkspace button[type=submit]').click();await p.locator('[data-activity="de-video-dr-performance-anxiety"] .spm-daily-saved').waitFor();
+  // The video supplies an action; registering the review requires no written answer.
+  assert.equal(await p.locator('[data-daily-video] textarea').count(),0);await p.locator('[data-daily-video] [data-video-action="dr-performance-anxiety"]').waitFor();await p.locator('[name=confirmed]').check();await p.locator('#spmDailyWorkspace button[type=submit]').click();await p.locator('[data-activity="de-video-dr-performance-anxiety"] .spm-daily-saved').waitFor();
   assert.equal(await p.evaluate(()=>SPM_RESOURCE_CONTEXT().day),1);assert.equal(await p.locator('#spmDailyComplete').isDisabled(),true);checks+=2;
   await p.reload();await p.locator('#map.on').waitFor();await p.locator('#goPlan').click();await p.locator('#spmGoToday').click();await p.locator('[data-activity="de-video-dr-performance-anxiety"] .spm-daily-saved').waitFor();checks++;
   await p.screenshot({path:'/tmp/spm-erection-day1.png',fullPage:true});await clean(p);

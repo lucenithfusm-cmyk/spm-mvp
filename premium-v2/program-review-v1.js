@@ -96,14 +96,14 @@ function installRecords(){
   window.SPM_COMPLETE_DAILY_PRACTICE=async(completedDay,expected)=>{assertScope(expected);assertDay(completedDay);const c=context();if(!c.completed.includes(day))c.completed.push(day);};
 }
 const scripts=[
-  'engine.js','modules.js','daily-support-plan-v1.js','spm-video-library.js','program-videos-v1.js','spm-inline-video-player.js',
+  'engine.js','modules.js','daily-support-plan-v1.js','spm-video-library.js?v=20261113-video-actions1','program-videos-v1.js?v=20261113-video-actions1','spm-inline-video-player.js?v=20261113-video-actions1',
   'spm-resources-content.js','spm-resources.js?v=20261113-recetario2','spm-visual-cards-staging-v4.js','spm-nutrition-premium-images-v1.js',
   'practice-audio-v1.js','nutrition-daily-cards-v1.js','sleep-library-v1.js','wellness-library-v1.js','wellness-daily-tip-v1.js',
   'recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js',
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js','erectile-function-premium.js',
   'erectile-platform-v2.js','erectile-library-v3.js','erectile-guided-v3.js','erectile-central-v3.js',
   'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-visual1','sensate-lab-bridge-v1.js','breathing-lab-bridge-v1.js',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js','program-checkpoint-v1.js','daily-practice-v1.js'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-video-actions1','program-checkpoint-v1.js','daily-practice-v1.js?v=20261113-video-actions1'
 ];
 async function boot(){
   try{

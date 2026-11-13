@@ -42,10 +42,10 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    await finish(p);
   }
   // Desire's daily video is saved independently, survives a reload and handles
-  // failure without losing the reflection or marking the main session complete.
+  // failure without losing the confirmation or marking the main session complete.
   const desire=await pageFor('desire',23);
-  await desire.locator('[data-daily-open="route-video-dr-low-desire"]').click();await desire.locator('[name=reflection]').fill('Reconozco cómo influye mi contexto en el deseo.');await desire.locator('[name=confirmed]').check();
-  await desire.evaluate(()=>SPM_QA.failNext=true);await desire.locator('#spmDailyWorkspace button[type=submit]').click();await desire.getByText('No se pudo guardar. Conservamos tu respuesta; reintenta.',{exact:true}).waitFor();assert.equal(await desire.locator('[name=reflection]').inputValue(),'Reconozco cómo influye mi contexto en el deseo.');checks++;
+  await desire.locator('[data-daily-open="route-video-dr-low-desire"]').click();assert.equal(await desire.locator('[data-daily-video] textarea').count(),0);await desire.locator('[data-daily-video] [data-video-action="dr-low-desire"]').waitFor();await desire.locator('[name=confirmed]').check();
+  await desire.evaluate(()=>SPM_QA.failNext=true);await desire.locator('#spmDailyWorkspace button[type=submit]').click();await desire.getByText('No se pudo guardar. Tu confirmación se conserva; reintenta.',{exact:true}).waitFor();assert.equal(await desire.locator('[name=confirmed]').isChecked(),true);checks++;
   await desire.locator('#spmDailyWorkspace button[type=submit]').click();await desire.locator('[data-activity="route-video-dr-low-desire"] .spm-daily-saved').waitFor();assert.equal(await desire.locator('#spmDailyComplete').isDisabled(),true);checks++;
   await desire.reload();await desire.locator('#map.on').waitFor();await desire.locator('#goPlan').click();await desire.locator('#spmGoToday').click();await desire.locator('[data-activity="route-video-dr-low-desire"] .spm-daily-saved').waitFor();assert.equal(await desire.evaluate(()=>SPM_RESOURCE_CONTEXT().day),23);checks++;
   await finish(desire);

@@ -1,0 +1,72 @@
+# Punto 4: acciones después de los videos
+
+La solicitud sustituye la escritura obligatoria después de cada video por una
+acción concreta relacionada con su tema. Se implementó primero el día 1, se
+verificó el guardado y luego se amplió el contenido siguiendo el calendario.
+
+## Contenido y alcance
+
+El catálogo `premium-v2/spm-video-library.js` contiene una sola definición de
+cada acción: título, contexto, tres pasos y una aclaración breve. La práctica
+diaria, las bibliotecas de los programas y el reproductor compartido reutilizan
+ese contenido. La biblioteca general presenta el título de la acción y abre el
+detalle con el video.
+
+| Día | Video | Acción |
+| --- | --- | --- |
+| 1 | Erección, estrés y ansiedad de rendimiento | Vuelve a una sensación cómoda |
+| 2 | Salud vascular y función eréctil | Prepara tu próximo control de salud |
+| 3 | Respiración diafragmática guiada | Ensaya la respiración del video |
+| 7 | Dejar de anticipar el fracaso | Vuelve de la anticipación al presente |
+| 9 | Salud metabólica y función sexual | Prepara un momento de descanso |
+| 10 | Respiración para regulación de ansiedad | Haz una pausa para soltar tensión |
+| 14 | Ansiedad de rendimiento: salir del modo examen | Empieza sin ponerte a prueba |
+| 16 | Foco sensorial: volver a las sensaciones | Observa un contacto sencillo |
+| 18 | Comunicación con la pareja sin presión | Ensaya cómo pedir un ritmo cómodo |
+| 21 | Medicamentos y función sexual | Prepara una pregunta sobre tu tratamiento |
+| 23 | Bajo deseo sexual: factores que pueden influir | Prepara un espacio sin exigencias |
+| 28 | Preparación mental antes del encuentro íntimo | Prepara un encuentro con menos presión |
+
+Las asignaciones por ruta, los días y los identificadores no cambian. Algunas
+rutas no incluyen todos estos videos. Esta modificación no implementa todavía
+los puntos 5 a 11 de la lista de correcciones.
+
+## Guardado y compatibilidad
+
+- La confirmación indica que se revisaron el video y la acción propuesta. No
+  afirma que se realizó la recomendación ni exige una respuesta escrita.
+- Al volver a guardar se conserva la metadata anterior, incluidas reflexiones.
+- Una lectura pendiente o fallida permite ver el recurso, pero bloquea el
+  guardado para evitar reemplazar información que aún no se recuperó.
+- El atajo de registro abre el video y su acción. Usa las mismas validaciones
+  de cuenta, plan, día e indicación de seguridad.
+- Abrir, reproducir o terminar el video no guarda una actividad. Confirmar el
+  video tampoco completa ni avanza el día.
+- El reproductor compartido identifica el video por su URL, admite las rutas
+  clínicas anteriores y limpia la acción al abrir otro recurso.
+
+## Verificación automatizada
+
+`node --test tests/video-actions.test.cjs`: 7 pruebas aprobadas. Incluyen los 12
+videos, confirmación sin escritura, notas históricas, fallo y reintento, lectura
+fallida, cambios de cuenta/plan/día/seguridad, correspondencia de acciones y
+bibliotecas sin escrituras de progreso.
+
+Las suites existentes `daily-practice`, `program-videos`, `program-review` y
+`daily-entry` suman otras 39 pruebas aprobadas. Los tres escenarios de navegador
+que rellenaban una reflexión de video se actualizaron al nuevo comportamiento.
+
+## Criterio editorial
+
+Las acciones se adaptaron de las descripciones de los videos y la propuesta
+recuperada del trabajo anterior. No se presentan como transcripciones ni como
+tratamientos autónomos. Las duraciones breves son indicaciones de uso, no dosis
+terapéuticas validadas. Respiración y foco sensorial acompañan la práctica
+indicada. Medicamentos conserva la instrucción de no modificar tratamientos.
+
+Referencias primarias consultadas para revisar el lenguaje de atención,
+comodidad y respiración sin forzar:
+
+- [EAU: Counselling for erectile dysfunction](https://patients.uroweb.org/condition/erectile-dysfunction/all-treatments-ed/counselling-ed)
+- [NHS: Breathing exercises for stress](https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/)
+- [Guy's and St Thomas' NHS: MBSR exercises](https://www.guysandstthomas.nhs.uk/health-information/mindfulness-based-stress-reduction-mbsr/mbsr-exercises)

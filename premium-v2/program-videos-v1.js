@@ -21,6 +21,7 @@ function mount(root,route){
  const catalog=window.SPM_VIDEO_LIBRARY||[],items=keysFor(route).map(key=>catalog.find(v=>v.key===key)).filter(Boolean);
  if(!items.length)return ()=>{};
  const doc=root.ownerDocument,win=doc.defaultView,section=doc.createElement('section');
+ window.SPM_VIDEO_ACTIONS?.installStyles(doc);
  section.className='spm-program-videos';section.dataset.programVideos=route;section.setAttribute('aria-label','Videos de apoyo SPM');
  const style=doc.createElement('style');style.textContent='.spm-program-videos{box-sizing:border-box;margin:24px 0;padding:20px;border:1px solid #31545c;border-radius:18px;background:#091d26;color:#eef8f6;text-align:left}.spm-program-videos h3{font-size:20px;margin:0 0 8px;color:#d8ba75}.spm-program-videos p{font-size:14px;line-height:1.55;margin:8px 0 18px}.spm-program-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px}.spm-program-videos article{min-width:0}.spm-program-videos h4{font-size:15px;line-height:1.5;margin:0 0 10px;color:#eef8f6}.spm-program-videos video{display:block;width:100%;max-height:65vh;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:12px}.spm-program-videos video[data-portrait]{aspect-ratio:9/16;max-width:350px;margin:auto}.spm-program-videos button{min-height:44px;padding:8px 14px;border:1px solid #d8ba75;border-radius:10px;background:#132f39;color:#fff}.spm-program-videos [hidden]{display:none!important}';
  section.append(style);
@@ -36,7 +37,7 @@ function mount(root,route){
   video.addEventListener('error',()=>{error.hidden=false;});
   retry.onclick=()=>{error.hidden=true;video.load();video.play().catch(()=>{error.hidden=false;});};
   video.addEventListener('play',()=>{for(const other of players)if(other!==video)other.pause();});
-  own.push(video);players.add(video);card.append(title,video,error);grid.append(card);
+  own.push(video);players.add(video);card.append(title,video,error);card.insertAdjacentHTML('beforeend',window.SPM_VIDEO_ACTIONS?.markup(item.key)||'');grid.append(card);
  }
  root.append(section);
  const stop=()=>own.forEach(v=>v.pause()),hide=()=>{if(doc.hidden)stop();};
