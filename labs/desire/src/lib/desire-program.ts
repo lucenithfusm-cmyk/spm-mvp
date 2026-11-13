@@ -152,10 +152,10 @@ export function continuity(p: Program, clinical: boolean, latest: MetricsN | nul
   const both = (k: keyof Metrics) => (b && latest && typeof b[k] === 'number' && typeof latest[k] === 'number' ? (latest[k] as number) - (b[k] as number) : null);
   const ds = (['desire', 'satisfaction', 'closeness', 'pressure'] as const).map((k) => [k, both(k)] as const).filter(([, v]) => v !== null);
   const done = p.sessions.filter((s) => s.status === 'completed').length;
-  if (!ds.length) return { kind: 'insufficient', text: 'Sin comparación: falta línea base o checkpoint con valores comparables. Sugerencia revisable: ciclo adaptado y registrar el checkpoint.' };
+  if (!ds.length) return { kind: 'insufficient', text: 'No hay valores suficientes para comparar tu punto de partida con este seguimiento. Puedes reconocer lo que has observado y elegir qué deseas seguir explorando, aunque no hayas completado todas las evaluaciones.' };
   const improved = ds.filter(([k, v]) => (k === 'pressure' ? v! <= -1 : v! >= 1)).length;
-  if (improved >= 2 && done >= 3) return { kind: 'maintenance', text: `Sugerencia revisable: ${improved} valores mejoraron respecto a tu línea base con ${done} prácticas completadas → mantenimiento con tus mejores activadores.` };
-  return { kind: 'adapted', text: `Sugerencia revisable: ${improved} valor(es) mejoraron y ${done} prácticas completadas; no basta para hablar de mantenimiento → nuevo ciclo adaptado (nunca se repite el ciclo 1 igual).` };
+  if (improved >= 2 && done >= 3) return { kind: 'maintenance', text: `En tus registros, ${improved} valores mejoraron respecto a tu punto de partida, con ${done} prácticas completadas. Revisa qué te resultó cómodo o útil y qué herramientas quieres seguir usando para conocer tu respuesta en la vida diaria.` };
+  return { kind: 'adapted', text: `Tus registros muestran ${improved} valor(es) con cambio favorable y ${done} prácticas completadas. Cada experiencia puede ser distinta. Reconoce qué has podido observar y elige una práctica cómoda que quieras seguir explorando a tu ritmo.` };
 }
 
 export const CTX_KEY = 'spm-desire-ctx';

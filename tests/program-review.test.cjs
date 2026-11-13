@@ -118,3 +118,26 @@ test('review recovers a midpoint answered on day 18 and isolates its version 2 v
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
+
+test('day 28 closing audio stays separate from navigation and opens the final report without extra records',async()=>{
+  const h=await harness('?programa=erection&dia=28');try{
+    const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+    for(const activity of api.assignments().filter(item=>!item.optional))await api.saveActivity(activity.id,{confirmed:true});
+    await w.document.querySelector('#spmDailyComplete').onclick();await wait();
+    const closing=w.document.querySelector('#spmDailyClosing');assert.ok(closing);
+    assert.ok(closing.querySelector('[data-program-closing]'));
+    assert.equal(closing.querySelector('[data-checkpoint-audio] audio').getAttribute('src'),'/premium-v2/assets/audio/checkpoint/program-closing-20261113.mp3');
+    closing.querySelector('[data-spm-speak]').click();
+    assert.equal(w.document.querySelector('#spmDailyClosing'),closing,'the daily advice speaker must not navigate away');
+    const before=JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,28));
+    closing.querySelector('[data-closing-report]').click();await wait();
+    const report=w.document.querySelector('[data-program-report]');assert.ok(report);
+    assert.ok(report.querySelector('[data-program-closing]'));
+    assert.equal(w.document.querySelector('#spmDailyClosing'),null);
+    assert.equal(JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,28)),before);
+    assert.equal((await w.SPM_DAILY_RECORDS.readCheckpoints(scope)).length,0,'the report does not require or invent evaluations');
+    assert.equal(w.SPM_RESOURCE_CONTEXT().day,28);
+    assert.equal(w.SPM_RESOURCE_CONTEXT().completed.join(','),'28');
+    assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+});

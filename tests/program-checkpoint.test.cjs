@@ -153,6 +153,13 @@ test('final report remains available without evaluations or writes and retains c
  const h=harness();try{
   h.c.day=28;await h.w.SPM_PROGRAM_CHECKPOINT.open(activity);assert.ok(h.w.document.querySelector('[data-program-report]'));
   assert.match(h.w.document.body.textContent,/Tu informe reúne las respuestas disponibles/);assert.match(h.w.document.body.textContent,/qué prácticas te resultaron útiles/);
+  let copied='';h.w.navigator.clipboard={writeText:async text=>{copied=text;}};
+  h.w.document.querySelector('[data-checkpoint-audio] details').open=true;
+  await h.w.document.querySelector('[data-checkpoint-copy]').onclick();
+  assert.match(copied,/Piensa en el gimnasio/);assert.match(copied,/Sin dato \/ no evaluable/);
+  assert.equal(copied.split('Lo aprendido continúa contigo').length-1,1,'the report includes the closing once, independently of the audio transcript');
+  assert.doesNotMatch(copied,/Escuchar mensaje de cierre|Copiar mi informe|Completar o revisar evaluación/);
+  assert.equal(h.w.document.querySelector('[data-checkpoint-report-status]').textContent,'Informe copiado.');
   assert.equal(h.writes.length,0);assert.equal(h.c.day,28);
  }finally{h.close();}
 });

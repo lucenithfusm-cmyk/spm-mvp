@@ -152,7 +152,7 @@ async function load(force=false){
  catch{if(token!==generation)return;loadError=true;}
  render();
 }
-function open({focus:shouldFocus=true}={}){window.SPM_PRACTICE_AUDIO?.stop();$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
+function open({focus:shouldFocus=true}={}){window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
 function pauseDailyVideo(){window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyWorkspace'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
 function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
@@ -282,7 +282,7 @@ const dailyAdvice=[
  ['Acuerden un plan sencillo para un momento de presión: pausar, hablar o cambiar de actividad. No hace falta esperar a estar incómodos para conversarlo.','Escribe tu propio plan: «Si siento presión, puedo…».'],
  ['Propón mantener un pequeño hábito de conexión que ambos disfruten. Que sea flexible y posible, sin convertirlo en una obligación.','Elige un hábito pequeño de autocuidado que quieras mantener.'],
  ['Hoy puedes tomar la iniciativa con una invitación abierta: «Me gustaría compartir un rato contigo, ¿qué te apetece?».','Reserva un rato para algo que disfrutes y elige cómo vivirlo.'],
- ['Comparte un aprendizaje de estas semanas y una práctica que quieras conservar. El cierre de los 28 días es un punto para seguir cuidándote, no una promesa de resultado definitivo.','Anota qué quieres mantener y cuándo volverás a practicarlo.']
+ ['Comparte algo que has reconocido de tu cuerpo y una práctica que quieras seguir realizando. Lleva ese aprendizaje a tu vida diaria con constancia y sin exigirte una respuesta determinada.','Elige una práctica que te haya resultado útil y un momento realista para retomarla.']
 ];
 function closingAdvice(c=ctx(),day=Number(c?.day)){
  const advice=dailyAdvice[Math.min(28,Math.max(1,day||1))-1];
@@ -290,13 +290,16 @@ function closingAdvice(c=ctx(),day=Number(c?.day)){
 }
 function showClosingAdvice(c,day){
  const host=$('#spmDailySession');if(!host)return;const advice=closingAdvice(c,day),card=document.createElement('section');
- card.id='spmDailyClosing';card.className='spm-daily-work';card.innerHTML=`<span class="stepBadge">DÍA ${day} · COMPLETADO</span><h3>${esc(advice.title)}</h3>${window.SPM_PRACTICE_AUDIO?.button(advice.text+' '+advice.individual,'Escuchar consejo')||''}<p>${esc(advice.text)}</p><p>${esc(advice.individual)}</p><button type="button" class="btn pri" data-closing-next>${day===28?'Ver mi programa':'Volver a mi ruta'} →</button>`;
- host.appendChild(card);host.dataset.continuation='true';$('#spmDailyWorkspace')?.replaceChildren();card.querySelector('button').onclick=()=>{card.remove();open();};focus(card);
+ const final=day===28&&window.SPM_PROGRAM_CHECKPOINT;
+ card.id='spmDailyClosing';card.className='spm-daily-work';card.innerHTML=`<span class="stepBadge">${day===28?'PROGRAMA DE 28 JORNADAS · COMPLETADO':`DÍA ${day} · COMPLETADO`}</span>${final?window.SPM_PROGRAM_CHECKPOINT.closingMarkup():''}<h3>${esc(advice.title)}</h3>${window.SPM_PRACTICE_AUDIO?.button(advice.text+' '+advice.individual,'Escuchar consejo')||''}<p>${esc(advice.text)}</p><p>${esc(advice.individual)}</p><div class="spm-daily-actions">${final?'<button type="button" class="btn pri" data-closing-report>Ver mi informe final →</button>':''}<button type="button" class="btn ${final?'sec':'pri'}" data-closing-next>${day===28?'Volver a mi programa':'Volver a mi ruta'} →</button></div>`;
+ host.appendChild(card);host.dataset.continuation='true';$('#spmDailyWorkspace')?.replaceChildren();window.SPM_CHECKPOINT_AUDIO?.bind(card);
+ card.querySelector('[data-closing-next]').onclick=()=>open();
+ card.querySelector('[data-closing-report]')?.addEventListener('click',()=>{open({focus:false});launch('program-checkpoint');});focus(card);
 }
 async function complete(){
  const c=ctx(),completedDay=Number(c?.day),completedContext={...c},items=assignments(c).filter(a=>!a.optional);if(!loaded||restricted(c)||!items.length||items.some(a=>restricted(c,a)||!recordComplete(a)))return;
  const b=$('#spmDailyComplete');b.disabled=true;status('Guardando tu día…');
- try{await window.SPM_COMPLETE_DAILY_PRACTICE(Number(c.day),scopeOf(c));if(scopeOf(ctx())!==scopeOf(completedContext))return;await load(true);status(Number(c.day)===28?'Ciclo inicial completado. Revisa tu progreso y la recomendación de continuidad.':`Día ${c.day} guardado. Tu siguiente sesión está preparada.`);showClosingAdvice(completedContext,completedDay);}
+ try{await window.SPM_COMPLETE_DAILY_PRACTICE(Number(c.day),scopeOf(c));if(scopeOf(ctx())!==scopeOf(completedContext))return;await load(true);status(Number(c.day)===28?'Programa de 28 jornadas completado. Revisa tu informe y sigue poniendo en práctica lo aprendido.':`Día ${c.day} guardado. Tu siguiente sesión está preparada.`);showClosingAdvice(completedContext,completedDay);}
  catch{b.disabled=false;status('No se pudo completar el día. Reintenta; tus actividades permanecen guardadas.',true);}
 }
 const style=document.createElement('style');style.textContent=`

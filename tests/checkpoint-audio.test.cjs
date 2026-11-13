@@ -95,7 +95,7 @@ test('all three shipped checkpoint recordings match their current scripts, sourc
   f.w.eval(fs.readFileSync(path.join(repo,'premium-v2/program-checkpoint-v1.js'),'utf8'));
   for(const action of manifest.actions){
    assert.equal(action.text,f.w.SPM_PROGRAM_CHECKPOINT.narrations[action.milestone]);
-   assert.equal(action.path,'premium-v2/assets/audio/checkpoint/checkpoint-'+action.milestone+'-v4.mp3');
+   assert.equal(action.path,'premium-v2/assets/audio/checkpoint/checkpoint-'+action.milestone+(action.milestone===28?'-v5.mp3':'-v4.mp3'));
    const bytes=fs.readFileSync(path.join(repo,action.path));assert.ok(bytes.length>1000);assert.equal(bytes.length,action.verifiedFile.size);assert.equal(createHash('sha256').update(bytes).digest('hex'),action.verifiedFile.sha256);
    assert.ok(action.verifiedFile.duration>0);assert.ok(Math.abs(action.verifiedFile.duration-action.duration)<0.2);
    context.day=action.milestone;await f.w.SPM_PROGRAM_CHECKPOINT.open({id:'program-checkpoint'},true);
