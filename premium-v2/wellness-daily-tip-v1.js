@@ -2,16 +2,16 @@
 'use strict';
 const TIPS={
  nutrition:[
-  {id:'nut.01',title:'Arma un plato más completo',body:'Hoy intenta incluir una fuente de proteína que ya toleres junto con una porción generosa de vegetales. Puede ser pescado, pollo, huevo, leguminosas, tofu u otra opción compatible con tu alimentación.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.02',title:'Añade color al plato',body:'Incluye hoy al menos dos tipos de vegetales o frutas de colores diferentes. La meta es variedad, no perfección.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.03',title:'Cambia una bebida',body:'Si hoy tomas una bebida azucarada, prueba reemplazar una por agua, agua con gas sin azúcar o una bebida sin azúcar que toleres.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.04',title:'Incluye una fuente cardioprotectora',body:'Elige hoy una opción como leguminosas, frutos secos, pescado, aceite de oliva o vegetales variados, siempre que sea compatible con tus indicaciones médicas.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.05',title:'Haz una comida más predecible',body:'Evita llegar con hambre extrema. Si puedes, organiza una comida principal con proteína, vegetales y una porción de carbohidrato que te resulte adecuada.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.06',title:'Menos ultraprocesado, más comida real',body:'Elige hoy una preparación sencilla hecha con alimentos reconocibles en lugar de uno de tus ultraprocesados habituales.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.07',title:'Observa cómo comes',body:'Come hoy una comida sin pantalla y un poco más despacio. SPM busca hábitos sostenibles, no reglas rígidas.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.01',title:'Arma un plato más completo',body:'Mañana intenta incluir una fuente de proteína que ya toleres junto con una porción generosa de vegetales. Puede ser pescado, pollo, huevo, leguminosas, tofu u otra opción compatible con tu alimentación.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.02',title:'Añade color al plato',body:'Incluye mañana al menos dos tipos de vegetales o frutas de colores diferentes. La meta es variedad, no perfección.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.03',title:'Cambia una bebida',body:'Si mañana tomas una bebida azucarada, prueba reemplazar una por agua, agua con gas sin azúcar o una bebida sin azúcar que toleres.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.04',title:'Incluye una fuente cardioprotectora',body:'Elige para mañana una opción como leguminosas, frutos secos, pescado, aceite de oliva o vegetales variados, siempre que sea compatible con tus indicaciones médicas.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.05',title:'Haz una comida más predecible',body:'Evita llegar con hambre extrema. Si puedes, organiza para mañana una comida principal con proteína, vegetales y una porción de carbohidrato que te resulte adecuada.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.06',title:'Menos ultraprocesado, más comida real',body:'Elige para mañana una preparación sencilla hecha con alimentos reconocibles en lugar de uno de tus ultraprocesados habituales.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.07',title:'Observa cómo comes',body:'Come mañana una comida sin pantalla y un poco más despacio. SPM busca hábitos sostenibles, no reglas rígidas.',cta:'Abrir Nutrición SPM'},
   {id:'nut.08',title:'Planifica una opción fácil',body:'Deja lista una opción simple para mañana: fruta, yogur natural, frutos secos, huevos, leguminosas u otra alternativa adecuada para ti.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.09',title:'No busques un “afrodisíaco”',body:'Hoy enfócate en patrón y consistencia: alimentos variados, proteína suficiente para tus necesidades, vegetales y buena hidratación.',cta:'Abrir Nutrición SPM'},
-  {id:'nut.10',title:'Revisa una sola mejora',body:'Elige una cosa de tu alimentación que puedas sostener esta semana. Una mejora pequeña y repetible vale más que una dieta extrema.',cta:'Abrir Nutrición SPM'}
+  {id:'nut.09',title:'No busques un “afrodisíaco”',body:'Mañana enfócate en patrón y consistencia: alimentos variados, proteína suficiente para tus necesidades, vegetales y buena hidratación.',cta:'Abrir Nutrición SPM'},
+  {id:'nut.10',title:'Revisa una sola mejora',body:'Elige para mañana una cosa de tu alimentación que puedas sostener esta semana. Una mejora pequeña y repetible vale más que una dieta extrema.',cta:'Abrir Nutrición SPM'}
  ],
  movement:[
   {id:'mov.01',title:'Camina con intención',body:'Si es seguro para ti, realiza hoy 20–30 minutos de caminata a un ritmo que te haga respirar un poco más rápido sin impedirte hablar.',cta:'Abrir Movimiento SPM'},
