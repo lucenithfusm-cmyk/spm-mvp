@@ -1,43 +1,28 @@
-# Obsequio de lanzamiento: estado y activación
+# Recetario SPM: entrega vigente en la biblioteca
 
-Estado: código preparado; no desplegado, sin envíos activados. La página diaria y sus tarjetas sí están publicadas. No se ha cambiado el pago ni la activación del programa.
+El recetario se ofrece como obsequio descargable al comienzo de la Biblioteca de Nutrición. El acceso al archivo no depende de un cupo de primeros compradores ni de un formulario de correo.
 
-Archivo identificado: `Recetario_SPM.pdf`, 1.806.512 bytes, 15 páginas, 12 preparaciones.
-SHA-256: `1e732d27a659e7af9232fb7140634d120023875d13c79bb1ad5cfabb78e5fdb3`.
+## Archivo integrado
 
-## Regla preparada
+- PDF para descarga web: [Recetario SPM](https://0dzp02ilnexs1jlo.public.blob.vercel-storage.com/nutrition/20261113/Recetario_SPM.pdf).
+- Nombre propuesto al descargar: `Recetario_SPM.pdf`.
+- 15 páginas y 12 preparaciones, con guía de compras.
+- 4.644.838 bytes. SHA-256: `b8cd08964a835a4dba0451e684fb0209f1ff92c4d716aa72222a8088112be143`.
+- La copia web conserva las 15 páginas, sus medidas, instrucciones de dibujo e imágenes de 1055 × 1491 píxeles. Se recomprimieron las imágenes para reducir el peso; el archivo original recuperado se conserva sin modificaciones. Se revisó visualmente la legibilidad de portada, recetas y guía de compras.
+- La portada de la tarjeta se renderiza desde la primera página del mismo PDF: `premium-v2/assets/nutrition/recetario-spm-portada.jpg`.
 
-- Primeros 50 usuarios únicos con pago Wompi de producción aprobado y acceso activo, ordenados por verificación del pago. Una persona recibe un obsequio aunque haga varias compras.
-- Los pagos sandbox, pendientes, rechazados o anulados no habilitan envíos.
-- Reserva transaccional con contador permanente: no se abre un cupo adicional por borrar una cuenta.
-- Se conserva el mismo destinatario, remitente y PDF durante los reintentos para evitar duplicados.
-- El correo incluye solo el obsequio; no incluye evaluación, objetivo sexual, respuestas ni progreso.
-- El PDF permanece en un bucket privado y se adjunta al mensaje. No hay enlace público al recetario.
-- Una falla del correo no bloquea el programa ni modifica el estado de un pago.
-- Si no se puede reconciliar la respuesta del proveedor dentro de su ventana de deduplicación, se solicita revisión interna y no se reenvía a ciegas.
+El PDF se aloja en el almacén público `spm-premium-recetario` de este proyecto en Vercel, con una ruta de versión estable. Su URL, peso y hash quedan documentados en `premium-v2/assets/nutrition/recetario-spm.json`. La página no incluye credenciales del almacén.
 
-## Correo preparado
+## Acceso dentro del programa
 
-**Asunto:** Tu detalle de bienvenida a SPM
+`premium-v2/spm-resources.js` muestra la tarjeta del obsequio como primer bloque de Nutrición, antes de la guía y de las seis categorías de alimentos. La tarjeta tiene dos enlaces al mismo archivo: **Descargar RECETARIO SPM** y **Abrir PDF (nueva pestaña)**. El segundo permite consultar el documento sin cerrar la biblioteca. El enlace de descarga usa `?download=1` para solicitar el PDF como archivo adjunto, también desde dispositivos móviles.
 
-Qué bueno que ya formas parte de SPM.
+La biblioteca utiliza este mismo componente para todos los programas y días. La descarga no escribe registros de salud, no marca una actividad como completada y no necesita un servicio de correo.
 
-Como uno de nuestros primeros 50 compradores, recibes de obsequio el Recetario SPM con 12 preparaciones prácticas. Lo encontrarás adjunto a este correo.
+## Propuesta anterior retirada
 
-Elige una opción que disfrutes y adáptala a tus necesidades y restricciones alimentarias. Un paso cada día, a tu ritmo.
+La propuesta de enviar el PDF por correo a los primeros 50 compradores fue reemplazada por esta entrega directa. Sus instrucciones de activación ya no forman parte de la entrega vigente. El código histórico de la cola de correo no se invoca desde esta biblioteca.
 
-Equipo SPM Digital Wellness
+## Verificación
 
-## Pendiente para activar
-
-1. Confirmar el remitente de SPM y conectar un proveedor de correo transaccional. El adaptador preparado usa Resend; si ya existe otro proveedor, adaptar el envío a ese servicio. No abrir una suscripción sin autorización.
-2. Verificar el dominio remitente. Guardar `RESEND_API_KEY`, `SPM_GIFT_FROM` y un secreto aleatorio `SPM_GIFT_WORKER_SECRET` exclusivamente en el servidor.
-3. Crear el bucket privado `spm-private-gifts`, subir el PDF exacto a `launch-v1/Recetario_SPM.pdf` y comprobar su hash. No habilitar lectura anónima.
-4. Aplicar y verificar `supabase/sql/launch-recipe-gift.sql`, revisar permisos/RLS y registrar la migración con la CLI. Está preparado como SQL, no como una migración ya aplicada.
-5. Probar con datos sintéticos concurrencia de los cupos 49–50, compras repetidas, impago, revocación, error del proveedor y reintento. Las pruebas locales cubren el contrato de envío; todavía no validan la cola en una base real.
-6. Desplegar `spm-launch-gifts` con la autenticación propia por secreto y gateway apropiado. Programar una invocación protegida cada minuto. El trabajador procesa un correo por invocación. Activar `SPM_RECIPE_GIFT_ENABLED=true` solo al terminar la configuración.
-7. Realizar un envío controlado al destinatario acordado, comprobar PDF adjunto y recepción, y luego habilitar la campaña. El estado `accepted` confirma aceptación del proveedor, no recepción en bandeja de entrada.
-
-Referencias técnicas: documentación oficial de Supabase (Sending Emails, Storage) y Resend (Send Email, Idempotency Keys). Resend conserva claves de idempotencia durante 24 horas; el trabajador deja un margen y detiene reintentos a las 23 horas.
-
-Las tarjetas diarias son adaptaciones prácticas independientes del PDF. Su enfoque alimentario sigue NIDDK, Eating, Diet & Nutrition for Erectile Dysfunction: variedad de vegetales, frutas, leguminosas, grasas insaturadas y cereales integrales. No atribuyen a una receta una mejora garantizada de la erección ni del deseo.
+`tests/nutrition-recipe-download.test.cjs` comprueba los enlaces, los metadatos de la entrega, la posición de la tarjeta, su acceso sin correo y la navegación de las categorías. La publicación debe comprobar además la respuesta del PDF y su identidad con el archivo local.

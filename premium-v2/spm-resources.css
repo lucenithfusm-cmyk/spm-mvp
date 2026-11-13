@@ -3,3 +3,21 @@
 #spmVideoModal{z-index:12000;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}.spmVpShell{max-height:calc(100dvh - 24px);overflow:auto}.spmVpShell.spmPortrait{width:min(460px,100%)}.spmVpBody{display:grid;place-items:center}.spmVpBody video{width:100%;height:auto;max-height:calc(100dvh - 160px);object-fit:contain;transform:none}.spmPortrait .spmVpBody video{width:auto;max-width:100%;height:calc(100dvh - 180px)}.spm4stage{min-height:260px!important}.spm4stage .sr-breath-demo{width:min(380px,95%);color:#d5efee;text-align:center}.sr-breath-demo svg{width:100%;max-height:330px}.sr-breath-abdomen{transform-origin:180px 210px;animation:sr-breath 12s ease-in-out infinite}.sr-breath-demo .sr-breath-label{font-size:16px;padding:12px}@keyframes sr-breath{0%,100%{transform:scale(1)}33%,50%{transform:scale(1.16,1.05)}}@media(prefers-reduced-motion:reduce){.sr-breath-abdomen{animation:none}.sr-breath-demo svg{animation:none}}
 
 html.sr-modal-open{overflow:hidden}
+
+/* The recipe gift is available at the start of the Nutrition library. */
+.sr-recipe-gift{display:grid;grid-template-columns:minmax(150px,210px) minmax(0,1fr);align-items:center;gap:clamp(22px,4vw,38px);margin:0 0 32px;padding:clamp(20px,4vw,32px);border:1px solid #8c764c;border-radius:22px;background:linear-gradient(130deg,#14262c,#0b1d26 65%,#2b291f);box-shadow:0 12px 30px #0002}
+.sr-recipe-cover{display:block;width:100%;height:auto;aspect-ratio:566/800;object-fit:contain;border-radius:10px;box-shadow:0 10px 26px #0006}
+.sr-recipe-copy{display:grid;gap:16px;min-width:0}
+.sr-recipe-kicker{color:#e6ca92;font-size:12px;line-height:1.5;letter-spacing:.13em;font-weight:750}
+.sr .sr-recipe-copy h2{margin:0;color:#fff7e9;font-size:clamp(26px,4vw,34px);line-height:1.2;letter-spacing:.01em}
+.sr .sr-recipe-copy p{margin:0;color:#d9e1e5;font-size:17px;line-height:1.7;max-width:48ch}
+.sr-recipe-meta{color:#c6c7bd;font-size:14px;line-height:1.6}
+.sr-recipe-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:4px}
+.sr-recipe-actions a{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:48px;max-width:100%;padding:13px 18px;border-radius:12px;text-align:center;text-decoration:none;font-size:16px;line-height:1.45;font-weight:750}
+.sr-recipe-actions .sr-recipe-download{color:#15212a;background:#e5c688;border:1px solid #e5c688}
+.sr-recipe-actions .sr-recipe-download:hover{background:#f1d9a7;border-color:#f1d9a7}
+.sr-recipe-actions .sr-recipe-open{color:#e9d5b0;background:transparent;border:1px solid #8c764c;flex-wrap:wrap}
+.sr-recipe-actions .sr-recipe-open:hover{background:#e5c68812;border-color:#e5c688}
+.sr-recipe-actions a:focus-visible{outline:3px solid #edcf88;outline-offset:4px}
+.sr-recipe-tab{font-size:13px;font-weight:400}
+@media(max-width:560px){.sr-recipe-gift{grid-template-columns:minmax(0,1fr);gap:24px}.sr-recipe-cover{width:150px;justify-self:center}.sr-recipe-actions{align-items:stretch;flex-direction:column}.sr-recipe-actions a{width:100%;padding:13px 12px}.sr .sr-recipe-copy p{font-size:16px}}
