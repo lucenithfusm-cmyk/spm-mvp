@@ -97,7 +97,7 @@ function installRecords(){
 }
 const scripts=[
   'engine.js','modules.js','daily-support-plan-v1.js','spm-video-library.js','program-videos-v1.js','spm-inline-video-player.js',
-  'spm-resources-content.js','spm-resources.js?v=20261113-recetario1','spm-visual-cards-staging-v4.js','spm-nutrition-premium-images-v1.js',
+  'spm-resources-content.js','spm-resources.js?v=20261113-recetario2','spm-visual-cards-staging-v4.js','spm-nutrition-premium-images-v1.js',
   'practice-audio-v1.js','nutrition-daily-cards-v1.js','sleep-library-v1.js','wellness-library-v1.js','wellness-daily-tip-v1.js',
   'recovery-story-premium-v4.js','recovery-story-extra-v1.js','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js',
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js','erectile-function-premium.js',

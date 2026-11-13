@@ -131,7 +131,7 @@ function recipeGift(){return `<section class="sr-recipe-gift" aria-labelledby="s
   <span class="sr-recipe-meta">${t('PDF en español · 15 páginas · 4,6 MB','PDF in Spanish · 15 pages · 4.6 MB')}</span>
   <div class="sr-recipe-actions">
    <a class="sr-recipe-download" data-recipe-download href="${RECIPE_PDF}?download=1" download="Recetario_SPM.pdf">${t('Descargar RECETARIO SPM','Download RECETARIO SPM')} <span aria-hidden="true">↓</span></a>
-   <a class="sr-recipe-open" data-recipe-open href="${RECIPE_PDF}" target="_blank" rel="noopener">${t('Abrir PDF','Open PDF')} <span class="sr-recipe-tab">${t('(nueva pestaña)','(new tab)')}</span> <span aria-hidden="true">↗</span></a>
+   <a class="sr-recipe-open" data-recipe-open href="${RECIPE_PDF}" target="_blank" rel="noopener">${t('Abrir PDF','Open PDF')} <span class="sr-recipe-tab">${t('(nueva pestaña)','(new tab)')}</span></a>
   </div>
  </div>
 </section>`;}
