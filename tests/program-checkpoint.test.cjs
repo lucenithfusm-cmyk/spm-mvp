@@ -152,7 +152,7 @@ test('a stale history response cannot render a form for a changed account or day
 test('final report remains available without evaluations or writes and retains continuity advice',async()=>{
  const h=harness();try{
   h.c.day=28;await h.w.SPM_PROGRAM_CHECKPOINT.open(activity);assert.ok(h.w.document.querySelector('[data-program-report]'));
-  assert.match(h.w.document.body.textContent,/No contamos con todas/);assert.match(h.w.document.body.textContent,/Conserva las prácticas/);
+  assert.match(h.w.document.body.textContent,/Tu informe reúne las respuestas disponibles/);assert.match(h.w.document.body.textContent,/qué prácticas te resultaron útiles/);
   assert.equal(h.writes.length,0);assert.equal(h.c.day,28);
  }finally{h.close();}
 });
