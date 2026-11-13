@@ -3,6 +3,7 @@
 // Today owns the daily entry; the original calendars and full resources remain in Library.
 const $=s=>document?.querySelector(s),ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?`${c.userId}:${c.planId}`:'';
+const directErection=(c,a)=>window.SPM_ERECTION_PRACTICE?.supports(c,a)===true;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let current='',view='entry',records={},loaded=false,loadError=false,generation=0,active=null;
 // A recommendation for review is not a blanket ban on educational work.
@@ -77,6 +78,7 @@ function assignments(c=ctx()){
   support=support.map(a=>a.kind==='confidence'?{...a,optional:true,optionalLabel:'REVISIÓN · OPCIONAL'}:a);
  }
 
+ if(directErection(c,main))main={...main,...window.SPM_ERECTION_PRACTICE.definition(day)};
  return [main,...support,...wellness];
 }
 function recordComplete(a){const r=records[a.id];if(a.tip&&r?.tipId!==a.tip.id)return false;if(a.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(r))return false;return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind)&&(!a.scenario||r.scenario===a.scenario);}
@@ -103,11 +105,12 @@ function render(){
  const paused=restricted(c),pending=required.some(a=>restricted(c,a));
  const signature=JSON.stringify([current,c.primary,c.secondary,c.answers,c.safety,c.flags,c.checkins,items.map(a=>[a.id,restricted(c,a)]),loaded,loadError,records,c.completed]);
  if(host.dataset.signature===signature)return;host.dataset.signature=signature;
+ window.SPM_ERECTION_PRACTICE?.stop();delete host.dataset.focusedPractice;
  pauseDailyVideo();
  host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Lo que vas a hacer hoy</h2><p class="spm-daily-count">${done} de ${required.length} prácticas realizadas</p>${window.SPM_PROGRAM_RECOVERY?.notice(c)||''}${safetyNotice(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
-  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1;
+  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1,directErectionEntry=directErection(c,a),directEntry=directDesireEntry||directErectionEntry;
   const visual=wellnessCard(a,saved);if(visual)return visual;
-  return `<article class="spm-daily-activity" data-activity="${esc(a.id)}"><span class="spm-daily-number">${i+1}</span><div><small>${a.optional?esc(a.optionalLabel||'BIENESTAR · OPCIONAL'):esc(a.label||(i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'))}${a.kind==='video'&&a.duration?' · '+esc(a.duration):''}</small><h3>${esc(a.title)}</h3>${a.kind==='program-checkpoint'&&!blocked?'':`<p>${esc(blocked?'La práctica requiere revisar primero la indicación de seguridad. Puedes consultar el motivo y el contenido educativo.':a.kind==='desire'?'Tu práctica guiada de hoy.':a.summary)}</p>`}${!['video','program-checkpoint'].includes(a.kind)&&!blocked&&!directDesireEntry?(window.SPM_PRACTICE_AUDIO?.button(a.kind==='desire'?'Abre la actividad para escuchar el paso a paso y realizarla a tu ritmo. Al terminar podrás registrar tu experiencia.':a.summary)||''):''}<div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}">${blocked?(window.SPM_PROGRAM_RECOVERY?.blocks(c,a)?'Completar evaluación pendiente':'Ver indicación y opciones'):saved?'Volver a abrir':directDesireEntry?'Iniciar mi práctica de hoy':a.kind==='video'?'Ver video de hoy':'Abrir actividad'}${directDesireEntry?'':' →'}</button>${blocked?'<span class="spm-daily-paused">Práctica en pausa</span>':saved?'<span class="spm-daily-saved">Registrada ✓</span>':directDesireEntry||a.kind==='program-checkpoint'?'':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`;
+  return `<article class="spm-daily-activity" data-activity="${esc(a.id)}"${directErectionEntry?' data-direct-practice="erection"':''}><span class="spm-daily-number">${i+1}</span><div><small>${a.optional?esc(a.optionalLabel||'BIENESTAR · OPCIONAL'):esc(a.label||(i===0?'PRÁCTICA PRINCIPAL':'APOYO DE HOY'))}${a.kind==='video'&&a.duration?' · '+esc(a.duration):''}</small><h3>${esc(a.title)}</h3>${(a.kind==='program-checkpoint'||directErectionEntry)&&!blocked?'':`<p>${esc(blocked?'La práctica requiere revisar primero la indicación de seguridad. Puedes consultar el motivo y el contenido educativo.':a.kind==='desire'?'Tu práctica guiada de hoy.':a.summary)}</p>`}${!['video','program-checkpoint'].includes(a.kind)&&!blocked&&!directEntry?(window.SPM_PRACTICE_AUDIO?.button(a.kind==='desire'?'Abre la actividad para escuchar el paso a paso y realizarla a tu ritmo. Al terminar podrás registrar tu experiencia.':a.summary)||''):''}<div class="spm-daily-actions"><button type="button" class="btn pri" data-daily-open="${esc(a.id)}" ${directErectionEntry&&!blocked&&!loaded?'disabled':''}>${blocked?(window.SPM_PROGRAM_RECOVERY?.blocks(c,a)?'Completar evaluación pendiente':'Ver indicación y opciones'):saved?'Volver a abrir':directEntry?'Iniciar mi práctica de hoy':a.kind==='video'?'Ver video de hoy':'Abrir actividad'}${directEntry?'':' →'}</button>${blocked?'<span class="spm-daily-paused">Práctica en pausa</span>':saved?'<span class="spm-daily-saved">Registrada ✓</span>':directEntry||a.kind==='program-checkpoint'?'':`<button type="button" class="btn sec" data-daily-confirm="${esc(a.id)}" ${!loaded?'disabled':''}>Registrar como realizada</button>`}</div></div></article>`;
  }).join('')}</div><div id="spmDailyWorkspace"></div><div class="spm-daily-footer"><button type="button" class="btn pri" id="spmDailyComplete" ${paused||pending||!loaded||done!==required.length||!required.length||c.completed?.includes(Number(c.day))?'disabled':''}>${c.completed?.includes(Number(c.day))?'Día completado ✓':`Completar día ${c.day}`}</button><button type="button" class="btn sec" id="spmDailyCoach">Registrar cómo fue hoy</button></div><p id="spmDailyStatus" role="status">${loadError?'No pudimos recuperar tus registros. Reintenta antes de completar el día.':loaded?(paused||pending?(window.SPM_PROGRAM_RECOVERY?.pending(c).length?'Completa las respuestas pendientes para revisar cómo continuar. Tu avance se conserva.':'Hay prácticas en pausa por seguridad. Usa «Ver cómo continuar»; tu avance se conserva.'):done!==required.length?`Te faltan ${required.length-done} prácticas por registrar. Abre una actividad pendiente y regístrala cuando la hayas realizado.`:'Tus prácticas están registradas. Ya puedes completar el día.'):'Recuperando tus actividades guardadas…'}</p>${loadError?'<button type="button" class="btn sec" id="spmDailyRetry">Reintentar</button>':''}`;
  host.querySelectorAll('[data-daily-open]').forEach(b=>b.onclick=()=>launch(b.dataset.dailyOpen));
  host.querySelectorAll('[data-daily-confirm]').forEach(b=>b.onclick=()=>confirmActivity(b.dataset.dailyConfirm));
@@ -146,24 +149,26 @@ function pausedActivity(a){
 async function load(force=false){
  const c=ctx(),key=c?`${scopeOf(c)}:${c.day}`:'';
  if(key===current&&!force){render();return;}
+ window.SPM_ERECTION_PRACTICE?.stop();delete $('#spmDailySession')?.dataset.focusedPractice;
  current=key;const token=++generation;records={};loaded=false;loadError=false;active=null;render();
  if(!c)return;
  try{const value=await window.SPM_DAILY_RECORDS.read(scopeOf(c),Number(c.day));if(token!==generation)return;records=value;loaded=true;}
  catch{if(token!==generation)return;loadError=true;}
  render();
 }
-function open({focus:shouldFocus=true}={}){window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
-function pauseDailyVideo(){window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyWorkspace'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
+function open({focus:shouldFocus=true}={}){window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;delete $('#spmDailySession')?.dataset.focusedPractice;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
+function pauseDailyVideo(){window.SPM_ERECTION_PRACTICE?.pause();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyWorkspace'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
 function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
  const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
- const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');if(activity.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(data))throw Error('Completa la evaluación antes de registrarla.');data={...data,...(activity.tip?{tipId:activity.tip.id}:{}),activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
+ const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');if(activity.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(data))throw Error('Completa la evaluación antes de registrarla.');if(directErection(c,activity)&&!window.SPM_ERECTION_PRACTICE.valid(data,day))throw Error('Completa las acciones de tu práctica antes de guardarla.');data={...data,...(activity.tip?{tipId:activity.tip.id}:{}),activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
- if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');if(active?.id===id){showContinuation();refreshContinuation();}const a=assignments().find(x=>x.id===id);const module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');if(module)focus(module.querySelector('[data-spm-next]'));}
+ if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');if(active?.id===id){showContinuation();refreshContinuation();}const a=assignments().find(x=>x.id===id);const module=a&&!directErection(ctx(),a)&&$(moduleSelectors[a.kind]||'#no-spm-module');if(module)focus(module.querySelector('[data-spm-next]'));}
  return {ok:true};
 }
 function confirmActivity(id){
- if(['program-checkpoint','desire','video'].includes(assignments().find(a=>a.id===id)?.kind)){launch(id);return;}
+ const assigned=assignments().find(a=>a.id===id);
+ if(directErection(ctx(),assigned)||['program-checkpoint','desire','video'].includes(assigned?.kind)){launch(id);return;}
  pauseDailyVideo();
  const a=assignments().find(x=>x.id===id),box=$('#spmDailyWorkspace');if(!a||!box||restricted(ctx(),a))return;
  const captured=scopeOf(ctx()),day=Number(ctx().day);
@@ -199,11 +204,14 @@ function worksheet(a){
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('[type=submit]');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{reflection:fields.get('reflection'),measure:fields.get('measure'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; reintenta.';}};focus(box);
 }
 async function launch(id){
+ window.SPM_ERECTION_PRACTICE?.stop();delete $('#spmDailySession')?.dataset.focusedPractice;
  window.SPM_PRACTICE_AUDIO?.stop();pauseDailyVideo();
  const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a)return;if(restricted(c,a)){pausedActivity(a);return;}
+ if(directErection(c,a)&&!loaded){status(loadError?'No pudimos recuperar tus registros. Pulsa «Reintentar» antes de iniciar.':'Estamos recuperando tus registros. Podrás iniciar en un momento.');return;}
  active={id,scope:scopeOf(c),day:Number(c.day)};
  try{
-  if(a.kind==='program-checkpoint')await window.SPM_PROGRAM_CHECKPOINT.open(a);
+  if(directErection(c,a)){$('#spmDailySession').dataset.focusedPractice='erection';await window.SPM_ERECTION_PRACTICE.open(a);}
+  else if(a.kind==='program-checkpoint')await window.SPM_PROGRAM_CHECKPOINT.open(a);
   else if(a.kind==='video')dailyVideo(a);
   else if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ejaculation')window.SPM_EJACULATORY_CONTROL.open(Number(c.day),{origin:'dailyPlan'});
@@ -216,13 +224,14 @@ async function launch(id){
   else if(a.kind==='wellness')wellness(a);
   else worksheet(a);
  refreshContinuation();
- }catch{status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
+ }catch{delete $('#spmDailySession')?.dataset.focusedPractice;status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
 }
 const moduleSelectors={desire:'.spm-desire-modal[open]',sensate:'.spm-sensate-modal[open]',breathing:'.spm-breathing-modal[open]',pelvic:'.spm-pf-modal[open],#spmPelvicV2:not([hidden])',erection:'#spmDeModal.on',ejaculation:'#spmEcModal.on',confidence:'.sr-dialog[open]',response:'.sr-dialog[open]',recovery:'.sr-dialog[open]'};
 function validActive(){const c=ctx();return active&&active.scope===scopeOf(c)&&active.day===Number(c?.day);}
 function nextActivities(){return assignments().filter(a=>!recordComplete(a));}
 async function leaveActivity(){
  const a=assignments().find(a=>a.id===active?.id);if(!a)return true;
+ if(directErection(ctx(),a)){window.SPM_ERECTION_PRACTICE?.stop();return true;}
  if(a.kind==='pelvic'&&$('#spmPelvicV2:not([hidden])')){window.SPM_PELVIC_V2?.close();return !$('#spmPelvicV2:not([hidden])');}
  const api={desire:'SPM_DESIRE_LAB',sensate:'SPM_SENSATE_LAB',breathing:'SPM_BREATHING_LAB',pelvic:'SPM_PELVIC_LAB'}[a.kind];
  if(api&&window[api]?.close)return await window[api].close()!==false;
@@ -235,7 +244,7 @@ function continuation(root){
  const c=ctx(),items=nextActivities(),a=assignments(c).find(x=>x.id===active.id),currentDone=a&&recordComplete(a);
  let panel=root.querySelector('[data-spm-next]');if(!panel){panel=document.createElement('section');panel.dataset.spmNext='';panel.className='spm-daily-work';root.appendChild(panel);}
  const sig=JSON.stringify([active,items.map(x=>[x.id,restricted(c,x)]),currentDone]);if(panel.dataset.signature===sig)return;panel.dataset.signature=sig;
- panel.innerHTML=`<h3>Continúa tu día ${c.day}</h3>${a&&!currentDone?`<p>«${esc(a.title)}» sigue pendiente. Abrirla o detenerla no la marca como realizada.</p><button type="button" class="btn sec" data-next-record>${a.kind==='desire'?'Retomar mi práctica':'Ya la realicé · Registrar'}</button>`:''}${items.filter(x=>x.id!==active.id).map(x=>wellnessCard(x).replaceAll('data-daily-open=','data-next-id=')||`<div><b>${esc(x.title)}</b><p>${x.optional?'Recomendación opcional':'Actividad pendiente'}</p><button type="button" class="btn pri" data-next-id="${esc(x.id)}">Continuar aquí →</button></div>`).join('')}${items.length===0?'<p>Terminaste las actividades de hoy. Continúa con constancia, a tu ritmo; no necesitas repetirlas ahora.</p>':''}${items.every(x=>x.optional)?'<button type="button" class="btn pri" data-next-day>Completar mi día</button>':''}<button type="button" class="btn sec" data-next-today>Ver todas mis actividades de hoy</button><p role="status"></p>`;
+ panel.innerHTML=`<h3>Continúa tu día ${c.day}</h3>${a&&!currentDone?`<p>«${esc(a.title)}» sigue pendiente. Abrirla o detenerla no la marca como realizada.</p><button type="button" class="btn sec" data-next-record>${a.kind==='desire'||directErection(c,a)?'Retomar mi práctica':'Ya la realicé · Registrar'}</button>`:''}${items.filter(x=>x.id!==active.id).map(x=>wellnessCard(x).replaceAll('data-daily-open=','data-next-id=')||`<div><b>${esc(x.title)}</b><p>${x.optional?'Recomendación opcional':'Actividad pendiente'}</p><button type="button" class="btn pri" data-next-id="${esc(x.id)}">Continuar aquí →</button></div>`).join('')}${items.length===0?'<p>Terminaste las actividades de hoy. Continúa con constancia, a tu ritmo; no necesitas repetirlas ahora.</p>':''}${items.every(x=>x.optional)?'<button type="button" class="btn pri" data-next-day>Completar mi día</button>':''}<button type="button" class="btn sec" data-next-today>Ver todas mis actividades de hoy</button><p role="status"></p>`;
  const go=async fn=>{try{if(!await leaveActivity())throw Error();if(!validActive())throw Error();open({focus:false});fn();}catch{panel.querySelector('[role=status]').textContent='No pudimos guardar o salir. Conserva esta pantalla y vuelve a intentarlo.';}};
  panel.querySelectorAll('[data-nutrition-library]').forEach(b=>b.onclick=()=>go(()=>window.SPM_RESOURCES?.open('nutrition',Number(c.day),{origin:'dailyPlan'})));
  panel.querySelectorAll('[data-next-id]').forEach(b=>b.onclick=()=>go(()=>launch(b.dataset.nextId)));
@@ -246,6 +255,7 @@ function continuation(root){
 function refreshContinuation(){
  if(view!=='today'||!validActive())return;
  const a=assignments().find(x=>x.id===active.id),module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');
+ if(directErection(ctx(),a))return;
  // Iframe labs hand off to the daily workspace after closing. An extra footer
  // inside their fixed-height dialogs would squeeze the practice out of view.
  if(['desire','breathing','sensate'].includes(a?.kind)){module?.querySelector('[data-spm-next]')?.remove();return;}
@@ -305,6 +315,8 @@ async function complete(){
 const style=document.createElement('style');style.textContent=`
 #plan[data-spm-daily-view="entry"]>:not(#spmTodayHero):not(#spmDailyViews),#plan[data-spm-daily-view="today"]>:not(#spmDailySession):not(#spmDailyViews),#plan[data-spm-daily-view="library"]>#spmTodayHero,#plan[data-spm-daily-view="library"]>#spmDailySession{display:none!important}
 #spmDailySession[data-continuation="true"]>.spm-daily-activities,#spmDailySession[data-continuation="true"]>.spm-daily-footer,#spmDailySession[data-continuation="true"]>#spmDailyStatus{display:none!important}
+#spmDailySession[data-focused-practice="erection"]>:is(.stepBadge,h2,.spm-daily-count,.spm-daily-activities,.spm-daily-footer,#spmDailyStatus){display:none!important}
+.spm-daily-activity[data-direct-practice="erection"] h3{font-size:clamp(23px,4vw,28px);line-height:1.35;color:#fff;font-weight:750;margin:10px 0 22px}.spm-daily-activity[data-direct-practice="erection"] .spm-daily-actions button{min-height:52px;font-size:17px}
 #spmDailyViews{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}#spmDailyViews button{border:1px solid #31535b;border-radius:999px;padding:12px 18px;background:#0c242b;color:#bed4d5;font:inherit;cursor:pointer}#spmDailyViews button[aria-pressed="true"]{background:#78dfc5;color:#06231e;font-weight:800}
 .spm-daily-activities{display:grid;gap:14px;margin:24px 0}.spm-daily-activity{display:grid;grid-template-columns:36px minmax(0,1fr);gap:15px;padding:20px;border:1px solid #31545c;border-radius:18px;background:linear-gradient(135deg,#102e34,#0a1d25)}.spm-daily-number{display:grid;place-items:center;width:34px;height:34px;background:#d4b879;color:#072620;border-radius:50%;font-weight:900}.spm-daily-activity small{color:#9ae5d0;letter-spacing:.08em;font-size:10px}.spm-daily-activity h3{margin:7px 0 10px}.spm-daily-activity p{color:#b9cdd0;line-height:1.6}.spm-daily-actions,.spm-daily-footer{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.spm-daily-saved{color:#8aebcc}.spm-daily-work{padding:20px;margin:20px 0;border:1px solid #5b817d;border-radius:18px;display:grid;gap:16px}.spm-daily-work label{display:block;line-height:1.6}.spm-daily-work textarea{display:block;width:100%;margin-top:10px;background:#061b23;border:1px solid #42626a;color:#f2f8f8;border-radius:10px;padding:12px;font:inherit}.spm-daily-work input{accent-color:#78dfc5}.spm-daily-work summary{cursor:pointer;color:#93e2ce}.spm-daily-work p{line-height:1.6}#spmDailyStatus{color:#a2c9c3;line-height:1.5}#spmDailyStatus.error{color:#ffd094}#spmDailySession button:disabled{opacity:.5;cursor:not-allowed}
 #spmDeModal[data-daily-session="true"] #deRoad,#spmDeModal[data-daily-session="true"] #dePrev,#spmDeModal[data-daily-session="true"] #deNext,#spmDeModal[data-daily-session="true"] .spm-program-videos,#spmEcModal[data-daily-session="true"] .ecPremiumDock,#spmEcModal[data-daily-session="true"] #ecBackProgram{display:none!important}

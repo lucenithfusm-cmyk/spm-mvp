@@ -1,0 +1,107 @@
+{
+  "generatedAt": "2026-11-13",
+  "provider": "HeyGen Voice",
+  "takesGenerated": 3,
+  "samplesGenerated": 0,
+  "regenerations": 0,
+  "voice": {
+    "id": "84854979e66846989bc6c5855f53268f",
+    "name": "Rocío - Calm & Trustworthy",
+    "language": "es",
+    "locale": "es-MX",
+    "gender": "female",
+    "status": "ACTIVE",
+    "mode": "instant"
+  },
+  "settings": {
+    "language": "es",
+    "speed": 1,
+    "model": "server-selected (model omitted from request; provider did not return model)",
+    "format": {
+      "codec": "mp3",
+      "sampleRateHz": 44100,
+      "channels": 1,
+      "bitrateBps": 128000
+    }
+  },
+  "review": {
+    "method": "Exact provider text and timing checks, full MP3 decoding, hash verification, and independent full-length ASR using faster-whisper small 1.2.1 without a script prompt.",
+    "humanListeningPerformed": false,
+    "limitation": "Technical validation and automatic transcription do not establish auditory naturalness, emotional fit, or flawless pronunciation. Day 2 has two recognizer word-joining differences documented below.",
+    "editing": "Original MP3 bytes retained; no trimming, pitch or speed changes."
+  },
+  "actions": [
+    {
+      "day": 1,
+      "path": "premium-v2/assets/audio/erection/erection-day-1-20261113.mp3",
+      "text": "Vamos a reconocer tu punto de partida. No necesitas provocar una erección ni hacer una prueba. Primero, recuerda una experiencia reciente que puedas observar, en solitario o con pareja. Después, elige la firmeza que recuerdas: cero, sin respuesta eréctil; uno, aumento leve con poca firmeza; dos, firmeza parcial; tres, firmeza funcional, aunque no máxima; cuatro, firmeza completa. Si no tuviste una experiencia que puedas valorar, elige «No evaluable». Esa opción es distinta de cero. Responde según lo que viviste, sin compararte con otra persona. Si quieres, abre el registro opcional para anotar cómo te sentiste. Al terminar, confirma que hiciste esta observación y pulsa «Guardar práctica y continuar».",
+      "duration": 45.139563,
+      "size": 722233,
+      "sha256": "0a7cf18edff11d4e56dd872b02a1f20a00d8c3356513663ec3d1d9653b7490e4",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": true,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "continuar",
+          "start_time": 44.225,
+          "end_time": 44.651
+        },
+        "tailAfterLastWordSeconds": 0.488563,
+        "recognitionNotes": "Full ASR transcript matches the script after case, punctuation and accent normalization."
+      }
+    },
+    {
+      "day": 2,
+      "path": "premium-v2/assets/audio/erection/erection-day-2-20261113.mp3",
+      "text": "Hoy vas a reconocer en qué contextos cambia tu respuesta. Primero, recuerda únicamente situaciones que ya hayas vivido: una erección espontánea o al despertar, una experiencia individual y una experiencia con pareja. Para cada contexto, elige si la respuesta apareció con facilidad, fue variable, hubo dificultad o no puedes evaluarla. Si ese contexto no se presentó, marca «No evaluable». No necesitas buscar una experiencia nueva para responder. Después, elige qué aspecto reconoces más: iniciar la erección, mantenerla, recuperarla, ninguna dificultad o no evaluable. Estas observaciones sirven para conocerte; por sí solas no establecen una causa. Cuando termines, confirma que revisaste tus contextos y pulsa «Guardar práctica y continuar».",
+      "duration": 48.37875,
+      "size": 774060,
+      "sha256": "00a7d8f051898e820623a8a6261d84b98afa47261472403163cfd5bb3115f242",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": false,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "continuar",
+          "start_time": 47.472,
+          "end_time": 47.899
+        },
+        "tailAfterLastWordSeconds": 0.47975,
+        "recognitionNotes": "ASR joins «con pareja» as «compareja» and the first «No evaluable» as «noevaluable». These are recognizer differences; no speech defect is asserted."
+      }
+    },
+    {
+      "day": 3,
+      "path": "premium-v2/assets/audio/erection/erection-day-3-20261113.mp3",
+      "text": "Vamos a notar la tensión y volver a una sensación cómoda. Primero, siéntate o recuéstate con apoyo y deja que tu respiración siga su ritmo natural. Observa si estás apretando la mandíbula, elevando los hombros o tensando el abdomen. Marca lo que notes; también puedes indicar que no identificas tensión. Después, afloja con suavidad donde te resulte cómodo, sin empujar ni hacer fuerza. Elige un apoyo para tu atención: el contacto de tus manos, el peso del cuerpo sobre la superficie o un sonido del ambiente. Quédate con esa sensación y vuelve a ella cuando aparezca una preocupación por tu respuesta. No busques provocar una erección. El cronómetro es opcional y no hay un tiempo mínimo para guardar. Si aparece dolor, mareo o malestar, detén la práctica. Al terminar, confirma que practicaste a tu ritmo y pulsa «Guardar práctica y continuar».",
+      "duration": 53.420375,
+      "size": 854726,
+      "sha256": "65c7cbbf7f158523531ca00e5a60317b52bce03b65211a024c9386fe371966ba",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": true,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "continuar",
+          "start_time": 52.594,
+          "end_time": 53.021
+        },
+        "tailAfterLastWordSeconds": 0.399375,
+        "recognitionNotes": "Full ASR transcript matches the script after case, punctuation and accent normalization."
+      }
+    }
+  ]
+}

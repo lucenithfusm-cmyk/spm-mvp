@@ -56,7 +56,7 @@ async function closeActivities(){
   window.SPM_SLEEP_LIBRARY_V1?.close();window.SPM_WELLNESS_LIBRARY_V1?.close?.();window.SPM_PELVIC_V2?.close();
   // These legacy modules expose their safe close action as a button, not as an API.
   for(const selector of ['#spmDeModal.on .deClose','#spmEcModal.on .ecClose','#epAssessModal.on #epAClose','.deg:not([hidden]) .degClose','dialog[open] [data-sr-close]','dialog[open] [data-wellness-close]'])document.querySelector(selector)?.click();
-  window.SPM_PRACTICE_AUDIO?.stop();window.SPM_PROGRAM_VIDEOS?.pause();window.SPM_TECHNIQUE_CLIPS?.pause();window.speechSynthesis?.cancel();
+  window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_PROGRAM_VIDEOS?.pause();window.SPM_TECHNIQUE_CLIPS?.pause();window.speechSynthesis?.cancel();
   document.querySelectorAll('audio,video').forEach(media=>media.pause());
   // Never discard a lab whose own close/save operation did not finish.
   return !document.querySelector('dialog[open],#spmDeModal.on,#spmEcModal.on,#epAssessModal.on');
@@ -104,7 +104,7 @@ const scripts=[
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js?v=20261113-closing1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261113-closing1','erectile-guided-v3.js','erectile-central-v3.js',
   'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-instructions3',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','daily-practice-v1.js?v=20261113-closing1'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-erection123-1','daily-practice-v1.js?v=20261113-erection123-1'
 ];
 async function boot(){
   try{
