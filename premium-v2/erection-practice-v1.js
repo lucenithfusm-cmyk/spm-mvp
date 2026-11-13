@@ -5,18 +5,30 @@ if(window.SPM_ERECTION_PRACTICE)return;
 const scripts={
  1:'Vamos a reconocer tu punto de partida. No necesitas provocar una erección ni hacer una prueba. Primero, recuerda una experiencia reciente que puedas observar, en solitario o con pareja. Después, elige la firmeza que recuerdas: cero, sin respuesta eréctil; uno, aumento leve con poca firmeza; dos, firmeza parcial; tres, firmeza funcional, aunque no máxima; cuatro, firmeza completa. Si no tuviste una experiencia que puedas valorar, elige «No evaluable». Esa opción es distinta de cero. Responde según lo que viviste, sin compararte con otra persona. Si quieres, abre el registro opcional para anotar cómo te sentiste. Al terminar, confirma que hiciste esta observación y pulsa «Guardar práctica y continuar».',
  2:'Hoy vas a reconocer en qué contextos cambia tu respuesta. Primero, recuerda únicamente situaciones que ya hayas vivido: una erección espontánea o al despertar, una experiencia individual y una experiencia con pareja. Para cada contexto, elige si la respuesta apareció con facilidad, fue variable, hubo dificultad o no puedes evaluarla. Si ese contexto no se presentó, marca «No evaluable». No necesitas buscar una experiencia nueva para responder. Después, elige qué aspecto reconoces más: iniciar la erección, mantenerla, recuperarla, ninguna dificultad o no evaluable. Estas observaciones sirven para conocerte; por sí solas no establecen una causa. Cuando termines, confirma que revisaste tus contextos y pulsa «Guardar práctica y continuar».',
- 3:'Vamos a notar la tensión y volver a una sensación cómoda. Primero, siéntate o recuéstate con apoyo y deja que tu respiración siga su ritmo natural. Observa si estás apretando la mandíbula, elevando los hombros o tensando el abdomen. Marca lo que notes; también puedes indicar que no identificas tensión. Después, afloja con suavidad donde te resulte cómodo, sin empujar ni hacer fuerza. Elige un apoyo para tu atención: el contacto de tus manos, el peso del cuerpo sobre la superficie o un sonido del ambiente. Quédate con esa sensación y vuelve a ella cuando aparezca una preocupación por tu respuesta. No busques provocar una erección. El cronómetro es opcional y no hay un tiempo mínimo para guardar. Si aparece dolor, mareo o malestar, detén la práctica. Al terminar, confirma que practicaste a tu ritmo y pulsa «Guardar práctica y continuar».'
+ 3:'Vamos a notar la tensión y volver a una sensación cómoda. Primero, siéntate o recuéstate con apoyo y deja que tu respiración siga su ritmo natural. Observa si estás apretando la mandíbula, elevando los hombros o tensando el abdomen. Marca lo que notes; también puedes indicar que no identificas tensión. Después, afloja con suavidad donde te resulte cómodo, sin empujar ni hacer fuerza. Elige un apoyo para tu atención: el contacto de tus manos, el peso del cuerpo sobre la superficie o un sonido del ambiente. Quédate con esa sensación y vuelve a ella cuando aparezca una preocupación por tu respuesta. No busques provocar una erección. El cronómetro es opcional y no hay un tiempo mínimo para guardar. Si aparece dolor, mareo o malestar, detén la práctica. Al terminar, confirma que practicaste a tu ritmo y pulsa «Guardar práctica y continuar».',
+ 4:"Hoy vas a practicar cómo volver a las sensaciones cuando aparezca la necesidad de comprobar tu respuesta. Busca un momento tranquilo. Elige un contacto cómodo, por ejemplo una mano sobre el antebrazo; si participas con pareja, acuerden juntos lo que resulta agradable. Después, elige en pantalla dónde pondrás la atención: temperatura, contacto o ritmo. Explora esa sensación a tu ritmo. Si aparece «¿cómo estoy respondiendo?», reconoce el pensamiento y vuelve suavemente a lo que sientes. No necesitas provocar una erección ni conseguir una firmeza determinada. Al terminar, indica si pudiste volver a la sensación, si te costó o si no apareció una comprobación. El cronómetro es opcional. Si algo incomoda, puedes detenerte. Confirma que realizaste la práctica y pulsa «Guardar práctica y continuar».",
+ 5:"Hoy vas a reconocer qué facilita tu respuesta y qué suele frenarla. Usa experiencias que ya hayas vivido; no necesitas hacer una prueba. Primero, elige hasta tres facilitadores que reconozcas, como un contacto agradable, un ritmo cómodo, privacidad o conexión. Después, marca hasta dos factores que suelen dificultarte la experiencia, como prisa, cansancio, estrés o presión por responder. Si todavía no identificas alguno de estos grupos, elige «Aún no lo identifico». No tienes que llenar todas las opciones. Por último, escoge un solo ajuste pequeño para una próxima ocasión. Puede ser disponer de privacidad, dar más tiempo o expresar una preferencia. Si aún no lo sabes, elige seguir observando sin forzar. Confirma que revisaste tu mapa y pulsa «Guardar práctica y continuar».",
+ 6:"Tu práctica de hoy es reconocer y soltar el piso pélvico. Empieza en una posición cómoda, con apoyo. Antes de iniciar, comprueba mandíbula suelta, abdomen sin empujar y glúteos relajados. Abre la sesión indicada para ti y sigue sus pasos, respirando con comodidad. No sostengas la respiración ni aprietes para provocar una erección. Realiza contracciones únicamente si tu sesión las indica; no añadas fuerza ni repeticiones por tu cuenta. Si aparece dolor, molestia o más tensión, detente y registra esa respuesta. Al terminar, guarda el resultado del entrenador. Vuelve a Hoy y registra solo la práctica que hayas realizado. El apoyo de respiración tiene su propio registro."
 };
 const definitions={
  1:{title:'Reconoce tu punto de partida',summary:'Observa una experiencia reciente y elige la firmeza que recuerdas, o «No evaluable».'},
  2:{title:'Reconoce tus contextos',summary:'Reconoce cómo cambia tu respuesta en situaciones que ya has vivido.'},
- 3:{title:'Reconoce y suelta la tensión',summary:'Observa la tensión, suelta con suavidad y elige una sensación para tu atención.'}
+ 3:{title:'Reconoce y suelta la tensión',summary:'Observa la tensión, suelta con suavidad y elige una sensación para tu atención.'},
+ 4:{title:'Vuelve a las sensaciones',summary:'Elige una sensación y vuelve a ella cuando notes que estás comprobando tu respuesta.'},
+ 5:{title:'Reconoce lo que te ayuda',summary:'Reconoce facilitadores e inhibidores y elige un ajuste pequeño para una próxima ocasión.'},
+ 6:{title:'Tu práctica de piso pélvico',summary:'Escucha la guía y realiza la única sesión pélvica indicada para ti.'}
 };
 const contexts=['spontaneous','solo','partner'];
 const contextValues=['easy','variable','difficult','not_evaluable'];
 const aspects=['initiate','maintain','recover','none','not_evaluable'];
 const areas=['jaw','shoulders','abdomen','none'];
 const anchors=['hands','support','sound'];
+const senses=['temperature','contact','rhythm'];
+const experiences=['returned','difficult','no_checking'];
+const facilitators=['contact','imagination','anticipation','novelty','rhythm','privacy','connection','solo','unknown'];
+const inhibitors=['pressure','rush','fatigue','stress','privacy','unknown'];
+const adjustments=['privacy','time','rhythm','communicate','observe'];
+const practiceDays=new Set([1,2,3,4,5]);
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const scope=c=>typeof c?.userId==='string'&&c.userId&&typeof c.planId==='string'&&c.planId?c.userId+':'+c.planId:'';
 const context=()=>window.SPM_RESOURCE_CONTEXT?.();
@@ -26,13 +38,17 @@ function definition(day){
  const item=definitions[Number(day)];
  return item?{...item,script:scripts[Number(day)],audioSrc:'/premium-v2/assets/audio/erection/erection-day-'+Number(day)+'-20261113.mp3'}:null;
 }
-function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&Number.isInteger(Number(c.day))&&Number(c.day)>=1&&Number(c.day)<=3;}
+function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day));}
 function score(value){return value===null||Number.isInteger(value)&&value>=0&&value<=10;}
+function selection(value,options,max){return Array.isArray(value)&&value.length>0&&value.length<=max&&new Set(value).size===value.length&&value.every(item=>options.includes(item))&&(!value.includes('unknown')||value.length===1);}
+function reflection(record){return typeof record.finalFeeling==='string'&&record.finalFeeling.length<=1000&&(record.seconds===null||Number.isSafeInteger(record.seconds)&&record.seconds>=0);}
 function valid(record,day){
- if(!record||Array.isArray(record)||record.erectionPracticeVersion!==1||record.day!==Number(day)||!definitions[Number(day)]||record.confirmed!==true||!score(record.anxiety)||!score(record.confidence))return false;
+ if(!record||Array.isArray(record)||record.erectionPracticeVersion!==1||record.day!==Number(day)||!practiceDays.has(Number(day))||record.confirmed!==true||!score(record.anxiety)||!score(record.confidence))return false;
  if(Number(day)===1)return record.ehs===null?record.ehsEvaluable===false:Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true;
  if(Number(day)===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);
- return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&typeof record.finalFeeling==='string'&&record.finalFeeling.length<=1000&&(record.seconds===null||Number.isSafeInteger(record.seconds)&&record.seconds>=0);
+ if(Number(day)===3)return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&reflection(record);
+ if(Number(day)===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);
+ return selection(record.erectionFacilitators,facilitators,3)&&selection(record.erectionInhibitors,inhibitors,2)&&adjustments.includes(record.microAdjustment);
 }
 function assignment(c){try{return window.SPM_DAILY_PRACTICE?.assignments(c)?.find(a=>a.id==='main');}catch{return null;}}
 function allowed(c,a){try{return typeof window.SPM_DAILY_PRACTICE?.restricted==='function'&&!window.SPM_DAILY_PRACTICE.restricted(c,a);}catch{return false;}}
@@ -69,6 +85,7 @@ function shell(s,content){
  s.panel.querySelector('[data-erection-back]')?.addEventListener('click',()=>returnToToday(s));
 }
 const back='<button type="button" class="btn sec" data-erection-back>Volver a mis actividades</button>';
+const timerMarkup='<section class="spm-erection-timer" aria-label="Cronómetro opcional"><div><h3>Tu tiempo, a tu ritmo</h3><p>Opcional · sin tiempo mínimo</p></div><output data-erection-time aria-label="Tiempo de práctica">00:00</output><div class="spm-erection-timer-actions"><button type="button" class="btn sec" data-erection-timer-toggle>Iniciar</button><button type="button" class="btn sec" data-erection-timer-reset>Reiniciar</button></div></section>';
 function choices(name,options,type='radio'){
  return '<div class="spm-erection-options">'+options.map(([value,label])=>'<label class="spm-erection-option"><input type="'+type+'" name="'+name+'" value="'+value+'"><span>'+label+'</span></label>').join('')+'</div>';
 }
@@ -79,15 +96,27 @@ function task(day){
  if(day===2)return '<fieldset><legend>1. Recuerda tus contextos</legend><div class="spm-erection-contexts">'+[['spontaneous','Espontánea o al despertar'],['solo','Experiencia individual'],['partner','Experiencia con pareja']].map(([key,label])=>'<label><span>'+label+'</span><select name="context-'+key+'" required><option value="">Elige una opción</option><option value="easy">Con facilidad</option><option value="variable">Variable</option><option value="difficult">Con dificultad</option><option value="not_evaluable">No evaluable</option></select></label>').join('')+'</div></fieldset><fieldset><legend>2. ¿Qué aspecto reconoces más?</legend>'+choices('responseAspect',[
   ['initiate','Iniciar la erección'],['maintain','Mantenerla'],['recover','Recuperarla'],['none','Ninguna dificultad'],['not_evaluable','No evaluable']
  ])+'</fieldset>';
+ if(day===4)return '<fieldset><legend>1. Elige dónde poner tu atención</legend>'+choices('attentionSense',[
+  ['temperature','Temperatura'],['contact','Contacto'],['rhythm','Ritmo']
+ ])+'</fieldset>'+timerMarkup+'<fieldset><legend>2. ¿Qué ocurrió al practicar?</legend>'+choices('practiceExperience',[
+  ['returned','Pude volver a la sensación'],['difficult','Me costó volver'],['no_checking','No apareció una comprobación']
+ ])+'</fieldset>';
+ if(day===5)return '<fieldset><legend>1. ¿Qué suele ayudarte?</legend><p class="spm-erection-hint">Elige hasta 3 facilitadores.</p>'+choices('erectionFacilitators',[
+  ['contact','Contacto agradable'],['imagination','Imaginación o fantasía'],['anticipation','Anticipación'],['novelty','Novedad acordada'],['rhythm','Un ritmo cómodo'],['privacy','Privacidad'],['connection','Conexión emocional'],['solo','Exploración individual'],['unknown','Aún no lo identifico']
+ ],'checkbox')+'</fieldset><fieldset><legend>2. ¿Qué suele dificultarte la experiencia?</legend><p class="spm-erection-hint">Elige hasta 2 inhibidores.</p>'+choices('erectionInhibitors',[
+  ['pressure','Presión por responder'],['rush','Prisa'],['fatigue','Cansancio'],['stress','Estrés'],['privacy','Falta de privacidad'],['unknown','Aún no lo identifico']
+ ],'checkbox')+'</fieldset><fieldset><legend>3. Elige un ajuste pequeño</legend>'+choices('microAdjustment',[
+  ['privacy','Buscar privacidad'],['time','Darme más tiempo'],['rhythm','Ajustar el ritmo'],['communicate','Expresar una preferencia'],['observe','Seguir observando sin forzar']
+ ])+'</fieldset>';
  return '<fieldset><legend>1. Nota dónde hay tensión</legend>'+choices('tensionArea',[
   ['jaw','Mandíbula'],['shoulders','Hombros'],['abdomen','Abdomen'],['none','No identifico tensión']
  ],'checkbox')+'</fieldset><fieldset><legend>2. Suelta con suavidad y elige tu ancla</legend>'+choices('sensoryAnchor',[
   ['hands','El contacto de mis manos'],['support','El apoyo de mi cuerpo'],['sound','Un sonido del ambiente']
- ])+'</fieldset><section class="spm-erection-timer" aria-label="Cronómetro opcional"><div><h3>Tu tiempo, a tu ritmo</h3><p>Opcional · sin tiempo mínimo</p></div><output data-erection-time aria-label="Tiempo de práctica">00:00</output><div class="spm-erection-timer-actions"><button type="button" class="btn sec" data-erection-timer-toggle>Iniciar</button><button type="button" class="btn sec" data-erection-timer-reset>Reiniciar</button></div></section>';
+ ])+'</fieldset>'+timerMarkup;
 }
 function optional(day){
  const options='<option value="">Sin registrar</option>'+Array.from({length:11},(_,n)=>'<option value="'+n+'">'+n+'</option>').join('');
- return '<details class="spm-erection-optional"><summary>Cómo te sentiste · opcional</summary><div><label><span>Presión por responder · 0–10</span><select name="anxiety">'+options+'</select></label><label><span>Confianza · 0–10</span><select name="confidence">'+options+'</select></label>'+(day===3?'<label class="spm-erection-full"><span>¿Qué notaste al terminar?</span><textarea name="finalFeeling" maxlength="1000" rows="3"></textarea></label>':'')+'</div></details>';
+ return '<details class="spm-erection-optional"><summary>Cómo te sentiste · opcional</summary><div><label><span>Presión por responder · 0–10</span><select name="anxiety">'+options+'</select></label><label><span>Confianza · 0–10</span><select name="confidence">'+options+'</select></label>'+([3,4].includes(day)?'<label class="spm-erection-full"><span>¿Qué notaste al terminar?</span><textarea name="finalFeeling" maxlength="1000" rows="3"></textarea></label>':'')+'</div></details>';
 }
 function restore(s,form){
  const prior=s.prior;
@@ -98,11 +127,20 @@ function restore(s,form){
  }else if(s.day===2){
   for(const key of contexts)if(contextValues.includes(prior.contexts?.[key]))form.elements.namedItem('context-'+key).value=prior.contexts[key];
   if(aspects.includes(prior.responseAspect))form.querySelector('[name="responseAspect"][value="'+prior.responseAspect+'"]').checked=true;
- }else{
+ }else if(s.day===3){
   if(Array.isArray(prior.tensionAreas)&&prior.tensionAreas.every(area=>areas.includes(area))&&(!prior.tensionAreas.includes('none')||prior.tensionAreas.length===1))for(const area of prior.tensionAreas)form.querySelector('[name="tensionArea"][value="'+area+'"]').checked=true;
   if(anchors.includes(prior.sensoryAnchor))form.querySelector('[name="sensoryAnchor"][value="'+prior.sensoryAnchor+'"]').checked=true;
+ }else if(s.day===4){
+  if(senses.includes(prior.attentionSense))form.querySelector('[name="attentionSense"][value="'+prior.attentionSense+'"]').checked=true;
+  if(experiences.includes(prior.practiceExperience))form.querySelector('[name="practiceExperience"][value="'+prior.practiceExperience+'"]').checked=true;
+ }else if(s.day===5){
+  // New selections never infer a category from the mixed legacy stimuli list.
+  for(const [name,options,max] of [['erectionFacilitators',facilitators,3],['erectionInhibitors',inhibitors,2]])if(selection(prior[name],options,max))for(const value of prior[name])form.querySelector('[name="'+name+'"][value="'+value+'"]').checked=true;
+  if(adjustments.includes(prior.microAdjustment))form.querySelector('[name="microAdjustment"][value="'+prior.microAdjustment+'"]').checked=true;
+ }
+ if([3,4].includes(s.day)){
   if(typeof prior.finalFeeling==='string'&&prior.finalFeeling.length<=1000)form.elements.namedItem('finalFeeling').value=prior.finalFeeling;
-  if(Number.isSafeInteger(prior.seconds)&&prior.seconds>=0){s.clock.total=prior.seconds*1000;s.clock.used=true;}
+  if((s.day===3||prior.erectionPracticeVersion===1)&&Number.isSafeInteger(prior.seconds)&&prior.seconds>=0){s.clock.total=prior.seconds*1000;s.clock.used=true;}
   drawTimer(s);
  }
  // Confirmation always belongs to this deliberate save, even on reopening.
@@ -111,16 +149,26 @@ function restore(s,form){
 function recordFrom(s,form){
  const number=name=>{const value=form.elements.namedItem(name).value;return value===''?null:/^(?:[0-9]|10)$/.test(value)?Number(value):undefined;};
  const checked=name=>form.querySelector('[name="'+name+'"]:checked')?.value;
+ const selected=name=>[...form.querySelectorAll('[name="'+name+'"]:checked')].map(input=>input.value);
  const record={...s.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:s.day,activity:definition(s.day).title,confirmed:form.elements.namedItem('confirmed').checked,anxiety:number('anxiety'),confidence:number('confidence'),date:new Date().toISOString()};
  if(s.day===1){const value=checked('ehs');record.ehs=value==='na'?null:/^[0-4]$/.test(value||'')?Number(value):undefined;record.ehsEvaluable=value==='na'?false:value===undefined?undefined:true;}
  else if(s.day===2){record.contexts=Object.fromEntries(contexts.map(key=>[key,form.elements.namedItem('context-'+key).value]));record.responseAspect=checked('responseAspect');}
- else{record.tensionAreas=[...form.querySelectorAll('[name="tensionArea"]:checked')].map(input=>input.value);record.sensoryAnchor=checked('sensoryAnchor');record.finalFeeling=form.elements.namedItem('finalFeeling').value.trim();record.seconds=s.clock.used?Math.floor(elapsed(s)/1000):null;}
+ else if(s.day===3){record.tensionAreas=selected('tensionArea');record.sensoryAnchor=checked('sensoryAnchor');}
+ else if(s.day===4){record.attentionSense=checked('attentionSense');record.practiceExperience=checked('practiceExperience');}
+ else if(s.day===5){record.erectionFacilitators=selected('erectionFacilitators');record.erectionInhibitors=selected('erectionInhibitors');record.microAdjustment=checked('microAdjustment');}
+ if([3,4].includes(s.day)){record.finalFeeling=form.elements.namedItem('finalFeeling').value.trim();record.seconds=s.clock.used?Math.floor(elapsed(s)/1000):null;}
  return record;
+}
+function limitMessage(form){
+ const manyFacilitators=form.querySelectorAll('[name="erectionFacilitators"]:checked').length>3,manyInhibitors=form.querySelectorAll('[name="erectionInhibitors"]:checked').length>2;
+ return manyFacilitators&&manyInhibitors?'Elige como máximo 3 facilitadores y 2 inhibidores. Desmarca alguna opción para guardar.':manyFacilitators?'Elige como máximo 3 facilitadores. Desmarca alguna opción para guardar.':manyInhibitors?'Elige como máximo 2 inhibidores. Desmarca alguna opción para guardar.':'';
 }
 async function save(s,form){
  if(s.saving||!matches(s))return;
  const record=recordFrom(s,form);
- if(!valid(record,s.day)){message(s,'Elige tus respuestas y confirma que realizaste la observación. Puedes usar «No evaluable» cuando corresponda.');form.reportValidity();return;}
+ const limit=s.day===5?limitMessage(form):'';
+ if(limit){message(s,limit);return;}
+ if(!valid(record,s.day)){message(s,s.day===5?'Elige tus factores o «Aún no lo identifico» en cada grupo, selecciona un ajuste y confirma que revisaste tu mapa.':s.day===4?'Elige una sensación, registra qué ocurrió y confirma que realizaste la práctica.':'Elige tus respuestas y confirma que realizaste la observación. Puedes usar «No evaluable» cuando corresponda.');form.reportValidity();return;}
  s.saving=true;const button=form.querySelector('[data-erection-save]');button.disabled=true;message(s,'Guardando tu práctica…');pauseTimer(s);stopAudio(s);
  try{
   // There is no asynchronous work between this final check and the scoped save.
@@ -134,7 +182,7 @@ async function save(s,form){
 }
 function render(s){
  const item=definition(s.day),player=window.SPM_CHECKPOINT_AUDIO?.markup({src:item.audioSrc,text:item.script,label:'Escuchar guía'})||'<details><summary>Leer indicaciones</summary><p>'+esc(item.script)+'</p></details>';
- const confirmation={1:'Confirmo que hice esta observación.',2:'Confirmo que revisé los contextos que he vivido.',3:'Confirmo que practiqué a mi ritmo, sin forzar.'}[s.day];
+ const confirmation={1:'Confirmo que hice esta observación.',2:'Confirmo que revisé los contextos que he vivido.',3:'Confirmo que practiqué a mi ritmo, sin forzar.',4:'Confirmo que realicé la práctica a mi ritmo.',5:'Confirmo que revisé mi mapa y elegí un ajuste.'}[s.day];
  shell(s,'<form data-erection-form>'+player+task(s.day)+optional(s.day)+'<label class="spm-erection-confirm"><input type="checkbox" name="confirmed" required><span>'+confirmation+'</span></label><div class="spm-erection-actions"><button type="submit" class="btn pri" data-erection-save>Guardar práctica y continuar</button>'+back+'</div><p data-erection-status role="status" aria-live="polite"></p></form>');
  const form=s.panel.querySelector('form');restore(s,form);
  const transcript=form.querySelector('[data-checkpoint-audio-transcript]>summary');if(transcript)transcript.textContent='Leer indicaciones';
@@ -146,6 +194,15 @@ function render(s){
    if(input.value==='none')form.querySelectorAll('[name="tensionArea"]').forEach(other=>{if(other!==input)other.checked=false;});
    else form.querySelector('[name="tensionArea"][value="none"]').checked=false;
   }));
+ }
+ if(s.day===5)for(const name of ['erectionFacilitators','erectionInhibitors'])form.querySelectorAll('[name="'+name+'"]').forEach(input=>input.addEventListener('change',()=>{
+  if(input.checked){
+   if(input.value==='unknown')form.querySelectorAll('[name="'+name+'"]').forEach(other=>{if(other!==input)other.checked=false;});
+   else form.querySelector('[name="'+name+'"][value="unknown"]').checked=false;
+  }
+  message(s,limitMessage(form));
+ }));
+ if([3,4].includes(s.day)){
   form.querySelector('[data-erection-timer-toggle]').addEventListener('click',()=>{
    if(!matches(s)||s.saving)return;
    if(s.clock.started!==null)pauseTimer(s);

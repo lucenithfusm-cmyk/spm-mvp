@@ -68,7 +68,7 @@ test('a failed lab close prevents navigation; successful navigation closes actua
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('erection',8),false);w.SPM_DESIRE_LAB.close=original;
     assert.equal(w.SPM_RESOURCE_CONTEXT().primary,'desire');assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
     assert.equal(w.document.querySelector('#reviewProgram').value,'desire');assert.equal(w.document.querySelector('#reviewDay').value,'1');
-    await w.SPM_PROGRAM_REVIEW.select('erection',4);await wait();
+    await w.SPM_PROGRAM_REVIEW.select('erection',7);await wait();
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDeModal.on'));
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('#spmDeModal.on'),null);
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmEcModal.on'));
@@ -142,10 +142,10 @@ test('day 28 closing audio stays separate from navigation and opens the final re
   }finally{h.close();}
 });
 
-test('erection days 1–3 open the recorded inline practice and save only its explicit responses',async()=>{
+test('erection days 1–5 open the recorded inline practice and save only its explicit responses',async()=>{
   const h=await harness('?programa=erection&dia=1');try{
     const {w}=h,api=w.SPM_DAILY_PRACTICE;
-    for(const day of [1,2,3]){
+    for(const day of [1,2,3,4,5]){
       if(day!==1){await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();}
       const c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId,card=w.document.querySelector('[data-activity="main"]');
       assert.equal(card.dataset.directPractice,'erection');
@@ -171,6 +171,16 @@ test('erection days 1–3 open the recorded inline practice and save only its ex
         form.querySelector('[name="sensoryAnchor"][value="hands"]').checked=true;
         assert.equal(panel.querySelector('[data-erection-time]').textContent,'00:00');
       }
+      if(day===4){
+        form.querySelector('[name="attentionSense"][value="temperature"]').checked=true;
+        form.querySelector('[name="practiceExperience"][value="no_checking"]').checked=true;
+        assert.equal(panel.querySelector('[data-erection-time]').textContent,'00:00');
+      }
+      if(day===5){
+        form.querySelector('[name="erectionFacilitators"][value="privacy"]').checked=true;
+        form.querySelector('[name="erectionInhibitors"][value="pressure"]').checked=true;
+        form.querySelector('[name="microAdjustment"][value="time"]').checked=true;
+      }
       form.elements.namedItem('confirmed').checked=true;
       form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));await wait();
       const records=await w.SPM_DAILY_RECORDS.read(scope,day);
@@ -184,6 +194,8 @@ test('erection days 1–3 open the recorded inline practice and save only its ex
       if(day===1){assert.equal(records.main.ehs,null);assert.equal(records.main.ehsEvaluable,false);}
       if(day===2)assert.equal(records.main.contexts.solo,'variable');
       if(day===3){assert.equal(records.main.seconds,null);assert.equal(records['breath-learn'],undefined);assert.ok(api.nextActivities().some(a=>a.id==='breath-learn'));}
+      if(day===4){assert.equal(records.main.seconds,null);assert.equal(records.main.practiceExperience,'no_checking');assert.ok(api.nextActivities().some(a=>a.id==='sensate-prepare'));assert.ok(api.nextActivities().some(a=>a.id==='recovery-condom'));}
+      if(day===5){assert.equal(records.main.microAdjustment,'time');assert.equal(records.main.erectionFacilitators.join(','),'privacy');assert.ok(api.nextActivities().some(a=>a.id==='de-desire-5'));}
       api.open();await api.launch('main');
       const reopened=w.document.querySelector('[data-erection-form]');
       assert.equal(reopened.elements.namedItem('confirmed').checked,false,'reopening does not manufacture a new confirmation');
@@ -226,6 +238,65 @@ test('a slow daily-record load cannot open and then discard an erection response
     assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').disabled,false);
     await w.SPM_DAILY_PRACTICE.launch('main');
     assert.ok(w.document.querySelector('[data-erection-form]'));
+    assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+});
+
+test('day six recorded guidance keeps the assigned pelvic session and breathing separate',async()=>{
+  const h=await harness('?programa=erection&dia=6');try{
+    const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+    const main=api.assignments().find(a=>a.id==='main');
+    assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'lab');
+    assert.equal(w.SPM_ERECTION_PRACTICE.supports(c,main),false);
+    const card=w.document.querySelector('[data-activity="main"]'),guide=card.querySelector('[data-daily-pelvic-guide]');
+    assert.ok(guide);assert.equal(card.querySelector('[data-spm-speak]'),null);
+    assert.equal(guide.querySelector('audio').getAttribute('src'),'/premium-v2/assets/audio/erection/erection-day-6-20261113.mp3');
+    assert.equal(guide.querySelector('[data-checkpoint-audio-transcript]').open,false);
+    guide.querySelector('[data-checkpoint-audio-toggle]').click();await wait();
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0,'listening is not a completed pelvic session');
+    await api.launch('main');
+    assert.equal(guide.querySelector('[data-checkpoint-audio-toggle]').dataset.state,'idle','starting the trainer stops the entry narration');
+    assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
+    assert.equal(w.document.querySelector('[data-erection-practice]'),null);
+    assert.equal(w.document.querySelector('#spmDeModal.on'),null);
+    assert.equal(w.SPM_RESOURCE_CONTEXT().day,6);
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);
+    assert.ok(api.nextActivities().some(a=>a.id==='main'));assert.ok(api.nextActivities().some(a=>a.id==='breath-release'));
+    assert.equal(w.document.querySelector('#spmDailyComplete').disabled,true);
+    await w.SPM_PELVIC_LAB.close();
+
+    const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
+    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
+    w.SPM_PELVIC_V2.open=opts=>calls.push(opts);
+    w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
+    assert.equal(api.assignments().find(a=>a.id==='main').pelvicPreference,'classic');
+    await api.launch('main');assert.equal(calls.length,1);assert.equal(calls[0].readiness(),'ready');
+    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
+    const originalRead=w.SPM_PELVIC_RECORDS.read;
+    w.SPM_PELVIC_RECORDS.read=async()=>({'pf-overload':[0]});
+    await api.launch('main');
+    assert.equal(calls.length,1,'a prior overload keeps classic paused even with that calendar preference');
+    assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
+    await w.SPM_PELVIC_LAB.close();w.SPM_PELVIC_RECORDS.read=originalRead;w.SPM_PELVIC_V2.open=originalClassic;
+    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+});
+
+test('days four and six remain paused under review and day five retains its educational alternative',async()=>{
+  const h=await harness('?programa=erection&dia=4');try{
+    const {w}=h,originalContext=w.SPM_RESOURCE_CONTEXT;
+    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),safety:'review'});
+    for(const day of [4,5,6]){
+      await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
+      const main=w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='main');
+      assert.equal(w.SPM_DAILY_PRACTICE.restricted(w.SPM_RESOURCE_CONTEXT(),main),day!==5);
+      await w.SPM_DAILY_PRACTICE.launch('main');
+      assert.equal(w.document.querySelector('[data-erection-practice]'),null);
+      assert.equal(w.document.querySelector('.spm-pf-modal[open]'),null);
+      assert.equal(w.document.querySelector('[data-daily-pelvic-guide]'),null);
+      if(day===5){assert.equal(main.kind,'worksheet');assert.ok(w.document.querySelector('#spmDailyWorkspace [name="reflection"]'));}
+      const c=w.SPM_RESOURCE_CONTEXT();assert.equal(c.safety,'review');assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,day)).length,0);
+    }
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });

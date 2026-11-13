@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-11-13",
+  "provider": "HeyGen Voice",
+  "takesGenerated": 3,
+  "samplesGenerated": 0,
+  "regenerations": 0,
+  "voice": {
+    "id": "84854979e66846989bc6c5855f53268f",
+    "name": "Rocío - Calm & Trustworthy",
+    "language": "es",
+    "status": "ACTIVE",
+    "mode": "instant"
+  },
+  "settings": {
+    "language": "es",
+    "speed": 1,
+    "model": "server-selected (model omitted from request; provider did not return model)",
+    "format": {
+      "codec": "mp3",
+      "sampleRateHz": 44100,
+      "channels": 1,
+      "bitrateBps": 128000
+    }
+  },
+  "review": {
+    "method": "Exact approved-script/provider text comparison, full MP3 decoding, SHA256 verification, and independent full-length ASR using faster-whisper small 1.2.1 without a script prompt.",
+    "humanListeningPerformed": false,
+    "limitation": "Technical validation and automatic transcription do not establish auditory naturalness, emotional fit or flawless pronunciation. Brief recognition differences for days 5 and 6 are documented below; no speech defect is asserted.",
+    "editing": "Original MP3 bytes retained; no trimming, pitch changes, speed changes or re-encoding."
+  },
+  "actions": [
+    {
+      "day": 4,
+      "path": "premium-v2/assets/audio/erection/erection-day-4-20261113.mp3",
+      "text": "Hoy vas a practicar cómo volver a las sensaciones cuando aparezca la necesidad de comprobar tu respuesta. Busca un momento tranquilo. Elige un contacto cómodo, por ejemplo una mano sobre el antebrazo; si participas con pareja, acuerden juntos lo que resulta agradable. Después, elige en pantalla dónde pondrás la atención: temperatura, contacto o ritmo. Explora esa sensación a tu ritmo. Si aparece «¿cómo estoy respondiendo?», reconoce el pensamiento y vuelve suavemente a lo que sientes. No necesitas provocar una erección ni conseguir una firmeza determinada. Al terminar, indica si pudiste volver a la sensación, si te costó o si no apareció una comprobación. El cronómetro es opcional. Si algo incomoda, puedes detenerte. Confirma que realizaste la práctica y pulsa «Guardar práctica y continuar».",
+      "duration": 50.233438,
+      "size": 803735,
+      "sha256": "bb2fb747332c1e8ed138445a31dc4029b1a629729183dbb1a04eea78c6c5b515",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": true,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "continuar",
+          "start_time": 49.219,
+          "end_time": 49.689
+        },
+        "tailAfterLastWordSeconds": 0.544438,
+        "recognitionNotes": "Full ASR transcript matches the script after case, punctuation and accent normalization."
+      }
+    },
+    {
+      "day": 5,
+      "path": "premium-v2/assets/audio/erection/erection-day-5-20261113.mp3",
+      "text": "Hoy vas a reconocer qué facilita tu respuesta y qué suele frenarla. Usa experiencias que ya hayas vivido; no necesitas hacer una prueba. Primero, elige hasta tres facilitadores que reconozcas, como un contacto agradable, un ritmo cómodo, privacidad o conexión. Después, marca hasta dos factores que suelen dificultarte la experiencia, como prisa, cansancio, estrés o presión por responder. Si todavía no identificas alguno de estos grupos, elige «Aún no lo identifico». No tienes que llenar todas las opciones. Por último, escoge un solo ajuste pequeño para una próxima ocasión. Puede ser disponer de privacidad, dar más tiempo o expresar una preferencia. Si aún no lo sabes, elige seguir observando sin forzar. Confirma que revisaste tu mapa y pulsa «Guardar práctica y continuar».",
+      "duration": 49.76325,
+      "size": 796212,
+      "sha256": "dd3566b10ae76667453e31ad688901636a4e543480dd50b6e126a15631ffb921",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": false,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "continuar",
+          "start_time": 48.715,
+          "end_time": 49.142
+        },
+        "tailAfterLastWordSeconds": 0.62125,
+        "recognitionNotes": "ASR rendered «Usa» as «Use». All other normalized words, critical instructions and ending were recovered. This is an unresolved recognizer difference, not an asserted speech defect."
+      }
+    },
+    {
+      "day": 6,
+      "path": "premium-v2/assets/audio/erection/erection-day-6-20261113.mp3",
+      "text": "Tu práctica de hoy es reconocer y soltar el piso pélvico. Empieza en una posición cómoda, con apoyo. Antes de iniciar, comprueba mandíbula suelta, abdomen sin empujar y glúteos relajados. Abre la sesión indicada para ti y sigue sus pasos, respirando con comodidad. No sostengas la respiración ni aprietes para provocar una erección. Realiza contracciones únicamente si tu sesión las indica; no añadas fuerza ni repeticiones por tu cuenta. Si aparece dolor, molestia o más tensión, detente y registra esa respuesta. Al terminar, guarda el resultado del entrenador. Vuelve a Hoy y registra solo la práctica que hayas realizado. El apoyo de respiración tiene su propio registro.",
+      "duration": 43.650563,
+      "size": 698409,
+      "sha256": "640a7a5bff580d2727f09acce65be482fdebcf5f041e82d22b00fda2d62cfed2",
+      "quality": {
+        "providerTextMatches": true,
+        "completeMp3DecodingPassed": true,
+        "sourceVoiceIdMatches": true,
+        "asrComplete": true,
+        "asrNormalizedExactMatch": false,
+        "criticalInstructionsRecoveredByAsr": true,
+        "endingRecoveredByAsr": true,
+        "lastWord": {
+          "text": "registro",
+          "start_time": 42.658,
+          "end_time": 43.17
+        },
+        "tailAfterLastWordSeconds": 0.480563,
+        "recognitionNotes": "ASR joined «Empieza en» as «Empiecen». All other normalized words, critical instructions and ending were recovered. This is an unresolved recognizer difference, not an asserted speech defect."
+      }
+    }
+  ]
+}

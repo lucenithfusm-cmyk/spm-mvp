@@ -104,7 +104,7 @@ const scripts=[
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js?v=20261113-closing1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261113-closing1','erectile-guided-v3.js','erectile-central-v3.js',
   'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-instructions3',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-erection123-1','daily-practice-v1.js?v=20261113-erection123-1'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-erection456-1','daily-practice-v1.js?v=20261113-erection456-1'
 ];
 async function boot(){
   try{

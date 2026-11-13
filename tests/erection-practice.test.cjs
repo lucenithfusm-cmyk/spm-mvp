@@ -74,13 +74,22 @@ function answer(form,day){
  if(day===1)choose(form,'ehs','na');
  if(day===2){for(const context of ['spontaneous','solo','partner'])select(form,'context-'+context,'not_evaluable');choose(form,'responseAspect','not_evaluable');}
  if(day===3){choose(form,'tensionArea','none');choose(form,'sensoryAnchor','hands');}
+ if(day===4){choose(form,'attentionSense','contact');choose(form,'practiceExperience','no_checking');}
+ if(day===5){choose(form,'erectionFacilitators','unknown');choose(form,'erectionInhibitors','unknown');choose(form,'microAdjustment','observe');}
 }
 async function submit(h,form=h.form()){
  form.dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));await tick();
 }
 function saved(day,extra={}){
  const common={erectionPracticeVersion:1,day,confirmed:true,anxiety:null,confidence:null};
- return{...common,...(day===1?{ehs:null,ehsEvaluable:false}:day===2?{contexts:{spontaneous:'not_evaluable',solo:'not_evaluable',partner:'not_evaluable'},responseAspect:'not_evaluable'}:{tensionAreas:['none'],sensoryAnchor:'hands',finalFeeling:'',seconds:null}),...extra};
+ const fields={
+  1:{ehs:null,ehsEvaluable:false},
+  2:{contexts:{spontaneous:'not_evaluable',solo:'not_evaluable',partner:'not_evaluable'},responseAspect:'not_evaluable'},
+  3:{tensionAreas:['none'],sensoryAnchor:'hands',finalFeeling:'',seconds:null},
+  4:{attentionSense:'contact',practiceExperience:'no_checking',finalFeeling:'',seconds:null},
+  5:{erectionFacilitators:['unknown'],erectionInhibitors:['unknown'],microAdjustment:'observe'}
+ };
+ return{...common,...fields[day],...extra};
 }
 function assertOnlyMainWrite(h,day){
  assert.equal(h.writes.length,1);assert.equal(h.writes[0].id,'main');assert.equal(h.writes[0].scope,'qa:plan');assert.equal(h.writes[0].day,day);
@@ -88,14 +97,14 @@ function assertOnlyMainWrite(h,day){
  assert.equal(h.counts().breathingCalls,0);assert.equal(h.counts().completionCalls,0);assert.equal(h.counts().directWrites,0);
 }
 
-test('direct erection supports only the assigned main practice on days 1 through 3',async()=>{
+test('direct erection supports only the assigned main practice on days 1 through 5',async()=>{
  const h=harness();try{
-  for(const day of [1,2,3]){
+  for(const day of [1,2,3,4,5]){
    assert.equal(h.api.supports({...h.c,day},h.activity),true);
    const definition=h.api.definition(day);for(const key of ['title','summary','script','audioSrc'])assert.equal(typeof definition[key],'string',key);
    assert.ok(definition.title.trim());assert.ok(definition.summary.trim());assert.ok(definition.script.trim());assert.match(definition.audioSrc,/\.mp3(?:\?|$)/);
   }
-  for(const day of [0,...Array.from({length:25},(_,i)=>i+4),29])assert.equal(h.api.supports({...h.c,day},h.activity),false,'unsupported day '+day);
+  for(const day of [0,1.5,...Array.from({length:23},(_,i)=>i+6),29])assert.equal(h.api.supports({...h.c,day},h.activity),false,'unsupported day '+day);
   for(const primary of ['desire','ejaculation','confidence','wellbeing','lifestyle'])assert.equal(h.api.supports({...h.c,primary},h.activity),false,primary);
   assert.equal(h.api.supports(h.c,{...h.activity,id:'support'}),false);
   assert.equal(h.api.supports(h.c,{...h.activity,kind:'worksheet'}),false);
@@ -108,8 +117,19 @@ test('direct erection supports only the assigned main practice on days 1 through
  }finally{h.close();}
 });
 
+test('day six exposes narration data without accepting or opening an erection or pelvic form',async()=>{
+ const h=harness(6);try{
+  const definition=h.api.definition(6);assert.equal(definition.title,'Tu práctica de piso pélvico');assert.ok(definition.summary);assert.ok(definition.script);
+  assert.equal(definition.audioSrc,'/premium-v2/assets/audio/erection/erection-day-6-20261113.mp3');
+  for(const kind of ['erection','pelvic']){
+   const activity={...h.activity,kind};h.setAssignments([activity]);assert.equal(h.api.supports(h.c,activity),false);assert.equal(await h.api.open(activity),false);
+  }
+  assert.equal(h.api.valid(saved(6),6),false);assert.equal(h.form(),null);assert.deepEqual(h.reads,[]);assert.deepEqual(h.attempts,[]);assert.equal(h.counts().directWrites,0);
+ }finally{h.close();}
+});
+
 test('each direct practice opens inline with its matching optional audio and no default scores or confirmation',async()=>{
- for(const day of [1,2,3]){
+ for(const day of [1,2,3,4,5]){
   const h=harness(day);try{
    await h.api.open(h.activity);const form=h.form(),definition=h.api.definition(day);assert.ok(form);
    assert.ok(form.closest('#spmDailyWorkspace'));assert.ok(h.host().querySelector('[data-erection-practice]'));
@@ -123,8 +143,8 @@ test('each direct practice opens inline with its matching optional audio and no 
  }
 });
 
-test('all three practices require fresh explicit confirmation and save only main without advancing the day',async()=>{
- for(const day of [1,2,3]){
+test('all five practices require fresh explicit confirmation and save only main without advancing the day',async()=>{
+ for(const day of [1,2,3,4,5]){
   const h=harness(day);try{
    await h.api.open(h.activity);const form=h.form();answer(form,day);await submit(h,form);assert.equal(h.writes.length,0,'day '+day+' cannot save without confirmation');
    confirm(form);await submit(h,form);assertOnlyMainWrite(h,day);
@@ -175,10 +195,70 @@ test('day three keeps none exclusive and permits explicit completion without sta
  }finally{h.close();}
 });
 
+test('day four requires a chosen sensation and experience while its timer remains optional and supports stay separate',async()=>{
+ const h=harness(4,{seconds:0,notes:'Registro anterior',legacyObservation:{value:'conservar'}});try{
+  const support={completed:true,source:'sensate-lab'},story={completed:false};h.db[4]['sensate-prepare']=clone(support);h.db[4]['recovery-condom']=clone(story);
+  await h.api.open(h.activity);const form=h.form();
+  assert.equal(form.querySelector('[name="attentionSense"]:checked'),null);assert.equal(form.querySelector('[name="practiceExperience"]:checked'),null);
+  assert.equal(form.querySelector('[data-erection-time]').textContent,'00:00');assert.equal(form.querySelector('[data-erection-timer-toggle]').textContent,'Iniciar');
+  confirm(form);await submit(h,form);assert.equal(h.attempts.length,0);
+  choose(form,'attentionSense','rhythm');await submit(h,form);assert.equal(h.attempts.length,0);
+  choose(form,'practiceExperience','difficult');form.querySelector('[name="finalFeeling"]').value=' Pude volver a mi ritmo. ';
+  await submit(h,form);assertOnlyMainWrite(h,4);const record=h.writes[0].metadata;
+  assert.equal(record.attentionSense,'rhythm');assert.equal(record.practiceExperience,'difficult');assert.equal(record.finalFeeling,'Pude volver a mi ritmo.');assert.equal(record.seconds,null);
+  assert.equal(record.notes,'Registro anterior');assert.deepEqual(record.legacyObservation,{value:'conservar'});assert.equal(record.anxiety,null);assert.equal(record.confidence,null);
+  assert.deepEqual(h.db[4]['sensate-prepare'],support);assert.deepEqual(h.db[4]['recovery-condom'],story);
+ }finally{h.close();}
+});
+
+test('day four counts only active optional timer time and can save after pausing and resuming',async()=>{
+ const h=harness(4);try{
+  let now=0;Object.defineProperty(h.w.performance,'now',{configurable:true,value:()=>now});
+  await h.api.open(h.activity);const form=h.form();answer(form,4);confirm(form);
+  const timer=form.querySelector('[data-erection-timer-toggle]'),clock=form.querySelector('[data-erection-time]');timer.click();now=1700;h.api.pause();
+  assert.equal(clock.textContent,'00:01');assert.equal(timer.textContent,'Continuar');now=11700;assert.equal(h.writes.length,0);
+  timer.click();now=12200;h.api.pause();assert.equal(clock.textContent,'00:02');await submit(h,form);assertOnlyMainWrite(h,4);assert.equal(h.writes[0].metadata.seconds,2);
+ }finally{h.close();}
+});
+
+test('day five enforces selection limits and keeps unknown exclusive in each group without inferring an adjustment',async()=>{
+ const h=harness(5);try{
+  await h.api.open(h.activity);const form=h.form();confirm(form);
+  for(const name of ['erectionFacilitators','erectionInhibitors','microAdjustment'])assert.equal(form.querySelector('[name="'+name+'"]:checked'),null);
+  for(const value of ['contact','rhythm','privacy','connection'])choose(form,'erectionFacilitators',value);
+  for(const value of ['pressure','rush','stress'])choose(form,'erectionInhibitors',value);
+  const status=form.querySelector('[data-erection-status]');assert.match(status.textContent,/3 facilitadores y 2 inhibidores/);
+  await submit(h,form);assert.equal(h.attempts.length,0);assert.match(status.textContent,/Desmarca/);
+  choose(form,'erectionFacilitators','connection');await submit(h,form);assert.equal(h.attempts.length,0);assert.match(status.textContent,/máximo 2 inhibidores/);
+  for(const name of ['erectionFacilitators','erectionInhibitors']){
+   choose(form,name,'unknown');assert.deepEqual([...form.querySelectorAll('[name="'+name+'"]:checked')].map(input=>input.value),['unknown']);
+  }
+  choose(form,'erectionFacilitators','contact');assert.equal(form.querySelector('[name="erectionFacilitators"][value="unknown"]').checked,false);
+  assert.equal(form.querySelector('[name="erectionInhibitors"][value="unknown"]').checked,true,'the two groups are independent');
+  choose(form,'erectionFacilitators','unknown');await submit(h,form);assert.equal(h.attempts.length,0,'an adjustment still needs an explicit answer');
+  choose(form,'microAdjustment','observe');await submit(h,form);assertOnlyMainWrite(h,5);
+  assert.deepEqual(h.writes[0].metadata.erectionFacilitators,['unknown']);assert.deepEqual(h.writes[0].metadata.erectionInhibitors,['unknown']);assert.equal(h.writes[0].metadata.microAdjustment,'observe');
+ }finally{h.close();}
+});
+
+test('day five preserves legacy text and mixed stimuli through a failed save without preselecting new answers',async()=>{
+ const prior={day:5,phase:'PREPARAR',activity:'Mapa anterior',ehs:null,ehsEvaluable:false,anxiety:3,confidence:7,notes:'Anotación personal anterior',date:'2026-10-01T12:00:00.000Z',facilitators:'Privacidad y contacto',inhibitors:'Prisa y cansancio',stimuli:['0','1','8'],thought:'Otra observación',seconds:0,legacyAssessment:{answers:[1,null,3],source:'original'}};
+ const h=harness(5,prior);try{
+  const desire={completed:false,legacy:'intacto'};h.db[5]['de-desire-5']=clone(desire);
+  await h.api.open(h.activity);const form=h.form();
+  for(const name of ['erectionFacilitators','erectionInhibitors','microAdjustment'])assert.equal(form.querySelector('[name="'+name+'"]:checked'),null,name+' is not inferred from legacy values');
+  choose(form,'erectionFacilitators','contact');choose(form,'erectionFacilitators','privacy');choose(form,'erectionInhibitors','rush');choose(form,'microAdjustment','time');confirm(form);h.failSave=true;
+  await submit(h,form);assert.equal(h.writes.length,0);assert.equal(h.form(),form);assert.equal(form.querySelector('[data-erection-save]').disabled,false);assert.deepEqual(h.db[5].main,prior);
+  h.failSave=false;await submit(h,form);assertOnlyMainWrite(h,5);const record=h.writes[0].metadata;
+  for(const name of ['facilitators','inhibitors','stimuli','notes','thought','seconds','legacyAssessment','anxiety','confidence'])assert.deepEqual(record[name],prior[name],name+' remains intact');
+  assert.deepEqual(record.erectionFacilitators,['contact','privacy']);assert.deepEqual(record.erectionInhibitors,['rush']);assert.equal(record.microAdjustment,'time');assert.deepEqual(h.db[5]['de-desire-5'],desire);
+ }finally{h.close();}
+});
+
 test('record validation rejects malformed answers and mismatched days without coercing missing values',()=>{
  const h=harness();try{
-  for(const day of [1,2,3]){
-   const record=saved(day);assert.equal(h.api.valid(record,day),true);assert.equal(h.api.valid(record,day===3?1:day+1),false);
+  for(const day of [1,2,3,4,5]){
+   const record=saved(day);assert.equal(h.api.valid(record,day),true);assert.equal(h.api.valid(record,day===5?1:day+1),false);
    assert.equal(h.api.valid({...record,erectionPracticeVersion:2},day),false);assert.equal(h.api.valid({...record,confirmed:false},day),false);
    for(const name of ['anxiety','confidence'])for(const value of [-1,11,1.5,'0',false,undefined])assert.equal(h.api.valid({...record,[name]:value},day),false,name+'='+String(value));
    assert.equal(h.api.valid({...record,anxiety:0,confidence:10},day),true);
@@ -195,6 +275,11 @@ test('record validation rejects malformed answers and mismatched days without co
   for(const tensionAreas of [[],['unknown'],['none','jaw']])assert.equal(h.api.valid(saved(3,{tensionAreas}),3),false);
   assert.equal(h.api.valid(saved(3,{sensoryAnchor:'unknown'}),3),false);
   assert.equal(h.api.valid(saved(3,{finalFeeling:'x'.repeat(1001)}),3),false);
+  for(const attentionSense of ['temperature','contact','rhythm'])for(const practiceExperience of ['returned','difficult','no_checking'])assert.equal(h.api.valid(saved(4,{attentionSense,practiceExperience}),4),true);
+  for(const extra of [{attentionSense:''},{attentionSense:'sound'},{practiceExperience:undefined},{practiceExperience:'unknown'},{seconds:-1},{seconds:'0'},{finalFeeling:'x'.repeat(1001)}])assert.equal(h.api.valid(saved(4,extra),4),false);
+  for(const microAdjustment of ['privacy','time','rhythm','communicate','observe'])assert.equal(h.api.valid(saved(5,{microAdjustment}),5),true);
+  assert.equal(h.api.valid(saved(5,{erectionFacilitators:['contact','privacy','solo'],erectionInhibitors:['pressure','fatigue']}),5),true);
+  for(const extra of [{erectionFacilitators:[]},{erectionFacilitators:['contact','rhythm','privacy','connection']},{erectionFacilitators:['contact','contact']},{erectionFacilitators:['unknown','contact']},{erectionFacilitators:['invalid']},{erectionInhibitors:[]},{erectionInhibitors:['pressure','rush','stress']},{erectionInhibitors:['unknown','stress']},{erectionInhibitors:['fatigue','fatigue']},{microAdjustment:''}])assert.equal(h.api.valid(saved(5,extra),5),false);
  }finally{h.close();}
 });
 
@@ -202,7 +287,9 @@ test('reopening restores each day answers and scores while requiring a new confi
  for(const [day,record] of [
   [1,saved(1,{ehs:0,ehsEvaluable:true,anxiety:0,confidence:10})],
   [2,saved(2,{contexts:{spontaneous:'easy',solo:'variable',partner:'not_evaluable'},responseAspect:'maintain',anxiety:3,confidence:6})],
-  [3,saved(3,{tensionAreas:['jaw','abdomen'],sensoryAnchor:'sound',finalFeeling:'Reconocí mis apoyos.',seconds:17,anxiety:2,confidence:7})]
+  [3,saved(3,{tensionAreas:['jaw','abdomen'],sensoryAnchor:'sound',finalFeeling:'Reconocí mis apoyos.',seconds:17,anxiety:2,confidence:7})],
+  [4,saved(4,{attentionSense:'temperature',practiceExperience:'difficult',finalFeeling:'Volví a la temperatura.',seconds:9,anxiety:0,confidence:6})],
+  [5,saved(5,{erectionFacilitators:['privacy','connection'],erectionInhibitors:['rush'],microAdjustment:'time',anxiety:1,confidence:8})]
  ]){
   const h=harness(day,record);try{
    await h.api.open(h.activity);const form=h.form();assert.ok(form);
@@ -211,6 +298,8 @@ test('reopening restores each day answers and scores while requiring a new confi
    if(day===1)assert.equal(form.querySelector('[name="ehs"]:checked').value,'0');
    if(day===2){for(const [context,value] of Object.entries(record.contexts))assert.equal(form.querySelector('[name="context-'+context+'"]').value,value);assert.equal(form.querySelector('[name="responseAspect"]:checked').value,'maintain');}
    if(day===3){assert.deepEqual([...form.querySelectorAll('[name="tensionArea"]:checked')].map(input=>input.value),['jaw','abdomen']);assert.equal(form.querySelector('[name="sensoryAnchor"]:checked').value,'sound');assert.equal(form.querySelector('[name="finalFeeling"]').value,record.finalFeeling);}
+   if(day===4){assert.equal(form.querySelector('[name="attentionSense"]:checked').value,record.attentionSense);assert.equal(form.querySelector('[name="practiceExperience"]:checked').value,record.practiceExperience);assert.equal(form.querySelector('[name="finalFeeling"]').value,record.finalFeeling);assert.equal(form.querySelector('[data-erection-time]').textContent,'00:09');}
+   if(day===5){for(const name of ['erectionFacilitators','erectionInhibitors'])assert.deepEqual([...form.querySelectorAll('[name="'+name+'"]:checked')].map(input=>input.value),record[name]);assert.equal(form.querySelector('[name="microAdjustment"]:checked').value,'time');}
    await submit(h,form);assert.equal(h.writes.length,0);assert.deepEqual(h.db[day].main,record);
   }finally{h.close();}
  }
