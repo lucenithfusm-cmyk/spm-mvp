@@ -183,6 +183,7 @@ export function SensateLab({ initialOrigin, practiceAllowed = true }: { initialO
     if (existing >= 0) all[existing] = entry; else all.push(entry);
     centralStorage.setItem(REC_KEY, JSON.stringify(all));
     await host()?.flush();
+    if (daily && (await host()?.recordDaily?.()) === false) throw new Error('Daily activity was not recorded');
     setSaved(true);
     setNotice('Registro guardado en tu programa.');
     } catch { setNotice('No se pudo guardar. Reintenta antes de salir.'); return false; }

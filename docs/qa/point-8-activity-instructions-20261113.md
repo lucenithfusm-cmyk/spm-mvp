@@ -29,3 +29,15 @@ Revisión de Deseo, días 1–28, y los apoyos compartidos que aparecen en ese r
 - Sintaxis de los scripts modificados y revisión del diff sin errores.
 
 Los tres laboratorios se reconstruyen desde sus fuentes. Se retiran los archivos JavaScript anteriores y se actualizan las referencias de carga en el programa y la página de revisión.
+
+## Corrección tras la comprobación visual
+
+La verificación en la página publicada detectó que el panel de siguientes actividades se insertaba dentro de los diálogos de Respiración y Focalización. Como los diálogos tienen altura limitada, ese panel podía dejar el iframe de la práctica sin altura visible.
+
+- La continuación se muestra en el programa diario al salir del laboratorio, fuera del diálogo. La práctica conserva el espacio disponible.
+- Salir sin guardar conserva la actividad pendiente. Guardar una experiencia válida en el laboratorio registra también la actividad diaria, sin una segunda confirmación.
+- Un fallo de guardado mantiene la práctica abierta para reintentar. Los cambios de cuenta, programa o día invalidan el guardado pendiente.
+- El acceso desde la Biblioteca y el regreso de Respiración a Deseo conservan su navegación específica.
+- Las regresiones del programa diario comprueban ambos laboratorios con actividades pendientes y completadas, incluido el observador de cambios; se conserva el funcionamiento de EP.
+
+Validación del ajuste: programa diario 31/31; puentes de Respiración y Focalización 30/30; componentes de guardado 5/5 y 7/7, respectivamente. TypeScript y reconstrucción de ambos laboratorios correctos.

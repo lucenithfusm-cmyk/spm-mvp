@@ -248,6 +248,37 @@ test('finishing a day presents that day closing advice even when the calendar ad
  const advice=h.w.document.querySelector('#spmDailyClosing');assert(advice);assert(advice.textContent.includes('DÍA 1'));assert(advice.textContent.includes('¿Qué te haría sentir a gusto hoy?'));assert.equal(h.c.day,2);
  }finally{h.close();}
 });
+
+for(const [kind,day] of [['breathing',3],['sensate',4]])for(const completed of [false,true])test(`${kind} keeps continuation outside its iframe dialog when the assignment is ${completed?'completed':'pending'}`,async()=>{
+ const h=harness('desire',day);try{
+  await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;api.open();
+  const activity=api.assignments().find(a=>a.kind===kind);assert.ok(activity);
+  let modal;
+  h.w['SPM_'+kind.toUpperCase()+'_LAB'].open=async()=>{
+   modal=d.createElement('dialog');modal.className=`spm-${kind}-modal`;
+   modal.innerHTML='<header>Actividad actual</header><main><iframe title="Práctica asignada"></iframe></main>';
+   d.body.append(modal);modal.showModal();return true;
+  };
+  if(completed)await api.saveActivity(activity.id,{confirmed:true});
+  const writesBefore=h.writes.length;
+  await api.launch(activity.id);await wait();
+  assert.ok(modal.open);assert.ok(modal.querySelector('main > iframe'));
+  assert.equal(modal.querySelector('[data-spm-next]'),null,'Opening an iframe must not append a competing continuation panel');
+  modal.classList.add('qa-refresh');await wait();
+  assert.equal(modal.querySelector('[data-spm-next]'),null,'The global mutation observer must not reinsert the panel');
+  assert.equal(api.nextActivities().some(a=>a.id===activity.id),!completed);
+  assert.equal(h.writes.length,writesBefore);assert.equal(h.c.day,day);assert.deepEqual(h.c.completed,[]);
+  if(!completed){
+   modal.close();modal.remove();api.showContinuation();await wait();
+   const panel=d.querySelector('#spmDailyWorkspace [data-spm-next]');assert.ok(panel);
+   assert.ok(panel.textContent.includes(activity.title));assert.match(panel.textContent,/sigue pendiente/);
+   assert.ok(panel.querySelector('[data-next-record]'));
+   assert.ok(api.nextActivities().some(a=>a.id===activity.id),'Returning without saveActivity must leave the assignment pending');
+   assert.equal(h.writes.length,0);assert.equal(h.c.day,day);assert.deepEqual(h.c.completed,[]);
+  }
+ }finally{h.close();}
+});
+
 test('a finished EP modal shows a working next-activity button and closes through its own lifecycle',async()=>{
  const h=harness('ejaculation',1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();h.w.SPM_EJACULATORY_CONTROL.open=()=>{
  const m=h.w.document.createElement('div');m.id='spmEcModal';m.className='on';m.innerHTML='<button class="ecClose">Cerrar</button>';m.querySelector('button').onclick=()=>m.classList.remove('on');h.w.document.body.append(m);};

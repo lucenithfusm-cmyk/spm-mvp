@@ -39,7 +39,16 @@ function write(k,v){
  state=next;dirty++;status('Cambios pendientes de guardar…');clearTimeout(timer);timer=setTimeout(()=>flush().catch(()=>{}),600);return true;
 }
 function dispose(){window.SPM_PROGRAM_VIDEOS?.unmount(modal?.querySelector('iframe')?.contentDocument?.body);generation++;clearTimeout(timer);clearInterval(watch);modal?.close();modal?.remove();modal=null;delete window.SPM_BREATHING_LAB_HOST;state={};scope='';dirty=saved=0;flight=null;lastFocus?.focus?.();}
-async function close(resume=true){if(!modal)return true;modal.querySelector('iframe')?.contentWindow?.dispatchEvent(new Event('pagehide'));try{await flush();}catch{return false;}const back=returnToDesire;dispose();if(back&&resume!==false)window.SPM_DESIRE_LAB?.open({origin:"dailyPlan"});return true;}
+async function close(resume=true){
+ if(!modal)return true;
+ modal.querySelector('iframe')?.contentWindow?.dispatchEvent(new Event('pagehide'));
+ try{await flush();}catch{return false;}
+ const back=returnToDesire,current=window.SPM_DAILY_PRACTICE?.active?.();
+ const daily=origin==='dailyPlan'&&current?.scope===scope&&current?.day===day&&window.SPM_DAILY_PRACTICE?.assignments?.().some(a=>a.id===current.id&&a.kind==='breathing');
+ dispose();
+ if(resume!==false){if(back)await window.SPM_DESIRE_LAB?.open({origin:'dailyPlan'});else if(daily)window.SPM_DAILY_PRACTICE.showContinuation();}
+ return true;
+}
 async function open(opts={}){
  if(modal&&!await close(false))return false;
  const c=ctx();if(!c)return false;returnToDesire=opts.returnToDesire===true;
@@ -53,8 +62,21 @@ async function open(opts={}){
  watch=setInterval(()=>{const current=ctx();if(scopeOf(current)!==scope || Number(current?.day || 1)!==day){dispose();return;}const r=restriction(current);if(lastRestriction!==r){lastRestriction=r;notify();}},300);
  try{
   const value=await window.SPM_BREATHING_RECORDS.read(captured);if(token!==generation||scopeOf(ctx())!==captured)return false;if(!validState(value))throw Error('Invalid state');state=clone(value);
-  window.SPM_BREATHING_LAB_HOST={flush,close,openControl:async()=>{if(await close())window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  window.SPM_BREATHING_LAB_HOST={flush,close,recordDaily:async()=>{
+   if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
+   if(origin!=='dailyPlan'||returnToDesire)return true;
+   const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='breathing');
+   if(!assigned)return true;
+   try{
+    const sessions=JSON.parse(state['spmb-sessions']||'[]');
+    if(!sessions.some(s=>s.day===day))return false;
+    await flush();
+    if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
+    await window.SPM_DAILY_PRACTICE.saveActivity(assigned.id,{confirmed:true,source:'breathing-lab'},captured,day);
+    return true;
+   }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
+  },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
+  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions2&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-breathing-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;
@@ -74,7 +96,7 @@ new MutationObserver(schedule).observe(document.getElementById('plan')||document
 window.addEventListener('spm:open-lab',e=>{if(['breathing','diaphragmatic-breathing','respiracion'].includes(e.detail?.lab))open(e.detail||{});});
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#newAssessment')&&modal)dispose();},true);
 window.addEventListener('spm:session-change',()=>{if(modal&&scopeOf(ctx())!==scope)dispose();schedule();});
-const style=document.createElement('style');style.textContent='.spm-breathing-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-breathing-modal[open]{display:flex;flex-direction:column}.spm-breathing-modal::backdrop{background:#020a10ed}.spm-breathing-modal>header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-breathing-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-breathing-modal>header span{font-size:12px;color:#a3d3c7}.spm-breathing-modal>main{flex:1;min-height:0}.spm-breathing-modal iframe{width:100%;height:100%;border:0}#spmBreathingLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-breathing-daily]{margin-top:12px}';document.head.appendChild(style);
+const style=document.createElement('style');style.textContent='.spm-breathing-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-breathing-modal[open]{display:flex;flex-direction:column}.spm-breathing-modal::backdrop{background:#020a10ed}.spm-breathing-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-breathing-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-breathing-modal>header span{font-size:12px;color:#a3d3c7}.spm-breathing-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-breathing-modal iframe{display:block;width:100%;height:100%;border:0}#spmBreathingLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-breathing-daily]{margin-top:12px}';document.head.appendChild(style);
 window.addEventListener('spm:resourcecontext',schedule);
 window.SPM_BREATHING_LAB={open,close,flush,validState,relevant,restriction};schedule();
 })();

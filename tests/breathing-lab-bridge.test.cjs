@@ -37,3 +37,109 @@ test('Central persistence writes only breathing resource rows and checks user, p
   assert.match(app,/filter\(x=>!x.module_key\?\.startsWith\('resource:'\)\)/);
  }finally{await h.close();}
 });
+
+function dailyProbe(h){
+ const completions=[],continuations=[],assigned={id:'assigned-breathing',kind:'breathing'};
+ const c=h.context(),active={id:assigned.id,scope:c.userId+':'+c.planId,day:c.day};
+ h.w.SPM_DAILY_PRACTICE={
+  active:()=>active,
+  assignments:()=>[{id:'another-activity',kind:'sensate'},assigned],
+  saveActivity:async(id,data,scope,day)=>completions.push({id,data:JSON.parse(JSON.stringify(data)),scope,day}),
+  showContinuation:()=>continuations.push({outside:h.w.document.querySelector('iframe')===null})
+ };
+ return {completions,continuations,assigned};
+}
+function breathingSession(day=12){return {id:'breathing-record',day,date:'2026-11-13T10:00:00.000Z',practice:'guided',seconds:0,comfort:3,dizzy:false,noHold:true};}
+
+test('closing a daily Breathing activity shows continuation outside the module without completing it',async()=>{
+ const h=harness(),p=dailyProbe(h);try{
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
+  assert.equal(h.w.SPM_BREATHING_LAB_HOST.write('spmb-sessions',JSON.stringify([breathingSession()])),true);
+  assert.equal(await h.w.SPM_BREATHING_LAB.close(),true);
+  assert.equal(h.w.document.querySelector('dialog'),null);
+  assert.equal(h.writes.length,1);
+  assert.equal(p.completions.length,0);
+  assert.deepEqual(p.continuations,[{outside:true}]);
+ }finally{await h.close();}
+});
+
+test('Breathing recordDaily requires a real current-day session and completes the assignment by kind without a duration minimum',async()=>{
+ const h=harness(),p=dailyProbe(h);try{
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan',day:27});
+  const host=h.w.SPM_BREATHING_LAB_HOST;
+  assert.equal(await host.recordDaily(),false);
+  assert.equal(host.write('spmb-plan','[12]'),true);
+  assert.equal(await host.recordDaily(),false);
+  assert.equal(host.write('spmb-sessions',JSON.stringify([breathingSession(11)])),true);
+  assert.equal(await host.recordDaily(),false);
+  assert.equal(p.completions.length,0);
+  assert.equal(host.write('spmb-sessions',JSON.stringify([breathingSession()])),true);
+  h.setContext({...h.context(),day:13});
+  assert.equal(await host.recordDaily(),false);
+  h.setContext({...h.context(),day:12});
+  assert.equal(await host.recordDaily(),true);
+  assert.equal(h.writes.length,1);
+  assert.equal(JSON.parse(h.writes[0].state['spmb-sessions'])[0].seconds,0);
+  assert.deepEqual(p.completions,[{id:p.assigned.id,data:{confirmed:true,source:'breathing-lab'},scope:'qa:p1',day:12}]);
+  assert.ok(h.w.document.querySelector('iframe'));
+  assert.equal(p.continuations.length,0);
+ }finally{await h.close();}
+});
+
+test('Breathing recordDaily retains the module on persistence or completion failure and supports retry',async()=>{
+ const h=harness(),p=dailyProbe(h);try{
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
+  const host=h.w.SPM_BREATHING_LAB_HOST,persist=h.w.SPM_BREATHING_RECORDS.save,complete=h.w.SPM_DAILY_PRACTICE.saveActivity;
+  assert.equal(host.write('spmb-sessions',JSON.stringify([breathingSession()])),true);
+  h.w.SPM_BREATHING_RECORDS.save=async()=>{throw Error('offline')};
+  assert.equal(await host.recordDaily(),false);
+  assert.equal(p.completions.length,0);
+  assert.equal(p.continuations.length,0);
+  assert.ok(h.w.document.querySelector('iframe'));
+  assert.equal(h.w.document.querySelector('[data-breathing-retry]').hidden,false);
+  assert.equal(await h.w.SPM_BREATHING_LAB.close(),false);
+  assert.equal(p.continuations.length,0);
+  h.w.SPM_BREATHING_RECORDS.save=persist;
+  h.w.SPM_DAILY_PRACTICE.saveActivity=async()=>{throw Error('completion offline')};
+  assert.equal(await host.recordDaily(),false);
+  assert.ok(h.w.document.querySelector('iframe'));
+  assert.equal(p.completions.length,0);
+  assert.equal(p.continuations.length,0);
+  h.w.SPM_DAILY_PRACTICE.saveActivity=complete;
+  assert.equal(await host.recordDaily(),true);
+  assert.equal(p.completions.length,1);
+  assert.equal(await h.w.SPM_BREATHING_LAB.close(),true);
+  assert.deepEqual(p.continuations,[{outside:true}]);
+ }finally{await h.close();}
+});
+
+test('Breathing library recording persists the session without completing or continuing a daily assignment',async()=>{
+ const h=harness(),p=dailyProbe(h);try{
+  await h.w.SPM_BREATHING_LAB.open({origin:'library'});
+  const host=h.w.SPM_BREATHING_LAB_HOST;
+  assert.equal(host.write('spmb-sessions',JSON.stringify([breathingSession()])),true);
+  assert.equal(await host.recordDaily(),true);
+  assert.equal(await h.w.SPM_BREATHING_LAB.close(),true);
+  assert.equal(h.writes.length,1);
+  assert.equal(p.completions.length,0);
+  assert.equal(p.continuations.length,0);
+ }finally{await h.close();}
+});
+
+test('Breathing returnToDesire reopens Desire after disposal without marking or showing daily continuation',async()=>{
+ for(const origin of ['desire','dailyPlan']){
+  const h=harness(),p=dailyProbe(h),returns=[];
+  h.w.SPM_DESIRE_LAB={open:async opts=>returns.push({origin:opts.origin,outside:h.w.document.querySelector('iframe')===null})};
+  try{
+   await h.w.SPM_BREATHING_LAB.open({origin,returnToDesire:true});
+   const host=h.w.SPM_BREATHING_LAB_HOST;
+   assert.equal(host.write('spmb-sessions',JSON.stringify([breathingSession()])),true);
+   assert.equal(await host.recordDaily(),true);
+   assert.equal(await h.w.SPM_BREATHING_LAB.close(),true);
+   assert.equal(h.writes.length,1);
+   assert.equal(p.completions.length,0);
+   assert.equal(p.continuations.length,0);
+   assert.deepEqual(returns,[{origin:'dailyPlan',outside:true}]);
+  }finally{await h.close();}
+ }
+});

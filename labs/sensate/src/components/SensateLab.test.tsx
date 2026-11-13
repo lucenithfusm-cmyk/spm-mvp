@@ -1,10 +1,14 @@
 // @vitest-environment jsdom
-import {test,expect,vi} from 'vitest';
+import {beforeEach,test,expect,vi} from 'vitest';
 import {act} from 'react';
 import {createRoot} from 'react-dom/client';
 import {SensateLab} from './SensateLab';
-const state:Record<string,string>={};const flush=vi.fn();let context:any={day:18};
-vi.mock('../lib/central',()=>({centralContext:()=>context,host:()=>({flush,close:vi.fn()}),centralStorage:{getItem:(k:string)=>state[k]??null,setItem:(k:string,v:string)=>{state[k]=v;}}}));
+const state:Record<string,string>={};const flush=vi.fn(),recordDaily=vi.fn(),close=vi.fn();let context:any={day:18},hasRecordDaily=true;
+vi.mock('../lib/central',()=>({centralContext:()=>context,host:()=>({flush,close,...(hasRecordDaily?{recordDaily}:{})}),centralStorage:{getItem:(k:string)=>state[k]??null,setItem:(k:string,v:string)=>{state[k]=v;}}}));
+beforeEach(()=>{
+ Object.keys(state).forEach(k=>delete state[k]);context={day:18,mode:'library'};hasRecordDaily=true;
+ flush.mockReset().mockResolvedValue(undefined);recordDaily.mockReset().mockResolvedValue(true);close.mockReset().mockResolvedValue(true);
+});
 test('result has no debug JSON; failed save retries without duplicating records',async()=>{
  window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
  state['spm-sensate-state']=JSON.stringify({step:14});const el=document.createElement('div');document.body.append(el);const root=createRoot(el);
@@ -14,7 +18,52 @@ test('result has no debug JSON; failed save retries without duplicating records'
  flush.mockRejectedValueOnce(Error('offline'));await act(async()=>save().click());expect(el.textContent).toContain('No se pudo guardar');
  flush.mockResolvedValue(undefined);await act(async()=>save().click());expect(el.textContent).toContain('Guardado en tu programa');
  const records=JSON.parse(state['spm-sensate-records']);expect(records).toHaveLength(1);expect(records[0].day).toBe(18);expect(records[0].completed).toBe(false);
+ expect(recordDaily).not.toHaveBeenCalled();expect(close).not.toHaveBeenCalled();
  await act(async()=>root.unmount());el.remove();
+});
+
+test('daily record failures keep the experience open; retry records once before closing',async()=>{
+ window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+ context={day:18,mode:'daily',activity:{day:18,title:'Preparación individual',summary:'A tu ritmo.',steps:[3],practiceId:'sf-solo'}};
+ const el=document.createElement('div');document.body.append(el);const root=createRoot(el);
+ const save=()=>Array.from(el.querySelectorAll('button')).find(b=>b.textContent==='Guardar y volver a Hoy')!;
+ try{
+  await act(async()=>root.render(<SensateLab initialOrigin="dailyPlan"/>));
+  expect(recordDaily).not.toHaveBeenCalled();
+  flush.mockRejectedValueOnce(Error('offline'));await act(async()=>save().click());
+  expect(recordDaily).not.toHaveBeenCalled();expect(el.textContent).toContain('No se pudo guardar');expect(close).not.toHaveBeenCalled();
+  recordDaily.mockResolvedValueOnce(false);await act(async()=>save().click());
+  expect(recordDaily).toHaveBeenCalledTimes(1);expect(el.textContent).toContain('No se pudo guardar');expect(close).not.toHaveBeenCalled();
+  await act(async()=>save().click());
+  expect(recordDaily).toHaveBeenCalledTimes(2);expect(close).toHaveBeenCalledTimes(1);
+  expect(flush.mock.invocationCallOrder[1]).toBeLessThan(recordDaily.mock.invocationCallOrder[0]!);
+  expect(recordDaily.mock.invocationCallOrder[1]).toBeLessThan(close.mock.invocationCallOrder[0]!);
+  const records=JSON.parse(state['spm-sensate-records']);expect(records).toHaveLength(1);expect(records[0]).toMatchObject({day:18,practiceId:'sf-solo',completed:true});
+  expect(el.textContent).toContain('Registro guardado en tu programa.');
+ }finally{await act(async()=>root.unmount());el.remove();}
+});
+
+test('leaving a daily activity without saving does not record it',async()=>{
+ window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+ context={day:18,mode:'daily',activity:{day:18,title:'Preparación individual',summary:'A tu ritmo.',steps:[3],practiceId:'sf-solo'}};
+ const el=document.createElement('div');document.body.append(el);const root=createRoot(el);
+ try{
+  await act(async()=>root.render(<SensateLab initialOrigin="dailyPlan"/>));
+  await act(async()=>Array.from(el.querySelectorAll('button')).find(b=>b.textContent==='← Atrás')!.click());
+  expect(close).toHaveBeenCalledTimes(1);expect(flush).not.toHaveBeenCalled();expect(recordDaily).not.toHaveBeenCalled();
+ }finally{await act(async()=>root.unmount());el.remove();}
+});
+
+test('a daily host without recordDaily preserves saving and returning',async()=>{
+ window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;hasRecordDaily=false;
+ context={day:18,mode:'daily',activity:{day:18,title:'Preparación individual',summary:'A tu ritmo.',steps:[3],practiceId:'sf-solo'}};
+ const el=document.createElement('div');document.body.append(el);const root=createRoot(el);
+ try{
+  await act(async()=>root.render(<SensateLab initialOrigin="dailyPlan"/>));
+  await act(async()=>Array.from(el.querySelectorAll('button')).find(b=>b.textContent==='Guardar y volver a Hoy')!.click());
+  expect(flush).toHaveBeenCalledTimes(1);expect(recordDaily).not.toHaveBeenCalled();expect(close).toHaveBeenCalledTimes(1);
+  expect(el.textContent).toContain('Registro guardado en tu programa.');
+ }finally{await act(async()=>root.unmount());el.remove();}
 });
 test('review allows educational screens while keeping guided practice paused',async()=>{
  window.scrollTo=vi.fn();(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;

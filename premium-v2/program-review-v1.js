@@ -103,8 +103,8 @@ const scripts=[
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-audio-controller-staging-v10.js',
   'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js','erectile-function-premium.js',
   'erectile-platform-v2.js','erectile-library-v3.js','erectile-guided-v3.js','erectile-central-v3.js',
-  'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions1','sensate-lab-bridge-v1.js?v=20261113-instructions1','breathing-lab-bridge-v1.js?v=20261113-instructions1',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-checkpoint4','daily-practice-v1.js?v=20261113-instructions1'
+  'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions1','sensate-lab-bridge-v1.js?v=20261113-instructions2','breathing-lab-bridge-v1.js?v=20261113-instructions2',
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-checkpoint4','daily-practice-v1.js?v=20261113-instructions2'
 ];
 async function boot(){
   try{

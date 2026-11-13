@@ -60,6 +60,7 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
   const save = async (s: Session) => {
     const next = [{ ...s, day: context.day }, ...sessions.filter(x => !s.id || x.id !== s.id)].slice(0, 60);
     centralStorage.setItem(K.sessions, JSON.stringify(next));setSessions(next);await host()?.flush();
+    if (daily && (await host()?.recordDaily?.()) === false) throw new Error('Daily activity was not recorded');
   };
   const scr = screens[step] ?? screens[0];
   const pct = ((step + 1) / screens.length) * 100;
