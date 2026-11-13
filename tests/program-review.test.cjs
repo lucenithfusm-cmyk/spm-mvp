@@ -156,7 +156,7 @@ test('erection days 1–5 open the recorded inline practice and save only its ex
       const panel=w.document.querySelector('[data-erection-practice]'),form=panel.querySelector('form');
       assert.equal(w.document.querySelector('#spmDeModal.on'),null);
       assert.equal(w.document.querySelector('#spmDailySession').dataset.focusedPractice,'erection');
-      assert.equal(panel.querySelector('audio').getAttribute('src'),'/premium-v2/assets/audio/erection/erection-day-'+day+'-20261113.mp3');
+      assert.equal(panel.querySelector('audio').getAttribute('src'),day===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':'/premium-v2/assets/audio/erection/erection-day-'+day+'-20261113.mp3');
       assert.equal(panel.querySelector('[data-checkpoint-audio-transcript]').open,false);
       assert.equal(form.elements.namedItem('anxiety').value,'');assert.equal(form.elements.namedItem('confidence').value,'');
       if(day===1)form.querySelector('[name="ehs"][value="na"]').checked=true;

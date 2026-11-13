@@ -19,6 +19,8 @@ function harness(day=1,prior){
  const db=prior?{[day]:{main:clone(prior)}}:{},reads=[],writes=[],attempts=[],media=new WeakMap();
  const state=element=>{if(!media.has(element))media.set(element,{paused:true,time:0,plays:0});return media.get(element);};
  w.HTMLElement.prototype.scrollIntoView=function(){};
+ w.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};
+ w.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');this.dispatchEvent(new w.Event('close'));};
  Object.defineProperty(w.HTMLMediaElement.prototype,'paused',{configurable:true,get(){return state(this).paused;}});
  Object.defineProperty(w.HTMLMediaElement.prototype,'currentTime',{configurable:true,get(){return state(this).time;},set(value){state(this).time=value;}});
  Object.defineProperty(w.HTMLMediaElement.prototype,'duration',{configurable:true,get(){return 42;}});
@@ -56,6 +58,7 @@ function harness(day=1,prior){
   close(){w.SPM_ERECTION_PRACTICE?.stop();w.SPM_CHECKPOINT_AUDIO?.stop();w.close();}
  };
  w.eval(read('checkpoint-audio-v1.js'));
+ w.eval(read('firmness-guide-v1.js'));
  w.eval(read('erection-practice-v1.js'));
  h.api=w.SPM_ERECTION_PRACTICE;
  return h;
@@ -157,12 +160,40 @@ test('day one requires a firmness choice and preserves zero separately from not 
  for(const [choice,expected,evaluable] of [['0',0,true],['na',null,false]]){
   const h=harness(1);try{
    await h.api.open(h.activity);const form=h.form();
-   assert.deepEqual([...form.querySelectorAll('[name="ehs"]')].map(input=>input.value),['0','1','2','3','4','na']);
+   assert.deepEqual([...form.querySelectorAll('[name="ehs"]')].map(input=>input.value),['4','3','2','1','0','na']);
    assert.equal(form.querySelector('[name="ehs"]:checked'),null);confirm(form);await submit(h,form);assert.equal(h.writes.length,0);
    choose(form,'ehs',choice);if(choice==='0'){select(form,'anxiety','0');select(form,'confidence','10');}
    await submit(h,form);assertOnlyMainWrite(h,1);
    const record=h.writes[0].metadata;assert.equal(record.ehs,expected);assert.equal(record.ehsEvaluable,evaluable);
    assert.equal(record.anxiety,choice==='0'?0:null);assert.equal(record.confidence,choice==='0'?10:null);
+  }finally{h.close();}
+ }
+});
+
+test('the approved guide can be enlarged and closed without selecting, saving or changing the practice',async()=>{
+ const h=harness(1);try{
+  await h.api.open(h.activity);const form=h.form(),button=form.querySelector('.spm-firmness-expand');
+  assert.ok(button);assert.equal(button.type,'button');
+  const image=form.querySelector('.spm-firmness-guide img');
+  assert.equal(image.getAttribute('src'),'/premium-v2/assets/images/erection/response-firmness-spm-20261113.jpg');
+  choose(form,'ehs','3');button.focus();button.click();
+  const dialog=h.w.document.getElementById('spmFirmnessGuideDialog');assert.equal(dialog.open,true);
+  dialog.querySelector('[data-firmness-zoom]').click();assert.ok(dialog.querySelector('.is-zoomed'));
+  assert.equal(form.querySelector('[name="ehs"]:checked').value,'3');assert.equal(h.writes.length,0);assert.equal(h.c.day,1);
+  dialog.querySelector('[data-firmness-close]').click();assert.equal(dialog.open,false);assert.equal(h.w.document.activeElement,button);
+  assert.equal(h.form(),form);assert.equal(h.writes.length,0);
+  button.click();h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));assert.equal(dialog.open,false);
+ }finally{h.close();}
+});
+
+test('the descending firmness choices preserve every stored grade and the separate absence state',async()=>{
+ for(const value of [4,3,2,1,0]){
+  const h=harness(1,saved(1,{ehs:value,ehsEvaluable:true,notes:'Registro conservado'}));try{
+   await h.api.open(h.activity);const form=h.form();assert.equal(form.querySelector('[name="ehs"]:checked').value,String(value));
+   assert.equal(form.querySelector('.spm-erection-alternatives [value="0"]').closest('label').textContent.trim(),'Sin respuesta eréctil');
+   assert.equal(form.querySelector('.spm-erection-alternatives [value="0"]').closest('label').querySelector('b'),null);
+   confirm(form);await submit(h,form);assertOnlyMainWrite(h,1);
+   assert.equal(h.writes[0].metadata.ehs,value);assert.equal(h.writes[0].metadata.ehsEvaluable,true);assert.equal(h.writes[0].metadata.notes,'Registro conservado');
   }finally{h.close();}
  }
 });

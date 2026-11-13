@@ -1,0 +1,702 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Narración del día 1 para la lámina de firmeza 4→1 aprobada en SPM.",
+  "day": 1,
+  "createdAt": "2026-11-13T21:01:13.067Z",
+  "path": "premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3",
+  "spokenText": "Vamos a reconocer tu punto de partida. Recuerda una experiencia reciente, sin provocar una erección ni hacer una prueba. Mira la lámina y elige la descripción que corresponde a lo que viviste. Cuatro: erección completa. Tres: erección incompleta, pero con firmeza suficiente para la penetración. Dos: hay rigidez, pero no es suficiente para la penetración. Uno: aumento de tamaño, pero no es una erección. Si en esa experiencia no hubo respuesta, elige “Sin respuesta eréctil”. Si no tuviste una experiencia que puedas valorar, elige “No evaluable”. Son opciones diferentes. El dibujo es orientativo: el ángulo no determina tu nivel. Puedes ampliar la imagen para verla mejor. Al terminar, confirma que hiciste la observación y pulsa “Guardar práctica y continuar”.",
+  "voice": {
+    "provider": "HeyGen Voice",
+    "id": "050c403a43e047c796f8a6257ed2533e",
+    "name": "Lenny - Clear & Professional",
+    "mode": "instant",
+    "catalogLanguage": "en",
+    "gender": "male",
+    "catalogStatus": "ACTIVE",
+    "verifiedAt": "2026-11-13T21:01:06.743Z"
+  },
+  "synthesis": {
+    "tool": "create_speech_without_player",
+    "language": "es",
+    "speed": 1,
+    "modelRequested": null,
+    "modelSelection": "Omitido; selección del servidor. El resultado no identifica el modelo utilizado.",
+    "timestampsRequested": true,
+    "outputFormatRequested": {
+      "encoding": "mp3",
+      "num_channels": 1,
+      "sample_rate_hertz": 44100,
+      "bitrate_bps": 128000
+    },
+    "takesForSelectedVoice": 1,
+    "localAudioEdits": [],
+    "sourceToFinal": "Archivo original de HeyGen copiado íntegro; no se alteraron velocidad, tono ni duración."
+  },
+  "file": {
+    "codec": "mp3",
+    "sampleRateHz": 44100,
+    "channels": 1,
+    "bitrateBps": 128000,
+    "durationSeconds": 49.005688,
+    "providerDurationSeconds": 48.960634920634924,
+    "sizeBytes": 784091,
+    "sha256": "104d2933c7b92d80d86c407c5e5f80231cb7462bad7e163a3943b369942b03b9"
+  },
+  "timing": {
+    "coordinateSystem": "Segundos desde el inicio del MP3 original sin modificar.",
+    "source": "Marcas originales de palabras devueltas por HeyGen.",
+    "boundsAndOrderValidated": true,
+    "firstWordStartSeconds": 0.213,
+    "lastWordEndSeconds": 48.502,
+    "tailAfterLastWordSeconds": 0.503688,
+    "wordTimetags": [
+      {
+        "text": "Vamos",
+        "start_time": 0.213,
+        "end_time": 0.5547
+      },
+      {
+        "text": "a",
+        "start_time": 0.597,
+        "end_time": 0.6827
+      },
+      {
+        "text": "reconocer",
+        "start_time": 0.725,
+        "end_time": 1.1947
+      },
+      {
+        "text": "tu",
+        "start_time": 1.28,
+        "end_time": 1.408
+      },
+      {
+        "text": "punto",
+        "start_time": 1.451,
+        "end_time": 1.664
+      },
+      {
+        "text": "de",
+        "start_time": 1.707,
+        "end_time": 1.792
+      },
+      {
+        "text": "partida",
+        "start_time": 1.835,
+        "end_time": 2.219
+      },
+      {
+        "text": "Recuerda",
+        "start_time": 2.688,
+        "end_time": 3.072
+      },
+      {
+        "text": "una",
+        "start_time": 3.115,
+        "end_time": 3.2427
+      },
+      {
+        "text": "experiencia",
+        "start_time": 3.285,
+        "end_time": 3.7547
+      },
+      {
+        "text": "reciente",
+        "start_time": 3.84,
+        "end_time": 4.224
+      },
+      {
+        "text": "sin",
+        "start_time": 4.608,
+        "end_time": 4.7787
+      },
+      {
+        "text": "provocar",
+        "start_time": 4.821,
+        "end_time": 5.205
+      },
+      {
+        "text": "una",
+        "start_time": 5.248,
+        "end_time": 5.376
+      },
+      {
+        "text": "erección",
+        "start_time": 5.419,
+        "end_time": 5.888
+      },
+      {
+        "text": "ni",
+        "start_time": 6.016,
+        "end_time": 6.144
+      },
+      {
+        "text": "hacer",
+        "start_time": 6.187,
+        "end_time": 6.4
+      },
+      {
+        "text": "una",
+        "start_time": 6.443,
+        "end_time": 6.613
+      },
+      {
+        "text": "prueba",
+        "start_time": 6.656,
+        "end_time": 6.955
+      },
+      {
+        "text": "Mira",
+        "start_time": 7.424,
+        "end_time": 7.68
+      },
+      {
+        "text": "la",
+        "start_time": 7.723,
+        "end_time": 7.765
+      },
+      {
+        "text": "lámina",
+        "start_time": 7.808,
+        "end_time": 8.2347
+      },
+      {
+        "text": "y",
+        "start_time": 8.32,
+        "end_time": 8.448
+      },
+      {
+        "text": "elige",
+        "start_time": 8.491,
+        "end_time": 8.704
+      },
+      {
+        "text": "la",
+        "start_time": 8.789,
+        "end_time": 8.832
+      },
+      {
+        "text": "descripción",
+        "start_time": 8.875,
+        "end_time": 9.429
+      },
+      {
+        "text": "que",
+        "start_time": 9.472,
+        "end_time": 9.557
+      },
+      {
+        "text": "corresponde",
+        "start_time": 9.6,
+        "end_time": 10.0267
+      },
+      {
+        "text": "a",
+        "start_time": 10.197,
+        "end_time": 10.24
+      },
+      {
+        "text": "lo",
+        "start_time": 10.283,
+        "end_time": 10.325
+      },
+      {
+        "text": "que",
+        "start_time": 10.368,
+        "end_time": 10.453
+      },
+      {
+        "text": "viviste",
+        "start_time": 10.496,
+        "end_time": 10.795
+      },
+      {
+        "text": "Cuatro",
+        "start_time": 11.079,
+        "end_time": 11.463
+      },
+      {
+        "text": "erección",
+        "start_time": 11.762,
+        "end_time": 12.231
+      },
+      {
+        "text": "completa",
+        "start_time": 12.274,
+        "end_time": 12.615
+      },
+      {
+        "text": "Tres",
+        "start_time": 13.255,
+        "end_time": 13.469
+      },
+      {
+        "text": "erección",
+        "start_time": 13.853,
+        "end_time": 14.279
+      },
+      {
+        "text": "incompleta",
+        "start_time": 14.322,
+        "end_time": 14.791
+      },
+      {
+        "text": "pero",
+        "start_time": 15.218,
+        "end_time": 15.389
+      },
+      {
+        "text": "con",
+        "start_time": 15.431,
+        "end_time": 15.5168
+      },
+      {
+        "text": "firmeza",
+        "start_time": 15.559,
+        "end_time": 15.943
+      },
+      {
+        "text": "suficiente",
+        "start_time": 16.071,
+        "end_time": 16.626
+      },
+      {
+        "text": "para",
+        "start_time": 16.669,
+        "end_time": 16.797
+      },
+      {
+        "text": "la",
+        "start_time": 16.839,
+        "end_time": 16.9248
+      },
+      {
+        "text": "penetración",
+        "start_time": 16.967,
+        "end_time": 17.565
+      },
+      {
+        "text": "Dos",
+        "start_time": 17.906,
+        "end_time": 18.119
+      },
+      {
+        "text": "hay",
+        "start_time": 18.503,
+        "end_time": 18.674
+      },
+      {
+        "text": "rigidez",
+        "start_time": 18.759,
+        "end_time": 19.186
+      },
+      {
+        "text": "pero",
+        "start_time": 19.655,
+        "end_time": 19.826
+      },
+      {
+        "text": "no",
+        "start_time": 19.869,
+        "end_time": 20.039
+      },
+      {
+        "text": "es",
+        "start_time": 20.082,
+        "end_time": 20.1248
+      },
+      {
+        "text": "suficiente",
+        "start_time": 20.167,
+        "end_time": 20.679
+      },
+      {
+        "text": "para",
+        "start_time": 20.722,
+        "end_time": 20.893
+      },
+      {
+        "text": "la",
+        "start_time": 20.935,
+        "end_time": 20.978
+      },
+      {
+        "text": "penetración",
+        "start_time": 21.021,
+        "end_time": 21.575
+      },
+      {
+        "text": "Uno",
+        "start_time": 21.983,
+        "end_time": 22.196
+      },
+      {
+        "text": "aumento",
+        "start_time": 22.58,
+        "end_time": 23.006
+      },
+      {
+        "text": "de",
+        "start_time": 23.049,
+        "end_time": 23.177
+      },
+      {
+        "text": "tamaño",
+        "start_time": 23.22,
+        "end_time": 23.604
+      },
+      {
+        "text": "pero",
+        "start_time": 23.86,
+        "end_time": 24.073
+      },
+      {
+        "text": "no",
+        "start_time": 24.116,
+        "end_time": 24.244
+      },
+      {
+        "text": "es",
+        "start_time": 24.287,
+        "end_time": 24.3719
+      },
+      {
+        "text": "una",
+        "start_time": 24.415,
+        "end_time": 24.585
+      },
+      {
+        "text": "erección",
+        "start_time": 24.628,
+        "end_time": 25.055
+      },
+      {
+        "text": "Si",
+        "start_time": 25.652,
+        "end_time": 25.78
+      },
+      {
+        "text": "en",
+        "start_time": 25.823,
+        "end_time": 25.865
+      },
+      {
+        "text": "esa",
+        "start_time": 25.908,
+        "end_time": 26.078
+      },
+      {
+        "text": "experiencia",
+        "start_time": 26.121,
+        "end_time": 26.6759
+      },
+      {
+        "text": "no",
+        "start_time": 26.718,
+        "end_time": 26.9319
+      },
+      {
+        "text": "hubo",
+        "start_time": 26.974,
+        "end_time": 27.145
+      },
+      {
+        "text": "respuesta",
+        "start_time": 27.188,
+        "end_time": 27.7
+      },
+      {
+        "text": "elige",
+        "start_time": 27.998,
+        "end_time": 28.3825
+      },
+      {
+        "text": "Sin",
+        "start_time": 28.553,
+        "end_time": 28.9799
+      },
+      {
+        "text": "respuesta",
+        "start_time": 29.023,
+        "end_time": 29.5345
+      },
+      {
+        "text": "eréctil",
+        "start_time": 29.577,
+        "end_time": 29.919
+      },
+      {
+        "text": "Si",
+        "start_time": 30.43,
+        "end_time": 30.558
+      },
+      {
+        "text": "no",
+        "start_time": 30.601,
+        "end_time": 30.6439
+      },
+      {
+        "text": "tuviste",
+        "start_time": 30.686,
+        "end_time": 30.985
+      },
+      {
+        "text": "una",
+        "start_time": 31.028,
+        "end_time": 31.1559
+      },
+      {
+        "text": "experiencia",
+        "start_time": 31.198,
+        "end_time": 31.71
+      },
+      {
+        "text": "que",
+        "start_time": 31.753,
+        "end_time": 31.838
+      },
+      {
+        "text": "puedas",
+        "start_time": 31.881,
+        "end_time": 32.094
+      },
+      {
+        "text": "valorar",
+        "start_time": 32.18,
+        "end_time": 32.521
+      },
+      {
+        "text": "elige",
+        "start_time": 32.862,
+        "end_time": 33.2039
+      },
+      {
+        "text": "No",
+        "start_time": 33.46,
+        "end_time": 33.8439
+      },
+      {
+        "text": "evaluable",
+        "start_time": 33.886,
+        "end_time": 34.356
+      },
+      {
+        "text": "Son",
+        "start_time": 35.071,
+        "end_time": 35.242
+      },
+      {
+        "text": "opciones",
+        "start_time": 35.285,
+        "end_time": 35.626
+      },
+      {
+        "text": "diferentes",
+        "start_time": 35.669,
+        "end_time": 36.181
+      },
+      {
+        "text": "El",
+        "start_time": 36.565,
+        "end_time": 36.65
+      },
+      {
+        "text": "dibujo",
+        "start_time": 36.693,
+        "end_time": 37.034
+      },
+      {
+        "text": "es",
+        "start_time": 37.077,
+        "end_time": 37.119
+      },
+      {
+        "text": "orientativo",
+        "start_time": 37.162,
+        "end_time": 37.802
+      },
+      {
+        "text": "el",
+        "start_time": 38.143,
+        "end_time": 38.314
+      },
+      {
+        "text": "ángulo",
+        "start_time": 38.357,
+        "end_time": 38.655
+      },
+      {
+        "text": "no",
+        "start_time": 38.741,
+        "end_time": 38.911
+      },
+      {
+        "text": "determina",
+        "start_time": 38.954,
+        "end_time": 39.338
+      },
+      {
+        "text": "tu",
+        "start_time": 39.423,
+        "end_time": 39.5087
+      },
+      {
+        "text": "nivel",
+        "start_time": 39.551,
+        "end_time": 39.807
+      },
+      {
+        "text": "Puedes",
+        "start_time": 40.362,
+        "end_time": 40.618
+      },
+      {
+        "text": "ampliar",
+        "start_time": 40.661,
+        "end_time": 41.002
+      },
+      {
+        "text": "la",
+        "start_time": 41.087,
+        "end_time": 41.1727
+      },
+      {
+        "text": "imagen",
+        "start_time": 41.215,
+        "end_time": 41.5567
+      },
+      {
+        "text": "para",
+        "start_time": 41.599,
+        "end_time": 41.8127
+      },
+      {
+        "text": "verla",
+        "start_time": 41.855,
+        "end_time": 42.0687
+      },
+      {
+        "text": "mejor",
+        "start_time": 42.111,
+        "end_time": 42.367
+      },
+      {
+        "text": "Al",
+        "start_time": 42.956,
+        "end_time": 43.0839
+      },
+      {
+        "text": "terminar",
+        "start_time": 43.127,
+        "end_time": 43.511
+      },
+      {
+        "text": "confirma",
+        "start_time": 43.98,
+        "end_time": 44.4065
+      },
+      {
+        "text": "que",
+        "start_time": 44.449,
+        "end_time": 44.577
+      },
+      {
+        "text": "hiciste",
+        "start_time": 44.62,
+        "end_time": 44.876
+      },
+      {
+        "text": "la",
+        "start_time": 44.919,
+        "end_time": 45.0039
+      },
+      {
+        "text": "observación",
+        "start_time": 45.047,
+        "end_time": 45.6439
+      },
+      {
+        "text": "y",
+        "start_time": 45.815,
+        "end_time": 45.8999
+      },
+      {
+        "text": "pulsa",
+        "start_time": 45.943,
+        "end_time": 46.2839
+      },
+      {
+        "text": "Guardar",
+        "start_time": 46.455,
+        "end_time": 47.137
+      },
+      {
+        "text": "práctica",
+        "start_time": 47.222,
+        "end_time": 47.606
+      },
+      {
+        "text": "y",
+        "start_time": 47.82,
+        "end_time": 48.033
+      },
+      {
+        "text": "continuar",
+        "start_time": 48.033,
+        "end_time": 48.502
+      }
+    ]
+  },
+  "qa": {
+    "completeFfmpegDecodePassed": true,
+    "decodeErrors": [],
+    "providerCharactersMatchSubmittedText": true,
+    "providerWordsMatchSubmittedText": true,
+    "asr": {
+      "engine": "faster-whisper",
+      "model": "small",
+      "language": "es",
+      "scriptPromptUsed": false,
+      "fullTextMatchesAfterCasePunctuationAccentAndNumberNormalization": true,
+      "differences": [
+        {
+          "operation": "replace",
+          "expected": "cuatro",
+          "observed": "4"
+        },
+        {
+          "operation": "replace",
+          "expected": "tres",
+          "observed": "3"
+        },
+        {
+          "operation": "replace",
+          "expected": "dos",
+          "observed": "2"
+        },
+        {
+          "operation": "replace",
+          "expected": "uno",
+          "observed": "1"
+        }
+      ],
+      "differenceInterpretation": "La transcripción representa cuatro, tres, dos y uno como 4, 3, 2 y 1. No se detectan otras diferencias de palabras.",
+      "checkedPassages": [
+        "sin provocar una erección ni hacer una prueba",
+        "Cuatro / Tres / Dos / Uno",
+        "firmeza suficiente para la penetración / no es suficiente para la penetración",
+        "Sin respuesta eréctil / No evaluable / Son opciones diferentes",
+        "el ángulo no determina tu nivel",
+        "Guardar práctica y continuar"
+      ],
+      "closingRecovered": true,
+      "lastAsrEndSeconds": 48.6
+    },
+    "humanListeningPerformed": false,
+    "limitations": [
+      "Validación técnica y transcripción automática; no se realizó audición humana ni se afirma haber evaluado naturalidad, prosodia o pronunciación mediante escucha.",
+      "La identidad de voz se verifica mediante el catálogo y el ID solicitado; no mediante comparación auditiva.",
+      "Las marcas de palabra se conservan como las devolvió el proveedor y se verificaron en orden y límites, sin ajuste auditivo manual."
+    ]
+  }
+}

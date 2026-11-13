@@ -53,6 +53,7 @@ async function closeActivities(){
   for(const name of ['SPM_DESIRE_LAB','SPM_SENSATE_LAB','SPM_BREATHING_LAB','SPM_PELVIC_LAB']){
     if(window[name]?.close&&await window[name].close()===false)return false;
   }
+  window.SPM_FIRMNESS_GUIDE?.close();
   window.SPM_SLEEP_LIBRARY_V1?.close();window.SPM_WELLNESS_LIBRARY_V1?.close?.();window.SPM_PELVIC_V2?.close();
   // These legacy modules expose their safe close action as a button, not as an API.
   for(const selector of ['#spmDeModal.on .deClose','#spmEcModal.on .ecClose','#epAssessModal.on #epAClose','.deg:not([hidden]) .degClose','dialog[open] [data-sr-close]','dialog[open] [data-wellness-close]'])document.querySelector(selector)?.click();
@@ -98,13 +99,13 @@ function installRecords(){
 }
 const scripts=[
   'engine.js','modules.js?v=20261113-closing1','daily-support-plan-v1.js?v=20261113-instructions1','practice-audio-v1.js?v=20261113-recovery-audio1','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
-  'spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-instructions1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
+  'firmness-guide-v1.js?v=20261113-firmness-1','spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-firmness-1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
   'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261113-instructions1',
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
-  'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js?v=20261113-closing1','erectile-function-premium.js?v=20261113-closing1',
-  'erectile-platform-v2.js','erectile-library-v3.js?v=20261113-closing1','erectile-guided-v3.js','erectile-central-v3.js',
+  'technique-microclips.js','ejaculatory-control.js','ejaculatory-control-router.js','erectile-function-route.js?v=20261113-firmness-1','erectile-function-premium.js?v=20261113-closing1',
+  'erectile-platform-v2.js','erectile-library-v3.js?v=20261113-firmness-1','erectile-guided-v3.js','erectile-central-v3.js',
   'pelvic-module-rebuild-v2.js','pelvic-guided-v3-hotfix.js','pelvic-lab-bridge-v1.js','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-instructions3',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-erection456-1','daily-practice-v1.js?v=20261113-erection456-1'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261113-instructions1','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-firmness-1','daily-practice-v1.js?v=20261113-erection456-1'
 ];
 async function boot(){
   try{
