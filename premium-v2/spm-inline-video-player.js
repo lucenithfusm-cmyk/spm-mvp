@@ -7,7 +7,7 @@ function ensure(){
  const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
  const m=document.createElement('div');m.id='spmVideoModal';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-labelledby','spmVpTitle');
  m.innerHTML=`<div class="spmVpShell"><div class="spmVpHead"><b id="spmVpTitle">Video SPM</b><button type="button" class="spmVpClose">Cerrar ×</button></div><div class="spmVpScroll"><div class="spmVpBody"><video id="spmVpVideo" controls playsinline preload="metadata"></video></div><div class="spmVpAction" hidden></div><div class="spmVpFoot">Estás dentro de SPM. Al terminar, cierra el reproductor y continúa tu actividad.</div></div></div>`;document.body.appendChild(m);
- const close=()=>{const v=document.getElementById('spmVpVideo');v.pause();v.removeAttribute('src');v.load();m.classList.remove('on');if(opener?.isConnected)opener.focus();opener=null;};
+ const close=()=>{window.SPM_PRACTICE_AUDIO?.stop(m);const v=document.getElementById('spmVpVideo');v.pause();v.removeAttribute('src');v.load();m.classList.remove('on');if(opener?.isConnected)opener.focus();opener=null;};
  m.querySelector('.spmVpClose').onclick=close;m.addEventListener('click',e=>{if(e.target===m)close();});
  document.addEventListener('keydown',e=>{
   if(!m.classList.contains('on'))return;
@@ -21,10 +21,12 @@ function normalized(src){
 }
 function open(src,title){
  ensure();if(!src)return;
+ window.SPM_PRACTICE_AUDIO?.stop();
  const modal=document.getElementById('spmVideoModal'),v=document.getElementById('spmVpVideo'),shell=modal.querySelector('.spmVpShell'),action=modal.querySelector('.spmVpAction');
  opener=document.activeElement;document.getElementById('spmVpTitle').textContent=title||'Video SPM';shell.classList.remove('spmPortrait','spmLowDesire');
  const item=(window.SPM_VIDEO_LIBRARY||[]).find(video=>normalized(video.url)===normalized(src));
  action.innerHTML=item?window.SPM_VIDEO_ACTIONS?.markup(item.key)||'':'';action.hidden=!action.firstElementChild;
+ modal.querySelector('.spmVpFoot').hidden=!!item?.action;
  modal.querySelector('.spmVpFoot').textContent=item?.action?'Puedes volver a consultar este video y su acción cuando lo necesites.':'Estás dentro de SPM. Al terminar, cierra el reproductor y continúa tu actividad.';
  const lowDesire=/dr-spm-low-desire\.mp4(?:$|\?)/.test(src);shell.classList.toggle('spmLowDesire',lowDesire);
  v.onloadedmetadata=()=>shell.classList.toggle('spmPortrait',v.videoHeight>v.videoWidth);

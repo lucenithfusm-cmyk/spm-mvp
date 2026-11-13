@@ -12,6 +12,20 @@ diaria, las bibliotecas de los programas y el reproductor compartido reutilizan
 ese contenido. La biblioteca general presenta el título de la acción y abre el
 detalle con el video.
 
+### Corrección de presentación · 13 de noviembre
+
+La indicación posterior de la usuaria prioriza el audio. Cada acción muestra
+«Ponlo en práctica», su título y una bocina circular. El contexto, los tres
+pasos y la aclaración completa están en «Leer instrucciones», cerrado por
+defecto. La bocina narra ese mismo contenido con el sistema de voz existente;
+no hay una segunda versión de las instrucciones que pueda quedar desactualizada.
+
+Se retiraron las descripciones extensas de la tarjeta de selección y de la
+pantalla diaria del video. Los formularios antiguos de escribir una idea ya no
+existen en los archivos activos; las notas históricas se conservan como datos.
+La narración se detiene al cambiar de actividad, cerrar el recurso o reproducir
+el video. Las bibliotecas dentro de los laboratorios usan el mismo control.
+
 | Día | Video | Acción |
 | --- | --- | --- |
 | 1 | Erección, estrés y ansiedad de rendimiento | Vuelve a una sensación cómoda |
@@ -47,18 +61,24 @@ los puntos 5 a 11 de la lista de correcciones.
 
 ## Verificación automatizada
 
-`node --test tests/video-actions.test.cjs`: 8 pruebas aprobadas. Incluyen los 12
+`node --test tests/video-actions.test.cjs`: 12 pruebas aprobadas. Incluyen los 12
 videos, confirmación sin escritura, notas históricas, fallo y reintento, lectura
 fallida, cambios de cuenta/plan/día/seguridad, correspondencia de acciones y
 bibliotecas sin escrituras de progreso. La octava prueba cubre la carga tardía
 del catálogo en la página de revisión: monta los 12 videos, no duplica la
 biblioteca tras nuevos cambios del DOM y abre la acción correspondiente.
 
-Las suites existentes `daily-practice`, `program-videos`, `program-review` y
-`daily-entry` suman otras 39 pruebas aprobadas. Los tres escenarios de navegador
+La revisión de audio añade controles de texto cerrado por defecto, narración
+completa por video, alternancia escuchar/detener, documentos iframe sin
+controladores duplicados, parada al navegar, eventos tardíos de voz y apertura
+del texto con aviso accesible si el audio falla. La síntesis se simula en estas
+pruebas; no se afirma haber validado una grabación ni una voz específica.
+
+Las suites existentes `daily-practice`, `program-videos` y `program-review`
+suman otras 35 pruebas aprobadas con la corrección de audio. Los tres escenarios de navegador
 que rellenaban una reflexión de video se actualizaron al nuevo comportamiento.
 
-## Verificación en la versión publicada
+## Verificación de la primera versión publicada
 
 En el revisor con perfil de ejemplo, el día 1 muestra la acción, tres pasos y
 ningún campo de texto. Una confirmación sin marcar no guarda; marcarla y guardar

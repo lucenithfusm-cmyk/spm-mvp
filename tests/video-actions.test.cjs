@@ -14,6 +14,17 @@ const calendar=[
   [21,'dr-medications'],[23,'dr-low-desire'],[28,'mental-preparation']
 ];
 
+function mockSpeech(w){
+  const speech={spoken:[],cancellations:0,current:null};
+  w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
+  w.speechSynthesis={
+    getVoices:()=>[{name:'Spanish test voice',lang:'es-CO'}],
+    speak:utterance=>{speech.current=utterance;speech.spoken.push(utterance);},
+    cancel:()=>{speech.cancellations++;speech.current=null;}
+  };
+  return speech;
+}
+
 async function harness({day=1,prior={},readError=false}={}){
   const dom=new JSDOM('<main id="plan"></main><section id="programVideos"></section>',{
     url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true
@@ -24,6 +35,7 @@ async function harness({day=1,prior={},readError=false}={}){
   w.HTMLMediaElement.prototype.pause=function(){this.pauseCount=(this.pauseCount||0)+1;};
   w.HTMLMediaElement.prototype.load=function(){};
   w.HTMLMediaElement.prototype.play=function(){this.dispatchEvent(new w.Event('play'));return Promise.resolve();};
+  const speech=mockSpeech(w);
   const c={userId:'video-qa',planId:'video-plan',primary:'desire',secondary:null,motives:['desire'],day,safety:'none',flags:[],checkins:[],completed:[]};
   const rows=clone(prior),writes=[];
   let failNext=false;
@@ -35,19 +47,19 @@ async function harness({day=1,prior={},readError=false}={}){
       writes.push({id,data:clone(data),scope,day:savedDay});rows[id]=clone(data);
     }
   };
-  for(const file of ['modules.js','spm-video-library.js','program-videos-v1.js','spm-inline-video-player.js','daily-resource-plan-v1.js','daily-practice-v1.js'])w.eval(read(file));
+  for(const file of ['modules.js','practice-audio-v1.js','spm-video-library.js','program-videos-v1.js','spm-inline-video-player.js','daily-resource-plan-v1.js','daily-practice-v1.js'])w.eval(read(file));
   await settle();
   w.SPM_DAILY_PRACTICE.open({focus:false});
   return {
-    w,c,rows,writes,
+    w,c,rows,writes,speech,
     failNextSave(){failNext=true;},
     async showDay(nextDay){c.day=nextDay;w.dispatchEvent(new w.Event('spm:resourcecontext'));await settle();w.SPM_DAILY_PRACTICE.open({focus:false});},
     async openVideo(){const a=w.SPM_DAILY_PRACTICE.assignments().find(item=>item.kind==='video');assert.ok(a);await w.SPM_DAILY_PRACTICE.launch(a.id);return {a,form:w.document.querySelector('[data-daily-video]')};},
-    close(){observers.forEach(observer=>observer.disconnect());w.close();}
+    close(){w.SPM_PRACTICE_AUDIO?.stop();observers.forEach(observer=>observer.disconnect());w.close();}
   };
 }
 
-test('all twelve scheduled videos supply their own actionable steps without asking for a written idea',async()=>{
+test('all twelve videos offer a speaker before optional closed instructions without asking for a written idea',async()=>{
   const h=await harness();
   try{
     const titles=new Set();
@@ -66,16 +78,36 @@ test('all twelve scheduled videos supply their own actionable steps without aski
       assert.ok(expected&&expected.title&&expected.context);
       assert.ok(action.textContent.includes(expected.title));
       assert.ok(action.textContent.includes(expected.context));
+      const title=action.querySelector('.spm-video-action-title');
+      const speaker=action.querySelector('button[data-spm-speak]');
+      const transcript=action.querySelector('details[data-video-action-transcript]');
+      assert.ok(speaker,`${key}: a visible speaker must be available`);
+      assert.equal(title.nextElementSibling,speaker,'The speaker follows the action title');
+      assert.ok(speaker.querySelector('svg'),'The action uses a speaker icon');
+      assert.match(speaker.getAttribute('aria-label'),/Escuchar acción/);
+      assert.ok(transcript);
+      assert.equal(transcript.open,false,'The written instructions start collapsed');
+      assert.equal(transcript.querySelector('summary').textContent,'Leer instrucciones');
+      for(const text of action.querySelectorAll('p,ol'))assert.equal(text.closest('details'),transcript,'Long instructions stay inside the optional transcript');
+      assert.equal(speaker.dataset.spmSpeak,h.w.SPM_VIDEO_ACTIONS.narration(key));
+      for(const content of [expected.title,expected.context,...expected.steps,expected.note])assert.ok(speaker.dataset.spmSpeak.includes(content),`${key}: narration includes its complete instruction`);
       assert.equal(action.querySelectorAll('ol li').length,expected.steps.length);
       assert.ok(expected.steps.length>=2&&expected.steps.length<=3);
       expected.steps.forEach(step=>assert.ok(action.textContent.includes(step)));
       titles.add(expected.title);
       assert.ok(form.querySelector('[name="confirmed"]').required);
+      speaker.click();
+      assert.equal(h.speech.spoken.at(-1).text,speaker.dataset.spmSpeak);
+      assert.equal(speaker.getAttribute('aria-pressed'),'true');
+      assert.equal(transcript.open,false,'Playing audio does not force the written instructions open');
+      speaker.click();
+      assert.equal(speaker.getAttribute('aria-pressed'),'false');
       const player=form.querySelector('video');
       player.dispatchEvent(new h.w.Event('play'));
       player.dispatchEvent(new h.w.Event('ended'));
     }
     assert.equal(titles.size,12,'Each topic needs a distinct action');
+    assert.equal(h.speech.spoken.length,12,'Each speaker plays its own action once');
     assert.equal(h.writes.length,0,'Opening or finishing playback never saves a practice');
     assert.deepEqual(h.c.completed,[]);
   }finally{h.close();}
@@ -229,6 +261,7 @@ test('loading the video catalog after the document is complete mounts one workin
       else w.addEventListener('load',resolve,{once:true});
     });
     assert.equal(w.document.readyState,'complete');
+    w.eval(read('practice-audio-v1.js'));
     w.eval(read('spm-video-library.js'));
     w.eval(read('spm-inline-video-player.js'));
     const library=w.document.querySelector('#spmVideoLibrary');
@@ -250,4 +283,104 @@ test('loading the video catalog after the document is complete mounts one workin
     assert.equal(action.dataset.videoAction,'partner-communication');
     assert.ok(action.textContent.includes(w.SPM_VIDEO_LIBRARY.find(video=>video.key==='partner-communication').action.title));
   }finally{observers.forEach(observer=>observer.disconnect());w.close();}
+});
+
+test('video narration stops when video playback resumes, the daily view changes, or the shared player closes',async()=>{
+  const h=await harness();
+  try{
+    let {form}=await h.openVideo();
+    let speaker=form.querySelector('[data-spm-speak]');
+    const player=form.querySelector('video'),pauses=player.pauseCount||0;
+    speaker.click();
+    assert.ok(player.pauseCount>pauses,'Narration pauses the video to avoid overlapping audio');
+    player.dispatchEvent(new h.w.Event('play'));
+    assert.equal(speaker.getAttribute('aria-pressed'),'false');
+    speaker.click();
+    h.w.SPM_DAILY_PRACTICE.library();
+    assert.equal(speaker.getAttribute('aria-pressed'),'false','Leaving Today stops its narration');
+    assert.equal(h.speech.current,null);
+
+    const video=h.w.SPM_VIDEO_LIBRARY.find(item=>item.key==='dr-medications');
+    h.w.SPM_NATIVE_VIDEO.open(video.url,video.title);
+    const modal=h.w.document.querySelector('#spmVideoModal');
+    speaker=modal.querySelector('[data-spm-speak]');
+    speaker.click();
+    assert.ok(h.speech.current);
+    modal.querySelector('.spmVpClose').click();
+    assert.equal(speaker.getAttribute('aria-pressed'),'false');
+    assert.equal(h.speech.current,null,'Closing the player stops its spoken instruction');
+    assert.equal(h.writes.length,0);
+    assert.deepEqual(h.c.completed,[]);
+  }finally{h.close();}
+});
+
+test('speakers inside program iframes work once and stop when their library is removed',async()=>{
+  const h=await harness();
+  try{
+    const frame=h.w.document.createElement('iframe');h.w.document.body.appendChild(frame);
+    const doc=frame.contentDocument,win=frame.contentWindow;
+    win.HTMLMediaElement.prototype.pause=function(){this.pauseCount=(this.pauseCount||0)+1;};
+    win.HTMLMediaElement.prototype.load=function(){};
+    const root=doc.createElement('main');doc.body.appendChild(root);
+    const cleanup=h.w.SPM_PROGRAM_VIDEOS.mount(root,'sensate');
+    h.w.SPM_PRACTICE_AUDIO.install(doc);
+    h.w.SPM_PRACTICE_AUDIO.install(doc);
+    assert.equal(doc.querySelectorAll('#spmPracticeAudioStyles').length,1,'The embedded document receives one copy of the audio styling');
+    const action=root.querySelector('[data-video-action="sensory-focus"]');
+    const speaker=action.querySelector('[data-spm-speak]');
+    speaker.click();
+    assert.equal(h.speech.spoken.length,1,'Repeated installation cannot create duplicate speech handlers');
+    assert.equal(h.speech.spoken[0].text,h.w.SPM_VIDEO_ACTIONS.narration('sensory-focus'));
+    assert.equal(speaker.getAttribute('aria-pressed'),'true');
+    h.w.SPM_PRACTICE_AUDIO.stop(h.w.document.querySelector('#plan'));
+    assert.equal(speaker.getAttribute('aria-pressed'),'true','A scoped stop outside this iframe must not stop its audio');
+    cleanup();await settle();
+    assert.equal(speaker.getAttribute('aria-pressed'),'false');
+    assert.equal(h.speech.current,null,'Unmounting the embedded library stops narration');
+    assert.equal(h.writes.length,0);
+    frame.remove();
+  }finally{h.close();}
+});
+
+test('late speech callbacks cannot stop a newer utterance from the same speaker',async()=>{
+  const h=await harness();
+  try{
+    const {form}=await h.openVideo();
+    const speaker=form.querySelector('[data-spm-speak]');
+    h.w.SPM_PRACTICE_AUDIO.install(h.w.document);
+    speaker.click();const first=h.speech.spoken.at(-1);
+    speaker.click();speaker.click();const second=h.speech.spoken.at(-1);
+    assert.notEqual(first,second);
+    assert.equal(h.speech.spoken.length,2);
+    first.onend?.();first.onerror?.({error:'canceled'});
+    assert.equal(speaker.getAttribute('aria-pressed'),'true');
+    assert.equal(h.speech.current,second);
+    assert.match(speaker.getAttribute('aria-label'),/Detener audio/);
+    second.onend?.();
+    assert.equal(speaker.getAttribute('aria-pressed'),'false');
+    assert.match(speaker.getAttribute('aria-label'),/Escuchar acción/);
+  }finally{h.close();}
+});
+
+test('unavailable speech and synthesis failures reveal readable instructions with an accessible message',async()=>{
+  for(const failure of ['unavailable','synthesis-failed']){
+    const h=await harness();
+    try{
+      const {form}=await h.openVideo();
+      const action=form.querySelector('[data-video-action]');
+      const speaker=action.querySelector('[data-spm-speak]');
+      const transcript=action.querySelector('[data-video-action-transcript]');
+      assert.equal(transcript.open,false);
+      if(failure==='unavailable')h.w.speechSynthesis=undefined;
+      speaker.click();
+      if(failure==='synthesis-failed')h.speech.spoken.at(-1).onerror({error:failure});
+      assert.equal(transcript.open,true,'The full instruction remains usable when audio fails');
+      const status=action.querySelector('[data-spm-audio-status][role="status"]');
+      assert.ok(status);
+      assert.equal(status.hidden,false);
+      assert.match(status.textContent,/audio|escuchar|voz/i);
+      assert.equal(speaker.getAttribute('aria-pressed'),'false');
+      assert.equal(h.writes.length,0);
+    }finally{h.close();}
+  }
 });

@@ -60,7 +60,7 @@ function compose(main,support,c){
  if(!c)return {main,support};
  ({main,support}=cadence(main,support,c));
  const day=Number(c.day),extra=[],key=videoFor(day,c),video=window.SPM_VIDEO_LIBRARY?.find(v=>v.key===key);
- if(video)extra.push({id:(c.primary==='erection'?'de-video-':'route-video-')+key,kind:'video',videoKey:key,title:'Video · '+video.title,summary:video.desc+' '+(window.SPM_VIDEO_ACTIONS?.summary(key)||'Al terminar, sigue la acción que acompaña al video.'),label:'VIDEO DE HOY',duration:video.duration});
+ if(video)extra.push({id:(c.primary==='erection'?'de-video-':'route-video-')+key,kind:'video',videoKey:key,title:'Video · '+video.title,summary:window.SPM_VIDEO_ACTIONS?.summary(key)||'Escucha la acción que acompaña al video.',label:'VIDEO DE HOY',duration:video.duration});
  // Desire is already the main practice on its own route. Add its existing sessions
  // to other routes only when this is an expressed secondary priority.
  const desireRelevant=!['desire','erection'].includes(c.primary)&&window.SPM_ERECTION_DAILY?.lowDesire(c);

@@ -10,7 +10,7 @@ const routes=Object.freeze({
 });
 const base=document.baseURI, mounted=new WeakMap(), players=new Set(), mounts=new Set();
 function keysFor(route){return [...(routes[route==='confidence'?'anxiety':route]||[])];}
-function pause(root){for(const video of players)if(!root||root.contains(video))video.pause();}
+function pause(root){window.SPM_PRACTICE_AUDIO?.stop(root);for(const video of players)if(!root||root.contains(video)||root.contains(video.ownerDocument.defaultView?.frameElement))video.pause();}
 function mount(root,route){
  if(!root)return ()=>{};
  // Today already selects a single video. Keep the full collection in Library
@@ -22,6 +22,7 @@ function mount(root,route){
  if(!items.length)return ()=>{};
  const doc=root.ownerDocument,win=doc.defaultView,section=doc.createElement('section');
  window.SPM_VIDEO_ACTIONS?.installStyles(doc);
+ window.SPM_PRACTICE_AUDIO?.install(doc);
  section.className='spm-program-videos';section.dataset.programVideos=route;section.setAttribute('aria-label','Videos de apoyo SPM');
  const style=doc.createElement('style');style.textContent='.spm-program-videos{box-sizing:border-box;margin:24px 0;padding:20px;border:1px solid #31545c;border-radius:18px;background:#091d26;color:#eef8f6;text-align:left}.spm-program-videos h3{font-size:20px;margin:0 0 8px;color:#d8ba75}.spm-program-videos p{font-size:14px;line-height:1.55;margin:8px 0 18px}.spm-program-video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px}.spm-program-videos article{min-width:0}.spm-program-videos h4{font-size:15px;line-height:1.5;margin:0 0 10px;color:#eef8f6}.spm-program-videos video{display:block;width:100%;max-height:65vh;aspect-ratio:16/9;object-fit:contain;background:#000;border-radius:12px}.spm-program-videos video[data-portrait]{aspect-ratio:9/16;max-width:350px;margin:auto}.spm-program-videos button{min-height:44px;padding:8px 14px;border:1px solid #d8ba75;border-radius:10px;background:#132f39;color:#fff}.spm-program-videos [hidden]{display:none!important}';
  section.append(style);
@@ -36,11 +37,11 @@ function mount(root,route){
   video.addEventListener('loadedmetadata',()=>{video.toggleAttribute('data-portrait',video.videoHeight>video.videoWidth);error.hidden=true;});
   video.addEventListener('error',()=>{error.hidden=false;});
   retry.onclick=()=>{error.hidden=true;video.load();video.play().catch(()=>{error.hidden=false;});};
-  video.addEventListener('play',()=>{for(const other of players)if(other!==video)other.pause();});
+  video.addEventListener('play',()=>{window.SPM_PRACTICE_AUDIO?.stop();for(const other of players)if(other!==video)other.pause();});
   own.push(video);players.add(video);card.append(title,video,error);card.insertAdjacentHTML('beforeend',window.SPM_VIDEO_ACTIONS?.markup(item.key)||'');grid.append(card);
  }
  root.append(section);
- const stop=()=>own.forEach(v=>v.pause()),hide=()=>{if(doc.hidden)stop();};
+ const stop=()=>{window.SPM_PRACTICE_AUDIO?.stop(section);own.forEach(v=>v.pause());},hide=()=>{if(doc.hidden)stop();};
  win.addEventListener('pagehide',stop);doc.addEventListener('visibilitychange',hide);
  let disposed=false;
  function cleanup(){if(disposed)return;disposed=true;stop();own.forEach(v=>{players.delete(v);v.removeAttribute('src');v.load();});win.removeEventListener('pagehide',stop);doc.removeEventListener('visibilitychange',hide);section.remove();mounted.delete(root);mounts.delete(record);}
