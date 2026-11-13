@@ -49,6 +49,33 @@ async function close(resume=true){
  if(resume!==false){if(back)await window.SPM_DESIRE_LAB?.open({origin:'dailyPlan'});else if(daily)window.SPM_DAILY_PRACTICE.showContinuation();}
  return true;
 }
+
+function inlineFirstPracticeAudio(frame,guide,token){
+ frame.addEventListener('load',()=>{
+  if(!modal||!frame.isConnected||token!==generation)return;
+  let doc;try{doc=frame.contentDocument;}catch{return;}
+  if(!doc?.getElementById('root')||!doc.defaultView)return;
+  const style=doc.createElement('style');style.dataset.firstPracticeAudioStyle='';
+  style.textContent='.spm-first-breath-audio{width:100%;max-width:100%;padding:12px 14px;border:1px solid #c5a46c70;border-radius:14px;background:#102c2d;color:#eef8f6}.spm-first-breath-audio>strong{color:#d8ba75;font-size:12px;letter-spacing:.07em}.spm-first-breath-audio>p{margin:6px 0;color:#dce9e6;font-size:14px;line-height:1.45}.spm-first-breath-audio .spm-checkpoint-audio{margin:8px 0 0;max-width:100%}.spm-first-breath-audio .spm-checkpoint-audio-toggle{min-height:48px!important;padding:8px 12px!important}.spm-first-breath-audio .spm-checkpoint-audio-toggle b{font-size:15px}.spm-first-breath-audio .spm-checkpoint-audio-meter{margin:7px 2px 2px}.spm-first-breath-audio .spm-checkpoint-audio details{margin-top:4px}';
+  doc.head.appendChild(style);
+  const panel=doc.createElement('section');panel.className='spm-first-breath-audio';panel.dataset.firstPracticeGuide='';
+  panel.innerHTML='<strong>PRIMERA PRÁCTICA · RESPIRA Y SUELTA</strong><p>Para reconocer y liberar tensión. Puedes escuchar los pasos mientras practicas.</p>'+window.SPM_CHECKPOINT_AUDIO.markup({src:guide.audioSrc,text:guide.script,label:'Escuchar pasos de Respira y suelta'});
+  panel.querySelector('[data-checkpoint-audio-transcript]>summary')?.replaceChildren(doc.createTextNode('Leer instrucciones'));
+  let observer=null;
+  const attach=()=>{
+   if(!modal||!frame.isConnected||token!==generation){observer?.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);return;}
+   const lesson=doc.querySelector('.bl-main'),title=lesson?.querySelector('.bl-h1');
+   if(title&&panel.parentElement!==lesson)title.insertAdjacentElement('afterend',panel);
+  };
+  observer=new doc.defaultView.MutationObserver(attach);
+  observer.observe(doc.getElementById('root'),{childList:true,subtree:true});
+  attach();
+  window.SPM_CHECKPOINT_AUDIO.bind(panel);
+  doc.addEventListener('click',e=>{if(e.target?.closest?.('.bl-audio,.bl-instruction-audio'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);},true);
+  doc.defaultView.addEventListener('pagehide',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
+  frame.addEventListener('load',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
+ },{once:true});
+}
 async function open(opts={}){
  if(modal&&!await close(false))return false;
  const c=ctx();if(!c)return false;returnToDesire=opts.returnToDesire===true;
@@ -77,17 +104,11 @@ async function open(opts={}){
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
   const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
-   const body=modal.querySelector('main');
    const firstPractice=origin==='dailyPlan'&&day===1&&c.primary==='erection'&&activity?.id==='breath-start';
    const guide=firstPractice?window.SPM_PELVIC_GUIDANCE?.firstPractice?.():null;
-   if(guide?.audioSrc&&guide?.script&&window.SPM_CHECKPOINT_AUDIO?.markup){
-     const panel=document.createElement('section');panel.className='spm-breathing-first-guide';panel.dataset.firstPracticeGuide='';
-     panel.innerHTML='<strong>RESPIRA Y SUELTA · PRIMERA PRÁCTICA</strong><p>Para reconocer y liberar tensión. Escucha los pasos aquí, antes de empezar.</p>'+window.SPM_CHECKPOINT_AUDIO.markup({src:guide.audioSrc,text:guide.script,label:'Escuchar los pasos de Respira y suelta'});
-     body.replaceChildren(panel,frame);window.SPM_CHECKPOINT_AUDIO.bind(panel);
-     panel.querySelector('[data-checkpoint-audio-transcript]>summary')?.replaceChildren(document.createTextNode('Leer instrucciones'));
-     panel.querySelector('audio')?.addEventListener('play',()=>{try{frame.contentWindow?.dispatchEvent(new Event('pagehide'));}catch{}});
-     frame.addEventListener('load',()=>{try{frame.contentDocument?.addEventListener('click',e=>{if(e.target?.closest?.('.bl-audio,.bl-instruction-audio,.bl-foot button'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);},true);}catch{}});
-   }else body.replaceChildren(frame);
+   // El iframe conserva la altura completa: el audio forma parte del scroll de la práctica.
+   if(guide?.audioSrc&&guide?.script&&window.SPM_CHECKPOINT_AUDIO?.markup)inlineFirstPracticeAudio(frame,guide,token);
+   modal.querySelector('main').replaceChildren(frame);
    status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-breathing-retry]').onclick=()=>open(opts);return false;}
 }
@@ -108,7 +129,7 @@ new MutationObserver(schedule).observe(document.getElementById('plan')||document
 window.addEventListener('spm:open-lab',e=>{if(['breathing','diaphragmatic-breathing','respiracion'].includes(e.detail?.lab))open(e.detail||{});});
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#newAssessment')&&modal)dispose();},true);
 window.addEventListener('spm:session-change',()=>{if(modal&&scopeOf(ctx())!==scope)dispose();schedule();});
-const style=document.createElement('style');style.textContent='.spm-breathing-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-breathing-modal[open]{display:flex;flex-direction:column}.spm-breathing-modal::backdrop{background:#020a10ed}.spm-breathing-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-breathing-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-breathing-modal>header span{font-size:12px;color:#a3d3c7}.spm-breathing-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-breathing-modal iframe{display:block;width:100%;height:100%;border:0}#spmBreathingLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-breathing-daily]{margin-top:12px}';style.textContent+=".spm-breathing-modal>main{display:flex;flex-direction:column}.spm-breathing-first-guide{flex:0 0 auto;max-height:34dvh;overflow:auto;background:#0c2530;border-bottom:1px solid #31545c;padding:12px 18px 8px}.spm-breathing-first-guide>strong{display:block;color:#d8ba75;font-size:12px;letter-spacing:1px}.spm-breathing-first-guide>p{color:#e6f0ec;margin:5px 0 2px;font-size:15px;line-height:1.4}.spm-breathing-first-guide .spm-checkpoint-audio{margin:8px 0}.spm-breathing-first-guide .spm-checkpoint-audio-toggle{min-height:48px!important;padding:8px 12px!important}.spm-breathing-first-guide .spm-checkpoint-audio-meter{margin:6px 2px 3px}.spm-breathing-first-guide .spm-checkpoint-audio details{margin-top:4px}.spm-breathing-modal>main>iframe{flex:1;min-height:0}@media(max-width:600px){.spm-breathing-first-guide{padding:10px 12px 7px;max-height:36dvh}.spm-breathing-first-guide>p{font-size:14px}.spm-breathing-first-guide .spm-checkpoint-audio-toggle b{font-size:14px}}";document.head.appendChild(style);
+const style=document.createElement('style');style.textContent='.spm-breathing-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-breathing-modal[open]{display:flex;flex-direction:column}.spm-breathing-modal::backdrop{background:#020a10ed}.spm-breathing-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-breathing-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-breathing-modal>header span{font-size:12px;color:#a3d3c7}.spm-breathing-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-breathing-modal iframe{display:block;width:100%;height:100%;border:0}#spmBreathingLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-breathing-daily]{margin-top:12px}';style.textContent+=".spm-breathing-modal>main{display:flex;flex-direction:column}.spm-breathing-modal>main>iframe{flex:1 1 0;min-height:0;height:100%;width:100%}";document.head.appendChild(style);
 window.addEventListener('spm:resourcecontext',schedule);
 window.SPM_BREATHING_LAB={open,close,flush,validState,relevant,restriction};schedule();
 })();
