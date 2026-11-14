@@ -157,3 +157,38 @@ test('library offers independent strength and awareness entries without injectin
   assert.ok(h.w.document.querySelector('.spm-pf-modal[open] iframe'));
  }finally{await h.close();}
 });
+
+test('a later successful Lab result unlocks its separate strength program only after successful scoped saving',async()=>{
+ const h=harness({},6);try{
+  const c={userId:'qa-user',planId:'qa-plan',day:6,primary:'desire',safety:'none',flags:[],checkins:[],answers:{pf_awareness:'unsure',pf_tension:1}};
+  h.setContext(c);
+  const readiness=fs.readFileSync(require('node:path').join(__dirname,'../premium-v2/pelvic-strength-readiness-v1.js'),'utf8');
+  h.w.eval(readiness);
+  await new Promise(r=>setTimeout(r,0));
+  assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),false);
+  const good={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:true,discomfort:false,postTension:false,recommendation:'repeat',at:new Date().toISOString(),origin:'dailyPlan',day:3,activityId:'pelvic-daily-lab',intent:'daily-relax',weekly:{voluntaryControl:'yes'}};
+  const progress={'pf-results':[good],'pf-daily-result':good};
+  assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved(progress,'someone-else:plan'),false);
+  assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),false);
+  assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved(progress,'qa-user:qa-plan'),true);
+  assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),true);
+  await h.w.SPM_PELVIC_LAB.openScheduled({day:6,activityId:'support-pelvic',intent:'scheduled'});
+  assert.equal(h.trained(),1);
+  assert.equal(h.classic[0].intent,'scheduled');
+  assert.equal(h.w.document.querySelector('iframe'),null);
+  h.w.SPM_PELVIC_READINESS.reset();
+  assert.equal(h.w.SPM_PELVIC_READINESS.eligible({...c,safety:'review'}),false);
+ }finally{await h.close()}
+});
+test('reports of pain or loss of relaxation cannot unlock the strength exercise',async()=>{
+ const h=harness({},6);try{
+  const c={userId:'qa-user',planId:'qa-plan',day:6,primary:'wellbeing',safety:'none',flags:[],checkins:[],answers:{pf_awareness:'unsure',pf_tension:1}};
+  h.setContext(c);
+  h.w.eval(fs.readFileSync(require('node:path').join(__dirname,'../premium-v2/pelvic-strength-readiness-v1.js'),'utf8'));
+  await new Promise(r=>setTimeout(r,0));
+  const bad={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:false,discomfort:true,postTension:true,recommendation:'relax',at:new Date().toISOString(),origin:'dailyPlan',day:3,activityId:'pelvic-daily-lab',intent:'daily-relax',weekly:{voluntaryControl:'yes'}};
+  assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved({'pf-results':[bad]},'qa-user:qa-plan'),true);
+  assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),false);
+  assert.equal(h.w.SPM_PELVIC_LAB.restriction(c,{'pf-results':[bad]}),'relax');
+ }finally{await h.close()}
+});
