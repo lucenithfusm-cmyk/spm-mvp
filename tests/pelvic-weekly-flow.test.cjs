@@ -8,14 +8,14 @@ test('calendar: exactly one Lab per week across all six domains; strength remain
  for(const primary of DOMAINS){
   const labDays=[],strengthDays=[];
   for(let day=1;day<=28;day++){
-   const result=w.SPM_DAILY_RESOURCES.compose({id:'main',kind:'worksheet'},[],{primary,day,answers:{}});
+   const result=w.SPM_DAILY_RESOURCES.compose({id:'main',kind:'worksheet'},[],{primary,day,answers:{pf_awareness:'good_control',pf_tension:1},safety:'none',flags:[],checkins:[]});
    const all=[result.main,...result.support],labs=all.filter(a=>a.id==='pelvic-daily-lab'),strength=all.filter(a=>a.pelvicIntent==='scheduled');
    assert.ok(labs.length<=1,'No duplicated Lab for '+primary+' day '+day);
    if(labs.length){labDays.push(day);assert.equal(labs[0].pelvicIntent,'daily-relax');assert.equal(labs[0].optional,true);}
    if(strength.length){strengthDays.push(day);assert.ok(strength.every(a=>a.pelvicPreference==='classic'));}
   }
   assert.deepEqual(labDays,DAYS,primary);
-  assert.equal(strengthDays.length,['erection','ejaculation'].includes(primary)?8:0,primary);
+  assert.deepEqual(strengthDays,[2,6,9,13,16,20,23,27],primary);
  }
 });
 function lesson(day,restriction='relax'){
