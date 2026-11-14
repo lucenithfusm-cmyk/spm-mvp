@@ -23,9 +23,9 @@ function setup(){
 test('reading or navigating to the last screen cannot register strength',async()=>{
  const h=setup();try{
   assert.equal(h.open(),true);h.select(6);h.w.document.querySelector('#pv2Next').click();await settle();
-  assert.ok(h.w.document.querySelector('#pv2Start'));assert.match(h.w.document.body.textContent,/realiza la serie guiada/);
+  assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,true);
   assert.equal(h.writes.length,0);assert.equal(h.results.length,0);
-  assert.equal(h.w.SPM_PELVIC_V2.close(),true);assert.equal(h.closes(),1);
+  assert.equal(h.closes(),1,'returns to daily callback without saving an incomplete series');
  }finally{h.close();}
 });
 test('only a completed real sequence with acknowledged save emits the fresh scoped result',async()=>{
@@ -87,4 +87,35 @@ test('the strength timer displays real contraction, release and rest stages but 
   assert.equal(h.results.length,0);
   assert.equal(h.writes.length,0);
  }finally{h.close()}
+});
+
+// The final step is a navigation action, not a false exercise completion.
+test('premium step buttons show the active/completed state with readable mobile labels',()=>{
+ const h=setup();try{
+  h.open();const nav=h.w.document.querySelector('.pv2-progress');
+  assert.equal(nav.querySelectorAll('.pv2-step').length,7);
+  h.select(3);assert.equal(nav.querySelector('[aria-current="step"]').dataset.step,'3');
+  assert.equal(nav.querySelectorAll('.pv2-step.done').length,3);
+  assert.match(h.w.document.head.textContent,/white-space:normal/);
+  h.select(6);assert.match(h.w.document.querySelector('#pv2Next').textContent,/Finalizar y volver a mi día/);
+ }finally{h.close();}
+});
+test('final button saves a completed sequence then returns to the assigned day',async()=>{
+ const h=setup();try{
+  h.open();h.complete();h.select(6);h.w.document.querySelector('#pv2Next').click();await settle();
+  assert.equal(h.writes.length,1);assert.equal(h.results.length,1);assert.equal(h.closes(),1);
+  assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,true);
+ }finally{h.close();}
+});
+test('final button keeps the session open and retries after a failed save',async()=>{
+ const h=setup();try{
+  h.open();h.complete();h.select(6);h.setFail(true);
+  h.w.document.querySelector('#pv2Next').click();await settle();
+  assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,false);
+  assert.equal(h.writes.length,0);assert.equal(h.closes(),0);
+  assert.match(h.w.document.querySelector('.pv2-save-status').textContent,/No se pudo guardar/);
+  h.setFail(false);h.w.document.querySelector('#pv2Next').click();await settle();
+  assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,true);
+  assert.equal(h.writes.length,1);assert.equal(h.results.length,1);assert.equal(h.closes(),1);
+ }finally{h.close();}
 });
