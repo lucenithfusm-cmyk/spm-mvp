@@ -223,8 +223,8 @@ test('final white poster cannot show baked legacy navigation in the visible crop
   assert.match(style,/741 \/ 1040/);
   assert.ok(h.w.document.querySelector('.pv2-nav'));
   const css=h.w.document.head.textContent;
-  assert.match(css,/\.pv2-nav\{position:sticky;bottom:0;z-index:8/);
-  assert.match(css,/#pv2Next\{box-sizing:border-box;min-width:0/);
+  assert.match(css,/\.pv2-nav\s*\{\s*position:sticky;\s*bottom:0;\s*z-index:8/);
+  assert.match(css,/#pv2Prev,#spmPelvicV2 #pv2Next\s*\{/);assert.match(css,/box-sizing:border-box;min-width:0;max-width:none;width:100%/);
   assert.equal(h.w.document.querySelectorAll('#pv2Prev').length,1);
   assert.equal(h.w.document.querySelectorAll('#pv2Next').length,1);
  }finally{h.close();}
