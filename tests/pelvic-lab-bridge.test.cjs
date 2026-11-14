@@ -37,13 +37,13 @@ test('a failed cloud save retains the open module and supports retry',async()=>{
  }finally{await h.close()}
 });
 test('the selector retains the existing program and recommends preparation for unknown awareness',async()=>{
- const h=harness();try{await h.w.SPM_PELVIC_HUB.open();assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/DOS VECES POR SEMANA/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/No sustituye una sesión de fuerza/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/PELVIC FLOOR LAB SEMANAL/);
+ const h=harness();try{await h.w.SPM_PELVIC_HUB.open();assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/DOS VECES POR SEMANA/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/programa independiente/);assert.equal(h.w.document.querySelector('[data-pf-education]'),null);
  h.w.document.querySelector('[data-pf-training]').click();await new Promise(r=>setTimeout(r,0));assert.equal(h.trained(),0);
  }finally{await h.close()}
 });
 test('pelvic symptoms and high tension keep contraction training paused',async()=>{
  const h=harness({'pf-checkins':[{at:new Date().toISOString(),tension:8,release:'Difícil'}]});try{await h.w.SPM_PELVIC_HUB.open();assert.equal(h.w.document.querySelector('[data-pf-training]').disabled,true);
- h.w.document.querySelector('[data-pf-education]').click();assert.equal(h.w.SPM_PELVIC_LAB_HOST.getContext().restriction,'relax');
+ assert.equal(h.w.document.querySelector('[data-pf-education]'),null);await h.w.SPM_PELVIC_LAB.open({origin:'library'});assert.equal(h.w.SPM_PELVIC_LAB_HOST.getContext().restriction,'relax');
  }finally{await h.close()}
 });
 test('unknown keys and malformed or oversized clinical values are rejected',async()=>{
@@ -57,7 +57,7 @@ test('unknown keys and malformed or oversized clinical values are rejected',asyn
  test('scheduled contractions stay in the classic module after persisted readiness',async()=>{
  const ready={'pf-screening':{aware:'ok',releaseOk:'si',comp:['mandibula','abdomen','gluteos']}};
  const h=harness(ready,2);try{await h.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,activityId:'support-pelvic',intent:'scheduled'});assert.equal(h.trained(),1);assert.equal(h.classic[0].readiness(),'ready');assert.equal(h.classic[0].activityId,'support-pelvic');assert.equal(h.w.document.querySelector('iframe'),null);}finally{await h.close();}
- const beginner=harness({},2);try{await beginner.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,intent:'scheduled'});assert.equal(beginner.trained(),0);assert.equal(beginner.w.document.querySelector('iframe'),null);assert.match(beginner.w.document.querySelector('[data-pf-body]').textContent,/reconocer la musculatura/);assert.ok(beginner.w.document.querySelector('[data-pf-daily]'));}finally{await beginner.close();}
+ const beginner=harness({},2);try{await beginner.w.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:2,intent:'scheduled'});assert.equal(beginner.trained(),0);assert.equal(beginner.w.document.querySelector('iframe'),null);assert.match(beginner.w.document.querySelector('[data-pf-body]').textContent,/reconocer la musculatura/);assert.ok(beginner.w.document.querySelector('[data-pf-return]'));assert.equal(beginner.w.document.querySelector('iframe'),null);}finally{await beginner.close();}
  });
  test('original reported-control readiness is preserved and current pelvic tension overrides it',async()=>{
  const c={userId:'qa-user',planId:'qa-plan',day:2,safety:'none',flags:[],checkins:[],answers:{pf_awareness:'good_control',pf_tension:1}};
@@ -131,7 +131,7 @@ test('the strength hub does not offer extra sessions outside the two calendar da
   await h.w.SPM_PELVIC_HUB.open();
   assert.equal(h.w.document.querySelector('[data-pf-training]').disabled,true);
   assert.match(h.w.document.querySelector('[data-pf-training]').textContent,/Disponible los días de sesión programada/);
-  assert.ok(h.w.document.querySelector('[data-pf-education]'),'weekly educational Lab remains separate');
+  assert.equal(h.w.document.querySelector('[data-pf-education]'),null,'weekly educational Lab remains in the library only');
  }finally{await h.close()}
 });
 test('old recurring Lab buttons are not reinserted in the strength calendar',async()=>{
@@ -142,4 +142,18 @@ test('old recurring Lab buttons are not reinserted in the strength calendar',asy
   assert.equal(h.w.document.querySelector('#spmPelvicLabEntry'),null);
   assert.ok(h.w.document.querySelector('.pfi-launch'),'legacy training button is not removed by the Lab cleanup');
  }finally{await h.close()}
+});
+
+test('library offers independent strength and awareness entries without injecting the Lab into a strength screen',async()=>{
+ const h=harness({},2);try{
+  const lib=h.w.document.createElement('section');lib.id='spmDailyLibraryIntro';h.w.document.getElementById('plan').appendChild(lib);
+  await new Promise(r=>setTimeout(r,55));
+  assert.equal(h.w.document.querySelectorAll('#spmPelvicLibraryChoices article').length,2);
+  lib.querySelector('[data-pf-library-strength]').click();await new Promise(r=>setTimeout(r,0));
+  assert.ok(h.w.document.querySelector('[data-pf-training]'));
+  assert.equal(h.w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+  await h.w.SPM_PELVIC_LAB.close();
+  lib.querySelector('[data-pf-library-awareness]').click();await new Promise(r=>setTimeout(r,0));
+  assert.ok(h.w.document.querySelector('.spm-pf-modal[open] iframe'));
+ }finally{await h.close();}
 });

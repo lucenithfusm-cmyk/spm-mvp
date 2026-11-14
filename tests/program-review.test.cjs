@@ -249,8 +249,8 @@ test('day six keeps strength separate while day three hosts the one weekly aware
   assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
   assert.equal(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3');
-  await api.launch('main');assert.match(w.document.querySelector('.spm-pf-choice').textContent,/necesitas reconocer/);
-  await w.SPM_PELVIC_LAB.close();
+  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-title').textContent,/Conoce tu piso pélvico/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+  w.SPM_PELVIC_V2.close();
   const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
   w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
   w.SPM_PELVIC_V2.open=opts=>{calls.push(opts);return true;};
@@ -271,7 +271,7 @@ test('day six keeps strength separate while day three hosts the one weekly aware
   assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().day,3);
   assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().activityId,'pelvic-daily-lab');
   await w.SPM_PELVIC_LAB.close();
-  assert.deepEqual(h.errors,[]);
+  assert.deepEqual(h.errors.filter(e=>!e.includes('Not implemented: HTMLMediaElement.prototype.pause')),[],'iframe audio stubs are unavailable in JSDOM, not in the real player');
  }finally{h.close();}
 });
 
@@ -308,21 +308,23 @@ test('days four and six remain paused under review and day five retains its educ
   }finally{h.close();}
 });
 
-test('DE day two launches the original strength module, not Pelvic Floor Lab',async()=>{
+test('DE day two opens the real seven-step strength interface with the unmodified review profile',async()=>{
  const h=await harness('?programa=erection&dia=2');try{
   const {w}=h,api=w.SPM_DAILY_PRACTICE;
+  assert.equal(w.SPM_RESOURCE_CONTEXT().answers.pf_awareness,'good_control');
   const strength=api.assignments().find(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
   assert.ok(strength);assert.equal(strength.pelvicPreference,'classic');
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
-  const oldContext=w.SPM_RESOURCE_CONTEXT,oldClassic=w.SPM_PELVIC_V2.open,calls=[];
-  w.SPM_RESOURCE_CONTEXT=()=>({...oldContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
-  w.SPM_PELVIC_V2.open=opts=>{calls.push(opts);return true;};
-  try{
-   w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
-   await api.launch(strength.id);
-   assert.equal(calls.length,1);assert.equal(calls[0].activityId,strength.id);
-   assert.equal(calls[0].intent,'scheduled');assert.equal(calls[0].readiness(),'ready');
-   assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
-  }finally{w.SPM_PELVIC_V2.open=oldClassic;w.SPM_RESOURCE_CONTEXT=oldContext;await w.SPM_PELVIC_LAB.close();}
+  const button=w.document.querySelector('[data-activity="'+strength.id+'"] [data-daily-open]');
+  assert.ok(button);
+  button.click();await new Promise(r=>setTimeout(r,80));
+  const trainer=w.document.querySelector('#spmPelvicV2:not([hidden])');
+  assert.ok(trainer,'day-2 button opens the seven-step strength trainer');
+  assert.match(trainer.querySelector('.pv2-title').textContent,/Conoce tu piso pélvico/);
+  assert.equal(trainer.querySelectorAll('[data-step]').length,7);
+  assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null,'Pelvic Floor Lab must not be mounted');
+  assert.equal(w.SPM_PELVIC_LAB_HOST,undefined);
+  assert.deepEqual(h.errors,[]);
+  w.SPM_PELVIC_V2.close();
  }finally{h.close();}
 });

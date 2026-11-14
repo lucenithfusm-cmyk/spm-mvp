@@ -55,3 +55,15 @@ test('DE pelvic entries use the guarded classic strength selector rather than th
  assert.match(live,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
  assert.match(review,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
 });
+
+test('reviewer uses a valid prepared example without relaxing real-patient safety',()=>{
+ const review=read('program-review-v1.js'),bridge=read('pelvic-lab-bridge-v1.js');
+ assert.match(review,/answers:\{pf_awareness:'good_control',pf_tension:1\}/);
+ assert.doesNotMatch(review,/answers:\{pf_awareness:'yes'/);
+ assert.match(bridge,/a\.pf_awareness==='hard_to_relax'/);
+ assert.match(bridge,/const strengthAvailable=ready&&!!scheduled/);
+ assert.match(bridge,/data-pf-library-strength/);
+ assert.match(bridge,/data-pf-library-awareness/);
+ assert.doesNotMatch(bridge,/data-pf-education/);
+ assert.doesNotMatch(bridge,/data-pf-daily/);
+});

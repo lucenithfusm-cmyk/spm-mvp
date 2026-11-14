@@ -44,4 +44,4 @@ jobs:
       - name: Test classic strength, routing, persistence, and Lab separation
         run: node --test tests/pelvic-classic-completion.test.cjs tests/pelvic-strength-routing.test.cjs tests/pelvic-lab-bridge.test.cjs tests/pelvic-weekly-flow.test.cjs
       - name: Day-2 DE strength regression (isolated from unrelated media stubs)
-        run: node --test --test-name-pattern='DE day two launches' tests/program-review.test.cjs
+        run: node --test tests/program-review.test.cjs
