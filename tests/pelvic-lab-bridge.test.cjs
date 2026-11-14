@@ -113,10 +113,10 @@ test('the first hub option goes to the day-scoped classic strength module, never
   h.w.SPM_DAILY_PRACTICE={assignments:()=>[{id:'support-pelvic',kind:'pelvic',pelvicIntent:'scheduled'}],launch:id=>launched.push(id)};
   await h.w.SPM_PELVIC_HUB.open();
   const body=h.w.document.querySelector('[data-pf-body]'),cards=body.querySelectorAll('article');
-  assert.equal(cards.length,2);
+  assert.equal(cards.length,1,'only strength is shown in the strength selector');
   assert.match(cards[0].textContent,/Programa interactivo de 7 pasos/);
   assert.equal(cards[0].querySelector('[data-pf-training]').disabled,false);
-  assert.match(cards[1].textContent,/Pelvic Floor Lab/);
+  assert.equal(body.querySelector('[data-pf-education]'),null,'Pelvic Floor Lab has its separate Library entry');
   assert.equal(h.trained(),0);
   cards[0].querySelector('[data-pf-training]').click();await new Promise(resolve=>setTimeout(resolve,0));
   assert.deepEqual(launched,['support-pelvic']);
