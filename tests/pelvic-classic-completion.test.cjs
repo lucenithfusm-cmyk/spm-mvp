@@ -57,11 +57,11 @@ test('the original seven-step strength program uses premium posture images and a
   assert.equal(h.open(),true);
   assert.equal(h.w.document.querySelectorAll('[data-step]').length,7);
   h.select(2);
-  assert.match(h.w.document.querySelector('.pv2-main').textContent,/Posición inicial/);
+  assert.match(h.w.document.querySelector('.pv2-cover-crop img').getAttribute('alt'),/Posición inicial/);
   assert.equal(h.w.document.querySelectorAll('[data-pv2-position]').length,2);
   h.w.document.querySelector('[data-pv2-position="seated"]').click();
   assert.equal(h.w.document.querySelector('[data-pv2-position="seated"]').getAttribute('aria-pressed'),'true');
-  assert.match(h.w.document.querySelector('.pv2-image img').getAttribute('src'),/spm-posture-seated/);
+  assert.match(h.w.document.querySelector('[data-pv2-position="seated"] img').getAttribute('src'),/spm-posture-seated/);
   h.select(4);
   assert.equal(h.w.document.querySelectorAll('[data-pv2-technique]').length,2);
   h.w.document.querySelector('[data-pv2-technique="contract"]').click();
@@ -129,15 +129,53 @@ test('page 1/7 displays only the cropped white SPM artwork and keeps spoken guid
   assert.match(page.querySelector('.pv2-cover-crop img').getAttribute('src'),/8c01592d-7a59-434e-a0b6-11a7497a0b0d/);
   assert.equal(page.querySelectorAll('.pv2-card,.pv2-info,.pv2-title,.pv2-lead').length,0);
   const audio=page.querySelector('.pv2-cover-audio');assert.ok(audio);
-  assert.match(audio.getAttribute('aria-label'),/Escuchar la explicación/);
+  assert.match(audio.getAttribute('aria-label'),/Escuchar explicación y recomendaciones/);
   const speech=[];h.w.speechSynthesis.speak=utterance=>speech.push(utterance.text);
   audio.click();assert.equal(speech.length,1);assert.match(speech[0],/piso pélvico masculino/);
   h.select(1);
-  assert.equal(page.classList.contains('pv2-cover-page'),false);
-  assert.equal(page.querySelector('.pv2-cover-crop'),null);
-  assert.ok(page.querySelector('.pv2-card'));
-  assert.match(page.querySelector('.pv2-title').textContent,/Identifica los músculos/);
+  assert.equal(page.classList.contains('pv2-cover-page'),true);
+  assert.ok(page.querySelector('.pv2-cover-crop'));
+  assert.equal(page.querySelectorAll('.pv2-card').length,0,'educational step two remains a single white image');
+  assert.match(page.querySelector('.pv2-cover-crop img').getAttribute('alt'),/Identifica los músculos/);
   h.select(0);assert.ok(page.querySelector('.pv2-cover-crop'));
-  assert.ok(h.w.document.head.textContent.includes('aspect-ratio:741 / 1158'));
+  assert.ok(h.w.document.head.textContent.includes('pv2-meter-track'));
+ }finally{h.close();}
+});
+
+test('seven distinct SPM posters each carry the full step audio and a real progress meter',()=>{
+ const h=setup();try{
+  h.open();
+  const expected=[14,28,43,57,71,86,100];
+  const images=['8c01592d','88248104','c06c0c2c','3ff4df78','841613f3','653bbcb2','dd8b7cf0'];
+  for(let i=0;i<7;i++){
+   h.select(i);
+   const page=h.w.document.querySelector('.pv2-main');
+   assert.ok(page.classList.contains('pv2-cover-page'));
+   const poster=page.querySelector('.pv2-cover-crop img');
+   assert.match(poster.getAttribute('src'),new RegExp(images[i]));
+   assert.equal(h.w.document.querySelector('#pv2MeterLabel').textContent,'Paso '+(i+1)+' de 7');
+   assert.equal(h.w.document.querySelector('#pv2MeterValue').textContent,expected[i]+'%');
+   assert.equal(h.w.document.querySelector('#pv2MeterFill').style.width,expected[i]+'%');
+   assert.equal(Number(h.w.document.querySelector('.pv2-meter-track').getAttribute('aria-valuenow')),i+1);
+   const audio=page.querySelector('.pv2-cover-audio');
+   assert.ok(audio);assert.ok(audio.dataset.say.length>250);
+   assert.match(audio.dataset.say,/piso pélvico|pélvicos|pélvica/i);
+   assert.ok(page.querySelector('.pv2-transcript').textContent.length>100);
+  }
+  assert.equal(h.w.document.querySelectorAll('.pv2-step').length,7);
+  assert.equal(h.w.document.querySelector('[data-step="6"]').getAttribute('aria-label').includes('paso 7'),true);
+ }finally{h.close();}
+});
+test('posture, visual comparison, timer, and safe closing remain interactive below the white posters',()=>{
+ const h=setup();try{
+  h.open();
+  h.select(2);assert.equal(h.w.document.querySelectorAll('[data-pv2-position]').length,2);
+  h.select(4);assert.equal(h.w.document.querySelectorAll('[data-pv2-technique]').length,2);
+  h.select(5);assert.ok(h.w.document.querySelector('#pv2Start'));assert.ok(h.w.document.querySelector('#pv2CueToggle'));
+  assert.equal(h.w.document.querySelectorAll('.pv2-cover-extras .pv2-image').length,1);
+  h.select(6);assert.match(h.w.document.querySelector('.pv2-protocol').textContent,/dos sesiones semanales/);
+  assert.equal(h.results.length,0);
+  h.w.document.querySelector('#pv2Next').click();assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,true);
+  assert.equal(h.writes.length,0);
  }finally{h.close();}
 });
