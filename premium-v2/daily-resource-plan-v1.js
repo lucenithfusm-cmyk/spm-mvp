@@ -35,16 +35,21 @@ function recoveryFor(day,primary){
  const story=window.SPM_RESOURCE_CONTENT?.scenarios?.find(s=>s.id===scenario);
  return story?{scenario,index:index+1,title:story.title.es}:null;
 }
+function strengthEligible(c){
+ if(!c)return false;
+ const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;
+ if(!all.includes(primary))return false;
+ const a=c.answers||{},t=a.pf_tension==null?NaN:Number(a.pf_tension);
+ const safe=c.safety==='none'&&!c.flags?.length&&!c.checkins?.some(x=>x.new_safety_flag===true);
+ const readiness=window.SPM_PELVIC_READINESS;
+ return readiness?.eligible?readiness.eligible(c):safe&&a.pf_awareness==='good_control'&&[0,1,2].includes(t);
+}
 function cadence(main,support,c){
  const day=Number(c.day),story=recoveryFor(day,c.primary);
  // Program-wide adaptive rule: initial coordination or saved Lab readiness,
  // not the patient's diagnosis, controls the optional strength assignment.
  const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;
- const a=c.answers||{},t=a.pf_tension==null?NaN:Number(a.pf_tension);
- const safe=c.safety==='none'&&!c.flags?.length&&!c.checkins?.some(x=>x.new_safety_flag===true);
- const fallbackReady=safe&&a.pf_awareness==='good_control'&&[0,1,2].includes(t);
- const readiness=window.SPM_PELVIC_READINESS;
- const strengthReady=all.includes(primary)&&(readiness?.eligible?readiness.eligible(c):fallbackReady);
+ const strengthReady=strengthEligible(c);
  // Remove unsupported/legacy pelvic shortcuts before inserting the validated routes.
  support=support.filter(x=>x.kind!=='pelvic');
  if(strengthReady){
@@ -87,5 +92,5 @@ function compose(main,support,c){
  const unique=new Map([...support,...extra].map(a=>[a.id,a]));
  return {main,support:[...unique.values()]};
 }
-window.SPM_DAILY_RESOURCES={compose,recoveryFor,videoFor,videoPlan,pelvicDays};
+window.SPM_DAILY_RESOURCES={compose,recoveryFor,videoFor,videoPlan,pelvicDays,strengthEligible};
 })();
