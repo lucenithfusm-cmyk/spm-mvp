@@ -106,20 +106,32 @@ test('classic callbacks reject stale or unrelated results and never substitute a
  }finally{await h.close();}
 });
 
-test('the first option in the hub is the classic strength module, never the weekly Lab',async()=>{
+test('the first hub option goes to the day-scoped classic strength module, never the Lab',async()=>{
  const ready={'pf-screening':{aware:'ok',releaseOk:'si',comp:['mandibula','abdomen','gluteos']}};
- const h=harness(ready,2);try{
+ const h=harness(ready,2),launched=[];
+ try{
+  h.w.SPM_DAILY_PRACTICE={assignments:()=>[{id:'support-pelvic',kind:'pelvic',pelvicIntent:'scheduled'}],launch:id=>launched.push(id)};
   await h.w.SPM_PELVIC_HUB.open();
   const body=h.w.document.querySelector('[data-pf-body]'),cards=body.querySelectorAll('article');
   assert.equal(cards.length,2);
-  assert.match(cards[0].textContent,/Contracción y fuerza|Programa interactivo de 7 pasos/i);
+  assert.match(cards[0].textContent,/Programa interactivo de 7 pasos/);
   assert.equal(cards[0].querySelector('[data-pf-training]').disabled,false);
   assert.match(cards[1].textContent,/Pelvic Floor Lab/);
   assert.equal(h.trained(),0);
-  cards[0].querySelector('[data-pf-training]').click();
-  await new Promise(resolve=>setTimeout(resolve,0));
-  assert.equal(h.trained(),1);
-  assert.equal(h.w.document.querySelector('iframe'),null);
+  cards[0].querySelector('[data-pf-training]').click();await new Promise(resolve=>setTimeout(resolve,0));
+  assert.deepEqual(launched,['support-pelvic']);
+  assert.equal(h.trained(),0,'the hub does not bypass the day-scoped readiness and save bridge');
+  assert.equal(h.w.document.querySelector('iframe'),null,'a strength choice does not open the Lab viewer');
+ }finally{await h.close()}
+});
+test('the strength hub does not offer extra sessions outside the two calendar days',async()=>{
+ const ready={'pf-screening':{aware:'ok',releaseOk:'si',comp:['mandibula','abdomen','gluteos']}};
+ const h=harness(ready,3);try{
+  h.w.SPM_DAILY_PRACTICE={assignments:()=>[{id:'pelvic-daily-lab',kind:'pelvic',pelvicIntent:'daily-relax'}],launch:()=>{throw Error('No unassigned strength session must launch')}};
+  await h.w.SPM_PELVIC_HUB.open();
+  assert.equal(h.w.document.querySelector('[data-pf-training]').disabled,true);
+  assert.match(h.w.document.querySelector('[data-pf-training]').textContent,/Disponible los días de sesión programada/);
+  assert.ok(h.w.document.querySelector('[data-pf-education]'),'weekly educational Lab remains separate');
  }finally{await h.close()}
 });
 test('old recurring Lab buttons are not reinserted in the strength calendar',async()=>{

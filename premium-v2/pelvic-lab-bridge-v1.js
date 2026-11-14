@@ -123,14 +123,18 @@ async function openScheduled(opts={}){
 async function openHub(opts={}){
  if(!await load({...opts,hub:true}))return;
  const level=restriction(ctx(),state),ready=level==='ready';
+ const scheduled=window.SPM_DAILY_PRACTICE?.assignments?.()?.find(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled')||null;
+ const strengthAvailable=ready&&!!scheduled;
  const why=level==='review'?'La información de seguridad necesita revisión. No empieces contracciones; puedes consultar las explicaciones.':level==='relax'?'Tus registros aconsejan conciencia y relajación antes que fuerza. Las contracciones están en pausa.':ready?'Tu información permite abrir el entrenamiento de contracción y fuerza según tu pauta.':'Antes de fortalecer necesitas identificar y relajar la musculatura sin compensaciones.';
- modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · DOS MÓDULOS DIFERENTES</span><h1>Piso pélvico · Contracción y fuerza</h1><p>'+why+'</p><article><small>ENTRENAMIENTO DE FUERZA · DOS VECES POR SEMANA SI CORRESPONDE</small><h2>Programa interactivo de 7 pasos</h2><p>Identifica el músculo, aprende la postura y la técnica, practica con temporizador y guarda tu sesión. Es independiente del laboratorio semanal.</p><button type="button" data-pf-training '+(!ready?'disabled':'')+'>'+(ready?'Abrir contracción y fuerza':'Entrenamiento en pausa por preparación')+'</button></article><article><small>OTRO MÓDULO · PELVIC FLOOR LAB SEMANAL</small><h2>Conciencia y relajación</h2><p>El laboratorio acompaña la percepción y la relajación. No sustituye una sesión de fuerza ni debe aparecer al seleccionar contracciones.</p><button type="button" data-pf-education>Consultar Pelvic Floor Lab (biblioteca)</button></article><p class="spm-pf-small">Si aparece dolor o dificultad para relajar, detente. El entrenamiento de fuerza requiere preparación y supervisión adecuada.</p></section>';
+ modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · DOS MÓDULOS DIFERENTES</span><h1>Piso pélvico · Contracción y fuerza</h1><p>'+why+'</p><article><small>ENTRENAMIENTO DE FUERZA · DOS VECES POR SEMANA SI CORRESPONDE</small><h2>Programa interactivo de 7 pasos</h2><p>Identifica el músculo, aprende la postura y la técnica, practica con temporizador y guarda tu sesión. Es independiente del laboratorio semanal.</p><button type="button" data-pf-training '+(!strengthAvailable?'disabled':'')+'>'+(strengthAvailable?'Iniciar mi sesión de fuerza':!ready?'Entrenamiento en pausa por preparación':'Disponible los días de sesión programada')+'</button></article><article><small>OTRO MÓDULO · PELVIC FLOOR LAB SEMANAL</small><h2>Conciencia y relajación</h2><p>El laboratorio acompaña la percepción y la relajación. No sustituye una sesión de fuerza ni debe aparecer al seleccionar contracciones.</p><button type="button" data-pf-education>Consultar Pelvic Floor Lab (biblioteca)</button></article><p class="spm-pf-small">Si aparece dolor o dificultad para relajar, detente. El entrenamiento de fuerza requiere preparación y supervisión adecuada.</p></section>';
  modal.querySelector('[data-pf-education]').onclick=showLab;
  modal.querySelector('[data-pf-training]').onclick=async()=>{
-  if(restriction(ctx(),state)!=='ready')return;
-  if(!window.SPM_PELVIC_V2?.open){status('No pudimos cargar el entrenamiento de fuerza. Reintenta.',true);return;}
-  const verified=clone(state);
-  if(await close())window.SPM_PELVIC_V2.open({origin:'library',readiness:()=>restriction(ctx(),verified)});
+  if(!sameContext()||restriction(ctx(),state)!=='ready')return;
+  const assigned=window.SPM_DAILY_PRACTICE?.assignments?.()?.find(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
+  if(!assigned||assigned.id!==scheduled?.id)return;
+  // Always enter through the day-scoped activity, never open extra strength sessions
+  // from the Library and never route a scheduled strength session to the weekly Lab.
+  if(await close())await window.SPM_DAILY_PRACTICE?.launch?.(assigned.id);
  };
 }
 

@@ -31,6 +31,8 @@ test('the original seven-step strength route is active and old competing overlay
  assert.match(classic,/source:'pelvic-classic-v2'/);
  assert.match(bridge,/data-pf-training/);
  assert.match(bridge,/Programa interactivo de 7 pasos/);
+ assert.match(bridge,/const strengthAvailable=ready&&!!scheduled/);
+ assert.match(bridge,/SPM_DAILY_PRACTICE\?\.launch\?\.\(assigned\.id\)/);
  assert.match(bridge,/document\.getElementById\('spmPelvicLabEntry'\)\?\.remove\(\)/);
  assert.match(bridge,/document\.querySelectorAll\('\[data-pf-lab\]'\)/);
 });
