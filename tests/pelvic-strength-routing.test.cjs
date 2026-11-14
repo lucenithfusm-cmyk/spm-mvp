@@ -44,3 +44,14 @@ test('the classic strength timer remains separate from Lab results and requires 
  assert.match(classic,/guidedResult\|\|=\{source:'pelvic-classic-v2'/);
  assert.match(read('program-paused.html'),/Estamos afinando tu experiencia/);
 });
+
+test('DE pelvic entries use the guarded classic strength selector rather than the Lab',()=>{
+ const central=read('erectile-central-v3.js'),legacy=read('erectile-function-route.js'),review=read('program-review-v1.js'),live=read('live.html');
+ assert.match(central,/if\(kind==='pelvic'\)\{/);
+ assert.match(central,/window\.SPM_PELVIC_HUB\.open\(\{origin:'erectile',day\}\)/);
+ assert.doesNotMatch(central,/kind==='pelvic'&&currentOrigin\(\)==='dailyPlan'&&window\.SPM_PELVIC_LAB/);
+ assert.match(legacy,/window\.SPM_PELVIC_HUB\.open\(\{origin:'erectile',day\}\)/);
+ assert.doesNotMatch(legacy,/SPM_PELVIC_FLOOR\?\.open/);
+ assert.match(live,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
+ assert.match(review,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
+});

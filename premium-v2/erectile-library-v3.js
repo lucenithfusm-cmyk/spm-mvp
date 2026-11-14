@@ -35,7 +35,7 @@ const PLUS={
 const DAYS={...CORE,...PLUS};
 const LINKS={
   breathing:{label:'Respiración SPM',resource:'breathing'},
-  pelvic:{label:'Pelvic Floor Lab',resource:'pelvic'},
+  pelvic:{label:'Piso pélvico · Fuerza y relajación (módulos separados)',resource:'pelvic'},
   sensate:{label:'Sensate Focus Lab',resource:'sensate'},
   partner:{label:'Connection Lab',resource:'connection'},
   aerobic:{label:'Movimiento SPM',resource:'movement'},

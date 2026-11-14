@@ -307,3 +307,22 @@ test('days four and six remain paused under review and day five retains its educ
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
+
+test('DE day two launches the original strength module, not Pelvic Floor Lab',async()=>{
+ const h=await harness('?programa=erection&dia=2');try{
+  const {w}=h,api=w.SPM_DAILY_PRACTICE;
+  const strength=api.assignments().find(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
+  assert.ok(strength);assert.equal(strength.pelvicPreference,'classic');
+  assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
+  const oldContext=w.SPM_RESOURCE_CONTEXT,oldClassic=w.SPM_PELVIC_V2.open,calls=[];
+  w.SPM_RESOURCE_CONTEXT=()=>({...oldContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
+  w.SPM_PELVIC_V2.open=opts=>{calls.push(opts);return true;};
+  try{
+   w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
+   await api.launch(strength.id);
+   assert.equal(calls.length,1);assert.equal(calls[0].activityId,strength.id);
+   assert.equal(calls[0].intent,'scheduled');assert.equal(calls[0].readiness(),'ready');
+   assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+  }finally{w.SPM_PELVIC_V2.open=oldClassic;w.SPM_RESOURCE_CONTEXT=oldContext;await w.SPM_PELVIC_LAB.close();}
+ }finally{h.close();}
+});
