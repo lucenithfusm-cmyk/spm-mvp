@@ -8,17 +8,18 @@ const settle=()=>new Promise(resolve=>setImmediate(resolve));
 function setup(){
  const dom=new JSDOM('<body></body>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true}),w=dom.window;
  let context={userId:'qa',planId:'plan',day:2},restriction='ready',fail=false,tick=null,closes=0;
- const writes=[],results=[];
+ const writes=[],results=[],audioEvents=[];
  w.SPM_RESOURCE_CONTEXT=()=>context;
  w.SPM_SAVE_MODULE=async value=>{if(fail)throw Error('save failed');writes.push(value);return {ok:true};};
  w.setInterval=fn=>{tick=fn;return 1;};w.clearInterval=()=>{tick=null;};
  w.speechSynthesis={cancel(){},speak(){}};w.SpeechSynthesisUtterance=function(text){this.text=text;};
+ w.Audio=function(){return {src:'',currentTime:0,play(){audioEvents.push('play:'+this.src);return Promise.resolve()},pause(){audioEvents.push('pause')}};};
  w.eval(source);w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
  const options={origin:'dailyPlan',intent:'scheduled',activityId:'support-pelvic',readiness:()=>restriction,onResult:r=>{results.push(r);return true;},onClose:()=>closes++};
  const open=()=>w.SPM_PELVIC_V2.open(options);
  const select=step=>w.document.querySelector('[data-step="'+step+'"]').click();
  const complete=()=>{select(5);w.document.querySelector('#pv2Start').click();for(let i=0;i<420;i++){const current=tick;if(!current)break;current();}};
- return {w,writes,results,open,select,complete,closes:()=>closes,setFail:x=>{fail=x;},setRestriction:x=>{restriction=x;},setContext:x=>{context=x;},tick:()=>tick?.(),close:()=>w.close()};
+ return {w,writes,results,audioEvents,open,select,complete,closes:()=>closes,setFail:x=>{fail=x;},setRestriction:x=>{restriction=x;},setContext:x=>{context=x;},tick:()=>tick?.(),close:()=>w.close()};
 }
 test('reading or navigating to the last screen cannot register strength',async()=>{
  const h=setup();try{
@@ -76,7 +77,7 @@ test('the strength timer displays real contraction, release and rest stages but 
   h.open();h.select(5);
   assert.ok(h.w.document.querySelector('#pv2VisualCue'));
   assert.ok(h.w.document.querySelector('#pv2CueToggle'));
-  assert.equal(h.w.document.querySelector('#pv2CueToggle').getAttribute('aria-pressed'),'false');
+  assert.equal(h.w.document.querySelector('#pv2CueToggle').getAttribute('aria-pressed'),'true');
   h.w.document.querySelector('#pv2Start').click();
   assert.equal(h.w.document.querySelector('[data-pv2-state="CONTRAE"]').classList.contains('on'),true);
   for(let i=0;i<5;i++)h.tick();
@@ -177,5 +178,54 @@ test('posture, visual comparison, timer, and safe closing remain interactive bel
   assert.equal(h.results.length,0);
   h.w.document.querySelector('#pv2Next').click();assert.equal(h.w.document.querySelector('#spmPelvicV2').hidden,true);
   assert.equal(h.writes.length,0);
+ }finally{h.close();}
+});
+
+test('gold speaker calls attention, can be toggled, and is clearly labeled on every page',()=>{
+ const h=setup();try{
+  h.open();
+  const css=h.w.document.head.textContent;
+  assert.match(css,/pv2VoiceHalo/);assert.match(css,/pv2VoiceBounce/);
+  for(let i=0;i<7;i++){
+   h.select(i);const b=h.w.document.querySelector('.pv2-cover-audio');
+   assert.ok(b);assert.match(b.textContent,/TOCA PARA ESCUCHAR/);
+   assert.ok(b.querySelector('.pv2-audio-glyph'));
+   assert.equal(b.getAttribute('aria-pressed'),'false');
+  }
+  const b=h.w.document.querySelector('.pv2-cover-audio');
+  b.click();assert.equal(b.classList.contains('on'),true);assert.equal(b.getAttribute('aria-pressed'),'true');
+  b.click();assert.equal(b.classList.contains('on'),false);assert.equal(b.getAttribute('aria-pressed'),'false');
+ }finally{h.close();}
+});
+test('Iniciar automatically voices first contraction, pauses and resumes without Lab runtime assets',()=>{
+ const h=setup();try{
+  h.open();h.select(5);
+  const start=h.w.document.querySelector('#pv2Start'),toggle=h.w.document.querySelector('#pv2CueToggle');
+  assert.equal(toggle.getAttribute('aria-pressed'),'true');
+  start.click();
+  assert.ok(h.audioEvents.some(x=>x==='play:assets/audio/pelvic/strength-cues/contrae.mp3'),'voice plays on the same Iniciar gesture');
+  assert.equal(h.w.document.querySelector('#pv2Phase').textContent,'CONTRAE');
+  start.click();assert.equal(h.w.document.querySelector('#pv2Start').textContent,'Iniciar');
+  assert.equal(h.audioEvents.at(-1),'pause');
+  start.click();
+  assert.equal(h.audioEvents.filter(x=>x.startsWith('play:')).length,2);
+  toggle.click();
+  assert.equal(toggle.getAttribute('aria-pressed'),'false');
+  assert.equal(h.audioEvents.at(-1),'pause');
+  h.w.document.querySelector('#pv2Reset').click();
+  assert.equal(h.writes.length,0);assert.equal(h.results.length,0);
+ }finally{h.close();}
+});
+test('final white poster cannot show baked legacy navigation in the visible crop and real controls fit',()=>{
+ const h=setup();try{
+  h.open();h.select(6);
+  const crop=h.w.document.querySelector('.pv2-cover-crop'),style=crop.getAttribute('style');
+  assert.match(style,/741 \/ 1040/);
+  assert.ok(h.w.document.querySelector('.pv2-nav'));
+  const css=h.w.document.head.textContent;
+  assert.match(css,/\.pv2-nav\{position:sticky;bottom:0;z-index:8/);
+  assert.match(css,/#pv2Next\{box-sizing:border-box;min-width:0/);
+  assert.equal(h.w.document.querySelectorAll('#pv2Prev').length,1);
+  assert.equal(h.w.document.querySelectorAll('#pv2Next').length,1);
  }finally{h.close();}
 });

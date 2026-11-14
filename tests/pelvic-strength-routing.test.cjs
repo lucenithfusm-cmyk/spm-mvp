@@ -25,8 +25,8 @@ test('the original seven-step strength route is active and old competing overlay
  const live=read('live.html'),review=read('program-review-v1.js'),classic=read('pelvic-module-rebuild-v2.js'),bridge=read('pelvic-lab-bridge-v1.js');
  assert.doesNotMatch(live,/<script src="pelvic-interactive-v1\.js"/);
  assert.doesNotMatch(live,/<script src="pelvic-fidelity-v2\.js"/);
- assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=20261114-all7-posters-audio1/);
- assert.match(review,/pelvic-module-rebuild-v2\.js\?v=20261114-all7-posters-audio1/);
+ assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=20261114-pelvic-speaker-nav2/);
+ assert.match(review,/pelvic-module-rebuild-v2\.js\?v=20261114-pelvic-speaker-nav2/);
  assert.match(classic,/window\.SPM_PELVIC_V2=\{open,close\}/);
  assert.match(classic,/source:'pelvic-classic-v2'/);
  assert.match(bridge,/data-pf-training/);
@@ -66,4 +66,17 @@ test('reviewer uses a valid prepared example without relaxing real-patient safet
  assert.match(bridge,/data-pf-library-awareness/);
  assert.doesNotMatch(bridge,/data-pf-education/);
  assert.doesNotMatch(bridge,/data-pf-daily/);
+});
+
+test('old force training overlays are removed from the current route and cue assets are independent from Lab',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const live=read('live.html'),oldTraining=read('premium-training-v4.js'),fidelity=read('spm-premium-program-fidelity.js'),strength=read('pelvic-module-rebuild-v2.js');
+ assert.doesNotMatch(live,/pelvic-premium-router\.js/);
+ assert.doesNotMatch(live,/pelvic-interactive-v1\.js|pelvic-fidelity-v2\.js/);
+ assert.doesNotMatch(fidelity,/function hookPelvic|function addPelvicCalendar|spmPelvicIntro/);
+ assert.match(oldTraining,/if\(type==='pelvic'\)return false/);
+ assert.doesNotMatch(strength,/closest\('\.pfi-launch'\)/);
+ assert.doesNotMatch(strength,/pelvic-floor-lab\/(?:audio|assets)\//);
+ assert.match(strength,/assets\/audio\/pelvic\/strength-cues\/contrae\.mp3/);
+ for(const f of ['pelvic-premium-router.js','pelvic-interactive-v1.js','pelvic-fidelity-v2.js'])assert.equal(fs.existsSync(path.join(__dirname,'../premium-v2',f)),false);
 });
