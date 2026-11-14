@@ -249,7 +249,7 @@ test('day six keeps strength separate while day three hosts the one weekly aware
   assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
   assert.equal(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3');
-  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-title').textContent,/Conoce tu piso pélvico/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-cover-crop img').getAttribute('alt'),/piso pélvico masculino/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
   w.SPM_PELVIC_V2.close();
   const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
   w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
@@ -320,7 +320,7 @@ test('DE day two opens the real seven-step strength interface with the unmodifie
   button.click();await new Promise(r=>setTimeout(r,80));
   const trainer=w.document.querySelector('#spmPelvicV2:not([hidden])');
   assert.ok(trainer,'day-2 button opens the seven-step strength trainer');
-  assert.match(trainer.querySelector('.pv2-title').textContent,/Conoce tu piso pélvico/);
+  assert.equal(trainer.querySelector('.pv2-main').classList.contains('pv2-cover-page'),true);assert.match(trainer.querySelector('.pv2-cover-crop img').getAttribute('src'),/8c01592d-7a59-434e-a0b6-11a7497a0b0d/);
   assert.equal(trainer.querySelectorAll('[data-step]').length,7);
   assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null,'Pelvic Floor Lab must not be mounted');
   assert.equal(w.SPM_PELVIC_LAB_HOST,undefined);
