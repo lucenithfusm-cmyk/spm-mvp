@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-strength-readiness-v1.js'
+      - 'premium-v2/daily-resource-plan-v1.js'
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/pelvic-floor-lab/pelvic-weekly-flow-v1.js'
       - 'premium-v2/pelvic-guidance-v1.js'
       - 'premium-v2/pelvic-lab-bridge-v1.js'
       - 'premium-v2/live.html'
@@ -20,6 +24,10 @@ on:
   pull_request:
     paths:
       - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-strength-readiness-v1.js'
+      - 'premium-v2/daily-resource-plan-v1.js'
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/pelvic-floor-lab/pelvic-weekly-flow-v1.js'
       - 'premium-v2/pelvic-guidance-v1.js'
       - 'premium-v2/pelvic-lab-bridge-v1.js'
       - 'premium-v2/live.html'
@@ -45,6 +53,6 @@ jobs:
           node --check premium-v2/erectile-central-v3.js
           node --check premium-v2/erectile-function-route.js
       - name: Test classic strength, routing, persistence, and Lab separation
-        run: node --test tests/pelvic-classic-completion.test.cjs tests/pelvic-strength-routing.test.cjs tests/pelvic-lab-bridge.test.cjs tests/pelvic-weekly-flow.test.cjs
+        run: node --test tests/pelvic-classic-completion.test.cjs tests/pelvic-strength-routing.test.cjs tests/pelvic-lab-bridge.test.cjs tests/pelvic-weekly-flow.test.cjs tests/daily-practice.test.cjs
       - name: Day-2 DE strength regression (isolated from unrelated media stubs)
         run: node --test tests/program-review.test.cjs
