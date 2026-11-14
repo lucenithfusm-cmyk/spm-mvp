@@ -139,20 +139,69 @@ const premiumStyle=`
 }
 @media(prefers-reduced-motion:reduce){#spmPelvicV2 .pv2-meter-track span{transition:none}}
 
-/* SPM Premium: pulsador de audio visible, navegación inferior y recorte móvil. */
-#spmPelvicV2 .pv2-cover-audio{position:absolute;z-index:3;right:1.8%;top:1%;width:clamp(94px,22%,138px);height:auto;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-sizing:border-box;padding:9px 7px;background:rgba(255,251,243,.97);border:1.5px solid #d5b577;border-radius:18px;color:#0f2e4f;box-shadow:0 4px 12px #0f2e4f22,0 0 0 3px #c5a46c2c;cursor:pointer;animation:pv2VoiceHalo 2.2s ease-in-out infinite;-webkit-tap-highlight-color:#c5a46c40}
-#spmPelvicV2 .pv2-audio-glyph{position:relative;display:grid;place-items:center;width:56px;height:56px;flex:0 0 56px;border-radius:50%;background:linear-gradient(145deg,#eddbaf,#c5a46c);font-size:31px;line-height:1;box-shadow:0 3px 8px #42321133;animation:pv2VoiceBounce 3.5s ease-in-out infinite}
-#spmPelvicV2 .pv2-audio-invite{font:900 11px/1.16 system-ui,-apple-system,sans-serif;color:#0f2e4f;text-align:center;letter-spacing:.025em;white-space:normal}
-#spmPelvicV2 .pv2-cover-audio.on{animation:none;background:#fff3d4;border-color:#ad8640;box-shadow:0 0 0 3px #c5a46c5e}
-#spmPelvicV2 .pv2-cover-audio.on .pv2-audio-glyph{animation:none;background:#0f2e4f;color:#fff}
-#spmPelvicV2 .pv2-cover-audio:focus-visible{outline:3px solid #0f2e4f;outline-offset:3px}
-@keyframes pv2VoiceHalo{0%,100%{box-shadow:0 4px 12px #0f2e4f22,0 0 0 3px #c5a46c22}50%{box-shadow:0 4px 16px #0f2e4f36,0 0 0 9px #c5a46c52}}
-@keyframes pv2VoiceBounce{0%,76%,100%{transform:scale(1)}82%{transform:scale(1.08)}88%{transform:scale(.98)}94%{transform:scale(1.04)}}
-#spmPelvicV2 .pv2-nav{position:sticky;bottom:0;z-index:8;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,35%) minmax(0,1fr);align-items:stretch;gap:10px;margin:0;padding:12px 16px max(16px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e4dbc9;box-shadow:0 -7px 24px #0f2e4f18}
-#spmPelvicV2 #pv2Prev,#spmPelvicV2 #pv2Next{box-sizing:border-box;min-width:0;max-width:none;width:100%;min-height:58px;margin:0;padding:10px 12px;font-size:clamp(12px,3.6vw,15px);line-height:1.2;text-align:center;white-space:normal;overflow-wrap:break-word;word-break:normal;overflow:visible;text-overflow:clip}
+
+/* Bocina original: únicamente círculo y halo, sin tarjetas ni texto encima de las láminas. */
+#spmPelvicV2 .pv2-cover-audio{
+ position:absolute;z-index:3;right:4.8%;top:1.6%;
+ box-sizing:border-box;width:clamp(46px,10.4%,78px);height:auto;aspect-ratio:1;min-height:0;
+ display:grid;place-items:center;margin:0;padding:0;
+ border:0;border-radius:50%;background:#f0e5d6;color:#0f2e4f;
+ box-shadow:0 0 0 2px #e2c59272;cursor:pointer;
+ -webkit-tap-highlight-color:transparent;
+ transform-origin:center;animation:pv2SpeakerPulse 2.25s ease-in-out infinite;
+}
+#spmPelvicV2 .pv2-cover-audio::before{
+ content:'';position:absolute;inset:-4px;z-index:-1;
+ border-radius:50%;background:transparent;
+ box-shadow:0 0 13px 4px #c5a46c99,0 0 0 3px #e5c88977;
+ animation:pv2SpeakerHalo 2.25s ease-in-out infinite;
+ pointer-events:none;
+}
+#spmPelvicV2 .pv2-audio-glyph{
+ display:grid;place-items:center;width:57%;height:57%;
+ background:transparent;color:inherit;box-shadow:none;
+ animation:none;transform:none;line-height:1;
+}
+#spmPelvicV2 .pv2-audio-glyph svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+#spmPelvicV2 .pv2-audio-invite{display:none!important}
+#spmPelvicV2 .pv2-cover-audio.on{background:#e5cf9b;color:#0f2e4f;border:0;animation:none;box-shadow:0 0 0 3px #c5a46c88}
+#spmPelvicV2 .pv2-cover-audio.on::before{animation:none;box-shadow:0 0 15px 4px #c5a46c77}
+#spmPelvicV2 .pv2-cover-audio.on .pv2-audio-glyph{background:transparent;color:inherit;animation:none}
+#spmPelvicV2 .pv2-cover-audio:focus-visible{outline:3px solid #0f2e4f;outline-offset:5px}
+@keyframes pv2SpeakerPulse{
+ 0%,100%{transform:scale(1)}
+ 45%{transform:scale(1.2)}
+ 70%{transform:scale(.94)}
+ 85%{transform:scale(1.08)}
+}
+@keyframes pv2SpeakerHalo{
+ 0%,100%{opacity:.4;transform:scale(.9)}
+ 45%{opacity:1;transform:scale(1.19)}
+ 70%{opacity:.6;transform:scale(1.03)}
+}
+/* Conservar la barra inferior real y responsiva. */
+#spmPelvicV2 .pv2-nav{
+ position:sticky;bottom:0;z-index:8;box-sizing:border-box;width:100%;
+ display:grid;grid-template-columns:minmax(0,35%) minmax(0,1fr);
+ align-items:stretch;gap:10px;margin:0;
+ padding:12px 16px max(16px,env(safe-area-inset-bottom));
+ background:#fff;border-top:1px solid #e4dbc9;box-shadow:0 -7px 24px #0f2e4f18;
+}
+#spmPelvicV2 #pv2Prev,#spmPelvicV2 #pv2Next{
+ box-sizing:border-box;min-width:0;max-width:none;width:100%;min-height:58px;
+ margin:0;padding:10px 12px;font-size:clamp(12px,3.6vw,15px);line-height:1.2;
+ text-align:center;white-space:normal;overflow-wrap:break-word;
+ word-break:normal;overflow:visible;text-overflow:clip;
+}
 #spmPelvicV2 #pv2Next{font-weight:900}
-@media(max-width:420px){#spmPelvicV2 .pv2-nav{grid-template-columns:minmax(0,35%) minmax(0,1fr);gap:8px;padding:10px 12px max(12px,env(safe-area-inset-bottom))}#spmPelvicV2 #pv2Next{font-size:13px;min-height:62px}#spmPelvicV2 #pv2Prev{font-size:13px}#spmPelvicV2 .pv2-cover-audio{width:clamp(91px,25%,112px);min-height:102px;padding:8px 4px}#spmPelvicV2 .pv2-audio-glyph{width:48px;height:48px;flex-basis:48px;font-size:27px}#spmPelvicV2 .pv2-audio-invite{font-size:10px}}
-@media(prefers-reduced-motion:reduce){#spmPelvicV2 .pv2-cover-audio,#spmPelvicV2 .pv2-audio-glyph{animation:none!important}}
+@media(max-width:420px){
+ #spmPelvicV2 .pv2-nav{gap:8px;padding:10px 12px max(12px,env(safe-area-inset-bottom))}
+ #spmPelvicV2 #pv2Next{font-size:13px;min-height:62px}
+ #spmPelvicV2 #pv2Prev{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+ #spmPelvicV2 .pv2-cover-audio,#spmPelvicV2 .pv2-cover-audio::before{animation:none!important}
+}
 `;
 const style=document.createElement('style');style.textContent=css+premiumStyle;document.head.appendChild(style);
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -186,7 +235,7 @@ function coverBody(){
  const heights=[1050,1050,1040,1050,1050,1035,1040],height=heights[step];
  const top=(-200/height*100).toFixed(2)+'%';
  const spoken=SPM_PELVIC_NARRATIONS[step];
- const image='<div class="pv2-cover-crop" style="aspect-ratio:741 / '+height+';--cover-top:'+top+'"><img src="'+IMAGES[step]+'" loading="eager" decoding="async" alt="Lámina SPM del paso '+(step+1)+': '+esc(STEPS[step].title)+'"><button type="button" class="pv2-cover-audio" data-say="'+esc(spoken)+'" aria-label="Escuchar explicación y recomendaciones del paso '+(step+1)+'" title="Toca para escuchar" aria-pressed="false"><span class="pv2-audio-glyph" aria-hidden="true">🔊</span><span class="pv2-audio-invite">TOCA PARA ESCUCHAR</span></button></div>';
+ const image='<div class="pv2-cover-crop" style="aspect-ratio:741 / '+height+';--cover-top:'+top+'"><img src="'+IMAGES[step]+'" loading="eager" decoding="async" alt="Lámina SPM del paso '+(step+1)+': '+esc(STEPS[step].title)+'"><button type="button" class="pv2-cover-audio" data-say="'+esc(spoken)+'" aria-label="Escuchar explicación y recomendaciones del paso '+(step+1)+'" title="Escuchar explicación" aria-pressed="false"><span class="pv2-audio-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></span></button></div>';
  // The visual art is not a functional button. Preserve real practice controls below it.
  const exercise=step===2?postureCards():step===4?techniqueCards():step===5?timerBody():step===6?practiceBody():'';
  const notes={
