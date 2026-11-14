@@ -18,6 +18,7 @@ function eligible(c,saved){
  const sc=s['pf-screening']||{},check=(s['pf-checkins']||[]).at(-1),rows=Array.isArray(s['pf-results'])?s['pf-results']:[];
  const last=rows.at(-1);
  if(s['pf-flags']?.length||s['pf-overload']?.length||sc.releaseOk==='no'||check?.tension>=7||check?.release==='Difícil')return false;
+ if(s['pf-screening']&&(sc.aware!=='ok'||sc.releaseOk!=='si'||sc.comp?.length!==3))return false;
  if(last&&(last.fullRelease===false||last.discomfort||last.postTension||['relax','clinical-review'].includes(last.recommendation)))return false;
  // Readiness from the original questionnaire is independent of the main domain.
  if(a.pf_awareness==='good_control'&&[0,1,2].includes(t))return true;
