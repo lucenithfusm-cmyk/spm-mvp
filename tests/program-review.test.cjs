@@ -249,7 +249,7 @@ test('day six keeps strength separate while day three hosts the one weekly aware
   assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
   assert.equal(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3');
-  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-cover-crop img').getAttribute('alt'),/piso pélvico masculino/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
+  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-cover-crop img').getAttribute('alt'),/Conoce tu piso pélvico/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
   w.SPM_PELVIC_V2.close();
   const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
   w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
