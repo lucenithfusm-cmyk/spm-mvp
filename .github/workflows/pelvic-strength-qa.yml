@@ -13,6 +13,7 @@ on:
       - 'premium-v2/pelvic-guided-v3-hotfix.js'
       - 'tests/pelvic-strength-routing.test.cjs'
       - 'tests/pelvic-classic-completion.test.cjs'
+      - 'tests/program-review.test.cjs'
       - 'tests/pelvic-lab-bridge.test.cjs'
       - '.github/workflows/pelvic-strength-qa.yml'
   pull_request:
