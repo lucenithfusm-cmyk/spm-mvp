@@ -97,7 +97,7 @@ function showLab(){
   getContext:()=>({day:openDay,origin,intent,activityId,restriction:token===generation&&sameContext()?effectiveRestriction():'review'}),
   onResult:r=>token===generation&&receiveResult(r),
  };
- const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261113-weekly-guided1';
+ const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261113-weekly-audio-eval2';
  modal.querySelector('[data-pf-body]').replaceChildren(frame);
 }
 async function open(opts={}){if(await load({...opts,intent:opts.origin==='dailyPlan'?'daily-relax':'library'}))showLab();}

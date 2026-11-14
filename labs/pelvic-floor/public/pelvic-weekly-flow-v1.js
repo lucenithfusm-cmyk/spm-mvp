@@ -20,9 +20,58 @@ const PHASES=[
 ];
 const TOTAL=PHASES.reduce((a,p)=>a+p.seconds,0)*1000; // Orientativo: tiempos de guía, no una dosis clínica.
 const escaped=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const all={stage:week===1?'intro':'position',posture:'seated',awareness:null,anchor:null,perception:null,stopFlags:[],release:null,discomfort:null,tension:null,started:false,interrupted:false,saved:false,week,elapsed:0,since:null,timer:null,phase:-1,error:''};
+const all={stage:'intro',posture:'seated',awareness:null,anchor:null,perception:null,stopFlags:[],release:null,discomfort:null,tension:null,started:false,interrupted:false,saved:false,week,elapsed:0,since:null,timer:null,phase:-1,error:'',completedCycle:false,reminderPlayed:false};
 const images={anatomy:'./assets/pelvic-anatomy-Be2oguaa.jpg',animation:'./assets/spm-pelvic-relaxation-animation.webp',seated:'./assets/spm-posture-seated-20261113.webp',reclined:'./assets/spm-posture-reclined-20261113.webp'};
+const NARRATIONS={
+  "intro": [
+    {
+      "short": "Identifica la zona y aprende a soltar sin contraer.",
+      "text": "En esta primera sesión de Pelvic Floor Lab vamos a reconocer dónde está el piso pélvico y cómo se siente cuando dejamos de hacer fuerza. Observa la imagen y la animación sin intentar contraer. Después elegirás una postura y seguirás la guía de percibir, respirar y soltar. No necesitas sentir algo especial.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=0866a25f4275485087bea2d218bf537e.mp3"
+    },
+    {
+      "short": "Practica una respiración cómoda y observa cómo se suelta la zona.",
+      "text": "Acomódate con el cuerpo apoyado. Primero percibe el contacto de la pelvis con la superficie, sin buscar una sensación especial. Después deja que la respiración entre y salga con comodidad, sin profundizarla, retener el aire ni empujar. Al soltar, afloja donde puedas y permite que la zona quede en reposo. Aquí no hay contracciones. Usa los pasos de la pantalla a tu propio ritmo. El cronómetro es orientativo y no hay un tiempo mínimo. Cuando hayas practicado, elige terminar y registra tu respuesta. No hace falta sentir un cambio. Si aparece dolor, mareo o malestar, detén la práctica.",
+      "audio": "pf.s04.breath-20261113-v2.mp3"
+    },
+    {
+      "short": "Reconoce una referencia corporal para soltar tensión cuando la necesites.",
+      "text": "Esta semana vamos a reconocer cuándo aparece el esfuerzo y elegir una referencia sencilla que ayude a soltar tensión. Acomódate, sigue las indicaciones de percibe, respira y suelta, y al terminar elige un apoyo al que puedas volver cuando lo necesites. No hace falta forzar ninguna sensación.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=568de16a78f84189a32eb33b348170f6.mp3"
+    },
+    {
+      "short": "Observa qué puedes percibir con tranquilidad y sin buscar una respuesta perfecta.",
+      "text": "En esta cuarta sesión de Pelvic Floor Lab vamos a observar con mayor autonomía cómo percibes tu pelvis y qué te ayuda a relajarla. Elige una postura cómoda, escucha la secuencia automática y al terminar responde qué pudiste percibir. No hay respuestas correctas ni obligación de sentir una mejoría.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=8ec01d2bb2944f7baf6ddb13fcb09af4.mp3"
+    }
+  ],
+  "posture": {
+    "text": "Antes de empezar, elige una postura cómoda. Puedes sentarte con la espalda apoyada y los pies en el suelo, o recostarte con las rodillas flexionadas y los pies apoyados. Suelta los hombros, la mandíbula y el abdomen. No aprietes los glúteos ni retengas la respiración.",
+    "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=277c349917f246c8999a67329fc7b911.mp3"
+  },
+  "phase": [
+    {
+      "text": "Percibe. Nota el apoyo de tu pelvis y la base de tu cuerpo. Observa sin apretar, sin intentar mover nada y sin buscar una sensación especial.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=58adf76160ec4a70aa26875b01cec6cf.mp3"
+    },
+    {
+      "text": "Respira. Deja entrar y salir el aire con naturalidad. Nota cómo se mueve suavemente tu abdomen y permite que la zona pélvica acompañe la respiración. No retengas el aire ni fuerces el ritmo.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=3f3dddf3209340bea0fe1f1bf2c6d473.mp3"
+    },
+    {
+      "text": "Suelta. Afloja suavemente la mandíbula, el abdomen y los glúteos. Permite que el piso pélvico descanse sin empujar hacia abajo. Quédate con una sensación cómoda, aunque no notes cambios.",
+      "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=857ca74c564b4d9c817c8e251868c46a.mp3"
+    }
+  ],
+  "reminder": {
+    "text": "Continúa respirando a tu propio ritmo. No necesitas hacerlo perfecto. Deja que el abdomen y la pelvis acompañen suavemente la entrada y la salida del aire.",
+    "audio": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=31e4323736fe4372b877fe498e1a188b.mp3"
+  }
+};
+
 const audio=new Audio();audio.preload='auto';audio.hidden=true;audio.setAttribute('aria-hidden','true');
+let currentVoiceKey=null;let fallbackAttempted=false;
+const LOCAL_AUDIO_FALLBACKS={"intro-1":"pf.s03.awareness-20261113-v2.mp3","intro-3":"pf.s09.fine-20261113-v2.mp3","intro-4":"pf.s14.progress-20261113-v2.mp3","posture":"pf.s06.technique-20261113-v2.mp3","phase-0":"pf.cue.percibe.mp3","phase-1":"pf.cue.respira.mp3","phase-2":"pf.cue.suelta.mp3","breath-reminder":"pf.cue.respira.mp3"};
 const box=document.createElement('section');box.id='spmWeeklyFlow';box.className='pf-weekly-flow';box.setAttribute('aria-label','Pelvic Floor Lab · práctica semanal');
 const style=document.createElement('style');style.id='spmWeeklyFlowStyles';style.textContent=`
 html,body{min-height:100%;background:#061a22}
@@ -47,7 +96,7 @@ html,body{min-height:100%;background:#061a22}
 .pf-weekly-recognition-animation{max-height:265px;max-width:210px;margin:12px auto;object-fit:contain}.pf-weekly-scene{position:relative;display:grid;place-items:center;margin:8px auto 18px;max-width:470px}.pf-weekly-scene .pf-weekly-image{max-height:460px}.pf-weekly-scene .tag{position:absolute;left:20px;bottom:20px;padding:9px 16px;background:#061e29d9;border:1px solid #69e5d5;border-radius:12px;color:#73e5d5;font-size:19px;font-weight:800}
 .pf-weekly-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:20px 0}.pf-weekly-phase{padding:14px 5px;border:1px solid #31595c;border-radius:12px;text-align:center;color:#f3f6f5;background:#082028;font-size:17px;font-weight:700}.pf-weekly-phase.on{border-color:#56c9bb;background:#154348;color:#71f0dc}.pf-weekly-phase.done{border-color:#af9263;color:#c5a46c}
 .pf-weekly-time{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:14px;border:1px solid #365c5f;border-radius:12px;margin:16px 0}.pf-weekly-time strong{font-size:25px;font-variant-numeric:tabular-nums;color:#dfc27c}
-.pf-weekly-alert{background:#422523;border:1px solid #bf7755;padding:14px;border-radius:12px;color:#ffdfcf!important;font-size:14px!important}.pf-weekly-note{font-size:13px!important;color:#b4c9c4!important}.pf-weekly-survey{border-top:1px solid #355759;margin-top:18px;padding-top:17px}.pf-weekly-survey h3{font-size:17px}
+.pf-weekly-alert{background:#422523;border:1px solid #bf7755;padding:14px;border-radius:12px;color:#ffdfcf!important;font-size:14px!important}.pf-weekly-note{font-size:13px!important;color:#b4c9c4!important}.pf-weekly-survey{border-top:1px solid #355759;margin-top:18px;padding-top:17px}.pf-weekly-transcript{padding:10px 14px;margin:8px 0 14px;border:1px solid #406469;border-radius:12px;color:#e4cfaa}.pf-weekly-transcript summary{min-height:42px;cursor:pointer}.pf-weekly-transcript p{color:#d6e8e4;margin:6px 0}.pf-weekly-survey h3{font-size:17px}
 .pf-weekly-status{min-height:0;margin:15px 0;color:#e8c38a;font-size:14px}
 @media(max-width:440px){.pf-weekly-wrap{padding:10px 10px calc(24px + env(safe-area-inset-bottom))}.pf-weekly-card{padding:16px 13px}.pf-weekly-media{gap:7px}.pf-weekly-media .pf-weekly-image{height:230px}.pf-weekly-option{font-size:15px;padding:7px}.pf-weekly-phases{gap:5px}.pf-weekly-phase{font-size:15px;padding:11px 4px}.pf-weekly-brand b{font-size:16px}.pf-weekly-brand>span{width:40px;height:40px;font-size:12px}.pf-weekly-week{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.pf-weekly-flow *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
@@ -56,13 +105,35 @@ const head=()=>`<header class="pf-weekly-head"><div class="pf-weekly-brand"><spa
 const button=(action,label,variant='primary',disabled=false)=>`<button type="button" class="pf-weekly-btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${escaped(label)}</button>`;
 const choices=(name,items,value)=>`<div class="pf-weekly-answers" role="group" aria-label="${escaped(name)}">${items.map(([key,label])=>`<button type="button" class="pf-weekly-choice ${(Array.isArray(value)?value.includes(key):value===key)?'on':''}" data-choice="${name}" data-value="${key}" aria-pressed="${Array.isArray(value)?value.includes(key):value===key}"><span class="dot" aria-hidden="true"></span><span>${escaped(label)}</span></button>`).join('')}</div>`;
 function current(){try{const ctx=parent?.getContext?.();return !!ctx&&ctx.day===entryContext.day&&ctx.activityId===entryContext.activityId&&ctx.origin===entryContext.origin&&ctx.intent===entryContext.intent&&ctx.restriction!=='review';}catch{return false}}
-function stopVoice(){audio.pause();try{audio.currentTime=0}catch{};audio.removeAttribute('src');}
-function speak(file){
- stopVoice();audio.src=`./audio/pf/${file}`;audio.play().catch(()=>{
-  const info=box.querySelector('[data-audio-message]');if(info)info.textContent='La voz no pudo reproducirse. Sigue la indicación visible.';
+function stopVoice(){currentVoiceKey=null;audio.pause();try{audio.currentTime=0}catch{};audio.removeAttribute('src');}
+
+function speak(file,key){
+ if(!file)return;
+ if(currentVoiceKey===key){
+   if(!audio.paused){audio.pause();return;}
+   audio.play().catch(()=>{});
+   return;
+ }
+ stopVoice();currentVoiceKey=key;fallbackAttempted=false;
+ const src=/^https?:\/\//i.test(file)||file.startsWith('./')?file:'./audio/pf/'+file;
+ audio.onerror=()=>{
+  const alt=LOCAL_AUDIO_FALLBACKS[key];
+  if(!fallbackAttempted&&alt){
+   fallbackAttempted=true;audio.src='./audio/pf/'+alt;
+   audio.play().catch(()=>{const el=box.querySelector('[data-audio-message]');if(el)el.textContent='Escucha de nuevo o lee la instrucción escrita.';});
+   return;
+  }
+  const el=box.querySelector('[data-audio-message]');if(el)el.textContent='El audio no está disponible. Puedes continuar leyendo las indicaciones.';
+ };
+ audio.onended=()=>{if(currentVoiceKey===key)currentVoiceKey=null;};
+ audio.src=src;
+ audio.play().catch(()=>{
+  const alt=LOCAL_AUDIO_FALLBACKS[key];
+  if(!fallbackAttempted&&alt){fallbackAttempted=true;audio.src='./audio/pf/'+alt;audio.play().catch(()=>{});return;}
+  const el=box.querySelector('[data-audio-message]');if(el)el.textContent='Pulsa Escuchar para activar la narración o sigue la instrucción visible.';
  });
 }
-function cue(){const p=PHASES[all.phase];if(p)speak(p.audio)}
+function cue(){const i=all.phase;if(i>=0&&i<3)speak(NARRATIONS.phase[i].audio,'phase-'+i);}
 function time(v){const n=Math.max(0,Math.ceil(v/1000));return `${String(Math.floor(n/60)).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`}
 function phaseFor(ms){let sum=0;for(let i=0;i<PHASES.length;i++){sum+=PHASES[i].seconds*1000;if(ms<sum)return i;}return PHASES.length-1;}
 function elapsed(){return all.elapsed+(all.since===null?0:Math.max(0,performance.now()-all.since))}
@@ -70,9 +141,11 @@ function pause(){if(all.since!==null){all.elapsed=Math.min(TOTAL,elapsed());all.
 function updateGuide(){
  if(all.stage!=='guided')return;
  const value=Math.min(TOTAL,elapsed());
- if(value>=TOTAL){pause();all.interrupted=false;all.stage='evaluation';all.error='';render();return;}
+ if(value>=TOTAL){pause();stopVoice();all.completedCycle=true;all.elapsed=TOTAL;all.interrupted=false;all.stage='evaluation';all.error='';render();return;}
  const idx=phaseFor(value);
- if(idx!==all.phase){all.phase=idx;cue();}
+ const phaseChanged=idx!==all.phase;
+ if(phaseChanged){all.phase=idx;cue();}
+ if(idx===1&&!phaseChanged&&value>=26000&&!all.reminderPlayed){all.reminderPlayed=true;speak(NARRATIONS.reminder.audio,'breath-reminder');}
  const p=PHASES[idx],start=PHASES.slice(0,idx).reduce((x,y)=>x+y.seconds*1000,0),remain=(start+p.seconds*1000)-value;
  const active=box.querySelector('[data-active-phase]');if(active)active.textContent=p.label;
  const phrase=box.querySelector('[data-cue-text]');if(phrase)phrase.textContent=p.cue;
@@ -80,19 +153,28 @@ function updateGuide(){
  const count=box.querySelector('[data-elapsed]');if(count)count.textContent=time(value);
  for(const [i,node] of box.querySelectorAll('[data-phase-index]').entries()){node.classList.toggle('on',i===idx);node.classList.toggle('done',i<idx);node.setAttribute('aria-current',i===idx?'step':'false');}
  const pauseBtn=box.querySelector('[data-action="pause-resume"]');if(pauseBtn)pauseBtn.textContent=all.since===null?'Reanudar guía':'Pausar guía';
+ const evaluateBtn=box.querySelector('[data-action="to-evaluation"]');if(evaluateBtn)evaluateBtn.disabled=idx!==PHASES.length-1;
 }
 function run(){
  if(!current()){all.error='La sesión cambió. Vuelve a Hoy para conservar tu programa.';render();return;}
- if(all.stage!=='guided'){all.stage='guided';all.elapsed=0;all.phase=-1;all.started=true;render();}
+ if(all.stage!=='guided'){all.stage='guided';all.elapsed=0;all.phase=-1;all.started=true;all.completedCycle=false;all.reminderPlayed=false;render();}
  if(all.since!==null)return;
+ if(currentVoiceKey&&audio.paused&&audio.src)audio.play().catch(()=>{});
  all.since=performance.now();updateGuide();
  all.timer=setInterval(updateGuide,200);
 }
 function section(inner){box.innerHTML=`<div class="pf-weekly-wrap">${head()}<main class="pf-weekly-card" aria-live="polite">${inner}${all.error?`<p class="pf-weekly-alert" role="alert">${escaped(all.error)}</p>`:''}</main><div class="pf-weekly-status" role="status" data-audio-message></div></div>`;box.scrollTop=0;}
-function showIntro(){section(`<div class="pf-weekly-kicker">PRÁCTICA GUIADA 1 · RECONOCIMIENTO</div><h1>Reconoce la zona</h1><p>Observa la base de la pelvis: el piso pélvico se encuentra debajo de los órganos pélvicos. Estas imágenes te orientan; no miden el movimiento de tu cuerpo.</p><div class="pf-weekly-media"><img class="pf-weekly-image" src="${images.anatomy}" alt="Pelvis masculina con zona pélvica resaltada"><img class="pf-weekly-image" src="${images.animation}" alt="Animación de relajación del piso pélvico con flechas de liberación hacia abajo"></div><div class="pf-weekly-audio"><b>Escucha cómo reconocer la zona</b>${button('audio-intro','▶ Escuchar','alt')}</div><p class="pf-weekly-note">No contraigas ni empujes para encontrarla. Si no la reconoces aún, podrás indicarlo.</p><div class="pf-weekly-buttons">${button('continue-recognition','Continuar →')}</div>`);}
+function showIntro(){
+ const info=NARRATIONS.intro[week-1];
+ const visuals=week===1?'<div class="pf-weekly-media"><img class="pf-weekly-image" src="'+images.anatomy+'" alt="Pelvis masculina con zona pélvica resaltada"><img class="pf-weekly-image" src="'+images.animation+'" alt="Animación educativa de relajación del piso pélvico"></div><div class="pf-weekly-audio"><b>Reconoce la zona con una explicación</b>'+button('audio-zone','▶ Escuchar ubicación','alt')+'</div><details class="pf-weekly-transcript"><summary>Leer cómo reconocer la zona</summary><p>El piso pélvico está en la base de la pelvis, debajo de los órganos pélvicos. Observa sin contraer, apretar ni empujar.</p></details>':'';
+ section('<div class="pf-weekly-kicker">SEMANA '+week+' · INTRODUCCIÓN</div><h1>Tu objetivo de esta sesión</h1><p>'+escaped(info.short)+'</p><div class="pf-weekly-audio"><b>Escucha el objetivo de esta práctica</b>'+button('audio-intro','▶ Escuchar introducción','alt')+'</div><details class="pf-weekly-transcript"><summary>Leer introducción</summary><p>'+escaped(info.text)+'</p></details>'+visuals+'<p class="pf-weekly-note">No se incluyen contracciones de fuerza. Puedes detenerte ante dolor, mareo o malestar.</p><div class="pf-weekly-buttons">'+button('continue-recognition',week===1?'Reconocer la zona →':'Acomódate y empieza →')+'</div>');
+}
 function showRecognition(){section(`<div class="pf-weekly-kicker">PRÁCTICA GUIADA 1 · RECONOCIMIENTO</div><h1>¿Reconoces la zona?</h1><p>Observa el movimiento ilustrativo y elige lo que describe tu experiencia. No tienes que contraer.</p><img class="pf-weekly-image pf-weekly-recognition-animation" src="${images.animation}" alt="Animación del piso pélvico al relajarse">${choices('awareness',[['yes','Sí, puedo ubicarla'],['unsure','Tengo dudas'],['no','Todavía no la reconozco']],all.awareness)}<div class="pf-weekly-buttons">${button('to-position','Continuar a la postura', 'primary',!all.awareness)}</div>`);}
-function showPosition(){section(`<div class="pf-weekly-kicker">SEMANA ${week} · PREPARACIÓN</div><h1>Acomódate y empieza</h1><p>Elige una postura con apoyo y deja libres los músculos del abdomen y los glúteos.</p><div class="pf-weekly-options" role="group" aria-label="Elige postura">${[['seated','Sentado',images.seated],['reclined','Recostado',images.reclined]].map(([k,label,img])=>`<button type="button" class="pf-weekly-option ${all.posture===k?'on':''}" data-posture="${k}" aria-pressed="${all.posture===k}"><img src="${img}" alt="${label} con uniforme SPM" loading="eager"><span>${label}</span><span class="pf-weekly-check" aria-hidden="true">${all.posture===k?'✓':''}</span></button>`).join('')}</div><p>${all.posture==='seated'?'Apoya la espalda y ambos pies; deja los muslos y glúteos sueltos.':'Apoya la cabeza y la espalda. Flexiona las rodillas y apoya ambos pies.'}</p><p class="pf-weekly-note">Comenzaremos con una guía automática de ${TOTAL/1000} segundos: percibir, respirar y soltar. Respira naturalmente, sin seguir un ritmo impuesto.</p><div class="pf-weekly-buttons">${button('start','Iniciar práctica guiada')}</div>`);}
-function showGuided(){section(`<div class="pf-weekly-kicker">SEMANA ${week} · GUÍA AUTOMÁTICA</div><h1>Percibe · Respira · Suelta</h1><p>Las tres indicaciones se activan solas, en secuencia. Puedes pausar cuando lo necesites.</p><div class="pf-weekly-scene"><img class="pf-weekly-image" src="${images.anatomy}" alt="Pelvis masculina; zona de conciencia y relajación"><span class="tag" data-active-phase>Percibe</span></div><div class="pf-weekly-phases" aria-label="Pasos automáticos">${PHASES.map((p,i)=>`<div class="pf-weekly-phase" data-phase-index="${i}">${p.label}</div>`).join('')}</div><h3 data-cue-text></h3><div class="pf-weekly-time"><span>Tiempo restante del paso<br><strong data-remaining>00:12</strong></span><span>Tiempo transcurrido<br><strong data-elapsed>00:00</strong></span></div><p class="pf-weekly-note">Percibe 12 s · Respira 24 s · Suelta 18 s. Son tiempos de orientación, no una prueba ni una dosis obligatoria.</p><div class="pf-weekly-buttons">${button('pause-resume','Pausar guía','alt')}${button('stop','Detener por malestar','alt')}</div><div class="pf-weekly-status" data-audio-message role="status"></div>`);updateGuide();}
+function showPosition(){
+ const cue=all.posture==='seated'?'Apoya la espalda y ambos pies; deja los muslos y glúteos sueltos.':'Apoya la cabeza y la espalda. Flexiona las rodillas y apoya ambos pies.';
+ section('<div class="pf-weekly-kicker">SEMANA '+week+' · PREPARACIÓN</div><h1>Acomódate y empieza</h1><p>Elige una postura con apoyo y deja libres los músculos del abdomen y los glúteos.</p><div class="pf-weekly-audio"><b>Instrucciones para acomodarte</b>'+button('audio-posture','▶ Escuchar cómo acomodarte','alt')+'</div><details class="pf-weekly-transcript"><summary>Leer instrucciones de postura</summary><p>'+escaped(NARRATIONS.posture.text)+'</p></details><div class="pf-weekly-options" role="group" aria-label="Elige postura">'+[['seated','Sentado',images.seated],['reclined','Recostado',images.reclined]].map(([k,label,img])=>'<button type="button" class="pf-weekly-option '+(all.posture===k?'on':'')+'" data-posture="'+k+'" aria-pressed="'+(all.posture===k)+'"><img src="'+img+'" alt="'+label+' con uniforme SPM" loading="eager"><span>'+label+'</span><span class="pf-weekly-check" aria-hidden="true">'+(all.posture===k?'✓':'')+'</span></button>').join('')+'</div><p>'+escaped(cue)+'</p><p class="pf-weekly-note">La secuencia automática de 54 segundos te guía en percibir, respirar y soltar. Es orientativa: puedes detenerte ante molestias y evaluar al llegar a la fase «Suelta».</p><div class="pf-weekly-buttons">'+button('start','Iniciar práctica guiada')+'</div>');
+}
+function showGuided(){section(`<div class="pf-weekly-kicker">SEMANA ${week} · GUÍA AUTOMÁTICA</div><h1>Percibe · Respira · Suelta</h1><p>Escucha cada indicación: los pasos avanzan solos. Al llegar a «Suelta», podrás abrir la evaluación o dejar que termine el tiempo orientativo.</p><div class="pf-weekly-scene"><img class="pf-weekly-image" src="${images.anatomy}" alt="Pelvis masculina; zona de conciencia y relajación"><span class="tag" data-active-phase>Percibe</span></div><div class="pf-weekly-phases" aria-label="Pasos automáticos">${PHASES.map((p,i)=>`<div class="pf-weekly-phase" data-phase-index="${i}">${p.label}</div>`).join('')}</div><h3 data-cue-text></h3><div class="pf-weekly-time"><span>Tiempo restante del paso<br><strong data-remaining>00:12</strong></span><span>Tiempo transcurrido<br><strong data-elapsed>00:00</strong></span></div><p class="pf-weekly-note">Percibe 12 s · Respira 24 s · Suelta 18 s. Son tiempos de orientación, no una prueba ni una dosis obligatoria.</p><div class="pf-weekly-buttons">${button('pause-resume','Pausar guía','alt')}${button('to-evaluation','Terminé · Ir a mi evaluación','primary',true)}${button('stop','Detener por malestar','alt')}</div><div class="pf-weekly-status" data-audio-message role="status"></div>`);updateGuide();}
 function yesNo(name,question,value){return `<div class="pf-weekly-survey"><h3>${escaped(question)}</h3>${choices(name,[['yes','Sí'],['no','No']],value)}</div>`}
 function showEvaluation(){
  const parts=[];
@@ -111,6 +193,7 @@ function showInterrupted(){section(`<div class="pf-weekly-kicker">SEGURIDAD · P
 function blocked(){section(`<div class="pf-weekly-kicker">PRÁCTICA EN PAUSA</div><h1>Revisa primero tu indicación de seguridad</h1><p>Tu programa ha señalado que conviene revisar información de salud antes de practicar. Puedes consultar la biblioteca; esta sesión no se registra.</p><div class="pf-weekly-buttons">${button('return','Volver a Hoy')}</div>`);}
 function render(){if(!current()){pause();stopVoice();all.stage='blocked';}switch(all.stage){case'intro':showIntro();break;case'recognition':showRecognition();break;case'position':showPosition();break;case'guided':showGuided();break;case'evaluation':showEvaluation();break;case'saved':showSaved();break;case'interrupted':showInterrupted();break;default:blocked();}}
 function choose(name,value){
+ stopVoice();
  if(name==='awareness')all.awareness=value;
  else if(name==='anchor')all.anchor=value;
  else if(name==='perception')all.perception=value;
@@ -119,7 +202,7 @@ function choose(name,value){
  render();
 }
 async function saveResult(){
- if(!current()||!all.started||all.interrupted||all.elapsed<TOTAL-250||all.release===null){all.error='Finaliza la secuencia y responde la evaluación antes de guardar.';render();return;}
+ if(!current()||!all.started||all.interrupted||!all.completedCycle||all.release===null){all.error='Finaliza la secuencia y responde la evaluación antes de guardar.';render();return;}
  const flags=all.stopFlags,discomfort=week===1?flags.some(x=>['pain','dizzy','fatigue','urinary'].includes(x)):all.discomfort==='yes',postTension=week===1?flags.includes('tension')||flags.includes('cant_relax'):all.tension==='yes',fullRelease=all.release==='yes';
  const note={week,recognition:all.awareness||null,anchor:all.anchor||null,perception:all.perception||null,stopSignals:week===1?flags:[],posture:all.posture};
  const result={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease,discomfort,postTension,recommendation:discomfort||postTension||!fullRelease?'relax':'repeat',at:new Date().toISOString(),origin:'dailyPlan',day:entryContext.day,activityId:'pelvic-daily-lab',intent:'daily-relax',weekly:note};
@@ -135,14 +218,17 @@ function handle(e){
  const choice=e.target.closest('[data-choice]');if(choice){choose(choice.dataset.choice,choice.dataset.value);return;}
  const posture=e.target.closest('[data-posture]');if(posture){all.posture=posture.dataset.posture;render();return;}
  const act=e.target.closest('[data-action]')?.dataset.action;if(!act)return;
- if(act==='audio-intro'){if(audio.src?.endsWith('pf.s03.awareness-20261113-v2.mp3')&&!audio.paused){audio.pause();return;}speak('pf.s03.awareness-20261113-v2.mp3');return;}
- if(act==='continue-recognition'){stopVoice();all.stage='recognition';render();return;}
- if(act==='to-position'){if(all.awareness){all.stage='position';render();}return;}
- if(act==='start'){run();return;}
+ if(act==='audio-intro'){speak(NARRATIONS.intro[week-1].audio,'intro-'+week);return;}
+ if(act==='audio-zone'){speak('pf.s03.awareness-20261113-v2.mp3','recognize-zone');return;}
+ if(act==='audio-posture'){speak(NARRATIONS.posture.audio,'posture');return;}
+ if(act==='continue-recognition'){stopVoice();all.stage=week===1?'recognition':'position';render();return;}
+ if(act==='to-position'){if(all.awareness){stopVoice();all.stage='position';render();}return;}
+ if(act==='start'){stopVoice();run();return;}
  if(act==='pause-resume'){if(all.since!==null)pause();else run();return;}
- if(act==='stop'){pause();all.interrupted=true;all.stage='interrupted';render();return;}
+ if(act==='stop'){pause();stopVoice();all.interrupted=true;all.stage='interrupted';render();return;}
+ if(act==='to-evaluation'){if(all.started&&all.phase===PHASES.length-1){pause();stopVoice();all.completedCycle=true;all.stage='evaluation';all.error='';render();}return;}
  if(act==='save'){void saveResult();return;}
- if(act==='retry'){all.stage='position';all.elapsed=0;all.started=false;all.phase=-1;all.interrupted=false;render();return;}
+ if(act==='retry'){stopVoice();all.stage='position';all.elapsed=0;all.started=false;all.phase=-1;all.completedCycle=false;all.reminderPlayed=false;all.interrupted=false;render();return;}
  if(act==='return'){pause();stopVoice();void parent.close?.();return;}
 }
 // Initialize only after the authenticated host and weekly activity have been verified.

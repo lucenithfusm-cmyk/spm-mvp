@@ -41,12 +41,12 @@ function lesson(day,restriction='relax'){
 }
 test('first weekly training: recognition GIF, audio affordance, survey, posture, automatic cues and closing',async()=>{
  const h=lesson(3);try{
-  assert.match(h.button('.pf-weekly-card').textContent,/Reconoce la zona/);
-  assert.ok(h.button('[data-action="audio-intro"]'));assert.match(h.button('.pf-weekly-media img:last-child').getAttribute('src'),/relaxation-animation\.webp/);
+  assert.match(h.button('.pf-weekly-card h1').textContent,/Tu objetivo de esta sesión/);
+  assert.ok(h.button('[data-action="audio-intro"]'));assert.ok(h.button('[data-action="audio-zone"]'));assert.match(h.button('.pf-weekly-media img:last-child').getAttribute('src'),/relaxation-animation\.webp/);
   h.click('[data-action="continue-recognition"]');assert.match(h.button('.pf-weekly-card').textContent,/Reconoces la zona/);
   h.click('[data-choice="awareness"][data-value="yes"]');h.click('[data-action="to-position"]');
   assert.match(h.button('.pf-weekly-card').textContent,/Acomódate y empieza/);
-  assert.equal(h.w.document.querySelectorAll('[data-posture]').length,2);
+  assert.ok(h.button('[data-action="audio-posture"]'));assert.equal(h.w.document.querySelectorAll('[data-posture]').length,2);
   h.click('[data-action="start"]');
   assert.match(h.button('[data-active-phase]').textContent,/Percibe/);
   assert.equal(h.w.document.querySelectorAll('.pf-weekly-phase.on').length,1);
@@ -64,8 +64,12 @@ test('first weekly training: recognition GIF, audio affordance, survey, posture,
 for(const [day,expected,choice,key] of [[10,'¿Qué notaste?',null,null],[17,'Elige un apoyo para soltar','hands','anchor'],[24,'¿Qué puedo percibir?','support','perception']]){
  test('weekly '+day+' begins at posture and ends with '+expected,async()=>{
   const h=lesson(day);try{
+   assert.match(h.button('.pf-weekly-card h1').textContent,/Tu objetivo de esta sesión/);
+   assert.ok(h.button('[data-action="audio-intro"]'));
+   h.click('[data-action="continue-recognition"]');
    assert.match(h.button('.pf-weekly-card h1').textContent,/Acomódate y empieza/);
-   assert.equal(h.w.document.querySelector('[data-action="continue-recognition"]'),null);
+   assert.ok(h.button('[data-action="audio-posture"]'));
+   assert.equal(h.w.document.querySelector('[data-action="to-position"]'),null);
    h.click('[data-action="start"]');h.advance(55000);
    assert.equal(h.button('.pf-weekly-card h1').textContent,expected);
    if(key)h.click('[data-choice="'+key+'"][data-value="'+choice+'"]');
@@ -76,6 +80,54 @@ for(const [day,expected,choice,key] of [[10,'¿Qué notaste?',null,null],[17,'El
   }finally{h.close()}
  });
 }
+
+test('short spoken guidance plays at each stage and a reminder interrupts long silence',()=>{
+ const h=lesson(3);try{
+  h.click('[data-action="audio-intro"]');
+  assert.match(h.w.document.querySelector('audio').src,/0866a25f4275485087bea2d218bf537e/);
+  h.click('[data-action="continue-recognition"]');
+  h.click('[data-choice="awareness"][data-value="yes"]');h.click('[data-action="to-position"]');
+  h.click('[data-action="audio-posture"]');
+  assert.match(h.w.document.querySelector('audio').src,/277c349917f246c8999a67329fc7b911/);
+  h.click('[data-action="start"]');
+  assert.match(h.w.document.querySelector('audio').src,/58adf76160ec4a70aa26875b01cec6cf/);
+  h.advance(13000);assert.match(h.w.document.querySelector('audio').src,/3f3dddf3209340bea0fe1f1bf2c6d473/);
+  h.advance(28000);assert.match(h.w.document.querySelector('audio').src,/31e4323736fe4372b877fe498e1a188b/);
+  h.advance(38000);assert.match(h.w.document.querySelector('audio').src,/857ca74c564b4d9c817c8e251868c46a/);
+ }finally{h.close()}
+});
+test('week-three questionnaire is accessible as soon as the final automatic phase begins',async()=>{
+ const h=lesson(17);try{
+  h.click('[data-action="continue-recognition"]');h.click('[data-action="start"]');
+  assert.equal(h.button('[data-action="to-evaluation"]').disabled,true);
+  h.advance(38000);
+  assert.equal(h.button('[data-action="to-evaluation"]').disabled,false);
+  h.click('[data-action="to-evaluation"]');
+  assert.equal(h.button('.pf-weekly-card h1').textContent,'Elige un apoyo para soltar');
+  assert.ok(h.button('[data-choice="anchor"][data-value="hands"]'));
+  assert.equal(h.button('[data-action="save"]').disabled,true);
+  h.click('[data-choice="anchor"][data-value="hands"]');
+  for(const name of ['release','discomfort','tension'])h.click('[data-choice="'+name+'"][data-value="'+(name==='release'?'yes':'no')+'"]');
+  h.click('[data-action="save"]');await Promise.resolve();
+  assert.equal(h.accepted.length,1);
+  assert.equal(h.accepted[0].weekly.week,3);
+ }finally{h.close()}
+});
+test('introductory audio exists in every weekly practice and can be read without playing',()=>{
+ for(const day of DAYS){
+  const h=lesson(day);try{
+   assert.ok(h.button('[data-action="audio-intro"]'));
+   assert.ok(h.button('.pf-weekly-transcript summary'));
+   assert.equal(h.w.document.querySelector('[data-action="audio-posture"]'),null);
+   h.click('[data-action="continue-recognition"]');
+   if(day===3){
+    h.click('[data-choice="awareness"][data-value="unsure"]');h.click('[data-action="to-position"]');
+   }
+   assert.ok(h.button('[data-action="audio-posture"]'));
+   assert.match(h.button('.pf-weekly-transcript').textContent,/Antes de empezar/);
+  }finally{h.close()}
+ }
+});
 test('weekly practice is blocked on safety review and cannot register',()=>{
  const h=lesson(3,'review');try{assert.match(h.button('.pf-weekly-card').textContent,/Práctica en pausa/i);assert.equal(h.w.document.querySelector('[data-action="start"]'),null);assert.equal(h.accepted.length,0)}finally{h.close()}
 });
