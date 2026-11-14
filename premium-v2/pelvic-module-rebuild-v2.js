@@ -115,7 +115,23 @@ function techniqueCards(){
  return '<section class="pv2-card"><h3>Prueba la guía visual</h3><div class="pv2-movement-steps">'+labels.map((x,i)=>'<div><b>'+(i+1)+'</b><strong>'+x[0]+'</strong><small>'+x[1]+'</small></div>').join('')+'</div><div class="pv2-technique-actions"><button type="button" data-pv2-technique="contract" class="'+(techniquePhase==='contract'?'on':'')+'" aria-pressed="'+(techniquePhase==='contract')+'">Visualizar contracción</button><button type="button" data-pv2-technique="relax" class="'+(techniquePhase==='relax'?'on':'')+'" aria-pressed="'+(techniquePhase==='relax')+'">Visualizar relajación</button></div><p class="pv2-technique-status" role="status">'+description+'</p><p class="pv2-callout warn">La animación es una referencia educativa, no mide la contracción muscular. Si aparece dolor, no entrenes.</p></section>';
 }
 
-function coverBody(){return `<div class="pv2-cover"><div class="pv2-cover-crop"><img src="${IMAGES[0]}" alt="Lámina educativa SPM sobre el piso pélvico masculino y su anatomía" loading="eager" decoding="async"><button type="button" class="pv2-cover-audio" data-say="${esc(STEPS[0].audio)}" aria-label="Escuchar la explicación del piso pélvico" title="Escuchar explicación"></button></div></div>`;}
+function coverBody(){
+ // Reuse the original approved art from the same repository: crop its white center.
+ const heights=[1050,1050,1040,1050,1050,1035,1100],height=heights[step];
+ const top=(-200/height*100).toFixed(2)+'%';
+ const spoken=SPM_PELVIC_NARRATIONS[step];
+ const image='<div class="pv2-cover-crop" style="aspect-ratio:741 / '+height+';--cover-top:'+top+'"><img src="'+IMAGES[step]+'" loading="eager" decoding="async" alt="Lámina SPM del paso '+(step+1)+': '+esc(STEPS[step].title)+'"><button type="button" class="pv2-cover-audio" data-say="'+esc(spoken)+'" aria-label="Escuchar explicación y recomendaciones del paso '+(step+1)+'" title="Escuchar explicación y recomendaciones"></button></div>';
+ // The visual art is not a functional button. Preserve real practice controls below it.
+ const exercise=step===2?postureCards():step===4?techniqueCards():step===5?timerBody():step===6?practiceBody():'';
+ const notes={
+  3:'Respira sin retener el aire. La pausa de tres segundos impresa en la lámina no es necesaria.',
+  4:'SPM programa las sesiones de fuerza dos veces por semana cuando están indicadas; no varias veces al día.',
+  5:'Las contracciones se realizan sin levantar la cadera: la postura de puente es solo ilustrativa.',
+  6:'La pauta de fuerza de SPM es de dos sesiones semanales cuando corresponda; no de cuatro a cinco sesiones por semana.'
+ };
+ const warning=notes[step]?'<aside class="pv2-protocol" role="note"><b>Indicacion actual SPM:</b> '+esc(notes[step])+'</aside>':'';
+ return '<section class="pv2-cover" data-pelvic-poster-step="'+(step+1)+'">'+image+warning+(exercise?'<div class="pv2-cover-extras">'+exercise+'</div>':'')+'<details class="pv2-transcript"><summary>Leer explicación y recomendaciones (opcional)</summary><p>'+esc(spoken)+'</p></details></section>';
+}
 function standardBody(){
  const rows={
  0:[['Qué vas a entrenar','Reconocimiento, control, fuerza funcional y relajación del piso pélvico masculino.'],['Cómo usar este módulo','Avanza en orden. Puedes escuchar cada explicación y volver a cualquier paso cuando necesites repasarlo.']],
