@@ -5,8 +5,8 @@ const daily={
   "audioSrc": "/premium-v2/assets/audio/pelvic/pelvic-lab-daily-20261113.mp3"
 };
 const strength={
-  "script": "Esta es tu sesión de contracción y fuerza del piso pélvico, disponible cuando corresponde a tu pauta. Abre el entrenamiento y sigue las repeticiones y los descansos que aparecen en pantalla. El gesto es cerrar y elevar suavemente hacia dentro, como si quisieras evitar la salida de un gas. Respira con normalidad, sin apretar los glúteos ni empujar con el abdomen. Después de cada contracción, suelta por completo antes de continuar. No practiques interrumpiendo el chorro de orina. Si aparece dolor, aumenta la tensión o no consigues relajar, detén la sesión y registra lo ocurrido. Este entrenamiento tiene dos sesiones por semana en tu recorrido. El Pelvic Floor Lab semanal te acompaña por separado con conciencia, relajación y coordinación.",
-  "audioSrc": "/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3"
+  "script": "Esta es tu sesión de contracción y fuerza del piso pélvico, disponible cuando corresponde a tu pauta. Abre el entrenamiento y sigue las repeticiones y los descansos que aparecen en pantalla. El gesto es cerrar y elevar suavemente hacia dentro, como si quisieras evitar la salida de un gas. Respira con normalidad, sin apretar los glúteos ni empujar con el abdomen. Después de cada contracción, suelta por completo antes de continuar. No practiques interrumpiendo el chorro de orina. Si aparece dolor, aumenta la tensión o no consigues relajar, detén la sesión y registra lo ocurrido. Este entrenamiento tiene dos sesiones por semana en tu recorrido. El Pelvic Floor Lab semanal te acompaña por separado con conciencia, relajación y coordinación. En cada paso encontrarás una bocina. Presiónala cuando quieras escuchar la explicación de la actividad y sus recomendaciones.",
+  "audioSrc": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/84854979e66846989bc6c5855f53268f/id=049c3b0342624a02ad96e5e7ba9d1f46.mp3"
 };
 // Lenny: propósito + instrucciones completas; reproducir dentro de Respira y suelta, nunca en Hoy.
 const first={
