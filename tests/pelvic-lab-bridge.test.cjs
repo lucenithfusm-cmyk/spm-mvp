@@ -37,7 +37,7 @@ test('a failed cloud save retains the open module and supports retry',async()=>{
  }finally{await h.close()}
 });
 test('the selector retains the existing program and recommends preparation for unknown awareness',async()=>{
- const h=harness();try{await h.w.SPM_PELVIC_HUB.open();assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/DOS VECES POR SEMANA/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/Lab diario no sustituye/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/RECOMENDADO PARA EMPEZAR/);
+ const h=harness();try{await h.w.SPM_PELVIC_HUB.open();assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/DOS VECES POR SEMANA/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/No sustituye una sesión de fuerza/);assert.match(h.w.document.querySelector('[data-pf-body]').textContent,/PELVIC FLOOR LAB SEMANAL/);
  h.w.document.querySelector('[data-pf-training]').click();await new Promise(r=>setTimeout(r,0));assert.equal(h.trained(),0);
  }finally{await h.close()}
 });
@@ -104,4 +104,30 @@ test('classic callbacks reject stale or unrelated results and never substitute a
   assert.equal(opened.onResult(r),true);assert.equal(opened.onResult(r),false);assert.equal(accepted.length,1);assert.equal(returned,0);opened.onClose();assert.equal(returned,1);
   h.setContext({userId:'qa-user',planId:'other-plan',day:2,safety:'none'});assert.equal(opened.readiness(),'review');assert.equal(opened.onResult({...r,at:new Date().toISOString()}),false);
  }finally{await h.close();}
+});
+
+test('the first option in the hub is the classic strength module, never the weekly Lab',async()=>{
+ const ready={'pf-screening':{aware:'ok',releaseOk:'si',comp:['mandibula','abdomen','gluteos']}};
+ const h=harness(ready,2);try{
+  await h.w.SPM_PELVIC_HUB.open();
+  const body=h.w.document.querySelector('[data-pf-body]'),cards=body.querySelectorAll('article');
+  assert.equal(cards.length,2);
+  assert.match(cards[0].textContent,/Contracción y fuerza|Programa interactivo de 7 pasos/i);
+  assert.equal(cards[0].querySelector('[data-pf-training]').disabled,false);
+  assert.match(cards[1].textContent,/Pelvic Floor Lab/);
+  assert.equal(h.trained(),0);
+  cards[0].querySelector('[data-pf-training]').click();
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(h.trained(),1);
+  assert.equal(h.w.document.querySelector('iframe'),null);
+ }finally{await h.close()}
+});
+test('old recurring Lab buttons are not reinserted in the strength calendar',async()=>{
+ const h=harness({},2);
+ try{
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(h.w.document.querySelectorAll('[data-pf-lab]').length,0);
+  assert.equal(h.w.document.querySelector('#spmPelvicLabEntry'),null);
+  assert.ok(h.w.document.querySelector('.pfi-launch'),'legacy training button is not removed by the Lab cleanup');
+ }finally{await h.close()}
 });

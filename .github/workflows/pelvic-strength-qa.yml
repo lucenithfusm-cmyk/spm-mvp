@@ -1,0 +1,39 @@
+name: Pelvic strength and Lab separation QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-lab-bridge-v1.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/pelvic-floor-lab/index.html'
+      - 'premium-v2/pelvic-guided-v3-hotfix.js'
+      - 'tests/pelvic-strength-routing.test.cjs'
+      - 'tests/pelvic-classic-completion.test.cjs'
+      - 'tests/pelvic-lab-bridge.test.cjs'
+      - '.github/workflows/pelvic-strength-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-lab-bridge-v1.js'
+      - 'premium-v2/live.html'
+      - 'tests/pelvic-strength-routing.test.cjs'
+jobs:
+  separate-strength:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - name: Validate scripts
+        run: |
+          node --check premium-v2/pelvic-module-rebuild-v2.js
+          node --check premium-v2/pelvic-lab-bridge-v1.js
+      - name: Test classic strength, routing, persistence, and Lab separation
+        run: node --test tests/pelvic-classic-completion.test.cjs tests/pelvic-strength-routing.test.cjs tests/pelvic-lab-bridge.test.cjs tests/pelvic-weekly-flow.test.cjs

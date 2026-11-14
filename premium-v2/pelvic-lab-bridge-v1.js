@@ -97,7 +97,7 @@ function showLab(){
   getContext:()=>({day:openDay,origin,intent,activityId,restriction:token===generation&&sameContext()?effectiveRestriction():'review'}),
   onResult:r=>token===generation&&receiveResult(r),
  };
- const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261113-weekly-audio-eval2';
+ const frame=document.createElement('iframe');frame.title='Pelvic Floor Lab · Conciencia y relajación';frame.allow='autoplay';frame.src='pelvic-floor-lab/index.html?v=20261114-classic1';
  modal.querySelector('[data-pf-body]').replaceChildren(frame);
 }
 async function open(opts={}){if(await load({...opts,intent:opts.origin==='dailyPlan'?'daily-relax':'library'}))showLab();}
@@ -117,22 +117,29 @@ async function openScheduled(opts={}){
   },onClose:()=>{if(current())returned?.();}});
  }
  const level=restriction(ctx(),state),why=level==='review'?'La práctica de contracciones está en pausa mientras se revisa la información de seguridad.':level==='relax'?'Tus registros indican que conviene seguir con conciencia y relajación. Las contracciones están en pausa.':level==='ready'?'El módulo de entrenamiento todavía está cargando. Vuelve a intentarlo en un momento.':'Antes de entrenar contracciones, necesitas reconocer la musculatura y registrar una relajación cómoda.';
- modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SEGÚN TU PREPARACIÓN / PAUTA</span><h1>Tu sesión de contracciones</h1><p>'+why+'</p><p>Esta sesión permanece pendiente. El Lab semanal es un apoyo diferente y no cuenta como entrenamiento de fuerza.</p><button type="button" data-pf-daily>Abrir el Lab semanal</button></section>';
+ modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SEGÚN TU PREPARACIÓN / PAUTA</span><h1>Tu sesión de contracciones</h1><p>'+why+'</p><p>Esta sesión permanece pendiente. El Lab semanal es un apoyo diferente y no cuenta como entrenamiento de fuerza.</p><button type="button" data-pf-daily>Consultar conciencia y relajación (otro módulo)</button></section>';
  modal.querySelector('[data-pf-daily]').onclick=async()=>{if(!sameContext())return;const assigned=window.SPM_DAILY_PRACTICE?.assignments()?.some(a=>a.id==='pelvic-daily-lab');if(await close()){if(assigned)window.SPM_DAILY_PRACTICE.launch('pelvic-daily-lab');else open({origin:'library'});}};
 }
 async function openHub(opts={}){
  if(!await load({...opts,hub:true}))return;
- const route=restriction(ctx(),state),ready=route==='ready';
- const why=route==='review'?'Hay información de seguridad pendiente de revisión. Puedes consultar el contenido educativo; las prácticas quedan en pausa.':route==='relax'?'Tus registros orientan a conciencia y relajación. El entrenamiento de contracciones queda en pausa.':ready?'Tu información permite abrir el entrenamiento de contracciones. Conserva su pauta; el Lab semanal tiene un propósito diferente.':'Empieza por reconocer la musculatura y aprender a soltar. Tu preparación y progreso se conservan.';
- modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · PISO PÉLVICO</span><h1>Dos prácticas con propósitos distintos</h1><p>'+why+'</p><article><small>LAB SEMANAL · '+(ready?'APOYO OPCIONAL':'RECOMENDADO PARA EMPEZAR')+'</small><h2>Conciencia, relajación y coordinación</h2><p>Identifica sensaciones y coordina con una respiración cómoda, a tu ritmo. El Lab no añade contracciones de fortalecimiento.</p><button type="button" data-pf-education>Abrir Pelvic Floor Lab</button></article><article><small>CONTRACCIONES · DOS VECES POR SEMANA</small><h2>Entrenamiento de contracciones</h2><p>Tu módulo de entrenamiento conserva su pauta y sus controles de preparación. Realízalo en las sesiones indicadas de tu programa.</p><button type="button" data-pf-training '+(!ready?'disabled':'')+'>Abrir entrenamiento actual</button></article><p class="spm-pf-small">El Lab semanal no sustituye ni cuenta como una sesión de contracciones. Cada práctica conserva su propio registro.</p></section>';
+ const level=restriction(ctx(),state),ready=level==='ready';
+ const why=level==='review'?'La información de seguridad necesita revisión. No empieces contracciones; puedes consultar las explicaciones.':level==='relax'?'Tus registros aconsejan conciencia y relajación antes que fuerza. Las contracciones están en pausa.':ready?'Tu información permite abrir el entrenamiento de contracción y fuerza según tu pauta.':'Antes de fortalecer necesitas identificar y relajar la musculatura sin compensaciones.';
+ modal.querySelector('[data-pf-body]').innerHTML='<section class="spm-pf-choice"><span>SPM · DOS MÓDULOS DIFERENTES</span><h1>Piso pélvico · Contracción y fuerza</h1><p>'+why+'</p><article><small>ENTRENAMIENTO DE FUERZA · DOS VECES POR SEMANA SI CORRESPONDE</small><h2>Programa interactivo de 7 pasos</h2><p>Identifica el músculo, aprende la postura y la técnica, practica con temporizador y guarda tu sesión. Es independiente del laboratorio semanal.</p><button type="button" data-pf-training '+(!ready?'disabled':'')+'>'+(ready?'Abrir contracción y fuerza':'Entrenamiento en pausa por preparación')+'</button></article><article><small>OTRO MÓDULO · PELVIC FLOOR LAB SEMANAL</small><h2>Conciencia y relajación</h2><p>El laboratorio acompaña la percepción y la relajación. No sustituye una sesión de fuerza ni debe aparecer al seleccionar contracciones.</p><button type="button" data-pf-education>Consultar Pelvic Floor Lab (biblioteca)</button></article><p class="spm-pf-small">Si aparece dolor o dificultad para relajar, detente. El entrenamiento de fuerza requiere preparación y supervisión adecuada.</p></section>';
  modal.querySelector('[data-pf-education]').onclick=showLab;
- modal.querySelector('[data-pf-training]').onclick=async()=>{const r=restriction(ctx(),state);if(r!=='ready')return;if(!window.SPM_PELVIC_V2?.open){status('El entrenamiento todavía está cargando. Inténtalo de nuevo.',false);return;}const verified=clone(state);if(await close())window.SPM_PELVIC_V2.open({readiness:()=>restriction(ctx(),verified)});};
+ modal.querySelector('[data-pf-training]').onclick=async()=>{
+  if(restriction(ctx(),state)!=='ready')return;
+  if(!window.SPM_PELVIC_V2?.open){status('No pudimos cargar el entrenamiento de fuerza. Reintenta.',true);return;}
+  const verified=clone(state);
+  if(await close())window.SPM_PELVIC_V2.open({origin:'library',readiness:()=>restriction(ctx(),verified)});
+ };
 }
+
 let scheduled=false;
 function mount(){
- scheduled=false;const plan=document.getElementById('plan');if(!plan||!ctx())return;
- if(!document.getElementById('spmPelvicLabEntry')){const box=document.createElement('section');box.id='spmPelvicLabEntry';box.className='card spm-pf-entry';box.innerHTML='<div><span>SPM · PISO PÉLVICO</span><h3>Lab semanal y entrenamiento de contracciones</h3><p>Conciencia, relajación y coordinación una vez por semana en tu ruta. El módulo de contracciones conserva su pauta aparte.</p></div><button type="button" class="btn sec" data-pf-hub>Abrir Piso Pélvico</button>';plan.appendChild(box);box.querySelector('button').onclick=()=>openHub({origin:'library'});}
- document.querySelectorAll('.dayCard').forEach(card=>{const panel=card.querySelector('.pfi-mode-panel');if(!panel||panel.querySelector('[data-pf-lab]'))return;const b=document.createElement('button');b.type='button';b.className='btn sec';b.dataset.pfLab='1';b.textContent='Conciencia y relajación · Pelvic Floor Lab';b.onclick=()=>open({origin:'library',day:Number(card.querySelector('.dayNum')?.textContent)});panel.appendChild(b);});
+ scheduled=false;
+ // The weekly Lab appears in Hoy, never as a second entry inside the strength module.
+ document.getElementById('spmPelvicLabEntry')?.remove();
+ document.querySelectorAll('[data-pf-lab]').forEach(node=>node.remove());
 }
 function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(mount);}
 const observer=new MutationObserver(schedule);observer.observe(document.getElementById('plan')||document.body,{childList:true,subtree:true});

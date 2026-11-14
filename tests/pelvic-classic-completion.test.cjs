@@ -51,3 +51,40 @@ test('pause, invalid readiness and a changed account cannot emit a completion',a
   h.w.document.querySelector('#pv2Save').click();await settle();assert.equal(h.writes.length,0);assert.equal(h.results.length,0);
  }finally{h.close();}
 });
+
+test('the original seven-step strength program uses premium posture images and a visual technique guide',()=>{
+ const h=setup();try{
+  assert.equal(h.open(),true);
+  assert.equal(h.w.document.querySelectorAll('[data-step]').length,7);
+  h.select(2);
+  assert.match(h.w.document.querySelector('.pv2-main').textContent,/Posición inicial/);
+  assert.equal(h.w.document.querySelectorAll('[data-pv2-position]').length,2);
+  h.w.document.querySelector('[data-pv2-position="seated"]').click();
+  assert.equal(h.w.document.querySelector('[data-pv2-position="seated"]').getAttribute('aria-pressed'),'true');
+  assert.match(h.w.document.querySelector('.pv2-image img').getAttribute('src'),/spm-posture-seated/);
+  h.select(4);
+  assert.equal(h.w.document.querySelectorAll('[data-pv2-technique]').length,2);
+  h.w.document.querySelector('[data-pv2-technique="contract"]').click();
+  assert.match(h.w.document.querySelector('.pv2-technique-status').textContent,/elevar suavemente/);
+  h.w.document.querySelector('[data-pv2-technique="relax"]').click();
+  assert.match(h.w.document.querySelector('.pv2-technique-status').textContent,/reposo/);
+  assert.equal(h.results.length,0,'learning pages cannot complete strength');
+ }finally{h.close()}
+});
+test('the strength timer displays real contraction, release and rest stages but never completes on reading',()=>{
+ const h=setup();try{
+  h.open();h.select(5);
+  assert.ok(h.w.document.querySelector('#pv2VisualCue'));
+  assert.ok(h.w.document.querySelector('#pv2CueToggle'));
+  assert.equal(h.w.document.querySelector('#pv2CueToggle').getAttribute('aria-pressed'),'false');
+  h.w.document.querySelector('#pv2Start').click();
+  assert.equal(h.w.document.querySelector('[data-pv2-state="CONTRAE"]').classList.contains('on'),true);
+  for(let i=0;i<5;i++)h.tick();
+  assert.equal(h.w.document.querySelector('#pv2Phase').textContent,'RELAJA');
+  assert.equal(h.w.document.querySelector('[data-pv2-state="RELAJA"]').classList.contains('on'),true);
+  h.w.document.querySelector('#pv2Start').click();
+  for(let i=0;i<30;i++)h.tick();
+  assert.equal(h.results.length,0);
+  assert.equal(h.writes.length,0);
+ }finally{h.close()}
+});
