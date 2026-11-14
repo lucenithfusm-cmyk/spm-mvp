@@ -1,0 +1,41 @@
+name: Stop-Start SPM Premium — 28-day integration QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/ejaculatory-startstop-v2.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/ejaculatory-control-router.js'
+      - 'premium-v2/assets/ep/stop-start/**'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/revision-programas-28-dias.html'
+      - 'tests/stopstart-premium-integration.test.cjs'
+      - 'tests/program-review.test.cjs'
+      - '.github/workflows/stopstart-premium-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/ejaculatory-startstop-v2.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'tests/stopstart-premium-integration.test.cjs'
+jobs:
+  stopstart-integration:
+    name: Five screens, 28-day schedule and cloud-save safety
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - name: Validate production scripts
+        run: |
+          node --check premium-v2/ejaculatory-startstop-v2.js
+          node --check premium-v2/ejaculatory-control.js
+          node --check premium-v2/ejaculatory-control-router.js
+          node --check premium-v2/program-review-v1.js
+      - name: Verify clinical routing, real save, and premium review
+        run: node --test tests/stopstart-premium-integration.test.cjs tests/program-review.test.cjs tests/daily-practice.test.cjs
