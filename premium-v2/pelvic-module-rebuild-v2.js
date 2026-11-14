@@ -98,6 +98,46 @@ const premiumStyle=`
 }
 @media(prefers-reduced-motion:reduce){#spmPelvicV2 .pv2-step{transition:none}}
 #spmPelvicV2 .pv2-main.pv2-cover-page{background:#fff;padding:0!important}#spmPelvicV2 .pv2-cover{width:min(100%,742px);margin:0 auto;background:#fff}#spmPelvicV2 .pv2-cover-crop{position:relative;width:100%;aspect-ratio:741 / 1158;overflow:hidden;background:#fff}#spmPelvicV2 .pv2-cover-crop>img{position:absolute;width:138.19%;height:auto;max-width:none;left:-36.03%;top:-9.24%;border:0;box-shadow:none;display:block;background:#fff}#spmPelvicV2 .pv2-cover-audio{position:absolute;right:4.5%;top:7.5%;width:15%;height:13%;min-height:44px;border:0;border-radius:18px;background:transparent;cursor:pointer}#spmPelvicV2 .pv2-cover-audio.on{background:#c5a46c22}#spmPelvicV2 .pv2-cover-audio:focus-visible{outline:3px solid #b99a5b;outline-offset:-3px}
+
+/* Seven SPM white posters, with native progress, audio and interactive controls. */
+#spmPelvicV2 .pv2-shell{background:#fff}
+#spmPelvicV2 .pv2-meter{background:#fff;padding:12px 15px 5px}
+#spmPelvicV2 .pv2-meter-row{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#0f2e4f;font-size:15px;font-weight:850;margin-bottom:8px}
+#spmPelvicV2 .pv2-meter-track{height:7px;border-radius:999px;background:#e3e9ec;overflow:hidden}
+#spmPelvicV2 .pv2-meter-track span{display:block;width:14%;height:100%;border-radius:999px;background:linear-gradient(90deg,#056b64,#1cb79e);transition:width .28s ease}
+#spmPelvicV2 .pv2-progress{display:flex;justify-content:center;gap:9px;padding:7px 10px 9px;background:#fff;border:0;overflow-x:auto}
+#spmPelvicV2 .pv2-step{box-sizing:border-box;flex:0 0 34px;min-width:34px;min-height:34px;width:34px;height:34px;margin:0;padding:0;display:grid;place-items:center;background:transparent;border:0;border-radius:50%;font-size:0;color:transparent;box-shadow:none}
+#spmPelvicV2 .pv2-step i{flex:0 0 29px;display:grid;place-items:center;width:29px;height:29px;margin:0;border:1px solid #c3d3d0;border-radius:50%;background:#f4faf8;color:#486863;font-size:12px;font-weight:900}
+#spmPelvicV2 .pv2-step.on,#spmPelvicV2 .pv2-step.done{background:transparent;box-shadow:none;border:0;transform:none;color:transparent}
+#spmPelvicV2 .pv2-step.on i{background:#c5a46c;color:#0f2e4f;border-color:#c5a46c}
+#spmPelvicV2 .pv2-step.done i{background:#cfebdf;color:#0b6158;border-color:#88bead}
+#spmPelvicV2 .pv2-main.pv2-cover-page{padding:0!important;background:#fff}
+#spmPelvicV2 .pv2-cover{width:min(100%,741px);margin-inline:auto;background:#fff}
+#spmPelvicV2 .pv2-cover-crop{position:relative;width:100%;overflow:hidden;background:#fff}
+#spmPelvicV2 .pv2-cover-crop>img{position:absolute;display:block;max-width:none;width:138.19%;height:auto;left:-36.03%;top:var(--cover-top,-19%);border:0;box-shadow:none;background:#fff}
+#spmPelvicV2 .pv2-cover-audio{position:absolute;right:2.8%;top:1.5%;width:17%;height:14%;min-height:44px;z-index:2;border:0;border-radius:16px;background:transparent;color:transparent;cursor:pointer}
+#spmPelvicV2 .pv2-cover-audio.on{background:#c5a46c29;outline:2px solid #c5a46c66}
+#spmPelvicV2 .pv2-cover-audio:focus-visible{outline:3px solid #c5a46c;outline-offset:-3px}
+#spmPelvicV2 .pv2-cover-extras{max-width:741px;margin:8px auto;padding:0 12px 8px;display:grid;gap:12px}
+#spmPelvicV2 .pv2-cover-extras>.pv2-card{box-sizing:border-box;width:100%}
+#spmPelvicV2 .pv2-cover-extras .pv2-grid{display:block}
+#spmPelvicV2 .pv2-cover-extras .pv2-grid>.pv2-card.pv2-image{display:none}
+#spmPelvicV2 .pv2-cover-extras .pv2-timer{width:100%;box-sizing:border-box}
+#spmPelvicV2 .pv2-transcript{max-width:741px;margin:10px auto 15px;padding:0 16px;color:#284658;font-size:13px}
+#spmPelvicV2 .pv2-transcript summary{font-weight:800;color:#0f2e4f;cursor:pointer}
+#spmPelvicV2 .pv2-transcript p{font-size:13px;line-height:1.6}
+#spmPelvicV2 .pv2-protocol{max-width:741px;margin:8px auto 12px;padding:12px 15px;box-sizing:border-box;background:#fbf6ea;color:#294251;border-left:4px solid #c5a46c;border-radius:9px;font-size:13px;line-height:1.55}
+#spmPelvicV2 .pv2-protocol b{color:#0f2e4f}
+@media(max-width:680px){
+ #spmPelvicV2 .pv2-meter{padding:10px 13px 4px}
+ #spmPelvicV2 .pv2-progress{gap:5px;padding:6px 4px 9px}
+ #spmPelvicV2 .pv2-step{flex-basis:31px;min-width:31px;width:31px;height:31px;min-height:31px}
+ #spmPelvicV2 .pv2-step i{width:27px;height:27px;flex-basis:27px;font-size:12px}
+ #spmPelvicV2 .pv2-cover{width:100%}
+ #spmPelvicV2 .pv2-cover-extras{padding:0 10px 8px}
+ #spmPelvicV2 .pv2-transcript{padding:0 14px}
+}
+@media(prefers-reduced-motion:reduce){#spmPelvicV2 .pv2-meter-track span{transition:none}}
 `;
 const style=document.createElement('style');style.textContent=css+premiumStyle;document.head.appendChild(style);
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
