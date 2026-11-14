@@ -26,8 +26,10 @@ function validState(s){return !!s&&typeof s==='object'&&!Array.isArray(s)&&JSON.
 function restriction(c,s={}){
  const a=c?.answers||{},last=(s['pf-results']||[]).at(-1),check=(s['pf-checkins']||[]).at(-1),sc=s['pf-screening']||{};
  if(!c||c.safety!=='none'||c.flags?.length||c.checkins?.some(x=>x.new_safety_flag))return 'review';
- if(a.pf_awareness==='hard_to_relax'||Number(a.pf_tension)>=4||s['pf-flags']?.length||s['pf-overload']?.length||sc.releaseOk==='no'||check?.tension>=7||check?.release==='Difícil'||last?.discomfort||last?.postTension||['relax','clinical-review'].includes(last?.recommendation))return 'relax';
- if(!s['pf-screening']&&a.pf_awareness==='good_control'&&[1,2].includes(Number(a.pf_tension)))return 'ready';
+ if(Number(a.pf_tension)>=4||s['pf-flags']?.length||s['pf-overload']?.length||sc.releaseOk==='no'||check?.tension>=7||check?.release==='Difícil'||last?.discomfort||last?.postTension||['relax','clinical-review'].includes(last?.recommendation))return 'relax';
+ if(window.SPM_PELVIC_READINESS?.eligible(c,s)===true)return 'ready';
+ if(a.pf_awareness==='hard_to_relax')return 'relax';
+ if(!s['pf-screening']&&a.pf_awareness==='good_control'&&[0,1,2].includes(Number(a.pf_tension)))return 'ready';
  if(sc.aware!=='ok'||sc.releaseOk!=='si'||sc.comp?.length!==3)return 'awareness';
  return 'ready';
 }
@@ -44,7 +46,7 @@ async function flush(){
  if(!sameContext())throw new Error('Program changed');
  status('Guardando en tu programa…');
  const request=window.SPM_PELVIC_RECORDS.save(payload,captured,openDay);inFlight=request;
- try{await request;if(token!==generation||scope!==captured)return;saved=revision;status('Guardado en tu programa ✓');}
+ try{await request;if(token!==generation||scope!==captured)return;saved=revision;window.SPM_PELVIC_READINESS?.acceptSaved?.(payload,captured);status('Guardado en tu programa ✓');}
  catch(error){if(token===generation&&scope===captured)status('No se pudo guardar. Conserva esta pantalla y reintenta.',true);throw error;}
  finally{if(inFlight===request)inFlight=null;}
  if(token===generation&&dirty>saved)return flush();
