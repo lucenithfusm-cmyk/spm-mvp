@@ -172,6 +172,7 @@ test('a later successful Lab result unlocks its separate strength program only a
   assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),false);
   assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved(progress,'qa-user:qa-plan'),true);
   assert.equal(h.w.SPM_PELVIC_READINESS.eligible(c),true);
+  h.w.SPM_PELVIC_RECORDS.read=async()=>progress; // the same successfully persisted state is loaded at the session gate
   await h.w.SPM_PELVIC_LAB.openScheduled({day:6,activityId:'support-pelvic',intent:'scheduled'});
   assert.equal(h.trained(),1);
   assert.equal(h.classic[0].intent,'scheduled');
