@@ -62,7 +62,7 @@ test('the original seven-step strength program uses premium posture images and a
   assert.equal(h.w.document.querySelectorAll('[data-pv2-position]').length,2);
   h.w.document.querySelector('[data-pv2-position="seated"]').click();
   assert.equal(h.w.document.querySelector('[data-pv2-position="seated"]').getAttribute('aria-pressed'),'true');
-  assert.match(h.w.document.querySelector('[data-pv2-position="seated"] img').getAttribute('src'),/spm-posture-seated/);
+  assert.match(h.w.document.querySelector('[data-pv2-position="seated"] img').getAttribute('src'),/assets\/pelvic\/postures\/seated\.webp/);
   h.select(4);
   assert.equal(h.w.document.querySelectorAll('[data-pv2-technique]').length,2);
   h.w.document.querySelector('[data-pv2-technique="contract"]').click();
