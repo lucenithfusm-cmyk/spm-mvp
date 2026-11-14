@@ -8,15 +8,16 @@ function harness(primary='erection',day=12,initialRecords={}){
  w.HTMLMediaElement.prototype.pause=function(){};w.HTMLMediaElement.prototype.play=async function(){};w.HTMLMediaElement.prototype.load=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  const observers=[],NativeObserver=w.MutationObserver;
  w.MutationObserver=class extends NativeObserver{constructor(fn){super(fn);observers.push(this);}};
- const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
+ const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],answers:{pf_awareness:'good_control',pf_tension:1},safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_DAILY_RECORDS={read:async()=>JSON.parse(JSON.stringify(initialRecords)),save:async(...args)=>writes.push(args)};
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
- w.SPM_PELVIC_LAB={openScheduled:async o=>opens.push(['PELVIC',o]),close:async()=>true};
+ w.SPM_PELVIC_LAB={openScheduled:async o=>opens.push(['PELVIC',o]),close:async()=>true,validState:s=>!!s&&typeof s==='object'&&!Array.isArray(s)};
+  w.SPM_PELVIC_RECORDS={read:async()=>({})};
  w.SPM_PELVIC_GUIDANCE={definition:intent=>({script:intent==='scheduled'?'Comprueba tu preparación para las contracciones.':'Reconoce, respira y suelta a tu ritmo.',audioSrc:`/test-pelvic-${intent}.mp3`}),firstPractice:()=>({script:'Respira a tu ritmo.',audioSrc:'/test-first-practice.mp3'})};
  w.SPM_RESOURCES={restricted:c=>c.safety!=='none',open:(...args)=>opens.push(['resource',...args])};
- for(const f of ['engine.js','modules.js','practice-audio-v1.js','checkpoint-audio-v1.js','nutrition-daily-cards-v1.js','sleep-library-v1.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','program-checkpoint-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
+ for(const f of ['engine.js','modules.js','practice-audio-v1.js','checkpoint-audio-v1.js','nutrition-daily-cards-v1.js','sleep-library-v1.js','wellness-daily-tip-v1.js','daily-support-plan-v1.js','spm-video-library.js','spm-resources-content.js','erectile-library-v3.js','erection-daily-plan-v1.js','daily-resource-plan-v1.js','pelvic-strength-readiness-v1.js','program-checkpoint-v1.js','daily-practice-v1.js']){if(f==='daily-practice-v1.js')w.SPM_DE_LIBRARY={days:()=>w.SPM_DE_LIBRARY_V3.days};w.eval(read(f));}
  return{w,c,writes,opens,close:()=>{observers.forEach(o=>o.disconnect());w.close();}};
 }
 test('all 28 days have concrete launchers; secondary Desire is never the main daily practice',async()=>{
@@ -195,7 +196,7 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  }
  }finally{h.close();}});
  test('maintenance difficulty never increases contraction frequency beyond two conditional sessions weekly',()=>{const h=harness();try{
- for(const answers of [{e_maint:1,pf_awareness:'unsure',pf_tension:1},{e_maint:2,pf_awareness:'good_control',pf_tension:1}]){
+ for(const answers of [{e_maint:1,pf_awareness:'good_control',pf_tension:1},{e_maint:2,pf_awareness:'good_control',pf_tension:2}]){
  for(let week=0;week<4;week++){const sessions=Array.from({length:7},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day:week*7+i+1,answers})).flat().filter(a=>a.kind==='pelvic');assert.equal(sessions.filter(a=>a.pelvicIntent==='scheduled').length,2);assert.equal(sessions.filter(a=>a.id==='pelvic-daily-lab').length,1);assert.ok(sessions.every(a=>a.optional));}
  }
  assert.equal(h.w.SPM_DAILY_RESOURCES.pelvicDays({...h.c,answers:{e_maint:1,pf_awareness:'hard_to_relax',pf_tension:5}}).length,8);
@@ -333,7 +334,7 @@ test('all six routes receive a weekly Lab and separate strength when indicated',
   const lab=items.filter(a=>a.id==='pelvic-daily-lab'),strength=items.filter(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
   assert.equal(lab.length,[3,10,17,24].includes(day)?1:0);
   assert.ok(lab.every(a=>a.optional&&a.pelvicIntent==='daily-relax'&&a.pelvicPreference==='lab'));
-  assert.equal(strength.length,['erection','ejaculation'].includes(primary)&&[2,6].includes((day-1)%7+1)?1:0);
+  assert.equal(strength.length,[2,6].includes((day-1)%7+1)?1:0);
   assert.ok(strength.every(a=>a.optional&&a.pelvicPreference==='classic'));
  }}finally{h.close();}
 });
@@ -415,4 +416,48 @@ test('a persisted matching classic result is recognized after reopening without 
   assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='main'),false);assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
   h.w.SPM_DAILY_PRACTICE.library();h.w.SPM_DAILY_PRACTICE.open();assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.writes.length,0);
  }finally{h.close();}
+});
+
+test('ready patients in all six domains see the optional program on day 1 and two weekly sessions on days 2 and 6',async()=>{
+ const h=harness('wellbeing',1);try{await wait();
+  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+   const c={...h.c,primary,secondary:null,motives:[primary],answers:{pf_awareness:'good_control',pf_tension:1}};
+   assert.equal(h.w.SPM_DAILY_RESOURCES.strengthEligible({...c,day:1}),true);
+   for(let week=0;week<4;week++){
+    const weekRows=Array.from({length:7},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...c,day:week*7+i+1}));
+    assert.deepEqual(weekRows.flatMap((items,i)=>items.some(x=>x.pelvicIntent==='scheduled')?[week*7+i+1]:[]),[week*7+2,week*7+6]);
+    assert.equal(weekRows.flat().filter(x=>x.id==='pelvic-daily-lab').length,1);
+   }
+  }
+  h.w.SPM_DAILY_PRACTICE.open();
+  assert.ok(h.w.document.querySelector('[data-pelvic-strength-intro]'));
+  assert.equal(h.w.document.querySelector('[data-pelvic-strength-intro] button').textContent,'Conocer mi programa');
+ }finally{h.close()}
+});
+test('uncertain control starts with weekly Lab only, then saved positive result enables the future strength sessions',async()=>{
+ const h=harness('desire',3);try{
+  h.c.answers={pf_awareness:'unsure',pf_tension:1};
+  await wait();
+  assert.equal(h.w.SPM_DAILY_PRACTICE.assignments().filter(x=>x.pelvicIntent==='scheduled').length,0);
+  const safeLab={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:true,discomfort:false,postTension:false,recommendation:'repeat',origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab',day:3,at:new Date().toISOString(),weekly:{voluntaryControl:'yes'}};
+  assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved({'pf-results':[safeLab],'pf-daily-result':safeLab},'qa:plan'),true);
+  h.c.day=6;
+  assert.equal(h.w.SPM_DAILY_PRACTICE.assignments().filter(x=>x.pelvicIntent==='scheduled').length,1);
+  h.c.day=10;
+  const lab=h.w.SPM_DAILY_PRACTICE.assignments().find(x=>x.id==='pelvic-daily-lab');
+  assert.ok(lab);assert.equal(lab.pelvicIntent,'daily-relax');
+ }finally{h.close()}
+});
+test('discomfort and danger flags suppress strength without taking away the Lab assignment',async()=>{
+ const h=harness('lifestyle',6);try{
+  await wait();
+  const c={...h.c,answers:{pf_awareness:'good_control',pf_tension:1}};
+  const bad={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:false,discomfort:true,postTension:true,recommendation:'relax',origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab',day:3,at:new Date().toISOString(),weekly:{voluntaryControl:'yes'}};
+  assert.equal(h.w.SPM_PELVIC_READINESS.acceptSaved({'pf-results':[bad]},'qa:plan'),true);
+  assert.equal(h.w.SPM_DAILY_PRACTICE.assignments(c).filter(x=>x.pelvicIntent==='scheduled').length,0);
+  assert.equal(h.w.SPM_DAILY_PRACTICE.assignments({...c,day:10}).filter(x=>x.id==='pelvic-daily-lab').length,1);
+  for(const blocked of [{...c,safety:'review',flags:['s_penile']},{...c,checkins:[{new_safety_flag:true}]},{...c,answers:{pf_awareness:'hard_to_relax',pf_tension:5}}]){
+   assert.equal(h.w.SPM_DAILY_RESOURCES.strengthEligible(blocked),false);
+  }
+ }finally{h.close()}
 });
