@@ -20,7 +20,7 @@ const PHASES=[
 ];
 const TOTAL=PHASES.reduce((a,p)=>a+p.seconds,0)*1000; // Orientativo: tiempos de guía, no una dosis clínica.
 const escaped=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const all={stage:'intro',posture:'seated',awareness:null,anchor:null,perception:null,stopFlags:[],release:null,discomfort:null,tension:null,started:false,interrupted:false,saved:false,week,elapsed:0,since:null,timer:null,phase:-1,error:'',completedCycle:false,reminderPlayed:false};
+const all={stage:'intro',posture:'seated',awareness:null,anchor:null,perception:null,voluntaryControl:null,stopFlags:[],release:null,discomfort:null,tension:null,started:false,interrupted:false,saved:false,week,elapsed:0,since:null,timer:null,phase:-1,error:'',completedCycle:false,reminderPlayed:false};
 const images={anatomy:'./assets/pelvic-anatomy-Be2oguaa.jpg',animation:'./assets/spm-pelvic-relaxation-animation.webp',seated:'./assets/spm-posture-seated-20261113.webp',reclined:'./assets/spm-posture-reclined-20261113.webp'};
 const NARRATIONS={
   "intro": [
@@ -183,6 +183,7 @@ function showEvaluation(){
  else if(week===4)parts.push(`<p>¿Qué percibiste durante esta práctica? No hay respuestas correctas.</p>${choices('perception',[['support','Noto el apoyo del cuerpo'],['tension','Noto tensión o esfuerzo'],['unclear','Todavía no reconozco una sensación clara']],all.perception)}`);
  else parts.push(`<p>Responde según tu experiencia real, sin exigirte una mejoría.</p>`);
  parts.push(yesNo('release','¿Pudiste dejar la zona en reposo?',all.release));
+ parts.push('<div class="pf-weekly-survey"><h3>Reconocimiento y control muscular</h3><p>Sin hacer contracciones ahora, ¿ya sabes contraer suavemente los músculos del piso pélvico y relajarlos por completo sin molestias?</p>'+choices('voluntaryControl',[['yes','Sí, reconozco el movimiento y puedo soltar sin molestias'],['no','Todavía me cuesta'],['unsure','No estoy seguro']],all.voluntaryControl)+'</div>');
  if(week!==1)parts.push(yesNo('discomfort','¿Apareció dolor o molestia?',all.discomfort));
  if(week!==1)parts.push(yesNo('tension','¿Sentiste más tensión al terminar?',all.tension));
  const ready=all.release!==null&&(week===1?all.stopFlags.length>0:all.discomfort!==null&&all.tension!==null)&&(week!==3||all.anchor!==null)&&(week!==4||all.perception!==null);
@@ -195,6 +196,7 @@ function render(){if(!current()){pause();stopVoice();all.stage='blocked';}switch
 function choose(name,value){
  stopVoice();
  if(name==='awareness')all.awareness=value;
+ else if(name==='voluntaryControl')all.voluntaryControl=value;
  else if(name==='anchor')all.anchor=value;
  else if(name==='perception')all.perception=value;
  else if(name==='release'||name==='discomfort'||name==='tension')all[name]=value;
@@ -204,7 +206,7 @@ function choose(name,value){
 async function saveResult(){
  if(!current()||!all.started||all.interrupted||!all.completedCycle||all.release===null){all.error='Finaliza la secuencia y responde la evaluación antes de guardar.';render();return;}
  const flags=all.stopFlags,discomfort=week===1?flags.some(x=>['pain','dizzy','fatigue','urinary'].includes(x)):all.discomfort==='yes',postTension=week===1?flags.includes('tension')||flags.includes('cant_relax'):all.tension==='yes',fullRelease=all.release==='yes';
- const note={week,recognition:all.awareness||null,anchor:all.anchor||null,perception:all.perception||null,stopSignals:week===1?flags:[],posture:all.posture};
+ const note={week,recognition:all.awareness||null,voluntaryControl:all.voluntaryControl||null,anchor:all.anchor||null,perception:all.perception||null,stopSignals:week===1?flags:[],posture:all.posture};
  const result={practiceId:'percibe',completed:true,cleanContraction:null,fullRelease,discomfort,postTension,recommendation:discomfort||postTension||!fullRelease?'relax':'repeat',at:new Date().toISOString(),origin:'dailyPlan',day:entryContext.day,activityId:'pelvic-daily-lab',intent:'daily-relax',weekly:note};
  try{
   const state=parent.getState?.()||{},prior=Array.isArray(state['pf-results'])?state['pf-results']:[];
