@@ -71,8 +71,8 @@ test('a failed lab close prevents navigation; successful navigation closes actua
     await w.SPM_PROGRAM_REVIEW.select('erection',7);await wait();
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDeModal.on'));
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('#spmDeModal.on'),null);
-    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmEcModal.on'));
-    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',14),true);await wait();assert.equal(w.document.querySelector('#spmEcModal.on'),null);
+    await w.SPM_DAILY_PRACTICE.launch('main');const premium=w.document.querySelector('#spmStartStopV2');assert.ok(premium&&!premium.hidden);assert.ok(premium.shadowRoot.querySelector('#stage img'));assert.equal(w.document.querySelector('#spmEcModal.on'),null);
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',14),true);await wait();assert.equal(w.document.querySelector('#spmEcModal.on'),null);assert.equal(w.document.querySelector('#spmStartStopV2').hidden,true);
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#epAssessModal.on'));
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('confidence',2),true);await wait();assert.equal(w.document.querySelector('#epAssessModal.on'),null);
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDailyWorkspace [name="reflection"]'));
