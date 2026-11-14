@@ -328,3 +328,36 @@ test('DE day two opens the real seven-step strength interface with the unmodifie
   w.SPM_PELVIC_V2.close();
  }finally{h.close();}
 });
+
+test('EP pre-activity speaker explains repetition in the correct 28-day sessions, without changing cadence',async()=>{
+  const h=await harness('?programa=ejaculation&dia=1');
+  try {
+    const {w}=h;
+    const sample=[
+      [1,'tres sesiones','Start Stop'],[3,'repetición','Start Stop'],
+      [8,'Stop Squeeze','compresión'],[10,'repetición','compresión'],
+      [12,'repetición','compresión'],
+      [15,'técnica','herramienta'],[17,'repetición','herramienta'],
+      [22,'consolidación','Start Stop'],[24,'consolidación','compresión'],[26,'consolidación','herramienta']
+    ];
+    for(const [day,needle,topic] of sample){
+      assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',day),true);
+      await wait();
+      const main=w.document.querySelector('#spmDailySession [data-activity="main"]');
+      assert.ok(main,'main activity visible on day '+day);
+      const speaker=main.querySelector('[data-spm-speak]');
+      assert.ok(speaker,'pre-activity voice present on day '+day);
+      const voice=speaker.getAttribute('data-spm-speak');
+      assert.match(voice,new RegExp(needle,'i'),'repetition explanation on day '+day);
+      assert.match(voice,new RegExp(topic,'i'),'technique-specific voice on day '+day);
+      assert.match(voice,/tres sesiones|sesión \d de tres/i);
+      assert.equal(speaker.dataset.audioLabel,'Escuchar indicación');
+    }
+    const weeks=[1,8,15,22];
+    for(const start of weeks){
+      const sessionDays=Object.keys(w.SPM_EJACULATORY_CONTROL.schedule).filter(d=>Number(d)>=start&&Number(d)<start+7);
+      assert.equal(sessionDays.length,3,'three total technique sessions in week starting '+start);
+    }
+    assert.deepEqual(h.errors,[]);
+  } finally {h.close()}
+});

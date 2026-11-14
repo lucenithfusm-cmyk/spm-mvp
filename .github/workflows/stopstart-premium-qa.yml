@@ -5,6 +5,7 @@ on:
     paths:
       - 'premium-v2/ejaculatory-startstop-v2.js'
       - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/daily-practice-v1.js'
       - 'premium-v2/ejaculatory-control-router.js'
       - 'premium-v2/assets/ep/stop-start/**'
       - 'premium-v2/live.html'
@@ -17,6 +18,7 @@ on:
     paths:
       - 'premium-v2/ejaculatory-startstop-v2.js'
       - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/daily-practice-v1.js'
       - 'tests/stopstart-premium-integration.test.cjs'
 jobs:
   stopstart-integration:
