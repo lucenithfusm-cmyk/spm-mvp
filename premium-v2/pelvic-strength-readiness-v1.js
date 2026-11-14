@@ -35,6 +35,8 @@ function publish(){window.dispatchEvent(new CustomEvent('spm:pelvic-readiness'))
 function acceptSaved(s,scope){
  if(!scope||scope!==scopeOf(ctx())||!valid(s))return false;
  const encoded=JSON.stringify(s),prior=loaded&&cacheScope===scope?JSON.stringify(state):null;
+ // Supersede older in-flight reads so an earlier snapshot cannot undo a confirmed Lab save.
+ version++;pending=null;
  cacheScope=scope;state=JSON.parse(encoded);loaded=true;
  if(prior!==encoded)publish();
  return true;
