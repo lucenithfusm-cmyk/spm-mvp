@@ -3,6 +3,8 @@ import { contextKey, host, load, readContext, save, useHostContext, type HostCon
 import { setSequenceActive, useSequenceActive, hasAudio, playAudio, pauseAudio, resumeAudio, stopAudio, preloadCues, useAudioState } from '@/lib/pf-audio';
 import anatomy from '@/assets/pelvic-anatomy.jpg';
 import trainerImg from '@/assets/spm-trainer.jpg';
+import seatedPosture from '@/assets/spm-posture-seated-20261113.webp';
+import reclinedPosture from '@/assets/spm-posture-reclined-20261113.webp';
 import {
   SCREENS, DAILY_PHASES, RED_FLAGS, ALARM_SIGNS, REEVAL_REASONS, OVERLOAD_SIGNS, PRACTICES, REC_LABEL, recommendDaily,
   type FloorState, type PracticeResult,
@@ -84,19 +86,9 @@ function PathSteps({ current }: { current: number }) {
 
 type PracticePosture = 'seated' | 'reclined';
 function PosturePicture({ posture }: { posture: PracticePosture }) {
-  return <svg viewBox="0 0 180 112" aria-hidden="true" className="pf-posture-picture" fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path className="pf-posture-support" d={posture === 'seated' ? 'M65 29 V76 H110 M69 76 V102 M106 76 V102 M36 104 H151' : 'M12 94 H168 M18 94 V104 M161 94 V104'} />
-    {posture === 'seated' ? <>
-      <circle className="pf-posture-person" cx="77" cy="19" r="10" />
-      <path className="pf-posture-person" d="M76 39 L74 67 H109 L118 98 H138 M85 43 L94 60 H111" />
-      <path className="pf-posture-contact" d="M67 43 V67 M119 104 H141" />
-    </> : <>
-      <path className="pf-posture-cushion" d="M16 88 Q31 82 47 88 V94 H16 Z" />
-      <circle className="pf-posture-person" cx="31" cy="76" r="10" />
-      <path className="pf-posture-person" d="M53 88 H92 L117 54 L147 89 H162 M58 78 L82 78 L94 85" />
-      <path className="pf-posture-contact" d="M52 95 H94 M145 96 H165" />
-    </>}
-  </svg>;
+  const seated = posture === 'seated';
+  return <img className="pf-posture-picture" src={seated ? seatedPosture : reclinedPosture}
+    alt={seated ? 'Hombre con uniforme SPM sentado con la espalda apoyada y ambos pies en el suelo' : 'Hombre con uniforme SPM recostado, rodillas flexionadas y ambos pies apoyados'} loading="eager" decoding="async" />;
 }
 
 /* A manual comparison illustrates comfortable breathing without setting a pace,
