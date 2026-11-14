@@ -248,7 +248,7 @@ test('day six keeps strength separate while day three hosts the one weekly aware
   const main=api.assignments().find(a=>a.id==='main');
   assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
-  assert.equal(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),'/premium-v2/assets/audio/pelvic/pelvic-strength-entry-20261113.mp3');
+  assert.match(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),/resource2\.heygen\.ai\/text_to_speech/);assert.match(w.document.querySelector('[data-activity="main"] [data-checkpoint-audio-transcript]').textContent,/En cada paso encontrarás una bocina/);
   await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-cover-crop img').getAttribute('alt'),/Conoce tu piso pélvico/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
   w.SPM_PELVIC_V2.close();
   const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];

@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-guidance-v1.js'
       - 'premium-v2/pelvic-lab-bridge-v1.js'
       - 'premium-v2/live.html'
       - 'premium-v2/erectile-central-v3.js'
@@ -19,6 +20,7 @@ on:
   pull_request:
     paths:
       - 'premium-v2/pelvic-module-rebuild-v2.js'
+      - 'premium-v2/pelvic-guidance-v1.js'
       - 'premium-v2/pelvic-lab-bridge-v1.js'
       - 'premium-v2/live.html'
       - 'premium-v2/erectile-central-v3.js'

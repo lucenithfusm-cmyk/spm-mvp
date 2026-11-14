@@ -181,15 +181,15 @@ test('posture, visual comparison, timer, and safe closing remain interactive bel
  }finally{h.close();}
 });
 
-test('gold speaker calls attention, can be toggled, and is clearly labeled on every page',()=>{
+test('original unboxed speaker pulses and toggles on every page',()=>{
  const h=setup();try{
   h.open();
   const css=h.w.document.head.textContent;
-  assert.match(css,/pv2VoiceHalo/);assert.match(css,/pv2VoiceBounce/);
+  assert.match(css,/pv2SpeakerPulse/);assert.match(css,/pv2SpeakerHalo/);assert.doesNotMatch(css,/pv2VoiceBounce/);
   for(let i=0;i<7;i++){
    h.select(i);const b=h.w.document.querySelector('.pv2-cover-audio');
-   assert.ok(b);assert.match(b.textContent,/TOCA PARA ESCUCHAR/);
-   assert.ok(b.querySelector('.pv2-audio-glyph'));
+   assert.ok(b);assert.doesNotMatch(b.textContent,/TOCA PARA ESCUCHAR/);
+   assert.ok(b.querySelector('.pv2-audio-glyph svg'));
    assert.equal(b.getAttribute('aria-pressed'),'false');
   }
   const b=h.w.document.querySelector('.pv2-cover-audio');
