@@ -25,8 +25,8 @@ test('the original seven-step strength route is active and old competing overlay
  const live=read('live.html'),review=read('program-review-v1.js'),classic=read('pelvic-module-rebuild-v2.js'),bridge=read('pelvic-lab-bridge-v1.js');
  assert.doesNotMatch(live,/<script src="pelvic-interactive-v1\.js"/);
  assert.doesNotMatch(live,/<script src="pelvic-fidelity-v2\.js"/);
- assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=20261114-pelvic-ux4/);
- assert.match(review,/pelvic-module-rebuild-v2\.js\?v=20261114-pelvic-ux4/);
+ assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=20261114-cover-white1/);
+ assert.match(review,/pelvic-module-rebuild-v2\.js\?v=20261114-cover-white1/);
  assert.match(classic,/window\.SPM_PELVIC_V2=\{open,close\}/);
  assert.match(classic,/source:'pelvic-classic-v2'/);
  assert.match(bridge,/data-pf-training/);

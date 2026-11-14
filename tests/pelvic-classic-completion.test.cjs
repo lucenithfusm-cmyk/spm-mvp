@@ -119,3 +119,25 @@ test('final button keeps the session open and retries after a failed save',async
   assert.equal(h.writes.length,1);assert.equal(h.results.length,1);assert.equal(h.closes(),1);
  }finally{h.close();}
 });
+
+test('page 1/7 displays only the cropped white SPM artwork and keeps spoken guidance',()=>{
+ const h=setup();try{
+  h.open();
+  const page=h.w.document.querySelector('.pv2-main');
+  assert.equal(page.classList.contains('pv2-cover-page'),true);
+  assert.equal(page.querySelectorAll('.pv2-cover-crop img').length,1);
+  assert.match(page.querySelector('.pv2-cover-crop img').getAttribute('src'),/8c01592d-7a59-434e-a0b6-11a7497a0b0d/);
+  assert.equal(page.querySelectorAll('.pv2-card,.pv2-info,.pv2-title,.pv2-lead').length,0);
+  const audio=page.querySelector('.pv2-cover-audio');assert.ok(audio);
+  assert.match(audio.getAttribute('aria-label'),/Escuchar la explicación/);
+  const speech=[];h.w.speechSynthesis.speak=utterance=>speech.push(utterance.text);
+  audio.click();assert.equal(speech.length,1);assert.match(speech[0],/piso pélvico masculino/);
+  h.select(1);
+  assert.equal(page.classList.contains('pv2-cover-page'),false);
+  assert.equal(page.querySelector('.pv2-cover-crop'),null);
+  assert.ok(page.querySelector('.pv2-card'));
+  assert.match(page.querySelector('.pv2-title').textContent,/Identifica los músculos/);
+  h.select(0);assert.ok(page.querySelector('.pv2-cover-crop'));
+  assert.ok(h.w.document.head.textContent.includes('aspect-ratio:741 / 1158'));
+ }finally{h.close();}
+});
