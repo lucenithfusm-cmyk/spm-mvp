@@ -1,0 +1,31 @@
+name: Pelvic Floor Lab weekly flow QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/daily-resource-plan-v1.js'
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/pelvic-floor-lab/**'
+      - 'premium-v2/pelvic-lab-bridge-v1.js'
+      - 'tests/pelvic-weekly-flow.test.cjs'
+      - '.github/workflows/pelvic-weekly-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/daily-resource-plan-v1.js'
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/pelvic-floor-lab/**'
+      - 'premium-v2/pelvic-lab-bridge-v1.js'
+      - 'tests/pelvic-weekly-flow.test.cjs'
+jobs:
+  weekly-flow:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: node --check premium-v2/pelvic-floor-lab/pelvic-weekly-flow-v1.js
+      - run: node --test tests/pelvic-weekly-flow.test.cjs

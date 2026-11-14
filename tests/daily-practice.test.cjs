@@ -69,7 +69,7 @@ test('wellness rotates over 28 days while the primary and scheduled supports sta
   if([1,14,28].includes(day))assert.ok(items.some(a=>a.kind==='program-checkpoint'));
  }
  assert.deepEqual(counts,{nutrition:10,movement:9,sleep:18});
- for(const [day,kind] of [[6,'pelvic'],[11,'recovery'],[13,'confidence'],[18,'worksheet'],[25,'recovery']]){
+ for(const [day,kind] of [[3,'pelvic'],[11,'recovery'],[13,'confidence'],[18,'worksheet'],[25,'recovery']]){
   assert.ok(h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary:'desire',day}).some(a=>a.kind===kind));
  }
  }finally{h.close()}
@@ -99,15 +99,15 @@ test('new check-in safety flags and unknown status retain the physical pause',as
  assert.equal(h.w.SPM_DAILY_PRACTICE.restricted(null),true);
  }finally{h.close()}
 });
-test('daily Lab replaces duplicated awareness supports while other routes retain their conditional entries',async()=>{
+test('weekly Lab appears only on days 3, 10, 17 and 24 in six domains',async()=>{
  const h=harness('confidence');try{await wait();
- for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [12,19,24]){
-  const pelvic=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}).filter(a=>a.kind==='pelvic');
-  assert.equal(pelvic.length,1);assert.ok(pelvic.every(a=>a.optional));if(['erection','ejaculation','desire'].includes(primary))assert.equal(pelvic[0].id,'pelvic-daily-lab');
+ for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(let day=1;day<=28;day++){
+  const lab=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}).filter(a=>a.id==='pelvic-daily-lab');
+  assert.equal(lab.length,[3,10,17,24].includes(day)?1:0);
+  assert.ok(lab.every(a=>a.optional&&a.pelvicIntent==='daily-relax'));
  }
  }finally{h.close()}
 });
-
 test('all routes schedule short videos; mixed Desire support never replaces the primary session',async()=>{
  const h=harness('desire');try{await wait();
  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle','anxiety','optimization','mixed']){
@@ -196,7 +196,7 @@ test('refreshing after a requirement reloads saved state without erasing a clini
  }finally{h.close();}});
  test('maintenance difficulty never increases contraction frequency beyond two conditional sessions weekly',()=>{const h=harness();try{
  for(const answers of [{e_maint:1,pf_awareness:'unsure',pf_tension:1},{e_maint:2,pf_awareness:'good_control',pf_tension:1}]){
- for(let week=0;week<4;week++){const sessions=Array.from({length:7},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day:week*7+i+1,answers})).flat().filter(a=>a.kind==='pelvic');assert.equal(sessions.filter(a=>a.pelvicIntent==='scheduled').length,2);assert.equal(sessions.filter(a=>a.id==='pelvic-daily-lab').length,7);assert.ok(sessions.every(a=>a.optional));}
+ for(let week=0;week<4;week++){const sessions=Array.from({length:7},(_,i)=>h.w.SPM_DAILY_PRACTICE.assignments({...h.c,day:week*7+i+1,answers})).flat().filter(a=>a.kind==='pelvic');assert.equal(sessions.filter(a=>a.pelvicIntent==='scheduled').length,2);assert.equal(sessions.filter(a=>a.id==='pelvic-daily-lab').length,1);assert.ok(sessions.every(a=>a.optional));}
  }
  assert.equal(h.w.SPM_DAILY_RESOURCES.pelvicDays({...h.c,answers:{e_maint:1,pf_awareness:'hard_to_relax',pf_tension:5}}).length,8);
  }finally{h.close();}});
@@ -327,22 +327,25 @@ test('Today shows the existing sleep design and practical nutrition with its lib
  }finally{h.close();}
 });
 
-test('DE, EP and Desire receive one optional awareness Lab every day, separate from contraction slots',()=>{
- const h=harness();try{for(const primary of ['erection','ejaculation','desire'])for(let day=1;day<=28;day++){
-  const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}),lab=items.filter(a=>a.id==='pelvic-daily-lab'),strength=items.filter(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
-  assert.equal(lab.length,1);assert.equal(lab[0].optional,true);assert.equal(lab[0].pelvicIntent,'daily-relax');assert.equal(lab[0].pelvicPreference,'lab');
-  assert.equal(strength.length,primary!=='desire'&&[2,6].includes((day-1)%7+1)?1:0);assert.ok(strength.every(a=>a.optional&&a.pelvicPreference==='classic'));
+test('all six routes receive a weekly Lab and separate strength when indicated',()=>{
+ const h=harness();try{for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(let day=1;day<=28;day++){
+  const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});
+  const lab=items.filter(a=>a.id==='pelvic-daily-lab'),strength=items.filter(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
+  assert.equal(lab.length,[3,10,17,24].includes(day)?1:0);
+  assert.ok(lab.every(a=>a.optional&&a.pelvicIntent==='daily-relax'&&a.pelvicPreference==='lab'));
+  assert.equal(strength.length,['erection','ejaculation'].includes(primary)&&[2,6].includes((day-1)%7+1)?1:0);
+  assert.ok(strength.every(a=>a.optional&&a.pelvicPreference==='classic'));
  }}finally{h.close();}
 });
-
-test('pelvic cards use recorded guides without shortcut registration and stop audio when opened',async()=>{
- const h=harness('erection',2);try{await wait();const d=h.w.document,api=h.w.SPM_DAILY_PRACTICE;api.open();
-  for(const [id,intent] of [['pelvic-daily-lab','daily-relax'],['support-pelvic','scheduled']]){
-   const card=d.querySelector(`[data-activity="${id}"]`);assert.ok(card);assert.equal(card.querySelector('[data-daily-confirm]'),null);assert.equal(card.querySelector('[data-spm-speak]'),null);assert.equal(card.querySelector('audio').getAttribute('src'),`/test-pelvic-${intent}.mp3`);assert.equal(card.querySelector('details').open,false);
-  }
-  const card=d.querySelector('[data-activity="pelvic-daily-lab"]'),button=card.querySelector('[data-checkpoint-audio-toggle]');assert.equal(card.querySelector('[data-daily-open]').textContent,'Empezar práctica guiada');button.click();await wait();assert.equal(button.dataset.state,'playing');assert.equal(h.writes.length,0);
-  await api.launch('pelvic-daily-lab');assert.equal(button.dataset.state,'idle');const opts=h.opens.at(-1)[1];assert.equal(opts.intent,'daily-relax');assert.equal(opts.activityId,'pelvic-daily-lab');assert.equal(opts.day,2);assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
-  opts.onClose();assert.equal(d.querySelector('[data-pelvic-confirm]'),null);assert.ok(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'));
+test('weekly Lab has a single entry and its narration plays only inside the practice',async()=>{
+ const h=harness('erection',3);try{await wait();const d=h.w.document,api=h.w.SPM_DAILY_PRACTICE;api.open();
+  const card=d.querySelector('[data-activity="pelvic-daily-lab"]');assert.ok(card);assert.equal(card.querySelector('[data-daily-confirm]'),null);
+  assert.equal(card.querySelector('[data-spm-speak],audio,[data-checkpoint-audio-toggle]'),null);
+  assert.equal(card.querySelector('[data-daily-open]').textContent,'Empezar práctica guiada');
+  await api.launch('pelvic-daily-lab');const opts=h.opens.at(-1)[1];
+  assert.equal(opts.intent,'daily-relax');assert.equal(opts.activityId,'pelvic-daily-lab');assert.equal(opts.day,3);
+  assert.equal(h.writes.length,0);opts.onClose();assert.equal(d.querySelector('[data-pelvic-confirm]'),null);
+  assert.ok(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'));
  }finally{h.close();}
 });
 
@@ -353,16 +356,16 @@ test('another activity can supply its recorded guide without a second generic sp
  }finally{h.close();}
 });
 
-const labResult=(day=2,extra={})=>({practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:true,discomfort:false,postTension:false,recommendation:'repeat',at:new Date().toISOString(),origin:'dailyPlan',day,activityId:'pelvic-daily-lab',intent:'daily-relax',...extra});
+const labResult=(day=3,extra={})=>({practiceId:'percibe',completed:true,cleanContraction:null,fullRelease:true,discomfort:false,postTension:false,recommendation:'repeat',at:new Date().toISOString(),origin:'dailyPlan',day,activityId:'pelvic-daily-lab',intent:'daily-relax',...extra});
 test('fresh Lab completion needs explicit confirmation, survives a failed save, and counts only the Lab',async()=>{
- const h=harness('erection',2);try{await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;api.open();
+ const h=harness('erection',3);try{await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;api.open();
   await assert.rejects(api.saveActivity('pelvic-daily-lab',{confirmed:true}));await api.launch('pelvic-daily-lab');const opts=h.opens.at(-1)[1];
-  for(const extra of [{day:1},{activityId:'support-pelvic'},{intent:'scheduled'},{practiceId:'contrae'},{completed:false},{at:'2026-01-01T00:00:00Z'}])assert.equal(opts.onResult(labResult(2,extra)),false);
+  for(const extra of [{day:1},{activityId:'support-pelvic'},{intent:'scheduled'},{practiceId:'contrae'},{completed:false},{at:'2026-01-01T00:00:00Z'}])assert.equal(opts.onResult(labResult(3,extra)),false);
   const result=labResult();assert.equal(opts.onResult(result),true);assert.equal(h.writes.length,0);opts.onClose();const form=d.querySelector('[data-pelvic-confirm]');assert.ok(form);
   await form.onsubmit({preventDefault(){}});assert.equal(h.writes.length,0);form.querySelector('input').checked=true;
-  h.w.SPM_DAILY_RECORDS.save=async()=>{throw Error('offline')};await form.onsubmit({preventDefault(){}});assert.equal(d.querySelector('[data-pelvic-confirm]'),form);assert.match(form.querySelector('[role=status]').textContent,/No se pudo guardar/);assert.equal(form.querySelector('button').disabled,false);assert.equal(h.c.day,2);
-  h.w.SPM_DAILY_RECORDS.save=async(...args)=>h.writes.push(args);await form.onsubmit({preventDefault(){}});assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'pelvic-daily-lab');assert.equal(h.writes[0][2],'qa:plan');assert.equal(h.writes[0][3],2);assert.equal(h.writes[0][1].pelvicResult.practiceId,'percibe');assert.equal(h.c.day,2);assert.deepEqual(h.c.completed,[]);
-  assert.ok(api.nextActivities().some(a=>a.id==='support-pelvic'));assert.ok(api.nextActivities().some(a=>a.id==='main'));assert.equal(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);
+  h.w.SPM_DAILY_RECORDS.save=async()=>{throw Error('offline')};await form.onsubmit({preventDefault(){}});assert.equal(d.querySelector('[data-pelvic-confirm]'),form);assert.match(form.querySelector('[role=status]').textContent,/No se pudo guardar/);assert.equal(form.querySelector('button').disabled,false);assert.equal(h.c.day,3);
+  h.w.SPM_DAILY_RECORDS.save=async(...args)=>h.writes.push(args);await form.onsubmit({preventDefault(){}});assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'pelvic-daily-lab');assert.equal(h.writes[0][2],'qa:plan');assert.equal(h.writes[0][3],3);assert.equal(h.writes[0][1].pelvicResult.practiceId,'percibe');assert.equal(h.c.day,3);assert.deepEqual(h.c.completed,[]);
+  assert.ok(api.nextActivities().some(a=>a.id==='main'));assert.ok(api.nextActivities().some(a=>a.id==='main'));assert.equal(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);
  }finally{h.close();}
 });
 
@@ -370,26 +373,32 @@ test('classic strength needs its own fresh result and never completes the daily 
  const h=harness('erection',2);try{await wait();const api=h.w.SPM_DAILY_PRACTICE;api.open();await api.launch('support-pelvic');const opts=h.opens.at(-1)[1];assert.equal(opts.intent,'scheduled');assert.equal(opts.preference,'classic');
   assert.equal(opts.onResult(labResult(2,{activityId:'support-pelvic',intent:'scheduled'})),false);
   const result={source:'pelvic-classic-v2',completed:true,at:new Date().toISOString(),day:2,activityId:'support-pelvic',intent:'scheduled'};assert.equal(opts.onResult(result),true);assert.equal(h.writes.length,0);opts.onClose();const form=h.w.document.querySelector('[data-pelvic-confirm]');assert.ok(form);form.querySelector('input').checked=true;await form.onsubmit({preventDefault(){}});
-  assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'support-pelvic');assert.ok(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'));assert.equal(h.c.day,2);assert.deepEqual(h.c.completed,[]);
+  assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'support-pelvic');assert.equal(api.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);assert.equal(h.c.day,2);assert.deepEqual(h.c.completed,[]);
  }finally{h.close();}
 });
 
-test('changed day or account invalidates a previous pelvic result and review keeps practice recording paused',async()=>{
- const h=harness('desire',2);try{await wait();const api=h.w.SPM_DAILY_PRACTICE;api.open();await api.launch('pelvic-daily-lab');const old=h.opens.at(-1)[1],result=labResult();
-  h.c.day=3;h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();assert.equal(old.onResult(result),false);old.onClose();assert.equal(h.w.document.querySelector('[data-pelvic-confirm]'),null);await assert.rejects(api.saveActivity('pelvic-daily-lab',{confirmed:true,pelvicResult:result}));
-  await api.launch('pelvic-daily-lab');const other=h.opens.at(-1)[1];h.c.planId='other';assert.equal(other.onResult(labResult(3)),false);
-  h.c.safety='review';h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();await api.launch('pelvic-daily-lab');const educational=h.opens.at(-1)[1];assert.equal(educational.intent,'daily-relax');assert.equal(educational.onResult(labResult(3)),false);await assert.rejects(api.saveActivity('pelvic-daily-lab',{confirmed:true}));assert.equal(h.writes.length,0);
+test('changed day, account or safety state invalidates weekly Lab results',async()=>{
+ const h=harness('desire',3);try{await wait();const api=h.w.SPM_DAILY_PRACTICE;api.open();await api.launch('pelvic-daily-lab');
+ const old=h.opens.at(-1)[1],result=labResult(3);
+ h.c.day=10;h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();
+ assert.equal(old.onResult(result),false);old.onClose();assert.equal(h.w.document.querySelector('[data-pelvic-confirm]'),null);
+ await assert.rejects(api.saveActivity('pelvic-daily-lab',{confirmed:true,pelvicResult:result}));
+ await api.launch('pelvic-daily-lab');const other=h.opens.at(-1)[1];h.c.planId='other';assert.equal(other.onResult(labResult(10)),false);
+ h.c.planId='plan';h.c.safety='review';h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();
+ await api.launch('pelvic-daily-lab');const educational=h.opens.at(-1)[1];
+ assert.equal(educational.intent,'daily-relax');assert.equal(educational.onResult(labResult(10)),false);
+ await assert.rejects(api.saveActivity('pelvic-daily-lab',{confirmed:true}));assert.equal(h.writes.length,0);
  }finally{h.close();}
 });
 
 test('real Lab bridge hands a fresh result to Today only after its state save and close',async()=>{
- const h=harness('erection',2),labWrites=[];try{await wait();delete h.w.SPM_PELVIC_LAB;
+ const h=harness('erection',3),labWrites=[];try{await wait();delete h.w.SPM_PELVIC_LAB;
   h.w.SPM_PELVIC_RECORDS={read:async()=>({}),save:async(...args)=>labWrites.push(args)};h.w.eval(read('pelvic-lab-bridge-v1.js'));
   const api=h.w.SPM_DAILY_PRACTICE;api.open();await api.launch('pelvic-daily-lab');const host=h.w.SPM_PELVIC_LAB_HOST;assert.equal(host.getContext().intent,'daily-relax');assert.equal(host.getContext().activityId,'pelvic-daily-lab');
   const result=labResult();assert.equal(host.write('pf-results',[result]),true);assert.equal(host.write('pf-daily-result',result),true);assert.equal(host.onResult(result),true);assert.equal(h.writes.length,0);
   h.w.SPM_PELVIC_RECORDS.save=async()=>{throw Error('offline')};assert.equal(await host.close(),false);assert.ok(h.w.document.querySelector('iframe'));assert.equal(h.w.document.querySelector('[data-pelvic-confirm]'),null);
-  h.w.SPM_PELVIC_RECORDS.save=async(...args)=>labWrites.push(args);assert.equal(await host.close(),true);assert.equal(labWrites.length,1);assert.equal(labWrites[0][1],'qa:plan');assert.equal(labWrites[0][2],2);assert.equal(h.writes.length,0);
-  const form=h.w.document.querySelector('[data-pelvic-confirm]');assert.ok(form);form.querySelector('input').checked=true;await form.onsubmit({preventDefault(){}});assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'pelvic-daily-lab');assert.equal(h.c.day,2);assert.deepEqual(h.c.completed,[]);assert.ok(api.nextActivities().some(a=>a.id==='support-pelvic'));
+  h.w.SPM_PELVIC_RECORDS.save=async(...args)=>labWrites.push(args);assert.equal(await host.close(),true);assert.equal(labWrites.length,1);assert.equal(labWrites[0][1],'qa:plan');assert.equal(labWrites[0][2],3);assert.equal(h.writes.length,0);
+  const form=h.w.document.querySelector('[data-pelvic-confirm]');assert.ok(form);form.querySelector('input').checked=true;await form.onsubmit({preventDefault(){}});assert.equal(h.writes.length,1);assert.equal(h.writes[0][0],'pelvic-daily-lab');assert.equal(h.c.day,3);assert.deepEqual(h.c.completed,[]);assert.ok(api.nextActivities().some(a=>a.id==='main'));
  }finally{await h.w.SPM_PELVIC_LAB?.close?.();h.close();}
 });
 
@@ -403,7 +412,7 @@ test('historical day-six Lab records never appear as the newly separated strengt
 
 test('a persisted matching classic result is recognized after reopening without rewriting history',async()=>{
  const prior={completed:true,activityKind:'pelvic',confirmed:true,pelvicResult:{source:'pelvic-classic-v2',completed:true,at:'2026-11-01T00:00:00Z',day:6,activityId:'main',intent:'scheduled'}},h=harness('erection',6,{main:prior});try{await wait();h.w.SPM_DAILY_PRACTICE.open();
-  assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='main'),false);assert.ok(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='pelvic-daily-lab'));assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
+  assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='main'),false);assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
   h.w.SPM_DAILY_PRACTICE.library();h.w.SPM_DAILY_PRACTICE.open();assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.writes.length,0);
  }finally{h.close();}
 });

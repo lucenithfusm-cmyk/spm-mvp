@@ -5,7 +5,7 @@ const $=s=>document?.querySelector(s),ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?`${c.userId}:${c.planId}`:'';
 const directErection=(c,a)=>window.SPM_ERECTION_PRACTICE?.supports(c,a)===true;
 const pelvicIntent=a=>a?.pelvicIntent||(a?.pelvicPreference==='lab'?'daily-relax':'scheduled');
-const recordedGuide=a=>a?.guide||(a?.kind==='pelvic'?window.SPM_PELVIC_GUIDANCE?.definition(pelvicIntent(a)):null);
+const recordedGuide=a=>a?.guide||(a?.kind==='pelvic'&&pelvicIntent(a)==='scheduled'?window.SPM_PELVIC_GUIDANCE?.definition('scheduled'):null);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let current='',view='entry',records={},loaded=false,loadError=false,generation=0,active=null;
 function receivePelvicResult(r,session,a){

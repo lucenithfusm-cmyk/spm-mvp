@@ -52,11 +52,18 @@ function cadence(main,support,c){
   const activity={kind:'recovery',scenario:story.scenario,title:`Recuperación · historia ${story.index}/7 · ${story.title}`,summary:'Lee o escucha las cuatro escenas de la historia de hoy. Abre «Practicar y guardar mi respuesta», elige qué harías y registra si la idea te resultó útil.',label:'RECUPERACIÓN · HISTORIA DE HOY'};
   if(main.kind==='recovery')main={...main,...activity};else support.push({...activity,id:'recovery-'+story.scenario});
  }
- if(c.primary==='desire')support=support.filter(a=>a.kind!=='pelvic');
- if(!['erection','ejaculation','desire'].includes(c.primary)){support=support.map(a=>a.kind==='pelvic'?{...a,optional:!['unsure','no_control','hard_to_relax'].includes(c.answers?.pf_awareness),pelvicPreference:Math.ceil(day/7)%2?'lab':'classic',label:'PISO PÉLVICO · SESIÓN INDICADA'}:a);}
- // The daily Lab has a different purpose from the contraction module. It stays
- // available on every day, including scheduled training days, without adding load.
- if(['erection','ejaculation','desire'].includes(c.primary))support.push({id:'pelvic-daily-lab',kind:'pelvic',title:'Reconoce y suelta tu piso pélvico',summary:'Conciencia, relajación y coordinación con tu respiración, a tu ritmo.',pelvicIntent:'daily-relax',pelvicPreference:'lab',optional:true,optionalLabel:'LAB DIARIO · OPCIONAL'});
+ // Un Lab semanal en los seis dominios; no confundirlo con el módulo de fuerza.
+ const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;
+ const labDays=[3,10,17,24];
+ support=support.filter(a=>a.kind!=='pelvic'||a.pelvicIntent==='scheduled');
+ if(!['erection','ejaculation'].includes(c.primary)&&main.kind==='pelvic'&&!main.pelvicIntent)
+   main={...main,kind:'confidence',title:'Atención y calma corporal',summary:'Practica una pausa de atención sin apretar ni forzar.'};
+ const week=labDays.indexOf(day);
+ if(all.includes(primary)&&week>=0)support.push({
+   id:'pelvic-daily-lab',kind:'pelvic',title:`Pelvic Floor Lab · Semana ${week+1}`,
+   summary:'Guía semanal de conciencia, respiración y relajación, con audio y cierre personal.',
+   pelvicIntent:'daily-relax',pelvicPreference:'lab',optional:true,optionalLabel:`LAB SEMANAL · SESIÓN ${week+1}/4`
+ });
  return {main,support};
 }
 function compose(main,support,c){
