@@ -37,27 +37,35 @@ function recoveryFor(day,primary){
 }
 function cadence(main,support,c){
  const day=Number(c.day),story=recoveryFor(day,c.primary);
- if(['erection','ejaculation'].includes(c.primary)){
-  // Two sessions in the separate contraction module, never on EP's 1/3/5 days.
-  support=support.filter(a=>a.kind!=='pelvic');
+ // Program-wide adaptive rule: initial coordination or saved Lab readiness,
+ // not the patient's diagnosis, controls the optional strength assignment.
+ const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;
+ const a=c.answers||{},t=a.pf_tension==null?NaN:Number(a.pf_tension);
+ const safe=c.safety==='none'&&!c.flags?.length&&!c.checkins?.some(x=>x.new_safety_flag===true);
+ const fallbackReady=safe&&a.pf_awareness==='good_control'&&[0,1,2].includes(t);
+ const readiness=window.SPM_PELVIC_READINESS;
+ const strengthReady=all.includes(primary)&&(readiness?.eligible?readiness.eligible(c):fallbackReady);
+ // Remove unsupported/legacy pelvic shortcuts before inserting the validated routes.
+ support=support.filter(x=>x.kind!=='pelvic');
+ if(strengthReady){
   const days=pelvicDays(c),slot=days.indexOf(day),weekly=days.length/4;
   if(slot>=0){
-   const pelvic={kind:'pelvic',title:'Tu sesión de contracciones de piso pélvico',summary:'Abre el módulo de entrenamiento. Primero se comprueba que la técnica y la relajación estén preparadas.',pelvicIntent:'scheduled',pelvicPreference:'classic',optional:true,optionalLabel:`SEGÚN TU PREPARACIÓN / PAUTA · SESIÓN ${slot%weekly+1}/${weekly} DE LA SEMANA ${Math.ceil(day/7)}`};
+   const pelvic={kind:'pelvic',title:'Tu sesión de contracciones de piso pélvico',summary:'Sesión opcional de fuerza con preparación y relajación completas. Tu evaluación y los registros recientes determinan si es adecuada hoy.',pelvicIntent:'scheduled',pelvicPreference:'classic',optional:true,optionalLabel:`SEGÚN TU PREPARACIÓN · SESIÓN ${slot%weekly+1}/${weekly} DE LA SEMANA ${Math.ceil(day/7)}`};
    if(main.kind==='pelvic'||(c.primary==='erection'&&day===6))main={...main,...pelvic};
    else support.push({...pelvic,id:'support-pelvic'});
   }
  }
+ if(main.kind==='pelvic'&&!main.pelvicIntent)
+   main={...main,kind:'confidence',title:'Atención y calma corporal',summary:'Practica una pausa de atención, sin apretar ni forzar el piso pélvico.'};
  if(story){
   support=support.filter(a=>a.kind!=='recovery');
   const activity={kind:'recovery',scenario:story.scenario,title:`Recuperación · historia ${story.index}/7 · ${story.title}`,summary:'Lee o escucha las cuatro escenas de la historia de hoy. Abre «Practicar y guardar mi respuesta», elige qué harías y registra si la idea te resultó útil.',label:'RECUPERACIÓN · HISTORIA DE HOY'};
   if(main.kind==='recovery')main={...main,...activity};else support.push({...activity,id:'recovery-'+story.scenario});
  }
  // Un Lab semanal en los seis dominios; no confundirlo con el módulo de fuerza.
- const primary=({anxiety:'confidence',optimization:'wellbeing',mixed:'confidence'})[c.primary]||c.primary;
  const labDays=[3,10,17,24];
  support=support.filter(a=>a.kind!=='pelvic'||a.pelvicIntent==='scheduled');
- if(!['erection','ejaculation'].includes(c.primary)&&main.kind==='pelvic'&&!main.pelvicIntent)
-   main={...main,kind:'confidence',title:'Atención y calma corporal',summary:'Practica una pausa de atención sin apretar ni forzar.'};
+
  const week=labDays.indexOf(day);
  if(all.includes(primary)&&week>=0)support.push({
    id:'pelvic-daily-lab',kind:'pelvic',title:`Pelvic Floor Lab · Semana ${week+1}`,
