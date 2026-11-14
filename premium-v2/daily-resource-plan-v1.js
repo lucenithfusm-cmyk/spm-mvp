@@ -60,7 +60,7 @@ function cadence(main,support,c){
    else support.push({...pelvic,id:'support-pelvic'});
   }
  }
- if(main.kind==='pelvic'&&!main.pelvicIntent)
+ if(main.kind==='pelvic'&&!main.pelvicIntent&&c.safety==='none'&&!c.flags?.length&&!c.checkins?.some(x=>x.new_safety_flag))
    main={...main,kind:'confidence',title:'Atención y calma corporal',summary:'Practica una pausa de atención, sin apretar ni forzar el piso pélvico.'};
  if(story){
   support=support.filter(a=>a.kind!=='recovery');
