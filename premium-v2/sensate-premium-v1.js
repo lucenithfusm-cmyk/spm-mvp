@@ -323,8 +323,8 @@ function spmApprovedScreen(){
   }
   overlays+='<strong class="spm-approved-clock" data-guide-elapsed>'+clockText(t)+'</strong>';
   if(guideStarted&&!guideDone)overlays+='<button type="button" class="spm-approved-pause" data-act="'+(running?'pauseguide':'resumeguide')+'">'+(running?'⏸ Pausar':'▶ Reanudar')+'</button>';
-  overlays+='<button type="button" class="spm-approved-start" data-act="approvedstart">'+(!guideStarted?'▶ Iniciar práctica':guideDone||phase===4?'✓ Confirmar práctica':'→ Siguiente paso')+'</button>';
-  overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">Continuar al cierre →</button>';
+  overlays+='<button type="button" class="spm-approved-skip" data-act="skipguide">Ir al cierre sin completar →</button>';
+  overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">'+(!guideStarted?'Iniciar guía →':phase===4?'Terminar y evaluar →':'Siguiente paso →')+'</button>';
  }
  const caption=screen===0?'Conecta con tus sensaciones · 1 / 5':screen===2?'Tu práctica guiada · 3 / 5 · '+PHASES[id].map(p=>p[0]).join(' · '):'Práctica en curso · 4 / 5 · Paso '+(phase+1)+' · '+PHASES[id][phase][0];
  const extra=(error?'<div class="spm-approved-feedback" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-approved-feedback" role="status">'+safeText(notification)+'</div>':'');
@@ -353,7 +353,7 @@ function spmArtworkScreen(){
   '<h1>'+(isPartner()?'Tu práctica en pareja':'Tu práctica individual')+'</h1>'+
   '<p>'+(isPartner()?'Elijan un momento cómodo y escuchen juntos las instrucciones de hoy.':'Encuentra un lugar cómodo y escucha las instrucciones de hoy.')+'</p>'+
   listen+read+
-  '<div class="spm-art-photo" style="background-image:url(&quot;'+url+'&quot;)" role="img" aria-label="Un adulto en un momento tranquilo de preparación"></div></div>':
+  '<button type="button" class="spm-art-photo spm-art-prep-entry" data-act="branch" data-value="'+(isPartner()?'partner':'individual')+'" style="background-image:url(&quot;'+url+'&quot;)" aria-label="Iniciar la práctica '+(isPartner()?'en pareja':'individual')+'"><span>▶ Iniciar mi práctica</span></button></div>':
   '<div class="spm-art-content spm-art-content-close"><div class="spm-art-kicker">'+dayName+'</div>'+
   '<h1>Cierre de tu práctica</h1><p>Reconoce lo que sentiste, sin exigencias.</p>'+listen+read+
   '<div class="spm-art-photo" style="background-image:url(&quot;'+url+'&quot;)" role="img" aria-label="Cierre tranquilo de la práctica"></div>'+
@@ -596,11 +596,11 @@ root.addEventListener('click',e=>{
  const act=button.dataset.act;
  if(act==='approvedread'){root.querySelector('.spm-approved-info')?.showModal();return}
  if(act==='approvedinfo-close'){root.querySelector('.spm-approved-info')?.close();return}
- if(act==='approvedadvance'){go(4);if(!performed){notification='Puedes revisar el cierre. Para guardar esta sesión, primero realiza la práctica.';render()}return;}
- if(act==='approvedstart'){
-  if(!guideStarted){startGuide();return}
-  if(guideDone||phase===4){performed=true;stopClock();stopAudio();go(4);return}
-  advanceGuide();return;
+ if(act==='skipguide'){go(4);if(!performed){notification='Puedes revisar el cierre y volver después a practicar. Esta actividad no se marcará como realizada.';render()}return;}
+ if(act==='approvedadvance'){
+  if(!guideStarted||guideDone){startGuide();return}
+  if(phase<4){advanceGuide();return}
+  performed=true;stopClock();stopAudio();go(4);return;
  }
  if(act==='approvedchoice'){
   const f=button.dataset.field,v=button.dataset.value;
