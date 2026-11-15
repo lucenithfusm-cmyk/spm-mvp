@@ -58,8 +58,19 @@ test('saving one activity does not complete or advance the day; stale and restri
  await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='review';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
  }finally{h.close()}
 });
-test('shared breathing/focus replaces a duplicate text task and retains the scheduled session',async()=>{
- const h=harness('confidence',16);try{await wait();const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.equal(items.filter(a=>!a.optional&&a.kind!=='video').length,1);assert.equal(items[0].kind,'sensate');h.w.document.querySelector('[data-daily-open="main"]').click();await wait();assert.equal(h.opens[0][0],'SENSATE');assert.equal(h.opens[0][1].day,16);}finally{h.close()}
+test('day 16 uses the approved sensory video as one independent voluntary practice, without Focus I duplication',async()=>{
+ const h=harness('confidence',16);
+ try{
+  await wait();
+  const items=h.w.SPM_DAILY_PRACTICE.assignments();
+  assert.equal(items[0].kind,'video');
+  assert.equal(items[0].videoKey,'sensory-focus');
+  assert.equal(items[0].optional,true);
+  assert.equal(items.filter(a=>a.videoKey==='sensory-focus').length,1);
+  assert.equal(items.filter(a=>a.kind==='sensate').length,0);
+  assert.ok(h.w.document.querySelector('[data-activity="main"] [data-daily-open]'));
+  assert.equal(h.writes.length,0);
+ }finally{h.close()}
 });
 
 test('wellness rotates over 28 days while the primary and scheduled supports stay separate',async()=>{
