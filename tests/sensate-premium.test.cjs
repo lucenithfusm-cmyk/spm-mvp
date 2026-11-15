@@ -193,7 +193,7 @@ test('Focus I has exactly five distinct interactive sessions, two individual and
   [8,'sf-i-2','individual','Descubre sensaciones','Contrasta texturas'],
   [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
   [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
-  [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio']
+  [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
  ];
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
