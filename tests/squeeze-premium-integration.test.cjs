@@ -86,3 +86,64 @@ test('patient program and 28-day reviewer load premium Stop-Squeeze before the u
  assert.match(legacy,/selected\.tech==='squeeze'\)return window\.SPM_SQUEEZE_V1\?\.open\?\./);
  assert.match(legacy,/selected\.tech==='startstop'\)return window\.SPM_STARTSTOP_V2\?\.open\?\./);
 });
+
+
+test('page 2 keeps its full headline and complete legend bands, rather than slicing through text',()=>{
+ const h=harness();try{
+  h.api.open(8,{origin:'dailyPlan'});h.ui.querySelector('#next').click();
+  const slices=[...h.ui.querySelector('#stage').querySelectorAll('.slice')];
+  assert.equal(slices.length,2);
+  assert.equal(slices[0].style.aspectRatio,'941 / 702.24','top source region extends past entire title and subtitle');
+  assert.equal(slices[1].style.aspectRatio,'941 / 418','bottom starts before the first complete scale legend');
+  assert.match(slices[1].querySelector('img').style.transform,/translateY\(-75/);
+  assert.ok(h.ui.querySelector('section .gauge'),'interactive scale is retained');
+ }finally{h.close()}
+});
+test('the final button fits its intended mobile label and retains a full accessible description',()=>{
+ const h=harness();try{
+  h.api.open(8,{origin:'dailyPlan'});
+  for(let i=0;i<4;i++)h.ui.querySelector('#next').click();
+  const next=h.ui.querySelector('#next');
+  assert.equal(next.textContent,'Finalizar y volver');
+  assert.equal(next.getAttribute('aria-label'),'Finalizar y volver a Hoy');
+  assert.match(h.ui.querySelector('style').textContent,/\.nav \.btn\{[^}]*white-space:normal/);
+ }finally{h.close()}
+});
+test('audio stages contain a focused intro, numeric scale, all five precise clinical steps, and concise controls and saving',()=>{
+ const h=harness(),spoken=[];
+ try{
+  h.w.speechSynthesis.speak=u=>spoken.push(u.text);
+  h.api.open(8,{origin:'dailyPlan'});
+  for(let i=0;i<5;i++){
+   h.ui.querySelector('#listen').click();
+   if(i<4)h.ui.querySelector('#next').click();
+  }
+  assert.equal(spoken.length,5);
+  assert.match(spoken[0],/Repetir la secuencia/);
+  assert.doesNotMatch(spoken[0],/tres sesiones|bocina/i);
+  assert.match(spoken[1],/Cero significa ausencia/);
+  assert.match(spoken[1],/ocho sobre diez/);
+  assert.match(spoken[2],/Para esta práctica, busca un lugar privado, cómodo y tranquilo/);
+  assert.match(spoken[2],/autoestimulación o masturbación/);
+  for(const label of ['Paso uno:','Paso dos:','Paso tres:','Paso cuatro:','Paso cinco:'])assert.ok(spoken[2].includes(label),label);
+  assert.match(spoken[2],/Revisa el videoclip de cinco segundos para identificar exactamente dónde presionar/);
+  assert.match(spoken[2],/cinco a diez segundos/);
+  assert.match(spoken[2],/detén por completo la estimulación/);
+  assert.match(spoken[2],/retira por completo la presión/);
+  assert.match(spoken[2],/reanuda la autoestimulación/);
+  assert.match(spoken[2],/dolor, irritación o molestia/);
+  assert.doesNotMatch(spoken[2],/tres sesiones semanales|activa la bocina/i);
+  assert.match(spoken[3],/Registrar parada/);
+  assert.match(spoken[3],/cronómetro es opcional/);
+  assert.match(spoken[4],/Guardar sesión/);
+  assert.ok(spoken[2].length>spoken[0].length*2,'the detailed clinical instruction belongs mainly on page 3');
+ }finally{h.close()}
+});
+test('pre-entry message remains short; all existing weekly schedule slots stay unchanged',()=>{
+ const m=legacy.match(/squeeze:'Hoy practicarás Stop–Squeeze\. ([^']+)'/);
+ assert.ok(m&&m[0].length<270);
+ assert.doesNotMatch(m[0],/primero reconoce|después aplicas|tres sesiones semanales/i);
+ const schedule=Function('return ('+legacy.match(/const SCHEDULE=(\{[^;]+\});/)[1]+')')();
+ assert.equal(Object.keys(schedule).length,12);
+ assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[8,10,12,24]);
+});

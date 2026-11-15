@@ -50,7 +50,7 @@ const WEEKS={1:['RECONOCER','Start/Stop · 3 sesiones'],2:['PROGRESAR','Stop–S
 
 const SESSION_GUIDES=Object.freeze({
  startstop:'Hoy vas a practicar Start Stop. Reconoce cómo aumenta la excitación, detente completamente antes del punto de no retorno, espera hasta recuperar el control y reanuda de forma gradual. Cada repetición te ayuda a identificar tus señales con más anticipación; no necesitas forzar un número de paradas.',
- squeeze:'Hoy practicarás Stop Squeeze. Primero reconoce tus señales y detén por completo la estimulación antes del punto de no retorno. Si corresponde y te resulta cómodo, añade una compresión suave y breve, de cinco a diez segundos, sin dolor. Libera, espera a que disminuya la excitación y solo entonces reanuda. La repetición sirve para reconocer mejor cuándo intervenir y controlar la intensidad, no para apretar más fuerte.',
+ squeeze:'Hoy practicarás Stop–Squeeze. Abre la actividad para escuchar las instrucciones precisas de sus cinco pasos y ver el microvideo que muestra dónde realizar la compresión.',
  combined:'Hoy vas a integrar lo aprendido. Al aumentar la excitación, practica anticiparte con una parada. Si la pausa no es suficiente y Stop Squeeze te resulta cómoda, puedes usar una compresión suave y breve. Se repite este ejercicio para aprender a escoger la herramienta adecuada en cada momento, sin hacerlo por obligación ni buscar una duración perfecta.'
 });
 function introFor(day){
