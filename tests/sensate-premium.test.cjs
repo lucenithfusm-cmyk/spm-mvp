@@ -52,6 +52,24 @@ test('original Focus curriculum, transversal days and approved medical scene ass
  assert.doesNotMatch(html,/index-C1hXctr7\.js/);
 });
 
+test('day 19 assigns only Focus II for DE, EP and desire with no eligibility gate',()=>{
+ const source=fs.readFileSync(path.join(root,'premium-v2/daily-support-plan-v1.js'),'utf8');
+ const dom=new JSDOM('<!doctype html><body></body>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only'});
+ dom.window.eval(source);
+ for(const profile of ['erection','ejaculation','desire']){
+  const activity=dom.window.SPM_DAILY_SUPPORT.activity('sensate',19,{primary:profile});
+  assert.ok(activity,'assigned '+profile);
+  assert.equal(activity.practiceId,'sf-focus-2');
+  assert.deepEqual([...activity.steps],[2,3,7,8,6]);
+  assert.equal(activity.title,profile==='desire'?'Sensate Focus II':'Focalización Sensorial II');
+  assert.equal(activity.optionalProgression,undefined);
+ }
+ for(const day of [4,8,12,16,19,23,26]){
+  assert.ok(dom.window.SPM_DAILY_SUPPORT.activity('sensate',day,{primary:'desire'}));
+ }
+ dom.window.close();
+});
+
 test('intro has one playable voice control, the five-screen layout starts at 1/5, and no decorative hotspots',()=>{
  const h=harness();
  try{
