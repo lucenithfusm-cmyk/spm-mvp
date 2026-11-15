@@ -24,6 +24,41 @@ async function harness(query='?programa=desire&dia=1'){
   assert.equal(await dom.window.SPM_PROGRAM_REVIEW.ready,true,'review boots with real local renderers');
   await wait();return{w:dom.window,errors,close:()=>{observers.forEach(observer=>observer.disconnect());dom.window.close();}};
 }
+test('existing day-19 DE, EP and Deseo links automatically open real Focus II screens',async()=>{
+ for(const program of ['desire','erection','ejaculation']){
+  const h=await harness('?programa='+program+'&dia=19');
+  try{
+   const {w}=h;
+   await new Promise(resolve=>setTimeout(resolve,260));
+   assert.equal(w.SPM_RESOURCE_CONTEXT().day,19);
+   assert.equal(w.document.querySelector('#reviewFocusII').hidden,false);
+   assert.equal(w.document.querySelector('#reviewOpenFocusII').disabled,false);
+   const modal=w.document.querySelector('.spm-sensate-modal[open]');
+   assert.ok(modal,'day-19 Focus II must be directly visible for '+program);
+   assert.ok(modal.querySelector('iframe[src*="sensate-lab/index.html"]'));
+   assert.equal(w.SPM_SENSATE_LAB_HOST.getContext().activity.practiceId,'sf-focus-2');
+   assert.equal(w.SPM_SENSATE_LAB_HOST.getContext().profile,program);
+   assert.deepEqual(h.errors,[]);
+  }finally{h.close()}
+ }
+});
+
+test('day-19 manual Focus II review button opens the same session and preserves test-only context',async()=>{
+ const h=await harness('?programa=desire&dia=18');
+ try{
+  const {w}=h;
+  assert.equal(w.document.querySelector('#reviewFocusII').hidden,true);
+  await w.SPM_PROGRAM_REVIEW.select('desire',19);
+  const button=w.document.querySelector('#reviewOpenFocusII');
+  assert.equal(button.disabled,false);
+  assert.equal(w.document.querySelector('#reviewFocusII').hidden,false);
+  assert.equal(await w.SPM_PROGRAM_REVIEW.openFocusII(),true);
+  assert.ok(w.document.querySelector('.spm-sensate-modal[open] iframe'));
+  assert.equal(w.SPM_RESOURCE_CONTEXT().userId,'review-only');
+  assert.equal(w.SPM_RESOURCE_CONTEXT().day,19);
+ }finally{h.close()}
+});
+
 test('all six real programs expose 28 review days with guarded controls and no patient clients',async()=>{
   const h=await harness();try{
     const {w}=h;assert.equal(w.document.querySelector('#reviewProgram').options.length,6);assert.equal(w.document.querySelector('#reviewDay').options.length,28);
