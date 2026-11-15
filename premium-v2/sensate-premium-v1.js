@@ -111,7 +111,7 @@ function guideTick(){
  if(!running||screen!==3)return;
  phaseElapsed++;t++;
  const elapsed=root.querySelector('[data-guide-elapsed]');if(elapsed)elapsed.textContent=clockText(t);
- if(isFocusII())return; // No forced 60-second transitions in Focus II.
+ if(isFocusII()){const phaseTime=root.querySelector('[data-guide-phase-elapsed]');if(phaseTime)phaseTime.textContent=clockText(phaseElapsed);return;} // No forced phase transitions in Focus II.
  const left=root.querySelector('[data-guide-left]');if(left)left.textContent=clockText(Math.max(0,60-phaseElapsed));
  const progressBar=root.querySelector('[data-guide-bar]');if(progressBar)progressBar.style.width=Math.min(100,phaseElapsed/60*100)+'%';
  if(phaseElapsed>=60)advanceGuide();
@@ -216,7 +216,61 @@ function wave(active=false){
  return '<div class="wave-stage '+(active?'moving':'')+'" aria-hidden="true"><svg viewBox="0 0 500 95" width="100%" height="74" preserveAspectRatio="none">'+
  [0,1,2,3,4].map((n)=>'<path class="wave-line wave-'+n+'" fill="none" stroke="currentColor" stroke-width="'+(n===2?'1.9':'1.05')+'" opacity="'+(.27+n*.12)+'" d="M0 '+(46+n*2)+' C45 '+(38+n*2)+' 65 '+(60-n*3)+' 104 '+(48+n*2)+' S170 '+(10+n*4)+' 211 '+(46+n)+' S294 '+(88-n*5)+' 335 '+(45+n*2)+' S402 '+(28+n*3)+' 440 '+(46+n)+' S480 '+(47+n)+' 500 '+(47+n)+'"></path>').join('')+'</svg></div>';
 }
+function focusIIExplainScreen(){
+ const mode=isPartner()?'En pareja':'Individual';
+ return '<section class="card focusii-explain" aria-label="Focus II · explicación '+mode+'">'+
+ '<p class="eyebrow">SENSATE FOCUS II · '+mode.toUpperCase()+' · 3 / 5</p>'+
+ '<h2>Explora nuevas sensaciones</h2><p>Escucha y descubre cada paso antes de comenzar.</p>'+
+ '<div class="focusii-visual">'+scene(isPartner()?'partner':'forearm','focusii-cover')+'</div>'+
+ '<h3 class="focusii-heading">Tu práctica guiada</h3>'+
+ '<div class="focusii-step-list">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar paso '+(i+1)+': '+safeText(labelForPhase(i))+'"><span class="number">'+(i+1)+'</span><span>'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">🔊</span></button>').join('')+'</div>'+
+ '<button type="button" data-act="explainall" data-audio class="focusii-listen" '+(explainingAll?'disabled':'')+'><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Reproduciendo guía…':'Escuchar los 5 pasos')+'</button>'+
+ '<details class="more"><summary>Leer instrucción seleccionada</summary><p>'+safeText(explanatoryText())+'</p></details>'+
+ '<p class="compact-footnote">En la siguiente pantalla realizarás los pasos a tu ritmo. No hay tiempo obligatorio.</p></section>';
+}
+function focusIIPracticeScreen(){
+ const current=PHASES[id][phase];
+ const status=guideDone?'Puedes registrar tu experiencia.':running?'Escucha, explora y avanza cuando lo desees.':guideStarted?'Pausada. Reanuda cuando quieras.':'Escucha cada paso y practica sin prisa.';
+ const imageKey=isPartner()?(phase===0?'seated':'partner'):(phase===2?'forearm':phase===3?'release':'seated');
+ return '<section class="card focusii-practice" aria-label="Focus II práctica '+modeTitle()+'">'+
+ '<p class="eyebrow">SENSATE FOCUS II · '+modeTitle().toUpperCase()+' · 4 / 5</p>'+
+ '<h2>Ahora, ponlo en práctica</h2>'+
+ '<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>'+
+ '<div class="focusii-phase-nav" aria-label="Fases de la práctica">'+PHASES[id].map((stepData,i)=>'<button type="button" data-act="phase" data-value="'+i+'" '+(!guideStarted?'disabled':'')+' class="'+(phase===i?'current':i<phase?'complete':'')+'" aria-label="Ir al paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+(i+1)+'</button>').join('')+'</div>'+
+ '<p class="focusii-phase-count">Paso '+(phase+1)+' de 5</p><h3 class="focusii-active-title">'+safeText(labelForPhase(phase))+'</h3>'+
+ scene(imageKey,'focusii-active-photo')+
+ '<p class="focusii-action">'+safeText(current[1])+'</p>'+
+ '<button type="button" data-act="repeataudio" data-audio class="focusii-listen" '+(!guideStarted?'disabled':'')+'><span class="focusii-speaker" aria-hidden="true">🔊</span>Repetir indicación</button>'+
+ '<div class="focusii-timing"><span>Tiempo transcurrido <small>(apoyo opcional)</small></span><strong data-guide-elapsed>'+clockText(t)+'</strong><small>En este paso: <span data-guide-phase-elapsed>'+clockText(phaseElapsed)+'</span></small></div>'+
+ '<p class="focusii-status" role="status">'+safeText(status)+'</p>'+
+ (!guideStarted||guideDone?'<button type="button" data-act="startguide" class="gold full primary-guide">'+(guideDone?'↻ Volver a practicar':'▶ Iniciar práctica guiada')+'</button>':
+ running?'<button type="button" data-act="pauseguide" class="gold full primary-guide">⏸ Pausar práctica</button>':
+ '<button type="button" data-act="resumeguide" class="gold full primary-guide">▶ Reanudar práctica</button>')+
+ '<div class="focusii-guide-actions"><button type="button" data-act="nextphase" class="secondary" '+(!guideStarted||guideDone?'disabled':'')+'>Siguiente paso →</button>'+
+ '<button type="button" data-act="performed" class="secondary" '+(!guideStarted?'disabled':'')+'>✓ Terminar y evaluar</button></div>'+
+ '<details class="more"><summary>Leer cómo se realiza</summary><p>'+safeText(current[1])+'</p></details>'+
+ '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras. No hay una respuesta obligatoria.</p></section>';
+}
+function focusIICloseScreen(){
+ const choices=[['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']];
+ const noticed=['Más calma','Más conexión','Menos presión'];
+ return '<section class="card focusii-close"><p class="eyebrow">SENSATE FOCUS II · 5 / 5</p>'+
+ '<h2>Cierre de tu práctica</h2><p>Registra cómo te sentiste, sin convertirlo en una evaluación de rendimiento.</p>'+
+ '<div class="focusii-register"><h3>¿Cómo estuvo tu bienestar?</h3><div class="focusii-rating" role="group" aria-label="Califica tu bienestar de cero a cuatro">'+choices.map(([v,label])=>'<button type="button" data-act="focus2rating" data-value="'+v+'" aria-pressed="'+(data.focus2Rating===Number(v))+'" class="'+(data.focus2Rating===Number(v)?'chosen':'')+'"><b>'+v+'</b><small>'+label+'</small></button>').join('')+'</div>'+
+ '<h3>Hoy noté</h3><div class="focusii-noted">'+noticed.map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" aria-pressed="'+data.focus2Noted.includes(v)+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'">'+v+'</button>').join('')+'</div></div>'+
+ '<div class="focusii-clinical">'+
+ chipField('comfort','Me sentí',[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']])+
+ chipField('ease','La práctica fue',[['facil','Fácil'],['intermedia','Intermedia'],['dificil','Difícil']])+
+ chipField('attention','Mi atención',[['conexion','Conecté'],['distraccion','Me distraje'],['ansiedad','Sentí ansiedad']])+
+ chipField('repeat','Quiero repetir',[['si','Sí'],['aun_no','Aún no']])+
+ chipField('discomfort','¿Molestia o dolor?',[['ninguna','No'],['molestia','Molestia'],['dolor','Dolor']])+'</div>'+
+ (data.discomfort==='dolor'?'<p class="warning">Evita el contacto que causó dolor. Si persiste o reaparece, busca valoración profesional.</p>':'')+
+ '<details class="more"><summary>Registro complementario (opcional)</summary><div class="two-ranges">'+range('presenceAfter','Presencia','Disperso','Presente')+range('pressureAfter','Presión','Baja','Alta')+range('enjoyment','Disfrute','Bajo','Alto')+(isPartner()?range('partnerComfort','Comodidad de tu pareja','Baja','Alta'):'')+'</div><textarea data-field="notes" maxlength="700" placeholder="Algo que quieras recordar…">'+safeText(data.notes)+'</textarea></details>'+
+ '<p class="focusii-close-foot">Exploraste sensaciones. Eso ya forma parte de tu aprendizaje.</p></section>';
+}
+
 function explainScreen(){
+ if(isFocusII())return focusIIExplainScreen();
  const explanation=isPartner()?'En pareja · Focus '+(isFocusII()?'II':'I'):(isFocusII()?'Individual · Focus II':'Individual');
  return '<section class="card sensate-explain" aria-label="Práctica explicativa '+explanation+'">'+
  '<span class="eyebrow">SPM · '+explanation.toUpperCase()+' · 3 / 5</span><h2>Práctica guiada</h2>'+
@@ -232,6 +286,7 @@ function explainScreen(){
  '<p class="compact-footnote">Las ilustraciones acompañan la explicación. En la siguiente pantalla realizarás la práctica con audio y pausas.</p></section>';
 }
 function practiceScreen(){
+ if(isFocusII())return focusIIPracticeScreen();
  const p=PHASES[id][phase],timeLeft=guideDone?0:Math.max(0,60-phaseElapsed);
  const state=guideDone?'Los cinco pasos terminaron. Puedes evaluar lo que sentiste.':running?'Práctica activa. El silencio entre indicaciones es para explorar a tu ritmo.':guideStarted?'Práctica pausada. Puedes reanudar en cualquier momento.':'Al iniciar escucharás el paso 1. Cada acción dura aproximadamente un minuto y la siguiente comenzará con audio.';
  return '<section class="card sensate-practice" aria-label="Práctica en curso '+modeTitle()+'">'+
@@ -255,7 +310,7 @@ function practiceScreen(){
  '<p class="compact-footnote">El reloj es un apoyo, no una prueba. No tienes que continuar si algo resulta incómodo.</p></section>';
 }
 function chipField(name,title,options){return '<fieldset class="chips"><legend>'+title+'</legend>'+options.map(x=>'<label class="'+(data[name]===x[0]?'chosen':'')+'"><input type="radio" name="'+name+'" data-field="'+name+'" value="'+x[0]+'" '+(data[name]===x[0]?'checked':'')+'><span>'+x[1]+'</span></label>').join('')+'</fieldset>'}
-function closeScreen(){return '<section class="card"><h2>¿Cómo te fue?</h2><p>Registra tu experiencia sin exigirte resultados perfectos.</p>'+
+function closeScreen(){if(isFocusII())return focusIICloseScreen();return '<section class="card"><h2>¿Cómo te fue?</h2><p>Registra tu experiencia sin exigirte resultados perfectos.</p>'+
   chipField('comfort','Me sentí',[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']])+
   chipField('ease','La práctica fue',[['facil','Fácil'],['intermedia','Intermedia'],['dificil','Difícil']])+
   chipField('attention','Noté',[['conexion','Conexión'],['distraccion','Distracción'],['ansiedad','Ansiedad']])+
@@ -281,7 +336,7 @@ function footer(){
 function render(){
  const c=api.getContext(),restricted=c?.restriction!=='none';
  const title=isDaily?safeText(assigned?.title||LABELS[id]):safeText(LABELS[id]);
- root.innerHTML='<div class="layout"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div>'+
+ root.innerHTML='<div class="layout'+(isFocusII()?' focusii-theme':'')+'"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div>'+
  '<div class="header-actions"><button type="button" data-act="library" class="subtle" title="Biblioteca">Biblioteca</button><button type="button" data-act="close" class="close" aria-label="Cerrar">×</button></div></header>'+progress()+
  '<main><p class="meta">'+(isDaily?'DÍA '+originalDay+' / 28 · ':'BIBLIOTECA · ')+title+'</p>'+
  (restricted?'<p class="warning">El programa indica una pausa de seguridad. Puedes consultar el contenido, pero no practicar ni guardar la sesión hasta que corresponda.</p>':'')+
@@ -307,7 +362,7 @@ try{
   presenceBefore:data.presenceBefore,presenceAfter:data.presenceAfter,pressureBefore:data.pressureBefore,pressureAfter:data.pressureAfter,
   enjoyment:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,partnerComfort:isPartner()?data.partnerComfort:null,
   usefulStimuli:data.usefulStimuli.slice(),recommendation:recommendation(),
-  difficulty:data.ease,discomfort:data.discomfort,comfort:data.comfort,attention:data.attention,wantsRepeat:data.repeat,notes:data.notes.trim()
+  difficulty:data.ease,discomfort:data.discomfort,comfort:data.comfort,attention:data.attention,wantsRepeat:data.repeat,notes:data.notes.trim(),...(isFocusII()?{focus2Rating:data.focus2Rating,focus2Noted:data.focus2Noted.slice(),modality:selectedMode}: {})
  };
  const index=rows.findIndex(x=>x.id===entry.id);if(index>=0)rows[index]=entry;else rows.push(entry);
  if(!api.write(KEY,JSON.stringify(rows)))throw Error('session');
@@ -336,11 +391,11 @@ root.addEventListener('click',e=>{
  }
  if(act==='explainstep'){explainStep(Number(button.dataset.value));return}
  if(act==='explainall'){explainAll();return}
- if(act==='guideintro'){speech(autoGuideIntro());return}
+ if(act==='guideintro'){if(voiceActive)stopAudio();else speech(autoGuideIntro(),null,'[data-act=guideintro]');return}
  if(act==='startguide'){startGuide();return}
  if(act==='pauseguide'){pauseGuide();return}
  if(act==='resumeguide'){resumeGuide();return}
- if(act==='repeataudio'){if(guideStarted)speech(stepAudio());return}
+ if(act==='repeataudio'){if(voiceActive)stopAudio();else if(guideStarted)speech(stepAudio(),null,'[data-act=repeataudio]');return}
  if(act==='phase'){jumpGuide(Number(button.dataset.value));return}
  if(act==='nextphase'){advanceGuide();return}
  if(act==='refocus'){
@@ -355,6 +410,8 @@ root.addEventListener('click',e=>{
   notification='Práctica confirmada. Puedes registrar cómo te sentiste.';
   render();return;
  }
+ if(act==='focus2rating'){const v=Number(button.dataset.value);if(Number.isInteger(v)&&v>=0&&v<=4){data.focus2Rating=v;root.querySelectorAll('[data-act=focus2rating]').forEach(b=>{b.classList.toggle('chosen',Number(b.dataset.value)===v);b.setAttribute('aria-pressed',String(Number(b.dataset.value)===v))});}return}
+ if(act==='focus2noticed'){const v=button.dataset.value;data.focus2Noted=data.focus2Noted.includes(v)?data.focus2Noted.filter(x=>x!==v):data.focus2Noted.concat(v);root.querySelectorAll('[data-act=focus2noticed]').forEach(b=>{b.classList.toggle('chosen',data.focus2Noted.includes(b.dataset.value));b.setAttribute('aria-pressed',String(data.focus2Noted.includes(b.dataset.value)))});return}
  if(act==='stimulus'){
   const v=button.dataset.value;
   data.usefulStimuli=data.usefulStimuli.includes(v)?data.usefulStimuli.filter(x=>x!==v):data.usefulStimuli.concat(v);
