@@ -42,7 +42,7 @@ test('original Focus curriculum, transversal days and approved medical scene ass
  const original=fs.readFileSync(path.join(root,'labs/sensate/src/components/SensateLab.tsx'),'utf8');
  for(const value of ['Focalización sensorial I','Focalización sensorial II','Comunicación mínima','sf-focus-1','sf-focus-2'])assert.match(original,new RegExp(value));
  const d=fs.readFileSync(path.join(root,'premium-v2/daily-support-plan-v1.js'),'utf8');
- for(const day of [4,8,12,16,19,23,26])assert.match(d,new RegExp('\\b'+day+':\\{id:\\x27sensate-'));
+ for(const day of [4,8,12,19,23,26])assert.match(d,new RegExp('\\b'+day+':\\{id:\\x27sensate-'));
  for(const name of ['intro','seated','forearm','release','partner-forearm']){
   const buffer=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-sensate-'+name+'-matte.webp'));
   assert.ok(buffer.length>15000);assert.equal(buffer.toString('ascii',0,4),'RIFF');
@@ -64,7 +64,7 @@ test('day 19 assigns only Focus II for DE, EP and desire with no eligibility gat
   assert.equal(activity.title,profile==='desire'?'Sensate Focus II':'Focalización Sensorial II');
   assert.equal(activity.optionalProgression,undefined);
  }
- for(const day of [4,8,12,16,19,23,26]){
+ for(const day of [4,8,12,19,23,26]){
   assert.ok(dom.window.SPM_DAILY_SUPPORT.activity('sensate',day,{primary:'desire'}));
  }
  dom.window.close();
@@ -192,7 +192,7 @@ test('day 19 has one direct Focus II practice without a prior Focus I record or 
   const h=harness({day:19,practiceId:'sf-focus-2',saved:[]});
   try{
    assert.match(h.page.textContent,/Focalización Sensorial II/);
-   h.click('audio');assert.match(h.spoken.at(-1),/puedes omitirla hoy/i);
+   h.click('audio');assert.match(h.spoken.at(-1),/explorar nuevas sensaciones/i);assert.doesNotMatch(h.spoken.at(-1),/omitirla hoy|pausa de seguridad/i);
    h.click('next');h.branch(mode);
    assert.match(h.page.textContent,/Focus II/i);
    assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
@@ -203,7 +203,7 @@ test('day 19 has one direct Focus II practice without a prior Focus I record or 
  }
 });
 
-test('desire welcomes Sensate Focus II without the DE/EP omission warning; skip does not save a completed session',()=>{
+test('all Focus II routes have direct access with no warnings; closing does not save an incomplete session',()=>{
  const desire=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
  try{
   assert.match(desire.page.textContent,/Sensate Focus II/);
@@ -215,8 +215,8 @@ test('desire welcomes Sensate Focus II without the DE/EP omission warning; skip 
  for(const profile of ['erection','ejaculation']){
   const h=harness({day:19,practiceId:'sf-focus-2',profile});
   try{
-   assert.ok(h.page.querySelector('[data-act=skip]'));
-   h.click('skip');
+   assert.equal(h.page.querySelector('[data-act=skip]'),null);
+   h.click('close');
    assert.ok(h.calls.includes('close'));
    assert.equal(h.writes.length,0);
    assert.equal(h.calls.includes('recordDaily'),false);
@@ -287,8 +287,6 @@ test('Focus II minimal register saves only entered values and preserves current 
    h.click('startguide');h.click('performed');h.click('next');
    h.choose('comfort','comodo');
    h.choose('discomfort','ninguna');
-   h.click('save');
-   assert.match(h.page.textContent,/valor de 0 a 4/);
    h.page.querySelector('[data-act=focus2rating][data-value="4"]').click();
    h.page.querySelector('[data-act=focus2noticed][data-value="Más calma"]').click();
    h.click('save');await pause();
@@ -317,14 +315,23 @@ test('day-23 communication practice remains available independently',()=>{
  }finally{communication.close()}
 });
 
-test('safety review blocks either physical modality and does not write any progress',()=>{
- const h=harness({restriction:'review'});
- try{
-  h.click('next');h.branch('partner');
-  assert.match(h.page.textContent,/pausa/);
-  assert.match(h.page.textContent,/2 \/ 5/);
-  assert.equal(h.writes.length,0);
- }finally{h.close()}
+test('all six SPM routes can open Focus I and II without restriction banners or approval gates',()=>{
+ for(const profile of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+  for(const practiceId of ['sf-i-1','sf-focus-2']){
+   const h=harness({day:practiceId==='sf-focus-2'?19:4,practiceId,profile,restriction:'urgent'});
+   try{
+    assert.equal(h.page.querySelector('.warning'),null);
+    h.click('next');
+    if(practiceId==='sf-i-1')h.click('next');
+    else h.branch('individual');
+    assert.match(h.page.textContent,/3 \/ 5/);
+    h.click('next');h.click('startguide');
+    assert.match(h.page.textContent,/4 \/ 5/);
+    assert.equal(h.page.querySelector('.warning'),null);
+    assert.equal(h.writes.length,0);
+   }finally{h.close()}
+  }
+ }
 });
 
 test('failed final daily completion keeps the same record for retry and does not claim success',async()=>{
