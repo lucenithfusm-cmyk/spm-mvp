@@ -106,3 +106,81 @@ button.secondary{background:#24485f;border:1px solid #7795a6;color:#f5f8f7}
 .foot{background:#112f4beF;border-color:#ad95679d}
 @media(max-width:390px){.guide-stepper button{width:36px;height:36px;min-height:36px}.sensate-scene img{aspect-ratio:1.65}.guide-secondary{gap:6px}.guide-secondary button{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.phase-progress i{transition:none}}
+
+
+/* Focalización premium 5/5: two live modality paths, never decorative controls */
+.layout{background:linear-gradient(180deg,#0d293f 0%,#102f48 50%,#092137 100%)}
+main{min-height:60vh}
+.intro-card,.prep-card,.sensate-explain,.sensate-practice{background:linear-gradient(135deg,#193850,#143049);border-color:#c5a46c80}
+.intro-card h2,.prep-card h2{font-size:clamp(25px,5.4vw,33px);line-height:1.1}
+.intro-visual{margin:14px -3px 8px;max-height:300px}
+.intro-visual img{aspect-ratio:1.6;object-position:center 36%}
+.prep-visual{max-height:180px;margin:10px -3px}
+.prep-visual img{aspect-ratio:2.6;object-position:center 43%}
+.mode-heading{font-size:16px;font-weight:900;margin:13px 0;color:#ffecce}
+.mode-branch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.mode-photo{position:relative;min-height:138px;padding:0;border:1px solid #829bb1;border-radius:15px;background:#102b43;overflow:hidden;display:flex;flex-direction:column;text-align:center;justify-content:end;isolation:isolate;transition:border-color .15s,transform .15s}
+.mode-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:-2}
+.mode-photo:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#071b300a 20%,#071e33ed 94%)}
+.mode-photo span{padding:15px 6px 12px;font-weight:950;color:#fff;letter-spacing:.01em;font-size:clamp(13px,3.6vw,18px)}
+.mode-photo:focus-visible{outline:3px solid #f5d69f;outline-offset:2px}
+.mode-photo:active{transform:scale(.97)}
+.mode-photo[data-value="individual"] img{object-position:center 38%}
+.mode-photo[data-value="partner"] img{object-position:center 50%}
+.mode-branch+.notice{margin-top:12px!important}
+.sensate-explain>h2,.sensate-practice>h2{font-size:clamp(22px,5vw,32px);margin:0}
+.sensate-explain>p,.sensate-practice>p{margin:4px 0 9px;line-height:1.48}
+.explain-stage{position:relative;isolation:isolate;background:#112f49;border:1px solid #c5a46c66;border-radius:15px;overflow:hidden;min-height:344px;margin-top:12px}
+.explain-stage .sensate-scene.soft-backdrop{position:absolute;inset:0;z-index:-2;margin:0;border:0;border-radius:0;box-shadow:none}
+.explain-stage .sensate-scene.soft-backdrop img{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center 30%;opacity:.29;filter:blur(1.3px) saturate(.75)}
+.explain-stage:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#0b253eb8,#0e2a46d9 75%);z-index:-1}
+.explain-options{display:grid;gap:8px;padding:15px}
+.explain-row{display:flex;align-items:center;gap:12px;min-height:59px;width:100%;padding:8px 11px;border:1px solid #a9c3ca6e;border-radius:14px;background:#1c4765c9;color:#fff;text-align:left;box-shadow:none}
+.explain-row.chosen{border:2px solid #e6c58b;background:#224761f0}
+.explain-row .number{display:grid;place-items:center;width:35px;height:35px;flex:none;border-radius:50%;background:#c5a46c;color:#122b42;font-weight:950;font-size:16px}
+.explain-row .explain-label{font-size:clamp(13px,3.65vw,17px);font-weight:850;flex:1}
+.explain-row .small-sound{font-size:16px;color:#f7dda4}
+.explain-row:focus-visible{outline:3px solid #f5deb0}
+.wave-stage{height:78px;margin:5px 0;color:#edca87;overflow:hidden}
+.wave-stage svg{width:100%;height:100%;filter:drop-shadow(0 0 4px #e9bd775a)}
+.wave-stage.moving .wave-line{transform-origin:center;animation:spm-wave-move 1.9s ease-in-out infinite alternate}
+.wave-stage.moving .wave-0{animation-delay:.1s}.wave-stage.moving .wave-1{animation-delay:.4s}.wave-stage.moving .wave-2{animation-delay:.7s}.wave-stage.moving .wave-3{animation-delay:.2s}.wave-stage.moving .wave-4{animation-delay:.5s}
+@keyframes spm-wave-move{from{transform:translateY(-7px) scaleY(.78)}to{transform:translateY(8px) scaleY(1.15)}}
+.sensate-explain .full{margin-top:5px}
+.compact-footnote{font-size:12px!important;line-height:1.45!important;color:#bed3df!important;margin-top:8px!important}
+.tiny-progression{border:1px solid #a8bdb7;background:#1e4a60;color:#f2e3c3;min-height:42px;padding:8px 12px;border-radius:12px;font-size:12px;font-weight:850;margin-top:9px}
+.sensate-practice{display:grid;gap:11px}
+.sensate-practice>.eyebrow{margin-bottom:0!important}
+.info-audio{border:1px solid #d7b780;background:#17364f;color:#ffe8bb;min-height:44px;padding:9px 14px;border-radius:11px;font-weight:850;font-size:12px;text-align:left}
+.sensate-practice .more{margin-bottom:0}
+.practice-steps{display:flex;justify-content:space-between;align-items:center;gap:7px;padding:4px 0}
+.practice-steps button{display:grid;place-items:center;flex:none;width:40px;height:40px;min-height:40px;border-radius:50%;border:1px solid #91abb8;background:#254b65;color:#eef6fa;font-weight:900}
+.practice-steps button.current{background:#e5c080;border:2px solid #ffdf9d;color:#0e2d46;box-shadow:0 0 0 3px #d4a65736}
+.practice-steps button.complete{background:#347b70;border-color:#53a08c;color:#fff}
+.sensate-practice .wave-stage{margin:-4px 0}
+.current-activity{display:grid;gap:7px}
+.current-activity>span{font-weight:850;color:#e8ce9e;font-size:12px}
+.current-activity h3{color:#fff;font-size:clamp(22px,5.7vw,29px);line-height:1.16;margin:0}
+.current-activity .sensate-scene.practicing{margin:0 0 5px;border-radius:14px;background:#0d2c43}
+.current-activity .sensate-scene.practicing img{aspect-ratio:2.3;object-position:center 43%}
+.current-activity p{margin:0;color:#deeaec;font-size:clamp(13px,3.65vw,16px);line-height:1.52}
+.sensate-practice .phase-clocks{display:flex;align-items:center;justify-content:space-around;gap:13px;margin:0}
+.sensate-practice .phase-clocks>div{flex:1}
+.sensate-practice .phase-clocks>div b{font-size:clamp(22px,6vw,31px)}
+.sensate-practice .phase-progress{margin:0 0 2px}
+.practice-state{font-size:12px!important;font-weight:700;color:#efdeb6!important;background:#c5a46c14;border-left:3px solid #c5a46c;padding:9px 11px;border-radius:8px;margin:0!important}
+.sensate-practice .guide-secondary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.sensate-practice .guide-secondary .secondary{font-size:12px;line-height:1.3}
+.sensate-practice .full.primary-guide{font-size:17px;min-height:51px;margin-top:0}
+.chips label span{min-height:43px}
+.foot{padding:12px max(10px,env(safe-area-inset-right)) max(13px,env(safe-area-inset-bottom))}
+.foot button{white-space:normal;font-size:clamp(12px,3.4vw,16px);line-height:1.2;padding:11px 8px;overflow-wrap:anywhere}
+.foot span{font-size:12px}
+@media(max-width:390px){
+ .explain-options{gap:6px;padding:10px}.explain-row{min-height:53px;padding:6px 8px;gap:9px}
+ .explain-row .number{width:32px;height:32px}.mode-photo{min-height:125px}
+ .practice-steps button{width:33px;height:33px;min-height:33px}
+ .sensate-practice .guide-secondary .secondary{font-size:11px;padding:7px 5px}
+ .current-activity .sensate-scene.practicing img{aspect-ratio:1.9}
+}
+@media(prefers-reduced-motion:reduce){.wave-stage.moving .wave-line{animation:none}}
