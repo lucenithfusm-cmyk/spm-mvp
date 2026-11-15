@@ -276,6 +276,58 @@ function audioControls(){
  const label=screen===0?'Escuchar introducción':screen===1?'Escuchar preparación':'Escuchar guía de cierre';
  return '<div class="sensate-instruction"><button type="button" data-act="audio" data-audio class="audio-control" aria-label="'+label+'">🔊 '+label+'</button><details class="more"><summary>Leer instrucciones</summary><p>'+safeText(audioText())+'</p></details></div>';
 }
+
+// Approved photographic SPM screens. The artwork is the screen itself, as in
+// Start–Stop: transparent real buttons overlay the approved coordinates.
+// Only the first Focus I day uses this specific artwork; the other days retain
+// their distinct clinical photographs and routes.
+const SPM_APPROVED_ATLAS=PREFIX+'spm-approved-focus-screen-atlas.avif';
+function spmApprovedButton(coords,action,label,value,extra=''){
+ const rect=coords,px=n=>String(Math.round(n*1000)/1000)+'%';
+ const style='left:'+px(rect[0]/941*100)+';top:'+px(rect[1]/1672*100)+';width:'+px((rect[2]-rect[0])/941*100)+';height:'+px((rect[3]-rect[1])/1672*100)+';';
+ return '<button type="button" class="spm-approved-hit" data-act="'+action+'" '+(value===undefined?'':'data-value="'+safeText(value)+'"')+' aria-label="'+safeText(label)+'" style="'+style+'" '+extra+'></button>';
+}
+function spmApprovedScreen(){
+ const visual=screen===0?'intro':screen===2?'guide':'practice';
+ const atlasPosition=screen===0?'top':screen===2?'center':'bottom';
+ let controls='',overlays='';
+ if(screen===0){
+  controls+=spmApprovedButton([30,45,405,120],'close','Volver a mi programa');
+  controls+=spmApprovedButton([52,507,885,626],'audio','Escuchar introducción',undefined,'data-audio');
+  controls+=spmApprovedButton([50,652,884,750],'approvedread','Leer instrucciones');
+  controls+=spmApprovedButton([540,1475,915,1592],'next','Comenzar mi práctica');
+ }
+ if(screen===2){
+  controls+=spmApprovedButton([27,48,395,120],'close','Volver a mi programa');
+  controls+=spmApprovedButton([50,498,883,626],'explainall','Escuchar los cinco pasos',undefined,'data-audio');
+  [[37,652,894,802],[37,811,894,960],[37,966,894,1111],[37,1119,894,1262],[37,1273,894,1413]].forEach((r,i)=>{
+   controls+=spmApprovedButton(r,'explainstep','Escuchar '+PHASES[id][i][0],i,'data-audio');
+  });
+  controls+=spmApprovedButton([28,1474,360,1582],'back','Volver a preparación');
+  controls+=spmApprovedButton([534,1473,912,1582],'next','Continuar a la práctica');
+ }
+ if(screen===3){
+  controls+=spmApprovedButton([27,50,397,121],'close','Volver a mi programa');
+  controls+=spmApprovedButton([40,572,896,691],guideStarted?'repeataudio':'guideintro',guideStarted?'Repetir la indicación':'Escuchar cómo funciona',undefined,'data-audio');
+  [[82,208],[239,379],[396,538],[548,698],[715,860]].forEach((x,i)=>{
+   controls+=spmApprovedButton([x[0],303,x[1],402],'phase','Ir al paso '+(i+1)+': '+PHASES[id][i][0],i,guideStarted?'':'disabled');
+  });
+  controls+=spmApprovedButton([30,1500,345,1615],'back','Volver a los cinco pasos');
+  if(phase!==0){
+   const key=(STEP_PHOTOS[id]||[])[phase]||'seated';
+   overlays+='<div class="spm-approved-phase-title"><small>Paso '+(phase+1)+' de 5</small><strong>'+safeText(PHASES[id][phase][0])+'</strong></div>';
+   overlays+='<div class="spm-approved-phase-photo" role="img" aria-label="Fotografía de la acción '+safeText(PHASES[id][phase][0])+'" style="background-image:url(&quot;'+photoPath(key)+'&quot;)"></div>';
+  }
+  overlays+='<strong class="spm-approved-clock" data-guide-elapsed>'+clockText(t)+'</strong>';
+  if(guideStarted&&!guideDone)overlays+='<button type="button" class="spm-approved-pause" data-act="'+(running?'pauseguide':'resumeguide')+'">'+(running?'⏸ Pausar':'▶ Reanudar')+'</button>';
+  overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">'+(!guideStarted?'Iniciar guía →':phase===4?'Terminar y evaluar →':'Siguiente paso →')+'</button>';
+ }
+ const extra=(error?'<div class="spm-approved-feedback" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-approved-feedback" role="status">'+safeText(notification)+'</div>':'');
+ return '<div class="layout sf-matte sensate-approved-layout">'+
+  '<div class="spm-approved-screen spm-approved-'+visual+'" role="group" aria-label="SPM Focalización sensorial, '+(screen+1)+' de 5" style="background-image:url(&quot;'+SPM_APPROVED_ATLAS+'&quot;);background-position:center '+atlasPosition+';">'+controls+overlays+'</div>'+
+  extra+'<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
+}
+
 function progress(){return '<div class="progress-rail" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="5" aria-valuenow="'+(screen+1)+'"><i style="width:'+((screen+1)*20)+'%"></i></div>'}
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-focus-2-solo','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'">'+safeText(LABELS[key])+'</button>').join('')+'</div>'}
@@ -444,6 +496,10 @@ function footer(){
  return '<div class="foot">'+back+'<span>5 / 5</span><button type="button" data-act="'+(saved?'close':'save')+'" class="gold" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button></div>';
 }
 function render(){
+ if(id==='sf-i-1'&&[0,2,3].includes(screen)){
+  root.innerHTML=spmApprovedScreen();
+  return;
+ }
  const c=api.getContext();
  const title=isDaily?safeText(assigned?.title||LABELS[id]):safeText(LABELS[id]);
  root.innerHTML='<div class="layout sf-matte'+(isNewFocusI()?' sensate-day-'+(FOCUSI_DAILY_IDS.indexOf(id)+1):'')+(isFocusII()?' focusii-theme':'')+'"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div>'+
@@ -488,6 +544,13 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
+ if(act==='approvedread'){root.querySelector('.spm-approved-info')?.showModal();return}
+ if(act==='approvedinfo-close'){root.querySelector('.spm-approved-info')?.close();return}
+ if(act==='approvedadvance'){
+  if(!guideStarted||guideDone){startGuide();return}
+  if(phase<4){advanceGuide();return}
+  performed=true;stopClock();stopAudio();go(4);return;
+ }
  if(act==='audio'){if(voiceActive)stopAudio();else speech(audioText());return}
  if(act==='close'||act==='skip'){stopAudio();stopClock();void api.close();return}
  if(act==='library'){stopAudio();stopClock();if(isDaily){void api.openLibrary();return}go(0);return}
