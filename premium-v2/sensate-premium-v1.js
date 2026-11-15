@@ -10,6 +10,41 @@ const KEY='spm-sensate-records';
 const PREFIX='../assets/sensate-premium/';
 const SCENES={intro:'spm-sensate-intro-matte.webp',seated:'spm-sensate-seated-matte.webp',forearm:'spm-sensate-forearm-matte.webp',release:'spm-sensate-release-matte.webp',partner:'spm-sensate-partner-forearm-matte.webp'};
 const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hombre sentado de costado en postura cómoda',forearm:'Autoexploración del contacto en el antebrazo',release:'Hombre dejando ir tensión corporal',partner:'Contacto de pareja consentido en el antebrazo, sin estimulación genital'};
+// Session 1 has an approved, real photographic five-shot strip in this branch.
+// The other sessions deliberately use assets actually included with the repository,
+// never missing image URLs. Controls above the photography remain interactive.
+const FOCUSI_PHOTO_STEPS={'sf-i-1':'focus-i-day-1-steps.webp'};
+// Use adult, calm, photographed environments only; no generic UI screenshots,
+// distress scenes or sexual-performance advertising from unrelated modules.
+const EXTRA_PHOTOS={
+ connection:'../assets/commercial-cinema/spm-connection-men-v1.webp',
+ beginning:'../assets/commercial-cinema/spm-new-beginning-v1.webp'
+};
+const STEP_PHOTOS={
+ 'sf-i-1':['seated','forearm','intro','release','beginning'],
+ 'sf-i-2':['forearm','seated','release','intro','beginning'],
+ 'sf-i-3':['partner','connection','forearm','intro','beginning'],
+ 'sf-i-4':['seated','partner','connection','forearm','beginning'],
+ 'sf-i-5':['seated','partner','connection','release','beginning'],
+ 'sf-focus-2':['partner','connection','forearm','release','beginning'],
+ 'sf-focus-2-solo':['seated','forearm','intro','release','beginning']
+};
+function photoPath(key){return EXTRA_PHOTOS[key]||PREFIX+(SCENES[key]||SCENES.intro)}
+function stagePhoto(i){
+ const strip=FOCUSI_PHOTO_STEPS[id],frame=(i/4*100)+'%';
+ const photo=(STEP_PHOTOS[id]||['intro','seated','forearm','release','partner'])[i]||'intro';
+ const path=strip?PREFIX+strip:photoPath(photo);
+ const shade='linear-gradient(90deg,rgba(6,29,34,.93) 0%,rgba(9,36,45,.87) 34%,rgba(13,46,51,.20) 78%,rgba(13,46,51,.08) 100%)';
+ return '<span class="sensate-stage-photo" aria-hidden="true" style="background-image:'+shade+',url(&quot;'+path+'&quot;);background-size:100% 100%,'+(strip?'100% 500%':'cover')+';background-position:center,'+(strip?'center '+frame:'center')+'"></span>';
+}
+function sessionScene(key,kind){
+ if(isNewFocusI()){
+  const strip=FOCUSI_PHOTO_STEPS[id],firstPhoto=(STEP_PHOTOS[id]||[key])[0];
+  return '<figure class="sensate-scene sensate-session-scene '+kind+'" role="img" aria-label="Práctica de focalización sensorial para adultos">'+
+   '<span aria-hidden="true" class="sensate-session-photo" style="background-image:linear-gradient(90deg,rgba(10,43,45,.10),rgba(10,43,45,.06)),url(&quot;'+(strip?PREFIX+strip:photoPath(firstPhoto))+'&quot;);background-size:100% 100%,'+(strip?'100% 500%':'cover')+';background-position:center,'+(strip?'center 0%':'center')+'"></span></figure>';
+ }
+ return scene(key,kind);
+}
 const PHASES={
  // Five distinct Focus I sessions, preserving the seven-day Sensate cadence.
  'sf-i-1':[
@@ -156,9 +191,9 @@ function speech(text,done,control){
  catch{voiceActive=false;notification='No pude iniciar el audio; abre «Leer instrucciones».';return false}
 }
 function modeTitle(){return selectedMode==='partner'?'En pareja':'Individual'}
-function explanatoryText(i=explainPhase){const p=PHASES[id][i];return 'Paso '+(i+1)+' de cinco. '+p[0]+'. '+p[1]}
+function explanatoryText(i=explainPhase){const p=PHASES[id][i];return p[0]+'. '+p[1]}
 function autoGuideIntro(){if(isNewFocusI())return 'Esta sesión de Focalización I tiene cinco acciones guiadas. Escucha cada indicación y practica a tu ritmo. El reloj es un apoyo opcional: tú decides cuándo pasar al siguiente paso. Puedes pausar, repetir la instrucción o terminar cuando quieras. Los silencios te permiten sentir, no son errores del audio.';if(isFocusII())return 'Vas a realizar Focus II en modalidad '+(isPartner()?'en pareja':'individual')+'. Son cinco momentos guiados. Escucha cada indicación, practica sin prisa y pulsa Siguiente paso cuando quieras avanzar. El cronómetro es opcional, no marca un tiempo obligatorio. Puedes pausar, escuchar de nuevo o terminar en cualquier momento. El silencio permite sentir, no es un fallo del audio.';return 'Vas a realizar una práctica '+(isPartner()?'en pareja':'individual')+' de cinco acciones. Cada paso tendrá una instrucción hablada y aproximadamente un minuto para practicar en silencio. El silencio forma parte de la guía: no significa que el programa se haya pausado ni terminado. Después escucharás automáticamente el paso siguiente. Puedes pausar, repetir o adelantar cuando lo necesites.'}
-function stepAudio(){return 'Paso '+(phase+1)+' de cinco. '+PHASES[id][phase][0]+'. '+PHASES[id][phase][1]}
+function stepAudio(){return PHASES[id][phase][0]+'. '+PHASES[id][phase][1]}
 function explainStep(i){stopAudio();explainPhase=i;notification='';render();speech(explanatoryText(i),null,'[data-act="explainstep"][data-value="'+i+'"]')}
 function explainAll(){stopAudio();explainingAll=true;let pos=0;function speakNext(){if(!explainingAll||screen!==2)return;if(pos>=5){explainingAll=false;render();return}explainPhase=pos;render();const current=pos++;if(!speech(explanatoryText(current),speakNext,'[data-act="explainstep"][data-value="'+current+'"]')){explainingAll=false;notification='Puedes consultar cada paso en «Leer el paso seleccionado».';render()}}speakNext()}
 function guideTick(){
@@ -241,16 +276,69 @@ function audioControls(){
  const label=screen===0?'Escuchar introducción':screen===1?'Escuchar preparación':'Escuchar guía de cierre';
  return '<div class="sensate-instruction"><button type="button" data-act="audio" data-audio class="audio-control" aria-label="'+label+'">🔊 '+label+'</button><details class="more"><summary>Leer instrucciones</summary><p>'+safeText(audioText())+'</p></details></div>';
 }
+
+// Approved photographic SPM screens. The artwork is the screen itself, as in
+// Start–Stop: transparent real buttons overlay the approved coordinates.
+// Only the first Focus I day uses this specific artwork; the other days retain
+// their distinct clinical photographs and routes.
+const SPM_APPROVED_ATLAS=PREFIX+'spm-approved-focus-screen-atlas.avif';
+function spmApprovedButton(coords,action,label,value,extra=''){
+ const rect=coords,px=n=>String(Math.round(n*1000)/1000)+'%';
+ const style='left:'+px(rect[0]/941*100)+';top:'+px(rect[1]/1672*100)+';width:'+px((rect[2]-rect[0])/941*100)+';height:'+px((rect[3]-rect[1])/1672*100)+';';
+ return '<button type="button" class="spm-approved-hit" data-act="'+action+'" '+(value===undefined?'':'data-value="'+safeText(value)+'"')+' aria-label="'+safeText(label)+'" style="'+style+'" '+extra+'></button>';
+}
+function spmApprovedScreen(){
+ const visual=screen===0?'intro':screen===2?'guide':'practice';
+ const atlasPosition=screen===0?'top':screen===2?'center':'bottom';
+ let controls='',overlays='';
+ if(screen===0){
+  controls+=spmApprovedButton([30,45,405,120],'close','Volver a mi programa');
+  controls+=spmApprovedButton([52,507,885,626],'audio','Escuchar introducción',undefined,'data-audio');
+  controls+=spmApprovedButton([50,652,884,750],'approvedread','Leer instrucciones');
+  controls+=spmApprovedButton([540,1475,915,1592],'next','Comenzar mi práctica');
+ }
+ if(screen===2){
+  controls+=spmApprovedButton([27,48,395,120],'close','Volver a mi programa');
+  controls+=spmApprovedButton([50,498,883,626],'explainall','Escuchar los cinco pasos',undefined,'data-audio');
+  [[37,652,894,802],[37,811,894,960],[37,966,894,1111],[37,1119,894,1262],[37,1273,894,1413]].forEach((r,i)=>{
+   controls+=spmApprovedButton(r,'explainstep','Escuchar '+PHASES[id][i][0],i,'data-audio');
+  });
+  controls+=spmApprovedButton([28,1474,360,1582],'back','Volver a preparación');
+  controls+=spmApprovedButton([534,1473,912,1582],'next','Continuar a la práctica');
+ }
+ if(screen===3){
+  controls+=spmApprovedButton([27,50,397,121],'close','Volver a mi programa');
+  controls+=spmApprovedButton([40,572,896,691],guideStarted?'repeataudio':'guideintro',guideStarted?'Repetir la indicación':'Escuchar cómo funciona',undefined,'data-audio');
+  [[82,208],[239,379],[396,538],[548,698],[715,860]].forEach((x,i)=>{
+   controls+=spmApprovedButton([x[0],303,x[1],402],'phase','Ir al paso '+(i+1)+': '+PHASES[id][i][0],i,guideStarted?'':'disabled');
+  });
+  controls+=spmApprovedButton([30,1500,345,1615],'back','Volver a los cinco pasos');
+  if(phase!==0){
+   const key=(STEP_PHOTOS[id]||[])[phase]||'seated';
+   overlays+='<div class="spm-approved-phase-title"><small>Paso '+(phase+1)+' de 5</small><strong>'+safeText(PHASES[id][phase][0])+'</strong></div>';
+   overlays+='<div class="spm-approved-phase-photo" role="img" aria-label="Fotografía de la acción '+safeText(PHASES[id][phase][0])+'" style="background-image:url(&quot;'+photoPath(key)+'&quot;)"></div>';
+  }
+  overlays+='<strong class="spm-approved-clock" data-guide-elapsed>'+clockText(t)+'</strong>';
+  if(guideStarted&&!guideDone)overlays+='<button type="button" class="spm-approved-pause" data-act="'+(running?'pauseguide':'resumeguide')+'">'+(running?'⏸ Pausar':'▶ Reanudar')+'</button>';
+  overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">'+(!guideStarted?'Iniciar guía →':phase===4?'Terminar y evaluar →':'Siguiente paso →')+'</button>';
+ }
+ const caption=screen===0?'Conecta con tus sensaciones · 1 / 5':screen===2?'Tu práctica guiada · 3 / 5 · '+PHASES[id].map(p=>p[0]).join(' · '):'Práctica en curso · 4 / 5 · Paso '+(phase+1)+' · '+PHASES[id][phase][0];
+ const extra=(error?'<div class="spm-approved-feedback" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-approved-feedback" role="status">'+safeText(notification)+'</div>':'');
+ return '<div class="layout sf-matte sensate-approved-layout">'+
+  '<div class="spm-approved-screen spm-approved-'+visual+'" role="group" aria-label="SPM Focalización sensorial, '+(screen+1)+' de 5" style="background-image:url(&quot;'+SPM_APPROVED_ATLAS+'&quot;);background-position:center '+atlasPosition+';"><span class="spm-approved-sr">'+safeText(caption)+'</span>'+controls+overlays+'</div>'+
+  extra+'<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
+}
+
 function progress(){return '<div class="progress-rail" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="5" aria-valuenow="'+(screen+1)+'"><i style="width:'+((screen+1)*20)+'%"></i></div>'}
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-focus-2-solo','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'">'+safeText(LABELS[key])+'</button>').join('')+'</div>'}
 function introScreen(){
  const focus2=isDaily&&assigned?.practiceId==='sf-focus-2';
  const focus1=isNewFocusI();
- const heading=focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
- const lead=focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
+ const heading=id==='sf-i-1'?'Conecta con tus sensaciones':focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
+ const lead=id==='sf-i-1'?'Explora esta práctica con calma, sin presión y a tu ritmo.':focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
  return '<section class="card intro-card'+(focus2?' focusii-welcome':'')+'"><p class="eyebrow">SPM · FOCALIZACIÓN SENSORIAL</p><h2>'+heading+'</h2><p>'+lead+'</p>'+
- (focus2||focus1&&isPartner()?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
+ audioControls()+(id==='sf-i-1'?scene('seated','intro-visual'):focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
 }
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function focusIPrepScreen(){
@@ -260,20 +348,20 @@ function focusIPrepScreen(){
  const copy=solo?'Encuentra un lugar cómodo y escucha las instrucciones de hoy.':'Elijan un momento de conexión. La práctica puede hacerse en su próximo encuentro, cuando ambos quieran.';
  return '<section class="card prep-card focusi-preparation"><p class="eyebrow">FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5</p>'+
  '<h2>Tu práctica '+label.toLowerCase()+'</h2><p>'+copy+'</p>'+
- scene(photo,'focusi-modal-photo')+
+ audioControls()+sessionScene(photo,'focusi-modal-photo')+
  '<button type="button" data-act="branch" data-value="'+(solo?'individual':'partner')+'" class="gold full focusi-start">▶ Iniciar mi práctica</button>'+
- '<details class="more"><summary>Leer preparación</summary><p>'+safeText(FOCUSI_PREP)+'</p></details></section>';
+ '</section>';
 }
 function prepScreen(){
  if(isNewFocusI())return focusIPrepScreen();
  return '<section class="card prep-card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Focalización'):'PREPARA TU PRÁCTICA')+'</p>'+
- '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+scene('seated','prep-visual')+
+ '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+audioControls()+scene('seated','prep-visual')+
  '<h3 class="mode-heading">¿Cómo realizarás la práctica?</h3>'+
  '<div class="mode-branch" role="group" aria-label="Elige práctica individual o en pareja">'+
  '<button type="button" data-act="branch" data-value="individual" class="mode-photo" aria-label="Elegir práctica individual"><img src="'+PREFIX+SCENES.seated+'" alt="Hombre sentado relajado"><span>Individual</span></button>'+
  '<button type="button" data-act="branch" data-value="partner" class="mode-photo" aria-label="Elegir práctica en pareja"><img src="'+PREFIX+SCENES.partner+'" alt="Pareja adulta compartiendo un contacto cómodo"><span>En pareja</span></button></div>'+
  '<p class="notice">'+(isFocusII()?'En pareja, ambos deciden participar y cualquiera puede pedir una pausa.':'En pareja: la participación de ambos debe ser voluntaria y cualquiera puede pedir una pausa o terminar en cualquier momento. No necesitas marcar otra casilla.')+'</p>'+
- (isFocusII()?'<details class="more"><summary>Leer indicaciones de preparación</summary><p>'+safeText(PREP_FOCUSII)+'</p></details>':'<details class="more"><summary>Mis indicaciones de preparación</summary><div class="two-ranges">'+range('presenceBefore','Presencia antes de empezar','Disperso','Presente')+range('pressureBefore','Presión antes de empezar','Baja','Alta')+'</div></details>')+'</section>';
+ (isFocusII()?'':'<details class="more"><summary>Mis indicaciones de preparación</summary><div class="two-ranges">'+range('presenceBefore','Presencia antes de empezar','Disperso','Presente')+range('pressureBefore','Presión antes de empezar','Baja','Alta')+'</div></details>')+'</section>';
 }
 const GUIDE_LABELS={
  'sf-solo':['Acomódate','Respira','Explora','Percibe','Cierra'],
@@ -289,33 +377,31 @@ function wave(active=false){
  [0,1,2,3,4].map((n)=>'<path class="wave-line wave-'+n+'" fill="none" stroke="currentColor" stroke-width="'+(n===2?'1.9':'1.05')+'" opacity="'+(.27+n*.12)+'" d="M0 '+(46+n*2)+' C45 '+(38+n*2)+' 65 '+(60-n*3)+' 104 '+(48+n*2)+' S170 '+(10+n*4)+' 211 '+(46+n)+' S294 '+(88-n*5)+' 335 '+(45+n*2)+' S402 '+(28+n*3)+' 440 '+(46+n)+' S480 '+(47+n)+' 500 '+(47+n)+'"></path>').join('')+'</svg></div>';
 }
 function focusIIExplainScreen(){
- const mode=isPartner()?'En pareja':'Individual';
- const focus1=isNewFocusI(),phaseTitle=focus1?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
- return '<section class="card focusii-explain" aria-label="Focus II · explicación '+mode+'">'+
- '<p class="eyebrow">'+phaseTitle+' · '+mode.toUpperCase()+' · 3 / 5</p>'+
- '<h2>'+(focus1?safeText(FOCUSI_TITLES[id]):'Explora nuevas sensaciones')+'</h2><p>Escucha cada paso antes de comenzar.</p>'+
- '<div class="focusii-visual">'+scene(isPartner()?'partner':'forearm','focusii-cover')+'</div>'+
- '<h3 class="focusii-heading">Tu práctica guiada</h3>'+
- '<div class="focusii-step-list">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar paso '+(i+1)+': '+safeText(labelForPhase(i))+'"><span class="number">'+(i+1)+'</span><span>'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">🔊</span></button>').join('')+'</div>'+
- '<button type="button" data-act="explainall" data-audio class="focusii-listen" '+(explainingAll?'disabled':'')+'><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Reproduciendo guía…':'Escuchar los 5 pasos')+'</button>'+
- '<details class="more"><summary>Leer instrucción seleccionada</summary><p>'+safeText(explanatoryText())+'</p></details>'+
- '<p class="compact-footnote">En la siguiente pantalla realizarás los pasos a tu ritmo. No hay tiempo obligatorio.</p></section>';
+ const mode=isPartner()?'En pareja':'Individual',focus1=isNewFocusI();
+ const phaseTitle=focus1?'FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'FOCALIZACIÓN II · '+mode.toUpperCase();
+ return '<section class="card focusii-explain sensate-photo-guide" aria-label="Guía interactiva de cinco pasos, '+mode+'">'+
+ '<p class="eyebrow">'+phaseTitle+' · 3 / 5</p>'+
+ '<h2>Tu práctica guiada</h2>'+
+ '<p class="sensate-guide-lead">Toca cada paso para escuchar cómo realizarlo. Sin presiones ni tiempos obligatorios.</p>'+
+ '<button type="button" data-act="explainall" data-audio class="focusii-listen sensate-play-all" aria-pressed="'+explainingAll+'"><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Detener narración':'Escuchar los 5 pasos')+'</button>'+
+ '<div class="focusii-step-list" role="group" aria-label="Escuchar cada instrucción">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step sensate-photo-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar el paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+
+ stagePhoto(i)+'<span class="number" aria-hidden="true">'+(i+1)+'</span><span class="sensate-photo-label">'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">▶</span></button>').join('')+'</div>'+
+ '<details class="more"><summary>Leer la instrucción seleccionada</summary><p>'+safeText(explanatoryText())+'</p></details>'+
+ '<p class="compact-footnote">Continúa para realizar la práctica guiada, con pausas y audio.</p></section>';
 }
+
 function focusIIPracticeScreen(){
  const current=PHASES[id][phase];
  const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
- const status=guideDone?'Puedes registrar tu experiencia.':running?'Escucha, explora y avanza cuando lo desees.':guideStarted?'Pausada. Reanuda cuando quieras.':'Escucha cada paso y practica sin prisa.';
- const imageKey=isPartner()?(phase===0?'seated':'partner'):(phase===2?'forearm':phase===3?'release':'seated');
- return '<section class="card focusii-practice" aria-label="Focus II práctica '+modeTitle()+'">'+
+ const status=guideDone?'Puedes registrar tu experiencia.':running?'Explora sin presión y avanza cuando lo desees.':guideStarted?'Pausada. Puedes reanudar.':'Escucha la guía y comienza cuando estés listo.';
+ return '<section class="card focusii-practice" aria-label="Práctica guiada '+modeTitle()+'">'+
  '<p class="eyebrow">'+phaseTitle+' · '+modeTitle().toUpperCase()+' · 4 / 5</p>'+
- '<h2>Ahora, ponlo en práctica</h2>'+
- '<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>'+
  '<div class="focusii-phase-nav" aria-label="Fases de la práctica">'+PHASES[id].map((stepData,i)=>'<button type="button" data-act="phase" data-value="'+i+'" '+(!guideStarted?'disabled':'')+' class="'+(phase===i?'current':i<phase?'complete':'')+'" aria-label="Ir al paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+(i+1)+'</button>').join('')+'</div>'+
- '<p class="focusii-phase-count">Paso '+(phase+1)+' de 5</p><h3 class="focusii-active-title">'+safeText(labelForPhase(phase))+'</h3>'+
- scene(imageKey,'focusii-active-photo')+
- '<p class="focusii-action">'+safeText(current[1])+'</p>'+
- '<button type="button" data-act="repeataudio" data-audio class="focusii-listen" '+(!guideStarted?'disabled':'')+'><span class="focusii-speaker" aria-hidden="true">🔊</span>Repetir indicación</button>'+
- '<div class="focusii-timing"><span>Tiempo transcurrido <small>(apoyo opcional)</small></span><strong data-guide-elapsed>'+clockText(t)+'</strong><small>En este paso: <span data-guide-phase-elapsed>'+clockText(phaseElapsed)+'</span></small></div>'+
+ '<p class="focusii-phase-count">Paso '+(phase+1)+' de 5</p><h2 class="focusii-active-title">'+safeText(labelForPhase(phase))+'</h2>'+
+ (!guideStarted?'<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>':'<button type="button" data-act="repeataudio" data-audio class="focusii-listen"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar la instrucción</button>')+
+ '<p class="sensate-first-cue">'+safeText(current[1])+'</p>'+
+ '<div class="focusii-active-photo sensate-practice-photo" role="img" aria-label="Imagen alusiva a la acción '+safeText(labelForPhase(phase))+'">'+stagePhoto(phase)+'</div>'+
+ '<div class="focusii-timing"><span>Tiempo transcurrido <small>(opcional)</small></span><strong data-guide-elapsed>'+clockText(t)+'</strong><small>En este paso: <span data-guide-phase-elapsed>'+clockText(phaseElapsed)+'</span></small></div>'+
  '<p class="focusii-status" role="status">'+safeText(status)+'</p>'+
  (!guideStarted||guideDone?'<button type="button" data-act="startguide" class="gold full primary-guide">'+(guideDone?'↻ Volver a practicar':'▶ Iniciar práctica guiada')+'</button>':
  running?'<button type="button" data-act="pauseguide" class="gold full primary-guide">⏸ Pausar práctica</button>':
@@ -323,8 +409,9 @@ function focusIIPracticeScreen(){
  '<div class="focusii-guide-actions"><button type="button" data-act="nextphase" class="secondary" '+(!guideStarted||guideDone?'disabled':'')+'>Siguiente paso →</button>'+
  '<button type="button" data-act="performed" class="secondary" '+(!guideStarted?'disabled':'')+'>✓ Terminar y evaluar</button></div>'+
  '<details class="more"><summary>Leer cómo se realiza</summary><p>'+safeText(current[1])+'</p></details>'+
- '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras. No hay una respuesta obligatoria.</p></section>';
+ '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras.</p></section>';
 }
+
 function focusIICloseScreen(){
  const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
  const choices=[['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']];
@@ -410,13 +497,17 @@ function footer(){
  return '<div class="foot">'+back+'<span>5 / 5</span><button type="button" data-act="'+(saved?'close':'save')+'" class="gold" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button></div>';
 }
 function render(){
+ if(id==='sf-i-1'&&[0,2,3].includes(screen)){
+  root.innerHTML=spmApprovedScreen();
+  return;
+ }
  const c=api.getContext();
  const title=isDaily?safeText(assigned?.title||LABELS[id]):safeText(LABELS[id]);
- root.innerHTML='<div class="layout sf-matte'+(isFocusII()?' focusii-theme':'')+'"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div>'+
- '<div class="header-actions"><button type="button" data-act="library" class="subtle" title="Biblioteca">Biblioteca</button><button type="button" data-act="close" class="close" aria-label="Cerrar">×</button></div></header>'+progress()+
+ root.innerHTML='<div class="layout sf-matte'+(isNewFocusI()?' sensate-day-'+(FOCUSI_DAILY_IDS.indexOf(id)+1):'')+(isFocusII()?' focusii-theme':'')+'"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div>'+
+ '<div class="header-actions">'+(isDaily?'':'<button type="button" data-act="library" class="subtle" title="Biblioteca">Biblioteca</button>')+'<button type="button" data-act="close" class="close sensate-return" aria-label="Volver a mi programa">← Volver a mi programa</button></div></header>'+progress()+
  '<main><p class="meta">'+(isDaily?'DÍA '+originalDay+' / 28 · ':'BIBLIOTECA · ')+title+'</p>'+
 
- (screen===0?introScreen():screen===1?prepScreen():screen===2?explainScreen():screen===3?practiceScreen():closeScreen())+audioControls()+
+ (screen===0?introScreen():screen===1?prepScreen():screen===2?explainScreen():screen===3?practiceScreen():closeScreen())+(screen===4?audioControls():'')+
  (error?'<p class="warning" role="alert">'+safeText(error)+'</p>':'')+
  (notification?'<p class="notify" role="status">'+safeText(notification)+'</p>':'')+
  '</main>'+footer()+'</div>';
@@ -454,6 +545,13 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
+ if(act==='approvedread'){root.querySelector('.spm-approved-info')?.showModal();return}
+ if(act==='approvedinfo-close'){root.querySelector('.spm-approved-info')?.close();return}
+ if(act==='approvedadvance'){
+  if(!guideStarted||guideDone){startGuide();return}
+  if(phase<4){advanceGuide();return}
+  performed=true;stopClock();stopAudio();go(4);return;
+ }
  if(act==='audio'){if(voiceActive)stopAudio();else speech(audioText());return}
  if(act==='close'||act==='skip'){stopAudio();stopClock();void api.close();return}
  if(act==='library'){stopAudio();stopClock();if(isDaily){void api.openLibrary();return}go(0);return}
@@ -468,7 +566,7 @@ root.addEventListener('click',e=>{
   return;
  }
  if(act==='explainstep'){explainStep(Number(button.dataset.value));return}
- if(act==='explainall'){explainAll();return}
+ if(act==='explainall'){if(explainingAll){stopAudio();render()}else explainAll();return}
  if(act==='guideintro'){if(voiceActive)stopAudio();else speech(autoGuideIntro(),null,'[data-act=guideintro]');return}
  if(act==='startguide'){startGuide();return}
  if(act==='pauseguide'){pauseGuide();return}

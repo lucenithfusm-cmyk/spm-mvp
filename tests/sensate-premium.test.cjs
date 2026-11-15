@@ -107,11 +107,11 @@ test('all five full-width explanatory controls speak the corresponding existing 
   h.click('next');h.branch('individual');
   const card=h.page.querySelector('[data-act=explainstep][data-value="2"]');
   assert.ok(card);card.querySelector('.explain-label').click();
-  assert.match(h.spoken.at(-1),/Paso 3 de cinco/);
+  assert.match(h.spoken.at(-1),/Explorar el tacto/);
   assert.match(h.spoken.at(-1),/antebrazo/);
   assert.equal(h.page.querySelectorAll('[data-act=audio]').length,0,'not a duplicated second speaker');
   h.click('explainall');
-  assert.match(h.spoken.at(-1),/Paso 1 de cinco/);
+  assert.match(h.spoken.at(-1),/Llegar al cuerpo/);
   for(let i=0;i<5;i++)h.finishAudio();
   assert.equal(h.page.querySelector('[data-act=explainall]').disabled,false);
   assert.match(h.page.textContent,/Continuar/);
@@ -131,17 +131,17 @@ test('screen 4 alone starts voiced automatic practice, includes silence explanat
   const before=h.spoken.length;
   h.click('startguide');
   assert.equal(h.spoken.length,before+1);
-  assert.match(h.spoken.at(-1),/Paso 1 de cinco/);
+  assert.match(h.spoken.at(-1),/Llegar al cuerpo/);
   h.tick(59);assert.match(h.page.textContent,/Acomódate/);
   assert.equal(h.spoken.length,before+1,'no repeated narration during the silent interval');
-  h.tick(1);assert.match(h.spoken.at(-1),/Paso 2 de cinco/);
+  h.tick(1);assert.match(h.spoken.at(-1),/Respirar/);
   assert.match(h.page.querySelector('.current-activity h3').textContent,/Respira/);
   h.click('pauseguide');const count=h.spoken.length;
   h.tick(70);assert.equal(h.spoken.length,count);
   assert.match(h.page.querySelector('.current-activity h3').textContent,/Respira/);
-  h.click('resumeguide');assert.match(h.spoken.at(-1),/Paso 2 de cinco/);
+  h.click('resumeguide');assert.match(h.spoken.at(-1),/Respirar/);
   h.click('nextphase');
-  assert.match(h.spoken.at(-1),/Paso 3 de cinco/);
+  assert.match(h.spoken.at(-1),/Explorar el tacto/);
   assert.match(h.page.querySelector('.sensate-scene img').getAttribute('src'),/forearm/);
   assert.ok(h.page.querySelector('.wave-stage.moving'));
   assert.equal(h.writes.length,0,'watching or starting practice does not save patient progress');
@@ -187,20 +187,31 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
  }
 });
 
-test('Focus I has exactly five distinct interactive sessions, two individual and three in pareja',async()=>{
+test('Focus I has five distinct safe interactive sessions; session 1 uses exact approved artwork with real controls',async()=>{
  const cases=[
-  [4,'sf-i-1','individual','Reconoce tu cuerpo','Siente el apoyo'],
+  [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
   [8,'sf-i-2','individual','Descubre sensaciones','Contrasta texturas'],
   [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
   [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
   [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
  ];
+ const originalImage=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-approved-focus-screen-atlas.avif'));
+ assert.ok(originalImage.length>40000);
+ assert.equal(originalImage.toString('ascii',4,12),'ftypavif','approved screens must be an actual AVIF image');
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
+  const imageJourney=practiceId==='sf-i-1';
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
+   if(imageJourney){
+    const art=h.page.querySelector('.spm-approved-intro');
+    assert.ok(art,'introduction must be the approved artwork screen');
+    assert.match(art.getAttribute('style'),/spm-approved-focus-screen-atlas\.avif/);
+    assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
+    assert.ok(h.page.querySelector('[data-act=approvedread]'),'the written instruction is expandable');
+   }
    h.click('audio');
    assert.match(h.spoken.at(-1),/Hoy|Bienvenido/i);
    signatures.add(h.spoken.at(-1));
@@ -211,13 +222,32 @@ test('Focus I has exactly five distinct interactive sessions, two individual and
    assert.match(h.page.textContent,/3 \/ 5/);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    assert.match(h.page.textContent,new RegExp(firstStep));
-   h.click('next');h.click('startguide');
-   assert.match(h.spoken.at(-1),/Paso 1 de cinco/);
-   h.tick(150);
-   assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
-   h.click('performed');h.click('next');
+   if(imageJourney){
+    assert.ok(h.page.querySelector('.spm-approved-guide'),'the five action cards are the exact approved artwork');
+    assert.ok(h.page.querySelector('[data-act=explainall]'),'five-step audio button is real');
+    const individual=h.page.querySelector('[data-act=explainstep][data-value="0"]');
+    assert.ok(individual);
+    individual.click();
+    assert.match(h.spoken.at(-1),new RegExp(firstStep),'the picture card must play its actual instruction');
+   }
+   h.click('next');
+   if(imageJourney){
+    assert.ok(h.page.querySelector('.spm-approved-practice'),'practice must use approved third image');
+    assert.ok(h.page.querySelector('[data-act=guideintro]'));
+    h.click('approvedadvance');
+    assert.match(h.spoken.at(-1),new RegExp(firstStep));
+    h.tick(150);
+    assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/02:30/);
+    assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
+    for(let i=0;i<5;i++)h.click('approvedadvance');
+   }else{
+    h.click('startguide');
+    assert.match(h.spoken.at(-1),new RegExp(firstStep));
+    h.tick(150);
+    assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
+    h.click('performed');h.click('next');
+   }
    assert.match(h.page.textContent,/5 \/ 5/);
-   // It is the patient's choice to add reflections; no scale or alert blocks learning.
    h.click('save');await pause();
    assert.equal(h.writes.length,1);
    const record=JSON.parse(h.records['spm-sensate-records'])[0];
@@ -239,7 +269,7 @@ test('day 19 has one direct Focus II practice without a prior Focus I record or 
    assert.match(h.page.textContent,/Focalización Sensorial II/);
    h.click('audio');assert.match(h.spoken.at(-1),/explorar nuevas sensaciones/i);assert.doesNotMatch(h.spoken.at(-1),/omitirla hoy|pausa de seguridad/i);
    h.click('next');h.branch(mode);
-   assert.match(h.page.textContent,/Focus II/i);
+   assert.match(h.page.textContent,/Focalización II/i);
    assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
    assert.equal(h.page.querySelector('[data-act=togglefocus]'),null);
    h.click('next');h.click('startguide');
@@ -300,7 +330,7 @@ test('Focus II offers a functional five-screen matte audio-first journey without
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep][data-audio]').length,5);
    h.page.querySelector('[data-act=explainstep][data-value="4"]').click();
-   assert.match(h.spoken.at(-1),/Paso 5 de cinco/);
+   assert.match(h.spoken.at(-1),mode==='partner'?/Cerrar sin expectativas/:/Integra lo que sentiste/);
    h.click('next');assert.match(h.page.textContent,/4 \/ 5/);
    assert.ok(h.page.querySelector('[data-act=guideintro][data-audio]'));
    h.click('startguide');
@@ -370,7 +400,7 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     if(practiceId==='sf-i-1')h.click('next');
     else h.branch('individual');
     assert.match(h.page.textContent,/3 \/ 5/);
-    h.click('next');h.click('startguide');
+    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'startguide');
     assert.match(h.page.textContent,/4 \/ 5/);
     assert.equal(h.page.querySelector('.warning'),null);
     assert.equal(h.writes.length,0);
