@@ -1,0 +1,33 @@
+name: SPM técnica combinada — semanas 3 y 4
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/ejaculatory-combined-v1.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/ejaculatory-startstop-v2.js'
+      - 'premium-v2/ejaculatory-squeeze-v1.js'
+      - 'premium-v2/assets/ep/combined/**'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'tests/combined-premium-integration.test.cjs'
+      - '.github/workflows/combined-premium-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/ejaculatory-combined-v1.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'tests/combined-premium-integration.test.cjs'
+jobs:
+  combined-integration:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: node --check premium-v2/ejaculatory-combined-v1.js
+      - run: node --check premium-v2/ejaculatory-control.js
+      - run: node --test tests/combined-premium-integration.test.cjs

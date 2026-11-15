@@ -55,6 +55,7 @@ async function closeActivities(){
   }
   window.SPM_STARTSTOP_V2?.close?.(false);
   window.SPM_SQUEEZE_V1?.close?.(false);
+  window.SPM_COMBINED_V1?.close?.(false);
   window.SPM_FIRMNESS_GUIDE?.close();
   window.SPM_SLEEP_LIBRARY_V1?.close();window.SPM_WELLNESS_LIBRARY_V1?.close?.();if(window.SPM_PELVIC_V2?.close()===false)return false;
   // These legacy modules expose their safe close action as a button, not as an API.
@@ -62,7 +63,7 @@ async function closeActivities(){
   window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_PROGRAM_VIDEOS?.pause();window.SPM_TECHNIQUE_CLIPS?.pause();window.speechSynthesis?.cancel();
   document.querySelectorAll('audio,video').forEach(media=>media.pause());
   // Never discard a lab whose own close/save operation did not finish.
-  return !document.querySelector('dialog[open],#spmDeModal.on,#spmEcModal.on,#epAssessModal.on')&&!document.querySelector('#spmStartStopV2:not([hidden]),#spmSqueezeV1:not([hidden])');
+  return !document.querySelector('dialog[open],#spmDeModal.on,#spmEcModal.on,#epAssessModal.on')&&!document.querySelector('#spmStartStopV2:not([hidden]),#spmSqueezeV1:not([hidden]),#spmCombinedV1:not([hidden])');
 }
 async function select(nextProgram,nextDay,reset=false){
   if(!ready||busy)return false;
@@ -110,7 +111,7 @@ const scripts=[
   'firmness-guide-v1.js?v=20261113-firmness-1','spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-firmness-1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
   'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261113-instructions1',
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
-  'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-swapped-weeks','ejaculatory-squeeze-v1.js?v=20261114-ep-swapped-weeks','ejaculatory-control.js?v=20261114-ep-swapped-weeks','ejaculatory-control-router.js','erectile-function-route.js?v=20261114-pelvic-entry2','erectile-function-premium.js?v=20261113-closing1',
+  'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261114-pelvic-entry2','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
   'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261113-instructions3','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
   'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261114-pelvic-adaptive6','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-firmness-1','daily-practice-v1.js?v=20261114-ep-preactivity2'

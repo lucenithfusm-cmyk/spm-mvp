@@ -23,7 +23,7 @@ test('five original posters and five-second technique clip are real, independent
  const mp4=fs.readFileSync(path.join(root,'premium-v2/assets/videos/techniques/stop-squeeze.mp4'));
  const offset=mp4.indexOf('mvhd');assert.ok(offset>0);const timescale=mp4.readUInt32BE(offset+16);
  const seconds=mp4.readUInt32BE(offset+20)/timescale;assert.ok(seconds>4.5&&seconds<6,'real MP4 duration is approximately five seconds');
- const h=harness();try{assert.deepEqual([...h.api.scheduledDays],[1,3,5,24])}finally{h.close()}
+ const h=harness();try{assert.deepEqual([...h.api.scheduledDays],[1,3,5,22])}finally{h.close()}
 });
 test('third page preserves all five source illustrations around video and fourth page offers a closed recap',()=>{
  const h=harness();try{
@@ -70,7 +70,7 @@ test('clinical routing preserves the approved mixed fourth week and refuses unsa
   h.ctx.safety='none';h.ctx.primary='erection';assert.equal(h.api.open(1,{origin:'dailyPlan'}),false);
   const m=legacy.match(/const SCHEDULE=(\{[^;]+\});/);assert.ok(m);
   const schedule=Function('return ('+m[1]+')')();
-  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,24]);
+  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,22]);
   assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='combined').map(([n])=>Number(n)),[15,17,19,26]);
   assert.match(legacy,/SPM_SQUEEZE_V1/,'Squeeze slots route to approved new module');
  }finally{h.close()}
@@ -145,7 +145,7 @@ test('pre-entry message remains short; all existing weekly schedule slots stay u
  assert.doesNotMatch(m[0],/primero reconoce|después aplicas|tres sesiones semanales/i);
  const schedule=Function('return ('+legacy.match(/const SCHEDULE=(\{[^;]+\});/)[1]+')')();
  assert.equal(Object.keys(schedule).length,12);
- assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,24]);
+ assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,22]);
 });
 
 test('completed historical Stop–Start day-1 session cannot be overwritten by Squeeze',async()=>{
@@ -157,5 +157,20 @@ test('completed historical Stop–Start day-1 session cannot be overwritten by S
   assert.match(h.ui.querySelector('#stage').textContent,/registro.*(conserv|anterior)/i);
   assert.equal(h.ui.querySelector('#saveBtn').disabled,true);
   assert.equal(h.saves.length,0);
+ }finally{h.close();}
+});
+
+test('week four Stop–Squeeze day 22 reuses approved premium UI with structured post-session check',async()=>{
+ const h=harness(22);
+ try{
+  assert.equal(h.api.open(22,{origin:'dailyPlan'}),true);await wait();
+  for(let i=0;i<3;i++)h.ui.querySelector('#next').click();
+  h.ui.querySelector('#timerBtn').click();h.ui.querySelector('#registerBtn').click();h.ui.querySelector('#next').click();
+  assert.ok(h.ui.querySelector('#difficulty')&&h.ui.querySelector('#discomfort')&&h.ui.querySelector('#progress'));
+  for(const [id,value] of [['feeling','similar'],['difficulty','dificil'],['discomfort','ninguna'],['progress','no_seguro']])h.ui.querySelector('#'+id).value=value;
+  h.ui.querySelector('#saveBtn').click();await wait();
+  assert.equal(h.saves.length,1);assert.equal(h.saves[0].d,22);
+  assert.equal(h.saves[0].v.tech,'squeeze');assert.equal(h.saves[0].v.difficulty,'dificil');
+  assert.equal(h.saves[0].v.discomfort,'ninguna');assert.equal(h.saves[0].v.progressPerceived,'no_seguro');
  }finally{h.close();}
 });

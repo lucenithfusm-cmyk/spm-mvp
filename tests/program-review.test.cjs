@@ -342,8 +342,8 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
       [1,'tres sesiones','compresión'],[3,'repetición','Stop.?Squeeze'],[5,'repetición','Stop.?Squeeze'],
       [8,'Stop.?Start','sin compresión'],[10,'repetición','sin compresión'],
       [12,'repetición','sin compresión'],
-      [15,'técnica','herramienta'],[17,'repetición','herramienta'],
-      [22,'consolidar','Stop.?Start'],[24,'consolidación','compresión'],[26,'consolidación','herramienta']
+      [15,'Semana tres','piso pélvico'],[17,'repites','técnica combinada'],
+      [22,'Semana cuatro','Stop.?Squeeze'],[24,'Semana cuatro','Stop.?Start'],[26,'Semana cuatro','técnica combinada']
     ];
     for(const [day,needle,topic] of sample){
       assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',day),true);
@@ -355,12 +355,11 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
       const voice=speaker.getAttribute('data-spm-speak');
       assert.match(voice,new RegExp(needle,'i'),'repetition explanation on day '+day);
       assert.match(voice,new RegExp(topic,'i'),'technique-specific voice on day '+day);
-      if([3,5,8,10,12,22,24].includes(day)){
-         assert.doesNotMatch(voice,/tres sesiones|sesión \d de tres|bocina/i,'avoid repeated weekly cadence and speaker instructions');
-         assert.ok(voice.length<260,'focused, concise entry audio');
-       }else{
-         assert.match(voice,/tres sesiones|sesión \d de tres/i);
-       }
+      if(day===1)assert.match(voice,/tres sesiones/i);
+      else {
+       assert.doesNotMatch(voice,/tres sesiones|sesión \d de tres|bocina/i,'avoid repeated weekly cadence and speaker instructions');
+       assert.ok(voice.length<550,'focused pre-activity instruction without redundant introductions');
+      }
       assert.equal(speaker.dataset.audioLabel,'Escuchar indicación');
     }
     const weeks=[1,8,15,22];
@@ -370,4 +369,24 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
     }
     assert.deepEqual(h.errors,[]);
   } finally {h.close()}
+});
+
+test('days 15/17/19 open pelvic-floor combined rather than obsolete EP modal; week four order is Squeeze, Start, Combined',async()=>{
+ const h=await harness('?programa=ejaculation&dia=15');
+ try{
+  const w=h.w,planned=[[15,'combined'],[17,'combined'],[19,'combined'],[22,'squeeze'],[24,'startstop'],[26,'combined']];
+  for(const [day,tech] of planned){
+   assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',day),true);await wait();
+   assert.equal(w.SPM_EJACULATORY_CONTROL.schedule[day].tech,tech);
+   await w.SPM_DAILY_PRACTICE.launch('main');
+   const selector={combined:'#spmCombinedV1',squeeze:'#spmSqueezeV1',startstop:'#spmStartStopV2'}[tech];
+   const modal=w.document.querySelector(selector);
+   assert.ok(modal&&!modal.hidden,day+' must open '+tech+' premium UI');
+   assert.equal(w.document.querySelector('#spmEcModal.on'),null,'obsolete EP modal not opened');
+   assert.match(modal.shadowRoot.querySelector('#stage img')?.getAttribute('src')||'',/combinada-intro|stop-squeeze|stop-start/);
+  }
+  assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',27),true);
+  assert.ok(w.document.querySelector('#spmCombinedV1').hidden,'combined UI closes on day change');
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });

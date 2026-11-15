@@ -31,7 +31,7 @@ test('approved five images are independent valid WebP assets and navigation is r
  assert.doesNotMatch(source,/data:image\/webp;base64/);
  const h=harness();try{
   assert.equal(h.host.hidden,true);
-  assert.deepEqual([...h.api.scheduledDays],[8,10,12,22]);
+  assert.deepEqual([...h.api.scheduledDays],[8,10,12,24]);
   assert.equal(h.api.open(8,{origin:'dailyPlan'}),true);
   assert.equal(h.host.hidden,false);
   assert.match(h.ui.querySelector('#stage img').src,/step-1\.webp$/);
@@ -84,8 +84,8 @@ test('no direct unauthorized save and no silent completion of a session without 
 test('four Start/Stop sessions retain all squeeze and combined slots in 28-day schedule',()=>{
  const m=legacy.match(/const SCHEDULE=(\{[^;]+\});/);assert.ok(m);
  const schedule=Function('return '+m[1])();
- assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='startstop').map(([day])=>Number(day)),[8,10,12,22]);
- assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([day])=>Number(day)),[1,3,5,24]);
+ assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='startstop').map(([day])=>Number(day)),[8,10,12,24]);
+ assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([day])=>Number(day)),[1,3,5,22]);
  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='combined').map(([day])=>Number(day)),[15,17,19,26]);
  assert.match(legacy,/SPM_STARTSTOP_V2/,'legacy entry routes to approved module');
 });
@@ -99,5 +99,21 @@ test('reversed week protects a completed historical Stop–Squeeze day-8 record'
   assert.match(h.ui.querySelector('#stage').textContent,/registro.*(conserv|anterior)/i);
   assert.equal(h.ui.querySelector('#saveBtn').disabled,true);
   assert.equal(h.events.saved.length,0);
+ }finally{h.close();}
+});
+
+test('week four Start–Stop day 24 reuses premium activity and captures difficulty and discomfort',async()=>{
+ const h=harness(24);
+ try{
+  assert.equal(h.api.open(24,{origin:'dailyPlan'}),true);await wait();
+  for(let i=0;i<3;i++)h.ui.querySelector('#next').click();
+  h.ui.querySelector('#timerBtn').click();h.ui.querySelector('#registerBtn').click();h.ui.querySelector('#next').click();
+  assert.ok(h.ui.querySelector('#difficulty')&&h.ui.querySelector('#discomfort')&&h.ui.querySelector('#progress'));
+  for(const [id,value] of [['feeling','similar'],['difficulty','intermedia'],['discomfort','ninguna'],['progress','todavia_no']])h.ui.querySelector('#'+id).value=value;
+  h.ui.querySelector('#saveBtn').click();await wait();
+  assert.equal(h.events.saved.length,1);assert.equal(h.events.saved[0].day,24);
+  assert.equal(h.events.saved[0].record.tech,'startstop');
+  assert.equal(h.events.saved[0].record.difficulty,'intermedia');
+  assert.equal(h.events.saved[0].record.discomfort,'ninguna');
  }finally{h.close();}
 });
