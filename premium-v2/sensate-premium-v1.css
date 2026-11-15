@@ -875,3 +875,26 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  .spm-artwork-5 .spm-art-panel{padding:2.2cqw 3cqw}
 }
 @media(prefers-reduced-motion:reduce){.spm-art-listen.playing .spm-art-speaker{animation:none}}
+
+
+/* Preserves the primary guided sequence and adds a separate, clearly labeled
+   escape to screen five for users who prefer to return to the activity later. */
+.spm-approved-skip{
+ position:absolute;z-index:8;top:87.15%;left:4.7%;width:47%;height:4.3%;
+ min-height:0;border:1px solid #d3cab0;border-radius:99px;
+ background:rgba(6,47,58,.97);color:#fff0d6;
+ font-size:clamp(11px,2.75vw,16px);line-height:1.13;
+ font-weight:850;display:grid;place-items:center;padding:3px 7px;
+ cursor:pointer;
+}
+.spm-approved-skip:focus-visible{outline:3px solid #fce0a3;outline-offset:2px}
+.spm-art-prep-entry{cursor:pointer;display:grid;place-items:end center;padding:2.2cqw}
+.spm-art-prep-entry>span{
+ display:inline-grid;place-items:center;min-height:8cqw;
+ border-radius:99px;border:1px solid #ffe3af;
+ background:rgba(7,45,54,.91);color:#ffe1b2;
+ padding:0 5cqw;font-size:3.3cqw;font-weight:850;
+ text-shadow:0 1px 4px #001c25;
+ box-shadow:0 1cqw 4cqw #061a2377;
+}
+.spm-art-prep-entry:focus-visible{outline:3px solid #ffdc9b;outline-offset:2px}
