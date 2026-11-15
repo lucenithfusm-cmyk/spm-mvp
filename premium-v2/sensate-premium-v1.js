@@ -260,12 +260,13 @@ function focusIICloseScreen(){
  '<h3>Hoy noté</h3><div class="focusii-noted">'+noticed.map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" aria-pressed="'+data.focus2Noted.includes(v)+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'">'+v+'</button>').join('')+'</div></div>'+
  '<div class="focusii-clinical">'+
  chipField('comfort','Me sentí',[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']])+
+ chipField('discomfort','¿Molestia o dolor?',[['ninguna','No'],['molestia','Molestia'],['dolor','Dolor']])+'</div>'+
+ (data.discomfort==='dolor'?'<p class="warning">Evita el contacto que causó dolor. Si persiste o reaparece, busca valoración profesional.</p>':'')+
+ '<details class="more"><summary>Registro complementario (opcional)</summary>'+
  chipField('ease','La práctica fue',[['facil','Fácil'],['intermedia','Intermedia'],['dificil','Difícil']])+
  chipField('attention','Mi atención',[['conexion','Conecté'],['distraccion','Me distraje'],['ansiedad','Sentí ansiedad']])+
  chipField('repeat','Quiero repetir',[['si','Sí'],['aun_no','Aún no']])+
- chipField('discomfort','¿Molestia o dolor?',[['ninguna','No'],['molestia','Molestia'],['dolor','Dolor']])+'</div>'+
- (data.discomfort==='dolor'?'<p class="warning">Evita el contacto que causó dolor. Si persiste o reaparece, busca valoración profesional.</p>':'')+
- '<details class="more"><summary>Registro complementario (opcional)</summary><div class="two-ranges">'+range('presenceAfter','Presencia','Disperso','Presente')+range('pressureAfter','Presión','Baja','Alta')+range('enjoyment','Disfrute','Bajo','Alto')+(isPartner()?range('partnerComfort','Comodidad de tu pareja','Baja','Alta'):'')+'</div><textarea data-field="notes" maxlength="700" placeholder="Algo que quieras recordar…">'+safeText(data.notes)+'</textarea></details>'+
+ '<div class="two-ranges">'+range('presenceAfter','Presencia','Disperso','Presente')+range('pressureAfter','Presión','Baja','Alta')+range('enjoyment','Disfrute','Bajo','Alto')+(isPartner()?range('partnerComfort','Comodidad de tu pareja','Baja','Alta'):'')+'</div><textarea data-field="notes" maxlength="700" placeholder="Algo que quieras recordar…">'+safeText(data.notes)+'</textarea></details>'+
  '<p class="focusii-close-foot">Exploraste sensaciones. Eso ya forma parte de tu aprendizaje.</p></section>';
 }
 
@@ -351,16 +352,19 @@ async function save(){error='';notification='';if(saved){notification='Esta prá
 if(!canPractice()){error='Tu programa indica una pausa de seguridad. No es posible registrar esta práctica.';render();return}
 if(!performed){error='Primero confirma que realizaste la práctica guiada.';render();return}
 if(isPartner()&&!consent){error='Para una práctica en pareja, ambos deben haber aceptado participar.';render();return}
-const missing=['comfort','ease','attention','repeat','discomfort'].find(x=>!data[x]);
-if(missing){error='Selecciona cómo te sentiste, dificultad, atención, ganas de repetir y molestias.';render();return}
+const missing=(isFocusII()?['comfort','discomfort']:['comfort','ease','attention','repeat','discomfort']).find(x=>!data[x]);
+if(missing){error=isFocusII()?'Elige cómo te sentiste y si hubo molestias.':'Selecciona cómo te sentiste, dificultad, atención, ganas de repetir y molestias.';render();return}
+if(isFocusII()&&data.focus2Rating===null){error='Elige un valor de 0 a 4 para registrar tu bienestar.';render();return}
 if(isDaily){try{if(await api.isDailyCompleted?.()){saved=true;notification='Esta práctica ya está completada en tu programa. No se duplicó.';render();return;}}catch{error='No pude comprobar si la actividad estaba guardada. Reintenta sin modificar datos.';render();return;}}
 busy=true;render();
 try{
  const rows=readRecords(),day=Number(api.getContext().day),entry={
   id:entryId||(entryId=(window.crypto?.randomUUID?.()||'sensate-'+Date.now()+'-'+Math.floor(Math.random()*100000))),
   day,origin:isDaily?'dailyPlan':'library',practiceId:id,completed:true,savedAt:new Date().toISOString(),
-  presenceBefore:data.presenceBefore,presenceAfter:data.presenceAfter,pressureBefore:data.pressureBefore,pressureAfter:data.pressureAfter,
-  enjoyment:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,partnerComfort:isPartner()?data.partnerComfort:null,
+  presenceBefore:isFocusII()?null:data.presenceBefore,presenceAfter:isFocusII()&&!touched.has('presenceAfter')?null:data.presenceAfter,
+  pressureBefore:isFocusII()?null:data.pressureBefore,pressureAfter:isFocusII()&&!touched.has('pressureAfter')?null:data.pressureAfter,
+  enjoyment:isFocusII()&&!touched.has('enjoyment')?null:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,
+  partnerComfort:isPartner()?isFocusII()&&!touched.has('partnerComfort')?null:data.partnerComfort:null,
   usefulStimuli:data.usefulStimuli.slice(),recommendation:recommendation(),
   difficulty:data.ease,discomfort:data.discomfort,comfort:data.comfort,attention:data.attention,wantsRepeat:data.repeat,notes:data.notes.trim(),...(isFocusII()?{focus2Rating:data.focus2Rating,focus2Noted:data.focus2Noted.slice(),modality:selectedMode}: {})
  };
@@ -420,7 +424,7 @@ root.addEventListener('click',e=>{
  if(act==='save'){void save();return}
 });
 root.addEventListener('input',e=>{const el=e.target.closest('[data-field]');if(el)readValue(el)});
-root.addEventListener('change',e=>{const el=e.target.closest('[data-field]');if(el){readValue(el);if(el.type==='radio'){el.closest('fieldset')?.querySelectorAll('label').forEach(label=>label.classList.toggle('chosen',label.querySelector('input')?.checked===true));if(el.name==='discomfort'&&el.value==='dolor')notification='Detén el contacto que causa dolor y consulta si persiste.';}}});
+root.addEventListener('change',e=>{const el=e.target.closest('[data-field]');if(el){readValue(el);if(el.type==='radio'){el.closest('fieldset')?.querySelectorAll('label').forEach(label=>label.classList.toggle('chosen',label.querySelector('input')?.checked===true));if(el.name==='discomfort'&&el.value==='dolor'){notification='Detén el contacto que causa dolor y consulta si persiste.';if(isFocusII())render()};}}});
 if(isDaily){Promise.resolve().then(()=>api.isDailyCompleted?.()).then(v=>{if(v===true){saved=true;notification='Esta actividad ya está completada en tu programa. No se duplicará.';render();}}).catch(()=>{});}
 window.addEventListener('pagehide',()=>{stopAudio();stopClock()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)pauseGuide()});
