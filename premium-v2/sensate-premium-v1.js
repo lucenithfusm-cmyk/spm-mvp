@@ -344,7 +344,7 @@ function spmArtworkScreen(){
  const dayName=isNewFocusI()?'FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5':'FOCALIZACIÓN SENSORIAL';
  const currentCaption=second?'Tu práctica individual':'Cierre de tu práctica';
  const step=second?2:5;
- const url=second?photoPath(isPartner()?'partner':'seated'):photoPath('release');
+ const url=second?photoPath(isPartner()?'partner':'reflection'):photoPath('release');
  const footerBack='<button type="button" class="spm-art-nav-back" data-act="back">Anterior</button>';
  const footerAction=second?'<button type="button" class="spm-art-nav-next" data-act="next">Continuar →</button>':
   '<button type="button" class="spm-art-nav-next" data-act="'+(saved||!performed?'close':'save')+'" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':!performed?'Volver luego':busy?'Guardando…':'Guardar experiencia')+'</button>';
@@ -354,10 +354,11 @@ function spmArtworkScreen(){
   '<div class="spm-art-content spm-art-content-prep"><div class="spm-art-kicker">'+dayName+'</div>'+
   '<h1>'+(isPartner()?'Tu práctica en pareja':'Tu práctica individual')+'</h1>'+
   '<p>'+(isPartner()?'Elijan un momento cómodo y escuchen juntos las instrucciones de hoy.':'Encuentra un lugar cómodo y escucha las instrucciones de hoy.')+'</p>'+
-  '<button type="button" class="spm-art-photo spm-art-prep-entry" data-act="branch" data-value="'+(isPartner()?'partner':'individual')+'" style="background-image:url(&quot;'+url+'&quot;)" aria-label="Iniciar la práctica '+(isPartner()?'en pareja':'individual')+'"><span>▶ Iniciar mi práctica</span></button>'+listen+read+'</div>':
+  listen+read+
+  '<button type="button" class="spm-art-photo spm-art-prep-entry" data-act="branch" data-value="'+(isPartner()?'partner':'individual')+'" style="background-image:url(&quot;'+url+'&quot;)" aria-label="Iniciar la práctica '+(isPartner()?'en pareja':'individual')+'"><span>▶ Iniciar mi práctica</span></button></div>':
   '<div class="spm-art-content spm-art-content-close"><div class="spm-art-kicker">'+dayName+'</div>'+
-  '<h1>Cierre de tu práctica</h1><p>Reconoce lo que sentiste, sin exigencias.</p>'+
-  '<div class="spm-art-photo" style="background-image:url(&quot;'+url+'&quot;)" role="img" aria-label="Cierre tranquilo de la práctica"></div>'+listen+read+
+  '<h1>Cierre de tu práctica</h1><p>Reconoce lo que sentiste, sin exigencias.</p>'+listen+read+
+  '<div class="spm-art-photo" style="background-image:url(&quot;'+url+'&quot;)" role="img" aria-label="Cierre tranquilo de la práctica"></div>'+
   '<h2>¿Cómo estuvo tu bienestar?</h2><div class="spm-art-rating" role="group" aria-label="Bienestar de 0 a 4">'+
    [['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']].map(([n,label])=>'<button type="button" data-act="focus2rating" data-value="'+n+'" class="'+(data.focus2Rating===Number(n)?'chosen':'')+'" aria-pressed="'+(data.focus2Rating===Number(n))+'"><b>'+n+'</b><small>'+label+'</small></button>').join('')+
   '</div><h2>Hoy noté</h2><div class="spm-art-chips">'+['Más calma','Más conexión','Menos presión'].map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'" aria-pressed="'+data.focus2Noted.includes(v)+'">'+v+'</button>').join('')+'</div>'+

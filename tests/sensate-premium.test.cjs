@@ -443,6 +443,7 @@ test('Focus I first session has tactile screen 2, image-based screen 5 and free 
   assert.ok(h.page.querySelector('.spm-approved-intro'),'approved screen one remains untouched');
   h.click('next');
   assert.ok(h.page.querySelector('.spm-artwork-2'),'second screen has its own canvas');
+  assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-reflective-moment-v2\.webp/,'restore previous approved preparation photo');
   assert.ok(h.page.querySelector('.spm-art-prep-entry[data-act=branch][data-value=individual]'),'photo enters session');
   assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
   h.click('next');
@@ -456,7 +457,7 @@ test('Focus I first session has tactile screen 2, image-based screen 5 and free 
   assert.match(skip.getAttribute('aria-label'),/sin marcarla como realizada/);
   h.click('approvedadvance');h.click('approvedadvance');
   assert.equal(h.page.querySelector('.spm-approved-phase-photo'),null,'la práctica no muestra fotografías recicladas');
-  assert.match(h.page.querySelector('.spm-approved-practice').getAttribute('style'),/spm-approved-focus-screen-atlas\\.avif/);
+  assert.match(h.page.querySelector('.spm-approved-practice').getAttribute('style'),/spm-approved-focus-screen-atlas\.avif/);
   assert.ok(h.page.querySelector('.spm-approved-phase-title'),'el título del paso se actualiza sobre el arte aprobado');
   h.click('skipguide');
   assert.ok(h.page.querySelector('.spm-artwork-5'),'fifth screen has its own visual canvas');
@@ -504,7 +505,7 @@ test('Focus I uses approved top header, higher skip, and only own practice photo
  assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
  assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:20\.2%/);
  assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:19\.9%/);
- assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'seated'\):photoPath\('release'\)/);
+ assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):photoPath\('release'\)/);
  const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
  assert.ok(seq);
  assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
