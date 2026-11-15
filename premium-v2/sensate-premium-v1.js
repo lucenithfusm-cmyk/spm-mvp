@@ -276,9 +276,10 @@ function wave(active=false){
 }
 function focusIIExplainScreen(){
  const mode=isPartner()?'En pareja':'Individual';
+ const focus1=isNewFocusI(),phaseTitle=focus1?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
  return '<section class="card focusii-explain" aria-label="Focus II · explicación '+mode+'">'+
- '<p class="eyebrow">SENSATE FOCUS II · '+mode.toUpperCase()+' · 3 / 5</p>'+
- '<h2>Explora nuevas sensaciones</h2><p>Escucha y descubre cada paso antes de comenzar.</p>'+
+ '<p class="eyebrow">'+phaseTitle+' · '+mode.toUpperCase()+' · 3 / 5</p>'+
+ '<h2>'+(focus1?safeText(FOCUSI_TITLES[id]):'Explora nuevas sensaciones')+'</h2><p>Escucha cada paso antes de comenzar.</p>'+
  '<div class="focusii-visual">'+scene(isPartner()?'partner':'forearm','focusii-cover')+'</div>'+
  '<h3 class="focusii-heading">Tu práctica guiada</h3>'+
  '<div class="focusii-step-list">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar paso '+(i+1)+': '+safeText(labelForPhase(i))+'"><span class="number">'+(i+1)+'</span><span>'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">🔊</span></button>').join('')+'</div>'+
@@ -288,10 +289,11 @@ function focusIIExplainScreen(){
 }
 function focusIIPracticeScreen(){
  const current=PHASES[id][phase];
+ const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
  const status=guideDone?'Puedes registrar tu experiencia.':running?'Escucha, explora y avanza cuando lo desees.':guideStarted?'Pausada. Reanuda cuando quieras.':'Escucha cada paso y practica sin prisa.';
  const imageKey=isPartner()?(phase===0?'seated':'partner'):(phase===2?'forearm':phase===3?'release':'seated');
  return '<section class="card focusii-practice" aria-label="Focus II práctica '+modeTitle()+'">'+
- '<p class="eyebrow">SENSATE FOCUS II · '+modeTitle().toUpperCase()+' · 4 / 5</p>'+
+ '<p class="eyebrow">'+phaseTitle+' · '+modeTitle().toUpperCase()+' · 4 / 5</p>'+
  '<h2>Ahora, ponlo en práctica</h2>'+
  '<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>'+
  '<div class="focusii-phase-nav" aria-label="Fases de la práctica">'+PHASES[id].map((stepData,i)=>'<button type="button" data-act="phase" data-value="'+i+'" '+(!guideStarted?'disabled':'')+' class="'+(phase===i?'current':i<phase?'complete':'')+'" aria-label="Ir al paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+(i+1)+'</button>').join('')+'</div>'+
@@ -310,9 +312,10 @@ function focusIIPracticeScreen(){
  '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras. No hay una respuesta obligatoria.</p></section>';
 }
 function focusIICloseScreen(){
+ const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
  const choices=[['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']];
  const noticed=['Más calma','Más conexión','Menos presión'];
- return '<section class="card focusii-close"><p class="eyebrow">SENSATE FOCUS II · 5 / 5</p>'+
+ return '<section class="card focusii-close"><p class="eyebrow">'+phaseTitle+' · 5 / 5</p>'+
  '<h2>Cierre de tu práctica</h2><p>Registra cómo te sentiste, sin convertirlo en una evaluación de rendimiento.</p>'+
  '<div class="focusii-register"><h3>¿Cómo estuvo tu bienestar?</h3><div class="focusii-rating" role="group" aria-label="Califica tu bienestar de cero a cuatro">'+choices.map(([v,label])=>'<button type="button" data-act="focus2rating" data-value="'+v+'" aria-pressed="'+(data.focus2Rating===Number(v))+'" class="'+(data.focus2Rating===Number(v)?'chosen':'')+'"><b>'+v+'</b><small>'+label+'</small></button>').join('')+'</div>'+
  '<h3>Hoy noté</h3><div class="focusii-noted">'+noticed.map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" aria-pressed="'+data.focus2Noted.includes(v)+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'">'+v+'</button>').join('')+'</div></div>'+
@@ -329,7 +332,7 @@ function focusIICloseScreen(){
 }
 
 function explainScreen(){
- if(isFocusII())return focusIIExplainScreen();
+ if(isModernFocus())return focusIIExplainScreen();
  const explanation=isPartner()?'En pareja · Focus '+(isFocusII()?'II':'I'):(isFocusII()?'Individual · Focus II':'Individual');
  return '<section class="card sensate-explain" aria-label="Práctica explicativa '+explanation+'">'+
  '<span class="eyebrow">SPM · '+explanation.toUpperCase()+' · 3 / 5</span><h2>Práctica guiada</h2>'+
@@ -345,7 +348,7 @@ function explainScreen(){
  '<p class="compact-footnote">Las ilustraciones acompañan la explicación. En la siguiente pantalla realizarás la práctica con audio y pausas.</p></section>';
 }
 function practiceScreen(){
- if(isFocusII())return focusIIPracticeScreen();
+ if(isModernFocus())return focusIIPracticeScreen();
  const p=PHASES[id][phase],timeLeft=guideDone?0:Math.max(0,60-phaseElapsed);
  const state=guideDone?'Los cinco pasos terminaron. Puedes evaluar lo que sentiste.':running?'Práctica activa. El silencio entre indicaciones es para explorar a tu ritmo.':guideStarted?'Práctica pausada. Puedes reanudar en cualquier momento.':'Al iniciar escucharás el paso 1. Cada acción dura aproximadamente un minuto y la siguiente comenzará con audio.';
  return '<section class="card sensate-practice" aria-label="Práctica en curso '+modeTitle()+'">'+
@@ -369,7 +372,7 @@ function practiceScreen(){
  '<p class="compact-footnote">El reloj es un apoyo, no una prueba. No tienes que continuar si algo resulta incómodo.</p></section>';
 }
 function chipField(name,title,options){return '<fieldset class="chips"><legend>'+title+'</legend>'+options.map(x=>'<label class="'+(data[name]===x[0]?'chosen':'')+'"><input type="radio" name="'+name+'" data-field="'+name+'" value="'+x[0]+'" '+(data[name]===x[0]?'checked':'')+'><span>'+x[1]+'</span></label>').join('')+'</fieldset>'}
-function closeScreen(){if(isFocusII())return focusIICloseScreen();return '<section class="card"><h2>¿Cómo te fue?</h2><p>Registra tu experiencia sin exigirte resultados perfectos.</p>'+
+function closeScreen(){if(isModernFocus())return focusIICloseScreen();return '<section class="card"><h2>¿Cómo te fue?</h2><p>Registra tu experiencia sin exigirte resultados perfectos.</p>'+
   chipField('comfort','Me sentí',[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']])+
   chipField('ease','La práctica fue',[['facil','Fácil'],['intermedia','Intermedia'],['dificil','Difícil']])+
   chipField('attention','Noté',[['conexion','Conexión'],['distraccion','Distracción'],['ansiedad','Ansiedad']])+
