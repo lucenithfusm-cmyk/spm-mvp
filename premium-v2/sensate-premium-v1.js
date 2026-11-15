@@ -156,9 +156,9 @@ function speech(text,done,control){
  catch{voiceActive=false;notification='No pude iniciar el audio; abre «Leer instrucciones».';return false}
 }
 function modeTitle(){return selectedMode==='partner'?'En pareja':'Individual'}
-function explanatoryText(i=explainPhase){const p=PHASES[id][i];return 'Paso '+(i+1)+' de cinco. '+p[0]+'. '+p[1]}
+function explanatoryText(i=explainPhase){const p=PHASES[id][i];return p[0]+'. '+p[1]}
 function autoGuideIntro(){if(isNewFocusI())return 'Esta sesión de Focalización I tiene cinco acciones guiadas. Escucha cada indicación y practica a tu ritmo. El reloj es un apoyo opcional: tú decides cuándo pasar al siguiente paso. Puedes pausar, repetir la instrucción o terminar cuando quieras. Los silencios te permiten sentir, no son errores del audio.';if(isFocusII())return 'Vas a realizar Focus II en modalidad '+(isPartner()?'en pareja':'individual')+'. Son cinco momentos guiados. Escucha cada indicación, practica sin prisa y pulsa Siguiente paso cuando quieras avanzar. El cronómetro es opcional, no marca un tiempo obligatorio. Puedes pausar, escuchar de nuevo o terminar en cualquier momento. El silencio permite sentir, no es un fallo del audio.';return 'Vas a realizar una práctica '+(isPartner()?'en pareja':'individual')+' de cinco acciones. Cada paso tendrá una instrucción hablada y aproximadamente un minuto para practicar en silencio. El silencio forma parte de la guía: no significa que el programa se haya pausado ni terminado. Después escucharás automáticamente el paso siguiente. Puedes pausar, repetir o adelantar cuando lo necesites.'}
-function stepAudio(){return 'Paso '+(phase+1)+' de cinco. '+PHASES[id][phase][0]+'. '+PHASES[id][phase][1]}
+function stepAudio(){return PHASES[id][phase][0]+'. '+PHASES[id][phase][1]}
 function explainStep(i){stopAudio();explainPhase=i;notification='';render();speech(explanatoryText(i),null,'[data-act="explainstep"][data-value="'+i+'"]')}
 function explainAll(){stopAudio();explainingAll=true;let pos=0;function speakNext(){if(!explainingAll||screen!==2)return;if(pos>=5){explainingAll=false;render();return}explainPhase=pos;render();const current=pos++;if(!speech(explanatoryText(current),speakNext,'[data-act="explainstep"][data-value="'+current+'"]')){explainingAll=false;notification='Puedes consultar cada paso en «Leer el paso seleccionado».';render()}}speakNext()}
 function guideTick(){
@@ -250,7 +250,7 @@ function introScreen(){
  const heading=focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
  const lead=focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
  return '<section class="card intro-card'+(focus2?' focusii-welcome':'')+'"><p class="eyebrow">SPM · FOCALIZACIÓN SENSORIAL</p><h2>'+heading+'</h2><p>'+lead+'</p>'+
- (focus2||focus1&&isPartner()?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
+ (focus2||focus1&&isPartner()?scene('partner','intro-visual'):scene('intro','intro-visual'))+audioControls()+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
 }
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function focusIPrepScreen(){
@@ -260,20 +260,20 @@ function focusIPrepScreen(){
  const copy=solo?'Encuentra un lugar cómodo y escucha las instrucciones de hoy.':'Elijan un momento de conexión. La práctica puede hacerse en su próximo encuentro, cuando ambos quieran.';
  return '<section class="card prep-card focusi-preparation"><p class="eyebrow">FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5</p>'+
  '<h2>Tu práctica '+label.toLowerCase()+'</h2><p>'+copy+'</p>'+
- scene(photo,'focusi-modal-photo')+
+ scene(photo,'focusi-modal-photo')+audioControls()+
  '<button type="button" data-act="branch" data-value="'+(solo?'individual':'partner')+'" class="gold full focusi-start">▶ Iniciar mi práctica</button>'+
- '<details class="more"><summary>Leer preparación</summary><p>'+safeText(FOCUSI_PREP)+'</p></details></section>';
+ '</section>';
 }
 function prepScreen(){
  if(isNewFocusI())return focusIPrepScreen();
  return '<section class="card prep-card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Focalización'):'PREPARA TU PRÁCTICA')+'</p>'+
- '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+scene('seated','prep-visual')+
+ '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+scene('seated','prep-visual')+audioControls()+
  '<h3 class="mode-heading">¿Cómo realizarás la práctica?</h3>'+
  '<div class="mode-branch" role="group" aria-label="Elige práctica individual o en pareja">'+
  '<button type="button" data-act="branch" data-value="individual" class="mode-photo" aria-label="Elegir práctica individual"><img src="'+PREFIX+SCENES.seated+'" alt="Hombre sentado relajado"><span>Individual</span></button>'+
  '<button type="button" data-act="branch" data-value="partner" class="mode-photo" aria-label="Elegir práctica en pareja"><img src="'+PREFIX+SCENES.partner+'" alt="Pareja adulta compartiendo un contacto cómodo"><span>En pareja</span></button></div>'+
  '<p class="notice">'+(isFocusII()?'En pareja, ambos deciden participar y cualquiera puede pedir una pausa.':'En pareja: la participación de ambos debe ser voluntaria y cualquiera puede pedir una pausa o terminar en cualquier momento. No necesitas marcar otra casilla.')+'</p>'+
- (isFocusII()?'<details class="more"><summary>Leer indicaciones de preparación</summary><p>'+safeText(PREP_FOCUSII)+'</p></details>':'<details class="more"><summary>Mis indicaciones de preparación</summary><div class="two-ranges">'+range('presenceBefore','Presencia antes de empezar','Disperso','Presente')+range('pressureBefore','Presión antes de empezar','Baja','Alta')+'</div></details>')+'</section>';
+ (isFocusII()?'':'<details class="more"><summary>Mis indicaciones de preparación</summary><div class="two-ranges">'+range('presenceBefore','Presencia antes de empezar','Disperso','Presente')+range('pressureBefore','Presión antes de empezar','Baja','Alta')+'</div></details>')+'</section>';
 }
 const GUIDE_LABELS={
  'sf-solo':['Acomódate','Respira','Explora','Percibe','Cierra'],
@@ -416,7 +416,7 @@ function render(){
  '<div class="header-actions"><button type="button" data-act="library" class="subtle" title="Biblioteca">Biblioteca</button><button type="button" data-act="close" class="close" aria-label="Cerrar">×</button></div></header>'+progress()+
  '<main><p class="meta">'+(isDaily?'DÍA '+originalDay+' / 28 · ':'BIBLIOTECA · ')+title+'</p>'+
 
- (screen===0?introScreen():screen===1?prepScreen():screen===2?explainScreen():screen===3?practiceScreen():closeScreen())+audioControls()+
+ (screen===0?introScreen():screen===1?prepScreen():screen===2?explainScreen():screen===3?practiceScreen():closeScreen())+(screen===4?audioControls():'')+
  (error?'<p class="warning" role="alert">'+safeText(error)+'</p>':'')+
  (notification?'<p class="notify" role="status">'+safeText(notification)+'</p>':'')+
  '</main>'+footer()+'</div>';
