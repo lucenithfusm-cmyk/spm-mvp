@@ -60,6 +60,24 @@ test('day-19 manual Focus II review button opens the same session and preserves 
  }finally{h.close()}
 });
 
+test('all five Focus I sessions can be opened directly from review links with active patient-style screens',async()=>{
+ const sessions=[[4,'sf-i-1'],[8,'sf-i-2'],[12,'sf-i-3'],[23,'sf-i-4'],[26,'sf-i-5']];
+ for(const [day,id] of sessions){
+  const h=await harness('?programa=desire&dia='+day+'&abrir=focalizacion');
+  try{
+   const w=h.w;
+   await new Promise(resolve=>setTimeout(resolve,240));
+   const modal=w.document.querySelector('.spm-sensate-modal[open]');
+   assert.ok(modal,'Focus I should auto-open on day '+day);
+   assert.equal(w.SPM_SENSATE_LAB_HOST.getContext().day,day);
+   assert.equal(w.SPM_SENSATE_LAB_HOST.getContext().activity.practiceId,id);
+   assert.match(w.document.querySelector('#reviewOpenFocusII').textContent,/Focus I/);
+   assert.equal(w.SPM_RESOURCE_CONTEXT().userId,'review-only');
+   assert.deepEqual(h.errors,[]);
+  }finally{h.close()}
+ }
+});
+
 test('all six domains offer five voluntary Focus I practices, one direct Focus II and the independent day-16 video',async()=>{
  const focusI=new Map([[4,'sf-i-1'],[8,'sf-i-2'],[12,'sf-i-3'],[23,'sf-i-4'],[26,'sf-i-5']]);
  const h=await harness('?programa=desire&dia=16');

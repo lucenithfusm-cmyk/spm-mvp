@@ -16,8 +16,9 @@ const validDay=value=>/^(?:[1-9]|1\d|2[0-8])$/.test(String(value));
 const params=new URLSearchParams(location.search);
 let program=validProgram(params.get('programa'))?params.get('programa'):'desire';
 let day=validDay(params.get('dia'))?Number(params.get('dia')):1;
-// Direct day-19 review links should open the actual Focus II screens, not stop at the daily overview.
-const initialFocusII=day===19&&['desire','erection','ejaculation'].includes(program)&&params.has('programa');
+// Open Focus II directly on day 19, and Focus I when a session-specific review link requests it.
+const focalDays=new Set([4,8,12,19,23,26]);
+const initialFocusII=params.has('programa')&&focalDays.has(day)&&(day===19||params.get('abrir')==='focalizacion');
 let focusing=false;
 let busy=true,ready=false;
 const states=new Map();
@@ -49,24 +50,27 @@ function focusIIControls(){
  const box=$('reviewFocusII'),btn=$('reviewOpenFocusII');
  if(!box||!btn)return;
  const selected=window.SPM_DAILY_SUPPORT?.activity('sensate',day,context());
- const available=day===19&&selected?.practiceId==='sf-focus-2';
+ const available=!!selected&&(selected.practiceId==='sf-focus-2'||/^sf-i-[1-5]$/.test(selected.practiceId));
  box.hidden=!available;
  btn.disabled=!available||busy||!ready||focusing;
  const heading=box.querySelector('strong');
- if(heading&&available)heading.textContent=(program==='desire'?'Sensate Focus II':'Focalización Sensorial II')+' · Día 19';
+ if(heading&&available)heading.textContent=selected.title+' · Día '+day;
+ if(available)btn.textContent=selected.practiceId==='sf-focus-2'?'▶ Abrir Focus II':'▶ Abrir Focus I';
+ const explanation=box.querySelector('p');
+ if(available&&explanation)explanation.textContent=selected.practiceId==='sf-focus-2'?'Recorre cinco pantallas y elige la modalidad individual o en pareja.':'Recorre las cinco pantallas de la actividad asignada, con audio y práctica a tu ritmo.';
 }
 async function openFocusII(){
- if(busy||!ready||focusing||day!==19)return false;
+ if(busy||!ready||focusing||!focalDays.has(day))return false;
  const activity=window.SPM_DAILY_SUPPORT?.activity('sensate',day,context());
- if(activity?.practiceId!=='sf-focus-2'||!window.SPM_SENSATE_LAB?.open){status('No pudimos encontrar Focus II para este perfil de revisión.',true);return false;}
+ if(!activity||!(activity.practiceId==='sf-focus-2'||/^sf-i-[1-5]$/.test(activity.practiceId))||!window.SPM_SENSATE_LAB?.open){status('No pudimos encontrar la práctica de focalización asignada a este día.',true);return false;}
  focusing=true;focusIIControls();
  try{
-  const opened=await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day:19});
-  if(opened!==true){status('No pudimos abrir Focus II. Pulsa «Abrir Focus II» para reintentar.',true);return false;}
-  status('Focus II · Día 19 · Abre la bocina y recorre sus cinco pantallas.');
+  const opened=await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day});
+  if(opened!==true){status('No pudimos abrir la focalización de hoy. Usa el botón para reintentar.',true);return false;}
+  status(activity.title+' · Día '+day+' · Escucha y recorre sus cinco pantallas.');
   return true;
  }catch{
-  status('No pudimos abrir Focus II. Usa el botón para reintentar.',true);
+  status('No pudimos abrir la práctica de focalización. Usa el botón para reintentar.',true);
   return false;
  }finally{focusing=false;focusIIControls();}
 }

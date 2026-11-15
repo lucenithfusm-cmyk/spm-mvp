@@ -18,6 +18,9 @@ on:
       - 'premium-v2/sensate-premium-v1.js'
       - 'premium-v2/sensate-lab-bridge-v1.js'
       - 'tests/sensate-premium.test.cjs'
+      - 'tests/program-review.test.cjs'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/revision-programas-28-dias.html'
 jobs:
   premium-sensate:
     runs-on: ubuntu-latest
