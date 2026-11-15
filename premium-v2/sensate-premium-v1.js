@@ -14,24 +14,20 @@ const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hom
 // The other sessions deliberately use assets actually included with the repository,
 // never missing image URLs. Controls above the photography remain interactive.
 const FOCUSI_PHOTO_STEPS={'sf-i-1':'focus-i-day-1-steps.webp'};
+// Use adult, calm, photographed environments only; no generic UI screenshots,
+// distress scenes or sexual-performance advertising from unrelated modules.
 const EXTRA_PHOTOS={
- reflection:'../assets/commercial-cinema/spm-reflective-moment-v2.webp',
  connection:'../assets/commercial-cinema/spm-connection-men-v1.webp',
- beginning:'../assets/commercial-cinema/spm-new-beginning-v1.webp',
- confident:'../assets/commercial-cinema/spm-confident-moment-v3.webp',
- breath:'../assets/commercial-cinema/breathing-guided.jpg',
- calm:'../assets/commercial-cinema/mental-performance-dark.jpg',
- comfort:'../assets/commercial-cinema/spm-your-pace-es-v1.webp',
- reflect:'../assets/commercial-cinema/day-11-recovery.jpg'
+ beginning:'../assets/commercial-cinema/spm-new-beginning-v1.webp'
 };
 const STEP_PHOTOS={
- 'sf-i-1':['seated','forearm','intro','release','reflection'],
- 'sf-i-2':['forearm','seated','breath','release','reflection'],
- 'sf-i-3':['partner','connection','confident','beginning','reflection'],
- 'sf-i-4':['reflection','connection','calm','partner','beginning'],
- 'sf-i-5':['beginning','partner','breath','connection','confident'],
+ 'sf-i-1':['seated','forearm','intro','release','beginning'],
+ 'sf-i-2':['forearm','seated','release','intro','beginning'],
+ 'sf-i-3':['partner','connection','forearm','intro','beginning'],
+ 'sf-i-4':['seated','partner','connection','forearm','beginning'],
+ 'sf-i-5':['seated','partner','connection','release','beginning'],
  'sf-focus-2':['partner','connection','forearm','release','beginning'],
- 'sf-focus-2-solo':['seated','forearm','reflection','breath','release']
+ 'sf-focus-2-solo':['seated','forearm','intro','release','beginning']
 };
 function photoPath(key){return EXTRA_PHOTOS[key]||PREFIX+(SCENES[key]||SCENES.intro)}
 function stagePhoto(i){
@@ -289,7 +285,7 @@ function introScreen(){
  const heading=focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
  const lead=focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
  return '<section class="card intro-card'+(focus2?' focusii-welcome':'')+'"><p class="eyebrow">SPM · FOCALIZACIÓN SENSORIAL</p><h2>'+heading+'</h2><p>'+lead+'</p>'+
- (focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+audioControls()+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
+ audioControls()+(focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
 }
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function focusIPrepScreen(){
@@ -299,14 +295,14 @@ function focusIPrepScreen(){
  const copy=solo?'Encuentra un lugar cómodo y escucha las instrucciones de hoy.':'Elijan un momento de conexión. La práctica puede hacerse en su próximo encuentro, cuando ambos quieran.';
  return '<section class="card prep-card focusi-preparation"><p class="eyebrow">FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5</p>'+
  '<h2>Tu práctica '+label.toLowerCase()+'</h2><p>'+copy+'</p>'+
- sessionScene(photo,'focusi-modal-photo')+audioControls()+
+ audioControls()+sessionScene(photo,'focusi-modal-photo')+
  '<button type="button" data-act="branch" data-value="'+(solo?'individual':'partner')+'" class="gold full focusi-start">▶ Iniciar mi práctica</button>'+
  '</section>';
 }
 function prepScreen(){
  if(isNewFocusI())return focusIPrepScreen();
  return '<section class="card prep-card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Focalización'):'PREPARA TU PRÁCTICA')+'</p>'+
- '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+scene('seated','prep-visual')+audioControls()+
+ '<h2>Prepárate</h2><p>'+(isFocusII()?'Un espacio tranquilo. Sin prisas. Tú eliges cómo explorar.':'Busca un lugar tranquilo, evita interrupciones y adopta una postura cómoda.')+'</p>'+audioControls()+scene('seated','prep-visual')+
  '<h3 class="mode-heading">¿Cómo realizarás la práctica?</h3>'+
  '<div class="mode-branch" role="group" aria-label="Elige práctica individual o en pareja">'+
  '<button type="button" data-act="branch" data-value="individual" class="mode-photo" aria-label="Elegir práctica individual"><img src="'+PREFIX+SCENES.seated+'" alt="Hombre sentado relajado"><span>Individual</span></button>'+
