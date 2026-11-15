@@ -187,6 +187,51 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
  }
 });
 
+test('Focus I has exactly five distinct interactive sessions, two individual and three in pareja',async()=>{
+ const cases=[
+  [4,'sf-i-1','individual','Reconoce tu cuerpo','Siente el apoyo'],
+  [8,'sf-i-2','individual','Descubre sensaciones','Contrasta texturas'],
+  [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
+  [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
+  [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio']
+ ];
+ const signatures=new Set();
+ for(const [day,practiceId,mode,title,firstStep] of cases){
+  const h=harness({day,practiceId,profile:'desire',restriction:'review'});
+  try{
+   assert.ok(h.page.querySelector('.sf-matte'));
+   assert.match(h.page.textContent,new RegExp(title));
+   h.click('audio');
+   assert.match(h.spoken.at(-1),/Hoy|Bienvenido/i);
+   signatures.add(h.spoken.at(-1));
+   h.click('next');
+   assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
+   assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
+   h.click('next');
+   assert.match(h.page.textContent,/3 \/ 5/);
+   assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+   assert.match(h.page.textContent,new RegExp(firstStep));
+   h.click('next');h.click('startguide');
+   assert.match(h.spoken.at(-1),/Paso 1 de cinco/);
+   h.tick(150);
+   assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
+   h.click('performed');h.click('next');
+   assert.match(h.page.textContent,/5 \/ 5/);
+   // It is the patient's choice to add reflections; no scale or alert blocks learning.
+   h.click('save');await pause();
+   assert.equal(h.writes.length,1);
+   const record=JSON.parse(h.records['spm-sensate-records'])[0];
+   assert.equal(record.day,day);
+   assert.equal(record.practiceId,practiceId);
+   assert.equal(record.completed,true);
+   assert.equal(record.wellbeingRating,null);
+   assert.equal(record.pressureAfter,null);
+   assert.equal(record.modality,mode);
+  }finally{h.close()}
+ }
+ assert.equal(signatures.size,5,'each day offers a different welcome audio');
+});
+
 test('day 19 has one direct Focus II practice without a prior Focus I record or an approval gate',()=>{
  for(const mode of ['individual','partner']){
   const h=harness({day:19,practiceId:'sf-focus-2',saved:[]});
