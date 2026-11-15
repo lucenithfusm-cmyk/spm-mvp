@@ -25,9 +25,13 @@ function safety(c){
 }
 const educational=new Set(['baseline','context','checklist','review','progress','reassessment','script','planner','priorities','reframe','ifthen']);
 function restricted(c,id){
- const level=safety(c);if(level==='unavailable'||level==='urgent')return true;
+ if(!c)return true;
  if(!id)return false;
  const a=typeof id==='string'?assignments(c).find(x=>x.id===id):id;if(!a)return true;
+ // Focus I and II are voluntary educational practices, not gated clinical interventions.
+ // This does not suppress SPM's independent global assessment and medical notices.
+ if(a.kind==='sensate')return false;
+ const level=safety(c);if(level==='unavailable'||level==='urgent')return true;
  if(a.kind==='wellness'&&a.tip.category==='movement'&&window.SPM_RESOURCES?.restricted?.(c)!==false)return true;
  if(window.SPM_PROGRAM_RECOVERY?.blocks(c,a))return true;
  if(level==='none')return false;
