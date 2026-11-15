@@ -455,9 +455,9 @@ test('Focus I first session has tactile screen 2, image-based screen 5 and free 
   assert.match(skip.textContent,/Saltar actividad/);
   assert.match(skip.getAttribute('aria-label'),/sin marcarla como realizada/);
   h.click('approvedadvance');h.click('approvedadvance');
-  const phaseImage=h.page.querySelector('.spm-approved-phase-photo');
-  assert.ok(phaseImage,'second step has its own relevant photograph');
-  assert.match(phaseImage.getAttribute('style'),/spm-sensate-forearm-matte\.webp/);
+  assert.equal(h.page.querySelector('.spm-approved-phase-photo'),null,'la práctica no muestra fotografías recicladas');
+  assert.match(h.page.querySelector('.spm-approved-practice').getAttribute('style'),/spm-approved-focus-screen-atlas\\.avif/);
+  assert.ok(h.page.querySelector('.spm-approved-phase-title'),'el título del paso se actualiza sobre el arte aprobado');
   h.click('skipguide');
   assert.ok(h.page.querySelector('.spm-artwork-5'),'fifth screen has its own visual canvas');
   assert.ok(h.page.querySelector('[data-act=close].spm-art-nav-next'),'unfinished practice can be left for later');
@@ -502,10 +502,12 @@ test('Focus I uses approved top header, higher skip, and only own practice photo
  const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
  assert.match(css,/\.spm-approved-skip\{[\s\S]*?top:25\.55%/);
  assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
- assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:21\.3%/);
- assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:20\.35%/);
- assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):photoPath\('release'\)/);
+ assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:20\.2%/);
+ assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:19\.9%/);
+ assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'seated'\):photoPath\('release'\)/);
  const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
  assert.ok(seq);
  assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
+ assert.match(css,/\.spm-artwork-screen\{min-height:100dvh\}/);
+ assert.doesNotMatch(ui,/if\(phase>0\)overlays\+='\<div class="spm-approved-phase-photo"/);
 });

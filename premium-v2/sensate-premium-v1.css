@@ -922,25 +922,37 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  .spm-artwork-5 .spm-art-content-close{gap:.4cqw}
 }
 
-/* Framing of the already-approved 2/5 and 5/5 visual compositions;
-   the zen-stones/brand header from the unchanged approved atlas stays visible. */
-.spm-artwork-2 .spm-art-panel{
- top:21.3%;bottom:10.75%;padding:2.7cqw 3cqw;
+/* Sesión 1 · 2/5 y 5/5: encuadre premium de imágenes ya existentes.
+   Recupera la cabecera del atlas aprobado de la pantalla 1; no reemplaza arte. */
+.spm-artwork-screen{min-height:100dvh}
+.spm-artwork-screen::before{
+ height:20.6%;
+ background-size:100% auto;
+ background-position:left top;
 }
-.spm-artwork-2 .spm-art-content-prep{gap:1.05cqw}
+.spm-artwork-screen .spm-art-progress{top:17.75%;height:.55cqw}
+.spm-artwork-screen .spm-art-meta{top:18.65%;font-size:clamp(10px,2.25cqw,14px)}
+.spm-artwork-2 .spm-art-panel{
+ top:20.2%;bottom:10.25%;padding:2.2cqw 2.8cqw;
+}
+.spm-artwork-2 .spm-art-content-prep{gap:.8cqw}
 .spm-artwork-2 .spm-art-content-prep .spm-art-photo{
- margin-top:.4cqw;min-height:34cqw;background-position:center 35%;
+ flex:1 1 auto;min-height:50cqw;max-height:none;margin-top:0;
+ background-size:cover;background-position:center 28%;
 }
 .spm-artwork-5 .spm-art-panel{
- top:20.35%;bottom:10.7%;padding:2.15cqw 2.9cqw;
+ top:19.9%;bottom:10.25%;padding:1.8cqw 2.5cqw;
 }
-.spm-artwork-5 .spm-art-content-close{gap:.42cqw}
+.spm-artwork-5 .spm-art-content-close{gap:.28cqw}
 .spm-artwork-5 .spm-art-content-close .spm-art-photo{
- min-height:16cqw;max-height:32cqw;margin-top:.1cqw;
- background-position:center 43%;
+ flex:1 1 auto;min-height:22cqw;max-height:none;margin-top:0;
+ background-size:cover;background-position:center 34%;
 }
+.spm-artwork-5 .spm-art-content-close h2{margin:.7cqw 0 .25cqw}
 @media(max-width:390px){
- .spm-artwork-2 .spm-art-panel{padding:2.4cqw 2.7cqw}
- .spm-artwork-5 .spm-art-panel{padding:1.95cqw 2.5cqw}
+ .spm-artwork-2 .spm-art-panel{padding:2cqw 2.5cqw}
+ .spm-artwork-5 .spm-art-panel{padding:1.7cqw 2.2cqw}
+ .spm-artwork-5 .spm-art-content-close{gap:.2cqw}
+ .spm-artwork-5 .spm-art-content-close .spm-art-photo{min-height:18cqw}
  .spm-approved-skip{font-size:10px}
 }
