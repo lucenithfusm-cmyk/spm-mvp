@@ -322,9 +322,10 @@ function spmApprovedScreen(){
   if(guideStarted&&!guideDone)overlays+='<button type="button" class="spm-approved-pause" data-act="'+(running?'pauseguide':'resumeguide')+'">'+(running?'⏸ Pausar':'▶ Reanudar')+'</button>';
   overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">'+(!guideStarted?'Iniciar guía →':phase===4?'Terminar y evaluar →':'Siguiente paso →')+'</button>';
  }
+ const caption=screen===0?'Conecta con tus sensaciones · 1 / 5':screen===2?'Tu práctica guiada · 3 / 5 · '+PHASES[id].map(p=>p[0]).join(' · '):'Práctica en curso · 4 / 5 · Paso '+(phase+1)+' · '+PHASES[id][phase][0];
  const extra=(error?'<div class="spm-approved-feedback" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-approved-feedback" role="status">'+safeText(notification)+'</div>':'');
  return '<div class="layout sf-matte sensate-approved-layout">'+
-  '<div class="spm-approved-screen spm-approved-'+visual+'" role="group" aria-label="SPM Focalización sensorial, '+(screen+1)+' de 5" style="background-image:url(&quot;'+SPM_APPROVED_ATLAS+'&quot;);background-position:center '+atlasPosition+';">'+controls+overlays+'</div>'+
+  '<div class="spm-approved-screen spm-approved-'+visual+'" role="group" aria-label="SPM Focalización sensorial, '+(screen+1)+' de 5" style="background-image:url(&quot;'+SPM_APPROVED_ATLAS+'&quot;);background-position:center '+atlasPosition+';"><span class="spm-approved-sr">'+safeText(caption)+'</span>'+controls+overlays+'</div>'+
   extra+'<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
 }
 
