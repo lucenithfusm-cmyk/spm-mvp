@@ -172,7 +172,7 @@ function guideTick(){
 }
 function armGuideTimer(){if(timer)clearInterval(timer);timer=setInterval(guideTick,1000)}
 function startGuide(){
- if(!canPractice()){error='La práctica está en pausa por una indicación de seguridad.';render();return}
+ if(!canPractice()){error='Esta sesión pertenece a otro día del programa.';render();return}
  if(!selectedMode){error='Elige práctica individual o en pareja en la preparación.';render();return}
  if(guideDone){phase=0;phaseElapsed=0;t=0;guideDone=false;performed=false}
  running=true;guideStarted=true;halfwayNoted=false;error='';notification='';
@@ -185,7 +185,7 @@ function pauseGuide(){
 }
 function resumeGuide(){
  if(!guideStarted||guideDone){startGuide();return}
- if(!canPractice()){error='La práctica está en pausa por seguridad.';render();return}
+ if(!canPractice()){error='Esta sesión pertenece a otro día del programa.';render();return}
  running=true;error='';notification='';render();speech(stepAudio(),null,'[data-act=repeataudio]');armGuideTimer();
 }
 function advanceGuide(){
@@ -213,7 +213,7 @@ function resetType(next){
 }
 function selectBranch(branch){
  if(!['individual','partner'].includes(branch))return;
- if(!canPractice()){error='La práctica física está en pausa por indicación de seguridad.';render();return}
+ if(!canPractice()){error='Esta sesión pertenece a otro día del programa.';render();return}
  if(isDaily&&FOCUSI_DAILY_IDS.includes(assigned?.practiceId)){
    const required=['sf-i-1','sf-i-2'].includes(assigned.practiceId)?'individual':'partner';
    if(branch!==required){error='Esta sesión tiene un recorrido propio. Elige la modalidad que aparece en pantalla.';render();return}
@@ -330,13 +330,13 @@ function focusIICloseScreen(){
  const choices=[['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']];
  const noticed=['Más calma','Más conexión','Menos presión'];
  return '<section class="card focusii-close"><p class="eyebrow">'+phaseTitle+' · 5 / 5</p>'+
- '<h2>Cierre de tu práctica</h2><p>Registra cómo te sentiste, sin convertirlo en una evaluación de rendimiento.</p>'+
- '<div class="focusii-register"><h3>¿Cómo estuvo tu bienestar?</h3><div class="focusii-rating" role="group" aria-label="Califica tu bienestar de cero a cuatro">'+choices.map(([v,label])=>'<button type="button" data-act="focus2rating" data-value="'+v+'" aria-pressed="'+(data.focus2Rating===Number(v))+'" class="'+(data.focus2Rating===Number(v)?'chosen':'')+'"><b>'+v+'</b><small>'+label+'</small></button>').join('')+'</div>'+
- '<h3>Hoy noté</h3><div class="focusii-noted">'+noticed.map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" aria-pressed="'+data.focus2Noted.includes(v)+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'">'+v+'</button>').join('')+'</div></div>'+
- '<div class="focusii-clinical">'+
+ '<h2>Cierre de tu práctica</h2><p>Puedes guardar la sesión directamente. Si deseas, registra también cómo te sentiste.</p>'+
+ '<div class="focusii-register"><h3>¿Cómo estuvo tu bienestar? <small>(opcional)</small></h3><div class="focusii-rating" role="group" aria-label="Califica tu bienestar de cero a cuatro">'+choices.map(([v,label])=>'<button type="button" data-act="focus2rating" data-value="'+v+'" aria-pressed="'+(data.focus2Rating===Number(v))+'" class="'+(data.focus2Rating===Number(v)?'chosen':'')+'"><b>'+v+'</b><small>'+label+'</small></button>').join('')+'</div>'+
+ '<h3>Hoy noté <small>(opcional)</small></h3><div class="focusii-noted">'+noticed.map(v=>'<button type="button" data-act="focus2noticed" data-value="'+v+'" aria-pressed="'+data.focus2Noted.includes(v)+'" class="'+(data.focus2Noted.includes(v)?'chosen':'')+'">'+v+'</button>').join('')+'</div></div>'+
+ '<div class="focusii-clinical"><p class="focusii-register-note">Puedes dejar esta sección sin responder.</p>'+
  chipField('comfort','Me sentí',[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']])+
  chipField('discomfort','¿Molestia o dolor?',[['ninguna','No'],['molestia','Molestia'],['dolor','Dolor']])+'</div>'+
- (data.discomfort==='dolor'?'<p class="warning">Evita el contacto que causó dolor. Si persiste o reaparece, busca valoración profesional.</p>':'')+
+ (data.discomfort==='dolor'?'<p class="compact-footnote">Si el contacto te produce dolor, detén esa acción y busca orientación si persiste.</p>':'')+
  '<details class="more"><summary>Registro complementario (opcional)</summary>'+
  chipField('ease','La práctica fue',[['facil','Fácil'],['intermedia','Intermedia'],['dificil','Difícil']])+
  chipField('attention','Mi atención',[['conexion','Conecté'],['distraccion','Me distraje'],['ansiedad','Sentí ansiedad']])+
@@ -424,24 +424,23 @@ function render(){
 function readValue(el){const key=el.dataset.field;if(!key)return;if(key==='consent'){consent=el.checked;return}if(['pressureBefore','presenceBefore','presenceAfter','pressureAfter','enjoyment','partnerComfort'].includes(key)){data[key]=Number(el.value);touched.add(key);const label=root.querySelector('[data-val="'+key+'"]');if(label)label.textContent=data[key];return}if(key==='notes'){data.notes=el.value;return}data[key]=el.value;}
 function recommendation(){if(data.discomfort==='dolor')return 'reduce-pressure';if(data.pressureAfter>=7||data.monitoringIntrusions>=4)return 'reduce-pressure';if(isPartner()&&['presenceAfter','pressureAfter','enjoyment','partnerComfort'].every(k=>touched.has(k))&&data.presenceAfter>=7&&data.pressureAfter<=3&&data.enjoyment>=6&&data.partnerComfort>=6)return 'progress';return 'repeat'}
 async function save(){error='';notification='';if(saved){notification='Esta práctica ya está guardada.';render();return}if(busy)return;
-if(!canPractice()){error='Tu programa indica una pausa de seguridad. No es posible registrar esta práctica.';render();return}
+if(!canPractice()){error='Esta sesión pertenece a otro día del programa. Regresa a tu actividad asignada.';render();return}
 if(!performed){error='Primero confirma que realizaste la práctica guiada.';render();return}
-if(isPartner()&&!consent){error='Para una práctica en pareja, ambos deben haber aceptado participar.';render();return}
-const missing=(isFocusII()?['comfort','discomfort']:['comfort','ease','attention','repeat','discomfort']).find(x=>!data[x]);
-if(missing){error=isFocusII()?'Elige cómo te sentiste y si hubo molestias.':'Selecciona cómo te sentiste, dificultad, atención, ganas de repetir y molestias.';render();return}
-if(isFocusII()&&data.focus2Rating===null){error='Elige un valor de 0 a 4 para registrar tu bienestar.';render();return}
+if(!isModernFocus()&&isPartner()&&!consent){error='Para una práctica en pareja, ambos deben haber aceptado participar.';render();return}
+const missing=(isModernFocus()?[]:['comfort','ease','attention','repeat','discomfort']).find(x=>!data[x]);
+if(missing){error='Selecciona cómo te sentiste, dificultad, atención, ganas de repetir y molestias.';render();return}
 if(isDaily){try{if(await api.isDailyCompleted?.()){saved=true;notification='Esta práctica ya está completada en tu programa. No se duplicó.';render();return;}}catch{error='No pude comprobar si la actividad estaba guardada. Reintenta sin modificar datos.';render();return;}}
 busy=true;render();
 try{
  const rows=readRecords(),day=Number(api.getContext().day),entry={
   id:entryId||(entryId=(window.crypto?.randomUUID?.()||'sensate-'+Date.now()+'-'+Math.floor(Math.random()*100000))),
   day,origin:isDaily?'dailyPlan':'library',practiceId:id,completed:true,savedAt:new Date().toISOString(),
-  presenceBefore:isFocusII()?null:data.presenceBefore,presenceAfter:isFocusII()&&!touched.has('presenceAfter')?null:data.presenceAfter,
-  pressureBefore:isFocusII()?null:data.pressureBefore,pressureAfter:isFocusII()&&!touched.has('pressureAfter')?null:data.pressureAfter,
-  enjoyment:isFocusII()&&!touched.has('enjoyment')?null:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,
-  partnerComfort:isPartner()?isFocusII()&&!touched.has('partnerComfort')?null:data.partnerComfort:null,
-  usefulStimuli:data.usefulStimuli.slice(),recommendation:recommendation(),
-  difficulty:data.ease,discomfort:data.discomfort,comfort:data.comfort,attention:data.attention,wantsRepeat:data.repeat,notes:data.notes.trim(),...(isFocusII()?{focus2Rating:data.focus2Rating,focus2Noted:data.focus2Noted.slice(),modality:selectedMode}: {})
+  presenceBefore:isModernFocus()?null:data.presenceBefore,presenceAfter:isModernFocus()&&!touched.has('presenceAfter')?null:data.presenceAfter,
+  pressureBefore:isModernFocus()?null:data.pressureBefore,pressureAfter:isModernFocus()&&!touched.has('pressureAfter')?null:data.pressureAfter,
+  enjoyment:isModernFocus()&&!touched.has('enjoyment')?null:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,
+  partnerComfort:isPartner()?isModernFocus()&&!touched.has('partnerComfort')?null:data.partnerComfort:null,
+  usefulStimuli:data.usefulStimuli.slice(),recommendation:isModernFocus()?null:recommendation(),
+  difficulty:data.ease,discomfort:data.discomfort||null,comfort:data.comfort,attention:data.attention,wantsRepeat:data.repeat,notes:data.notes.trim(),...(isModernFocus()?{...(isFocusII()?{focus2Rating:data.focus2Rating}:{}),wellbeingRating:data.focus2Rating,focus2Noted:data.focus2Noted.slice(),modality:selectedMode}: {})
  };
  const index=rows.findIndex(x=>x.id===entry.id);if(index>=0)rows[index]=entry;else rows.push(entry);
  if(!api.write(KEY,JSON.stringify(rows)))throw Error('session');
