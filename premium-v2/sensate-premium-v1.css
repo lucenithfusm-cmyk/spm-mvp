@@ -61,3 +61,48 @@ textarea{resize:vertical;min-height:75px;border:1px solid #aebecb;background:#0b
 @media(min-width:580px){main{padding:0 23px 20px}.two-ranges{grid-template-columns:1fr 1fr}.hero img{max-height:540px}.card{padding:20px}.voice-hotspot{right:13%;}}
 @media(max-width:380px){header{padding:8px 10px}.brand small{font-size:8px}.brand>b{font-size:20px}.header-actions button{font-size:11px;padding:6px 9px}.voice-hotspot{right:4%;bottom:3%}.card{padding:13px}.steps-progress button{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){.voice-hotspot{animation:none}*{scroll-behavior:auto!important}}
+
+/* Sensate Focus V2 — matte clinical app, real controls (no poster buttons) */
+:root{--navy:#102d48;--blue:#254b62;--gold:#c5a46c;--edge:rgba(197,164,108,.36)}
+body{background:#0d283f}
+.layout{background:linear-gradient(180deg,#142e45,#0d263c 70%);box-shadow:none}
+header{background:#102d47ed;border-color:#c5a46c4f}
+.brand small,.meta{color:#d6b881}
+.card{background:#193950;border:1px solid #bba57865;box-shadow:0 4px 16px #09192832}
+.card .cue{font-size:clamp(15px,3.7vw,18px)}
+button.gold,.audio-control{background:#c5a46c;border:1px solid #e4c88f;color:#102d48;box-shadow:none}
+button.secondary{background:#24485f;border:1px solid #7795a6;color:#f5f8f7}
+.sensate-scene{margin:7px 0 15px;display:block;border:1px solid #beab8466;border-radius:17px;overflow:hidden;background:#17344b;box-shadow:0 6px 19px #09192835}
+.sensate-scene img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center 48%}
+.sensate-scene.scene-active img{aspect-ratio:1.8;object-position:center 50%}
+.sensate-scene.scene-closure img{aspect-ratio:2.1;object-position:center 50%}
+.sensate-instruction{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;margin:8px 0 16px}
+.sensate-instruction .audio-control{flex:1 1 auto;min-width:190px;border-radius:14px;text-align:center}
+.sensate-instruction .more{flex:1 1 150px;margin:0}
+.sensate-values{display:grid;gap:9px;padding:9px 0}
+.sensate-values span{padding:12px;border-radius:12px;background:#254860;border:1px solid #ccbb9566;font-weight:750;font-size:14px}
+.guided-card{display:flex;flex-direction:column;gap:10px}
+.guided-card h2{margin:0}
+.guide-stepper{display:flex;align-items:center;justify-content:space-between;gap:7px}
+.guide-stepper button{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:#2b526a;border:1px solid #819ba9;color:#eaf1f0;font-weight:900;flex:none;min-height:40px;padding:0}
+.guide-stepper .current{background:#c5a46c;color:#112b42;border:2px solid #f7dfaa;box-shadow:0 0 0 3px #c5a46c2e}
+.guide-stepper .complete{background:#337b70;border-color:#629d8e;color:#fff}
+.guide-status{font-size:12px!important;color:#e6ca90!important;line-height:1.45!important;margin:0!important}
+.step-information{padding:3px 1px}
+.step-information h3{font-size:clamp(18px,5vw,24px);line-height:1.2;margin:0 0 7px;color:#fff}
+.step-information .step-brief{margin:0;color:#e1ecec;font-size:clamp(14px,3.7vw,17px);line-height:1.55}
+.phase-progress{height:8px;border-radius:9px;background:#41637a;overflow:hidden;margin:3px 0}
+.phase-progress i{display:block;height:100%;background:#d7b577;border-radius:9px;transition:width 0.2s linear}
+.phase-clocks{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;border:1px solid #c5a46c55;background:#133149;border-radius:12px;padding:11px 13px}
+.phase-clocks>div{display:grid;gap:4px}
+.phase-clocks small,.phase-clocks span{font-size:12px;color:#d0e0dd}
+.phase-clocks b{font-size:23px;line-height:1.1;color:#fff;font-variant-numeric:tabular-nums}
+.guide-controls{display:grid;gap:10px;margin:5px 0}
+.guide-controls .primary-guide{width:100%;min-height:51px;font-size:16px}
+.guide-secondary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.guide-secondary button{width:100%;font-size:12px;min-height:43px;padding:8px;line-height:1.3}
+.guided-card details.more{margin:1px 0}
+.guided-card .saved-caption{font-size:13px}
+.foot{background:#112f4beF;border-color:#ad95679d}
+@media(max-width:390px){.guide-stepper button{width:36px;height:36px;min-height:36px}.sensate-scene img{aspect-ratio:1.65}.guide-secondary{gap:6px}.guide-secondary button{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.phase-progress i{transition:none}}

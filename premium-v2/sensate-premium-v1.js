@@ -8,7 +8,8 @@ const api=host();
 if(!root||!api){if(root)root.innerHTML='<p class="offline">Abre Focalización sensorial desde tu programa SPM.</p>';return}
 const KEY='spm-sensate-records';
 const PREFIX='../assets/sensate-premium/';
-const IMAGES=['focalizacion-inicio.webp','focalizacion-preparacion.webp','focalizacion-guia.webp','focalizacion-cierre.webp'];
+const SCENES={intro:'spm-sensate-intro-matte.webp',seated:'spm-sensate-seated-matte.webp',forearm:'spm-sensate-forearm-matte.webp',release:'spm-sensate-release-matte.webp',partner:'spm-sensate-partner-forearm-matte.webp'};
+const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hombre sentado de costado en postura cómoda',forearm:'Autoexploración del contacto en el antebrazo',release:'Hombre dejando ir tensión corporal',partner:'Contacto de pareja consentido en el antebrazo, sin estimulación genital'};
 const PHASES={
  'sf-solo':[
   ['Llegar al cuerpo','Siéntate o recuéstate. Afloja mandíbula, hombros y abdomen. Observa el apoyo de tu cuerpo.',60],
@@ -61,48 +62,141 @@ function mayAdvance(){return readRecords().some(r=>r&&r.practiceId==='sf-focus-1
 let id=isDaily?(assigned?.practiceId||'sf-solo'):'sf-focus-1';
 if(!PHASES[id])id='sf-solo';
 let screen=0,phase=0,consent=false,performed=false,saved=false,busy=false,hasPain=false;
-let t=0,timer=0,running=false,voiceActive=false,entryId=null,error='',notification='';
+let t=0,timer=0,running=false,voiceActive=false,entryId=null,error='',notification='',guideStarted=false,guideDone=false,phaseElapsed=0,halfwayNoted=false;
 let data={presenceBefore:5,pressureBefore:5,presenceAfter:5,pressureAfter:5,enjoyment:5,partnerComfort:7,comfort:'',ease:'',attention:'',repeat:'',discomfort:'',usefulStimuli:[],monitoringIntrusions:0,notes:''};const touched=new Set();
 const isPartner=()=>id==='sf-focus-1'||id==='sf-focus-2';
 const originalDay=Number(META.day)||1;
 const existing=isDaily?readRecords().find(r=>r&&r.day===originalDay&&r.completed===true&&r.origin==='dailyPlan'):null;
 if(existing){entryId=existing.id||null;notification='Hay un registro previo de focalización en este día; comprobaré si ya está completado en tu programa.';}
-function stopClock(){if(timer)clearInterval(timer);timer=0;running=false}
-function startClock(){if(running){stopClock();render();return}running=true;timer=setInterval(()=>{t+=1;const el=root.querySelector('[data-clock]');if(el)el.textContent=clockText(t)},1000);render()}
-function clockText(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
-function stopAudio(){window.speechSynthesis?.cancel();voiceActive=false}
-function speech(text){if(voiceActive){stopAudio();render();return}stopAudio();if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){notification='La lectura en voz alta no está disponible. Abre «Leer instrucciones».';render();return}
-const utter=new SpeechSynthesisUtterance(text);utter.lang='es-CO';utter.rate=.96;const vs=window.speechSynthesis.getVoices?.()||[];utter.voice=vs.find(v=>v.lang?.toLowerCase()==='es-co')||vs.find(v=>v.lang?.toLowerCase().startsWith('es'))||null;voiceActive=true;utter.onend=utter.onerror=()=>{voiceActive=false;const b=root.querySelector('[data-audio]');if(b)b.classList.remove('playing')};window.speechSynthesis.speak(utter);const b=root.querySelector('[data-audio]');if(b)b.classList.add('playing');}
+
+function clockText(n){const x=Math.max(0,Math.floor(n));return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
+function stopClock(){if(timer){clearInterval(timer);timer=0}running=false}
+function stopAudio(){window.speechSynthesis?.cancel?.();voiceActive=false;root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'))}
+function speech(text){
+ stopAudio();
+ if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){
+  notification='El audio no está disponible. Puedes leer la instrucción desplegable.';
+  return false;
+ }
+ const utter=new SpeechSynthesisUtterance(text);utter.lang='es-CO';utter.rate=.96;
+ const voices=window.speechSynthesis.getVoices?.()||[];
+ const found=voices.find(v=>v.lang?.toLowerCase()==='es-co')||voices.find(v=>v.lang?.toLowerCase().startsWith('es'));
+ if(found)utter.voice=found;
+ voiceActive=true;root.querySelectorAll('[data-audio]').forEach(x=>x.classList.add('playing'));
+ utter.onend=utter.onerror=()=>{voiceActive=false;root.querySelectorAll('[data-audio]').forEach(x=>x.classList.remove('playing'))};
+ try{window.speechSynthesis.speak(utter);return true}
+ catch{voiceActive=false;notification='No pude iniciar el audio. Utiliza «Leer instrucciones».';return false}
+}
+function currentGuideText(){const p=PHASES[id][phase];return 'Paso '+(phase+1)+' de '+PHASES[id].length+'. '+p[0]+'. '+p[1]}
+function guideTick(){
+ if(!running||screen!==2)return;
+ phaseElapsed++;t++;
+ const time=root.querySelector('[data-guide-elapsed]');if(time)time.textContent=clockText(phaseElapsed);
+ const left=root.querySelector('[data-guide-left]');if(left)left.textContent=clockText(PHASES[id][phase][2]-phaseElapsed);
+ const bar=root.querySelector('[data-guide-bar]');if(bar)bar.style.width=Math.min(100,100*phaseElapsed/PHASES[id][phase][2])+'%';
+ const duration=PHASES[id][phase][2];
+ if(duration>=120&&!halfwayNoted&&phaseElapsed>=Math.round(duration/2)){
+  halfwayNoted=true;
+  speech(isPartner()?'Sigan a su ritmo. Cambien la presión o hagan una pausa si alguien lo desea.':'Sigue con calma. Observa temperatura, textura o contacto, sin exigirte resultados.');
+ }
+ if(phaseElapsed>=duration)advanceGuide();
+}
+function armGuideTimer(){if(timer)clearInterval(timer);timer=setInterval(guideTick,1000)}
+function startGuide(){
+ if(!canPractice()){error='La práctica está en pausa por una indicación de seguridad.';render();return}
+ if(isPartner()&&!consent){error='Ambos deben aceptar participar antes de iniciar.';render();return}
+ if(guideDone){phase=0;phaseElapsed=0;t=0;guideDone=false;performed=false}
+ running=true;guideStarted=true;halfwayNoted=false;error='';notification='';
+ render();speech(currentGuideText());armGuideTimer();
+}
+function pauseGuide(){if(!running)return;stopClock();stopAudio();notification='Práctica en pausa. Puedes continuar cuando te resulte cómodo.';render()}
+function resumeGuide(){
+ if(!guideStarted||guideDone){startGuide();return}
+ if(!canPractice()){error='La práctica está en pausa por seguridad.';render();return}
+ running=true;error='';notification='';render();speech(currentGuideText());armGuideTimer();
+}
+function advanceGuide(){
+ if(!guideStarted)return;
+ const wasRunning=running;
+ stopAudio();
+ if(phase>=PHASES[id].length-1){
+  stopClock();guideDone=true;phaseElapsed=PHASES[id][phase][2];
+  notification='La guía terminó. Confirma que realizaste la práctica antes de registrar tu experiencia.';
+  render();return;
+ }
+ phase++;phaseElapsed=0;halfwayNoted=false;notification='';render();
+ if(wasRunning)speech(currentGuideText());
+}
+function jumpGuide(n){
+ if(!guideStarted||!Number.isInteger(n)||n<0||n>=PHASES[id].length)return;
+ const wasRunning=running;stopAudio();phase=n;phaseElapsed=0;halfwayNoted=false;guideDone=false;notification='';render();
+ if(wasRunning)speech(currentGuideText());
+}
 function audioText(){if(screen===0)return INTRO;if(screen===1)return PREP+' '+(isPartner()?'Confirma primero que ambos están de acuerdo.':'Tu práctica será individual.');if(screen===2)return PHASES[id][phase][1];return CLOSING}
-function resetType(next){if(next==='sf-focus-2'&&!mayAdvance())return;stopAudio();stopClock();id=next;phase=0;consent=false;performed=false;notification='';error='';screen=1;render()}
+function resetType(next){if(next==='sf-focus-2'&&!mayAdvance())return;stopAudio();stopClock();id=next;phase=0;phaseElapsed=0;t=0;halfwayNoted=false;guideStarted=false;guideDone=false;consent=false;performed=false;notification='';error='';screen=1;render()}
 function go(next){stopAudio();stopClock();notification='';error='';screen=Math.max(0,Math.min(3,next));render();}
 const isReadonly=()=>!canPractice();
-function hero(){return '<div class="hero"><img src="'+PREFIX+IMAGES[screen]+'" alt="SPM focalización sensorial · '+['Presentación','Preparación','Guía clínica','Registro final'][screen]+'" loading="eager"><button type="button" data-act="audio" data-audio class="voice-hotspot" aria-label="Escuchar instrucciones de esta pantalla" title="Escuchar instrucciones"></button></div>'}
-function audioControls(){return '<div class="micro-actions"><button type="button" class="audio-control" data-act="audio" data-audio>🔊 Escuchar instrucciones</button><details class="more"><summary>Leer instrucciones</summary><p>'+safeText(audioText())+'</p></details></div>'}
-function progress(){return '<div class="progress-rail" role="progressbar" aria-label="Recorrido" aria-valuemin="0" aria-valuemax="4" aria-valuenow="'+(screen+1)+'"><i style="width:'+((screen+1)*25)+'%"></i></div>'}
+function sceneForCurrentStep(){
+ if(isPartner()&&[1,2,3].includes(phase))return 'partner';
+ if(id==='sf-communication'&&phase===1)return 'seated';
+ return phase===0?'seated':phase===1?'intro':phase===2?'forearm':'release';
+}
+function scene(which,kind=''){
+ const key=SCENES[which]?which:'seated';
+ return '<figure class="sensate-scene '+kind+'"><img src="'+PREFIX+SCENES[key]+'" alt="'+safeText(SCENE_ALT[key])+'" decoding="async" loading="eager"></figure>';
+}
+function hero(){
+ if(screen===2)return '';
+ return scene(screen===0?'intro':screen===1?(isPartner()?'partner':'seated'):'release',screen===3?'scene-closure':'');
+}
+function audioControls(){
+ if(screen===2)return '';
+ const label=screen===0?'Escuchar introducción':screen===1?'Escuchar preparación':'Escuchar cierre';
+ return '<div class="sensate-instruction"><button type="button" data-act="audio" data-audio class="audio-control" aria-label="'+label+'">🔊 '+label+'</button>'+
+  '<details class="more"><summary>Leer instrucciones</summary><p>'+safeText(audioText())+'</p></details></div>';
+}
+function progress(){return '<div class="progress-rail" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="4" aria-valuenow="'+(screen+1)+'"><i style="width:'+((screen+1)*25)+'%"></i></div>'}
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'" '+(key==='sf-focus-2'&&!mayAdvance()?'disabled':'')+'>'+safeText(LABELS[key])+(key==='sf-focus-2'&&!mayAdvance()?' · Primero Focus I cómodo':'')+'</button>').join('')+'</div>'}
-function introScreen(){return '<section class="card"><p class="eyebrow">SPM · SENSATE FOCUS</p><h2>Sentir, sin demostrar</h2><p>Tu objetivo es percibir, no rendir. Vamos a practicar con el recurso clínico de SPM, paso a paso.</p><p class="note">La biblioteca mantiene Focus I, Focus II, práctica individual, comunicación y recuperación.</p>'+(!isDaily?selection():'')+'</section>'+
-API_NOTE;}
-function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
-function prepScreen(){const possible=isDaily&&assigned?.practiceId==='sf-focus-1';
-return '<section class="card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Práctica'):'PRÁCTICA A TU RITMO')+'</p>'+
-'<h2>Prepárate</h2><p>Privacidad, tranquilidad y ausencia de presión.</p>'+
-  (possible?'<div class="small-choices"><button type="button" data-act="mode" data-value="sf-solo" class="'+(id==='sf-solo'?'picked':'')+'">Individual</button><button type="button" data-act="mode" data-value="sf-focus-1" class="'+(id==='sf-focus-1'?'picked':'')+'">En pareja · Focus I</button>'+(assigned.optionalProgression?'<button type="button" data-act="mode" data-value="sf-focus-2" '+(!mayAdvance()?'disabled':'')+' class="'+(id==='sf-focus-2'?'picked':'')+'">Focus II · opcional</button>':'')+'</div>':'')+
-  '<div class="clinic-line"><b>'+safeText(LABELS[id])+'</b><p>'+ (id==='sf-focus-1'?'Por turnos: A toca, B recibe y después cambian. Sin genitales ni pecho.':id==='sf-focus-2'?'Solo si ambos desean avanzar. Pueden volver al contacto no genital.':id==='sf-communication'?'Practicarás las cuatro frases de comunicación y luego volverás a las sensaciones.':'Respira y observa un contacto cómodo, sin buscar excitación.')+'</p></div>'+
-  (isPartner()?'<label class="consent"><input type="checkbox" data-field="consent" '+(consent?'checked':'')+'> Ambos queremos participar y podemos parar en cualquier momento.</label>':'')+
-  '<div class="two-ranges">'+range('presenceBefore','Presencia al empezar','Disperso','Presente')+range('pressureBefore','Presión al empezar','Baja','Alta')+'</div>'+
-  '<p class="notice" role="note">Sin obligación de erección, penetración u orgasmo. Si algo incomoda, cambia el contacto o detente.</p></section>';
+function introScreen(){
+ return '<section class="card intro-card"><p class="eyebrow">SPM · SENSATE FOCUS</p><h2>Conecta con tus sensaciones</h2><p>No buscas rendimiento. Percibe contacto, temperatura y textura sin exigirte una respuesta sexual.</p>'+
+ '<div class="sensate-values"><span>◌ Percibe tu cuerpo</span><span>◌ Explora sin meta</span><span>◌ Reduce la presión</span></div>'+
+ (!isDaily?selection():'')+
+ '</section>'+API_NOTE;
 }
-function guideScreen(){const p=PHASES[id][phase];
-return '<section class="card"><p class="eyebrow">'+safeText(LABELS[id])+' · PASO '+(phase+1)+'/5</p><h2>'+safeText(p[0])+'</h2><p class="cue">'+safeText(p[1])+'</p>'+
-'<div class="steps-progress">'+PHASES[id].map((item,i)=>'<button type="button" data-act="phase" data-value="'+i+'" class="'+(phase===i?'current':i<phase?'done':'')+'" title="'+safeText(item[0])+'">'+(i+1)+'</button>').join('')+'</div>'+
-'<div class="time-box"><div><span>Cronómetro opcional</span><strong data-clock>'+clockText(t)+'</strong><small>Referencia para esta fase: '+Math.round(p[2]/60*10)/10+' min · sin obligación de cumplirla</small></div><button data-act="timer" type="button" class="secondary">'+(running?'Pausar':'▶ Iniciar')+'</button></div>'+
-'<div class="guide-buttons"><button type="button" data-act="audio" data-audio class="audio-control">🔊 Escuchar este paso</button><button type="button" data-act="nextphase" class="gold">'+(phase===PHASES[id].length-1?'Terminar pasos':'Siguiente paso')+'</button></div>'+
-'<div class="guide-buttons"><button type="button" data-act="refocus" class="secondary">Volver a la sensación ('+data.monitoringIntrusions+')</button>'+(id==='sf-focus-2'?'<button type="button" data-act="pressure" class="secondary">La presión aumentó</button>':'')+'</div>'+
-'<details class="more"><summary>Leer la instrucción completa</summary><p>'+safeText(p[1])+'</p><p>Cualquiera puede pedir una pausa. La práctica puede terminar cuando lo necesites.</p></details>'+
-'<button type="button" data-act="performed" class="full secondary">✓ Ya realicé esta práctica</button>'+
-(performed?'<p class="saved-caption">Tu práctica está confirmada. Ya puedes registrar cómo te sentiste.</p>':'')+'</section>'+API_NOTE;
+function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
+function prepScreen(){
+ const possible=isDaily&&assigned?.practiceId==='sf-focus-1';
+ return '<section class="card prep-card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Práctica'):'PREPARACIÓN')+'</p>'+
+ '<h2>Prepárate</h2><p>Elige un lugar privado, sin interrupciones y una postura cómoda.</p>'+
+ (possible?'<div class="small-choices"><button type="button" data-act="mode" data-value="sf-solo" class="'+(id==='sf-solo'?'picked':'')+'">Individual</button><button type="button" data-act="mode" data-value="sf-focus-1" class="'+(id==='sf-focus-1'?'picked':'')+'">En pareja · Focus I</button>'+(assigned.optionalProgression?'<button type="button" data-act="mode" data-value="sf-focus-2" '+(!mayAdvance()?'disabled':'')+' class="'+(id==='sf-focus-2'?'picked':'')+'">Focus II · opcional</button>':'')+'</div>':'')+
+ '<div class="clinic-line"><b>'+safeText(LABELS[id])+'</b><p>'+(id==='sf-focus-1'?'Contacto por turnos en manos, brazos, espalda, cuello o piernas; sin genitales ni pecho.':id==='sf-focus-2'?'Progresión solo si ambos lo desean y el contacto previo fue cómodo.':id==='sf-communication'?'Practicarás cuatro frases breves sin exigirte una respuesta.':'Respira, observa y explora un contacto sencillo sin buscar excitación.')+'</p></div>'+
+ (isPartner()?'<label class="consent"><input type="checkbox" data-field="consent" '+(consent?'checked':'')+'> Ambos queremos participar y podemos pedir una pausa en cualquier momento.</label>':'')+
+ '<div class="two-ranges">'+range('presenceBefore','Presencia al comenzar','Disperso','Presente')+range('pressureBefore','Presión al comenzar','Baja','Alta')+'</div>'+
+ '<p class="notice">Sin obligación de erección, penetración u orgasmo. Puedes detenerte si hay incomodidad.</p></section>';
+}
+function guideScreen(){
+ const p=PHASES[id][phase],len=PHASES[id].length,duration=p[2];
+ const title='Paso '+(phase+1)+' de '+len;
+ const doneCaption=guideDone?'Guía terminada: confirma que la realizaste para poder evaluar.':running?'La guía avanza sola al terminar cada fase.':'Toca Iniciar para escuchar la primera instrucción.';
+ return '<section class="card guided-card" aria-label="Focalización sensorial guiada">'+
+ '<p class="eyebrow">'+safeText(LABELS[id])+' · GUÍA CON AUDIO</p><h2>Práctica guiada</h2>'+
+ '<div class="guide-stepper" aria-label="Progreso de las cinco fases">'+PHASES[id].map((stepInfo,i)=>'<button type="button" data-act="phase" data-value="'+i+'" '+(!guideStarted?'disabled':'')+' aria-label="Ir a paso '+(i+1)+': '+safeText(stepInfo[0])+'" '+(i===phase?'aria-current="step"':'')+' class="'+(i===phase?'current':i<phase?'complete':'')+'">'+(i+1)+'</button>').join('')+'</div>'+
+ '<p class="guide-status" role="status">'+safeText(doneCaption)+'</p>'+
+ scene(sceneForCurrentStep(),'scene-active')+
+ '<div class="step-information"><span class="eyebrow">'+title+'</span><h3>'+safeText(p[0])+'</h3><p class="step-brief">'+safeText(p[1])+'</p></div>'+
+ '<div class="phase-progress"><i data-guide-bar style="width:'+Math.min(100,100*phaseElapsed/duration)+'%"></i></div>'+
+ '<div class="phase-clocks"><div><small>Tiempo de esta fase</small><b data-guide-elapsed>'+clockText(phaseElapsed)+'</b><small>Tiempo restante: <span data-guide-left>'+clockText(duration-phaseElapsed)+'</span></small></div><div><small>Ritmo del módulo</small><span>'+Math.round(duration/60*10)/10+' min · orientativo</span></div></div>'+
+ '<div class="guide-controls">'+
+ (!guideStarted||guideDone?'<button type="button" data-act="startguide" class="gold primary-guide">'+(guideDone?'↺ Repetir guía':'▶ Iniciar guía')+'</button>':
+ running?'<button type="button" data-act="pauseguide" class="gold primary-guide">⏸ Pausar guía</button>':
+ '<button type="button" data-act="resumeguide" class="gold primary-guide">▶ Reanudar guía</button>')+
+ '<div class="guide-secondary"><button type="button" data-act="repeataudio" class="secondary" '+(!guideStarted?'disabled':'')+'>🔊 Repetir instrucción</button><button type="button" data-act="nextphase" class="secondary" '+(!guideStarted||guideDone?'disabled':'')+'>Siguiente paso</button></div></div>'+
+ '<div class="guide-secondary"><button type="button" data-act="refocus" class="secondary">Volver a la sensación ('+data.monitoringIntrusions+')</button>'+
+ (id==='sf-focus-2'?'<button type="button" data-act="pressure" class="secondary">La presión aumentó</button>':'')+'</div>'+
+ '<details class="more"><summary>Leer instrucciones de este paso</summary><p>'+safeText(p[1])+'</p><p>La guía avanza automáticamente; puedes pausarla, repetir o adelantar una fase. Cualquiera puede pedir una pausa.</p></details>'+
+ '<button type="button" data-act="performed" class="full secondary" '+(!guideStarted?'disabled':'')+'>✓ Confirmar que realicé la práctica</button>'+
+ (performed?'<p class="saved-caption">Práctica confirmada. Ahora registra cómo te sentiste.</p>':'')+'</section>'+API_NOTE;
 }
 function chipField(name,title,options){return '<fieldset class="chips"><legend>'+title+'</legend>'+options.map(x=>'<label class="'+(data[name]===x[0]?'chosen':'')+'"><input type="radio" name="'+name+'" data-field="'+name+'" value="'+x[0]+'" '+(data[name]===x[0]?'checked':'')+'><span>'+x[1]+'</span></label>').join('')+'</fieldset>'}
 function closeScreen(){return '<section class="card"><h2>¿Cómo te fue?</h2><p>Registra tu experiencia sin exigirte resultados perfectos.</p>'+
@@ -120,8 +214,12 @@ function closeScreen(){return '<section class="card"><h2>¿Cómo te fue?</h2><p>
   '<button type="button" data-act="save" class="gold full" '+(saved||busy?'disabled':'')+'>'+(saved?'✓ Registro guardado':busy?'Guardando…':'Guardar experiencia')+'</button>'+
   (saved?'<button type="button" data-act="close" class="secondary full">Volver a mi programa</button>':'')+'</section>';
 }
-function footer(){if(screen===3)return '<div class="foot"><button type="button" data-act="back" class="secondary">Anterior</button><span>4 / 4</span><button type="button" data-act="close" class="secondary">Cerrar</button></div>';
-return '<div class="foot"><button type="button" data-act="back" class="secondary" '+(screen===0?'disabled':'')+'>Anterior</button><span>'+(screen+1)+' / 4</span><button type="button" data-act="next" class="gold">'+(screen===0?'Comenzar':screen===1?'Iniciar práctica':performed?'Evaluar':'Continuar')+'</button></div>'}
+function footer(){
+ if(screen===3)return '<div class="foot"><button type="button" data-act="back" class="secondary">Anterior</button><span>4 / 4</span><button type="button" data-act="close" class="secondary">Cerrar</button></div>';
+ return '<div class="foot"><button type="button" data-act="back" class="secondary" '+(screen===0?'disabled':'')+'>Anterior</button><span>'+(screen+1)+' / 4</span>'+
+  (screen===2?'<button type="button" data-act="next" class="gold" '+(!performed?'disabled':'')+'>Evaluar</button>':
+  '<button type="button" data-act="next" class="gold">'+(screen===0?'Comenzar':'Ir a la guía')+'</button>')+'</div>';
+}
 function render(){const c=api.getContext();const restricted=c?.restriction!=='none';const title=isDaily?safeText(assigned?.title||LABELS[id]):safeText(LABELS[id]);
 root.innerHTML='<div class="layout"><header><div class="brand"><b>SPM</b><small>FOCALIZACIÓN SENSORIAL</small></div><div class="header-actions"><button type="button" data-act="library" class="subtle" title="Biblioteca">Biblioteca</button><button type="button" data-act="close" class="close" aria-label="Cerrar">×</button></div></header>'+progress()+
 '<main><p class="meta">'+(isDaily?'DÍA '+originalDay+' / 28 · ':'BIBLIOTECA · ')+title+'</p>'+hero()+audioControls()+
@@ -159,28 +257,54 @@ try{
 }catch(e){error='No se pudo guardar o completar la actividad. Tus respuestas permanecen aquí para reintentar.'}
 finally{busy=false;render()}
 }
-root.addEventListener('click',e=>{const button=e.target.closest('[data-act]');if(!button||button.disabled)return;const act=button.dataset.act;
- if(act==='audio'){speech(audioText());return}
- if(act==='close'){stopAudio();stopClock();api.close();return}
- if(act==='library'){stopAudio();stopClock();if(isDaily){api.openLibrary();return}screen=0;render();return}
+
+root.addEventListener('click',e=>{
+ const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
+ const act=button.dataset.act;
+ if(act==='audio'){
+  if(screen===2){if(guideStarted)speech(currentGuideText());return;}
+  if(voiceActive)stopAudio();else speech(audioText());return;
+ }
+ if(act==='close'){stopAudio();stopClock();void api.close();return}
+ if(act==='library'){stopAudio();stopClock();if(isDaily){void api.openLibrary();return}screen=0;render();return}
  if(act==='back'){if(screen>0)go(screen-1);return}
  if(act==='mode'){resetType(button.dataset.value);return}
- if(act==='next'){error='';if(screen===1){if(!canPractice()){error='La práctica está en pausa por indicación de seguridad.';render();return}if(isPartner()&&!consent){error='Ambos deben aceptar participar antes de empezar.';render();return}}
- if(screen===2&&!performed){error='Marca «Ya realicé esta práctica» cuando hayas terminado; no se registra automáticamente.';render();return}
- if(screen<3)go(screen+1);return}
- if(act==='phase'){stopAudio();phase=Number(button.dataset.value)||0;render();return}
- if(act==='nextphase'){stopAudio();if(phase<PHASES[id].length-1)phase++;else performed=true;render();return}
- if(act==='refocus'){data.monitoringIntrusions++;notification='Vuelve a una sensación cómoda: temperatura, textura o presión.';render();return}
- if(act==='pressure'){phase=0;notification='Vuelvan al contacto no genital y a un ritmo cómodo.';render();return}
- if(act==='timer'){startClock();return}
- if(act==='performed'){performed=true;stopClock();notification='La práctica quedó confirmada. Puedes evaluar tu experiencia.';render();return}
- if(act==='stimulus'){const v=button.dataset.value;data.usefulStimuli=data.usefulStimuli.includes(v)?data.usefulStimuli.filter(x=>x!==v):data.usefulStimuli.concat(v);button.classList.toggle('picked',data.usefulStimuli.includes(v));return}
+ if(act==='next'){
+  error='';
+  if(screen===1){
+   if(!canPractice()){error='La práctica está en pausa por indicación de seguridad.';render();return}
+   if(isPartner()&&!consent){error='Ambos deben aceptar participar antes de empezar.';render();return}
+  }
+  if(screen===2&&!performed){error='Confirma que realizaste la práctica antes de evaluar; la guía nunca registra automáticamente.';render();return}
+  if(screen<3)go(screen+1);
+  return;
+ }
+ if(act==='startguide'){startGuide();return}
+ if(act==='pauseguide'){pauseGuide();return}
+ if(act==='resumeguide'){resumeGuide();return}
+ if(act==='repeataudio'){if(guideStarted)speech(currentGuideText());return}
+ if(act==='phase'){jumpGuide(Number(button.dataset.value));return}
+ if(act==='nextphase'){advanceGuide();return}
+ if(act==='refocus'){data.monitoringIntrusions++;notification='Regresa a una sensación cómoda: temperatura, textura o presión.';render();return}
+ if(act==='pressure'){jumpGuide(0);notification='Vuelve al contacto no genital y a un ritmo cómodo.';render();return}
+ if(act==='performed'){
+  if(!guideStarted)return;
+  performed=true;stopClock();stopAudio();
+  notification='Práctica confirmada. Puedes evaluar tu experiencia sin exigirte resultados.';
+  render();return;
+ }
+ if(act==='stimulus'){
+  const v=button.dataset.value;
+  data.usefulStimuli=data.usefulStimuli.includes(v)?data.usefulStimuli.filter(x=>x!==v):data.usefulStimuli.concat(v);
+  button.classList.toggle('picked',data.usefulStimuli.includes(v));return;
+ }
  if(act==='save'){void save();return}
 });
 root.addEventListener('input',e=>{const el=e.target.closest('[data-field]');if(el)readValue(el)});
 root.addEventListener('change',e=>{const el=e.target.closest('[data-field]');if(el){readValue(el);if(el.type==='radio'){el.closest('fieldset')?.querySelectorAll('label').forEach(label=>label.classList.toggle('chosen',label.querySelector('input')?.checked===true));if(el.name==='discomfort'&&el.value==='dolor')notification='Detén el contacto que causa dolor y consulta si persiste.';}}});
 if(isDaily){Promise.resolve().then(()=>api.isDailyCompleted?.()).then(v=>{if(v===true){saved=true;notification='Esta actividad ya está completada en tu programa. No se duplicará.';render();}}).catch(()=>{});}
 window.addEventListener('pagehide',()=>{stopAudio();stopClock()});
-window.addEventListener('spm:sensate-context',()=>{if(!canPractice()&&running){stopClock()}stopAudio();render()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)pauseGuide()});
+window.addEventListener('spm:sensate-context',()=>{if(!canPractice()&&running){pauseGuide();return}stopAudio();render()});
 render();
 })();
