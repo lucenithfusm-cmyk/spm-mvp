@@ -60,6 +60,30 @@ test('day-19 manual Focus II review button opens the same session and preserves 
  }finally{h.close()}
 });
 
+test('all six domains offer five voluntary Focus I practices, one direct Focus II and the independent day-16 video',async()=>{
+ const focusI=new Map([[4,'sf-i-1'],[8,'sf-i-2'],[12,'sf-i-3'],[23,'sf-i-4'],[26,'sf-i-5']]);
+ const h=await harness('?programa=desire&dia=16');
+ try{
+  const {w}=h;
+  for(const program of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
+   await w.SPM_PROGRAM_REVIEW.select(program,16);
+   const c=w.SPM_RESOURCE_CONTEXT(),v=w.SPM_DAILY_PRACTICE.assignments().filter(a=>a.kind==='video'&&a.videoKey==='sensory-focus');
+   assert.equal(v.length,1,'only one sensory video on day 16 in '+program);
+   assert.equal(w.SPM_DAILY_SUPPORT.activity('sensate',16,c),null,'day 16 does not repeat Focus I in '+program);
+   for(const [day,practiceId] of focusI){
+    const act=w.SPM_DAILY_SUPPORT.activity('sensate',day,c);
+    assert.equal(act.practiceId,practiceId);
+    assert.equal(act.optional,true);
+    assert.equal(w.SPM_DAILY_PRACTICE.restricted({...c,safety:'urgent'},({...act,kind:'sensate'})),false);
+   }
+   const focusII=w.SPM_DAILY_SUPPORT.activity('sensate',19,c);
+   assert.equal(focusII.practiceId,'sf-focus-2');
+   assert.equal(focusII.optional,true);
+  }
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
+});
+
 test('all six real programs expose 28 review days with guarded controls and no patient clients',async()=>{
   const h=await harness();try{
     const {w}=h;assert.equal(w.document.querySelector('#reviewProgram').options.length,6);assert.equal(w.document.querySelector('#reviewDay').options.length,28);
