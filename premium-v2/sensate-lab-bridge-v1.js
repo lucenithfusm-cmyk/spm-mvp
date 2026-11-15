@@ -62,8 +62,16 @@ async function open(opts={}){
     await window.SPM_DAILY_PRACTICE.saveActivity(assigned.id,{confirmed:true,source:'sensate-lab'},captured,day);
     return true;
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
+  },isDailyCompleted:async()=>{
+   if(origin!=='dailyPlan')return false;
+   if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)throw Error('La sesión cambió');
+   const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='sensate');
+   if(!assigned||!window.SPM_DAILY_RECORDS?.read)throw Error('No es posible comprobar la práctica');
+   const rows=await window.SPM_DAILY_RECORDS.read(captured,day);
+   if(token!==generation||scopeOf(ctx())!==captured)return false;
+   return rows?.[assigned.id]?.completed===true;
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Focalización sensorial · Focalización sensorial';frame.allow='autoplay';frame.src='sensate-lab/index.html?v=20261113-instructions3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  const frame=document.createElement('iframe');frame.title='Focalización sensorial · Focalización sensorial';frame.allow='autoplay';frame.src='sensate-lab/index.html?v=20261114-clinical-focus1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-sensate-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;
@@ -83,7 +91,7 @@ new MutationObserver(schedule).observe(document.getElementById('plan')||document
 window.addEventListener('spm:open-lab',e=>{if(['sensate','sensate-focus','focalizacion'].includes(e.detail?.lab))open(e.detail||{});});
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#newAssessment')&&modal)dispose();},true);
 window.addEventListener('spm:session-change',()=>{if(modal&&scopeOf(ctx())!==scope)dispose();schedule();});
-const style=document.createElement('style');style.textContent='.spm-sensate-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-sensate-modal[open]{display:flex;flex-direction:column}.spm-sensate-modal::backdrop{background:#020a10ed}.spm-sensate-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-sensate-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-sensate-modal>header span{font-size:12px;color:#a3d3c7}.spm-sensate-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-sensate-modal iframe{display:block;width:100%;height:100%;border:0}#spmSensateLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-sensate-daily]{margin-top:12px}';document.head.appendChild(style);
+const style=document.createElement('style');style.textContent='.spm-sensate-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-sensate-modal[open]{display:flex;flex-direction:column}.spm-sensate-modal::backdrop{background:#020a10ed}.spm-sensate-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-sensate-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-sensate-modal>header span{font-size:12px;color:#a3d3c7}.spm-sensate-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-sensate-modal iframe{display:block;width:100%;height:100%;border:0}.spm-sensate-modal>header{background:#0b2948;border-bottom:1px solid #c5a46c78}.spm-sensate-modal>header button{border-color:#c5a46c88;background:#17385b}.spm-sensate-modal>header span{color:#f0d48f}.spm-sensate-modal{border-color:#c5a46c99;background:#091c36}#spmSensateLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-sensate-daily]{margin-top:12px}';document.head.appendChild(style);
 window.addEventListener('spm:resourcecontext',schedule);
 window.SPM_SENSATE_LAB={open,close,flush,validState,relevant,restriction};schedule();
 })();

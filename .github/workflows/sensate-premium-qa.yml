@@ -1,0 +1,35 @@
+name: SPM Focalización Sensorial Premium QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/sensate-premium-v1.js'
+      - 'premium-v2/sensate-premium-v1.css'
+      - 'premium-v2/sensate-lab/index.html'
+      - 'premium-v2/sensate-lab-bridge-v1.js'
+      - 'premium-v2/assets/sensate-premium/**'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/revision-programas-28-dias.html'
+      - 'tests/sensate-premium.test.cjs'
+      - '.github/workflows/sensate-premium-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/sensate-premium-v1.js'
+      - 'premium-v2/sensate-lab-bridge-v1.js'
+      - 'tests/sensate-premium.test.cjs'
+jobs:
+  premium-sensate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/sensate --no-audit --no-fund
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: node --check premium-v2/sensate-premium-v1.js
+      - run: node --check premium-v2/sensate-lab-bridge-v1.js
+      - run: node --test tests/sensate-premium.test.cjs tests/sensate-lab-bridge.test.cjs tests/program-review.test.cjs
