@@ -71,8 +71,13 @@ test('a failed lab close prevents navigation; successful navigation closes actua
     await w.SPM_PROGRAM_REVIEW.select('erection',7);await wait();
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDeModal.on'));
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('#spmDeModal.on'),null);
-    await w.SPM_DAILY_PRACTICE.launch('main');const premium=w.document.querySelector('#spmStartStopV2');assert.ok(premium&&!premium.hidden);assert.ok(premium.shadowRoot.querySelector('#stage img'));assert.equal(w.document.querySelector('#spmEcModal.on'),null);
-    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',14),true);await wait();assert.equal(w.document.querySelector('#spmEcModal.on'),null);assert.equal(w.document.querySelector('#spmStartStopV2').hidden,true);
+    await w.SPM_DAILY_PRACTICE.launch('main');const premium=w.document.querySelector('#spmSqueezeV1');assert.ok(premium&&!premium.hidden);assert.ok(premium.shadowRoot.querySelector('#stage img'));assert.equal(w.document.querySelector('#spmEcModal.on'),null);
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',8),true);await wait();
+     assert.equal(w.document.querySelector('#spmSqueezeV1').hidden,true);
+     await w.SPM_DAILY_PRACTICE.launch('main');
+     const secondWeek=w.document.querySelector('#spmStartStopV2');assert.ok(secondWeek&&!secondWeek.hidden);
+     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',14),true);await wait();
+     assert.equal(w.document.querySelector('#spmEcModal.on'),null);assert.equal(secondWeek.hidden,true);
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#epAssessModal.on'));
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('confidence',2),true);await wait();assert.equal(w.document.querySelector('#epAssessModal.on'),null);
     await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDailyWorkspace [name="reflection"]'));
@@ -334,11 +339,11 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
   try {
     const {w}=h;
     const sample=[
-      [1,'tres sesiones','Start Stop'],[3,'repetición','Start Stop'],
-      [8,'Stop.?Squeeze','compresión'],[10,'repetición','compresión'],
-      [12,'repetición','compresión'],
+      [1,'tres sesiones','compresión'],[3,'repetición','Stop.?Squeeze'],[5,'repetición','Stop.?Squeeze'],
+      [8,'Stop.?Start','sin compresión'],[10,'repetición','sin compresión'],
+      [12,'repetición','sin compresión'],
       [15,'técnica','herramienta'],[17,'repetición','herramienta'],
-      [22,'consolidación','Start Stop'],[24,'consolidación','compresión'],[26,'consolidación','herramienta']
+      [22,'consolidar','Stop.?Start'],[24,'consolidación','compresión'],[26,'consolidación','herramienta']
     ];
     for(const [day,needle,topic] of sample){
       assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',day),true);
@@ -350,7 +355,7 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
       const voice=speaker.getAttribute('data-spm-speak');
       assert.match(voice,new RegExp(needle,'i'),'repetition explanation on day '+day);
       assert.match(voice,new RegExp(topic,'i'),'technique-specific voice on day '+day);
-      if([8,10,12,24].includes(day)){
+      if([3,5,8,10,12,22,24].includes(day)){
          assert.doesNotMatch(voice,/tres sesiones|sesión \d de tres|bocina/i,'avoid repeated weekly cadence and speaker instructions');
          assert.ok(voice.length<260,'focused, concise entry audio');
        }else{

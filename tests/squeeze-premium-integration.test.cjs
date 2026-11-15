@@ -2,7 +2,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const {JSDOM}=require('../labs/desire/node_modules/jsdom');
 const root=path.resolve(__dirname,'..'),src=fs.readFileSync(path.join(root,'premium-v2/ejaculatory-squeeze-v1.js'),'utf8'),legacy=fs.readFileSync(path.join(root,'premium-v2/ejaculatory-control.js'),'utf8');
 const wait=()=>new Promise(resolve=>setTimeout(resolve,20));
-function harness(day=8){
+function harness(day=1){
  const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,ctx={userId:'qa-squeeze',planId:'ep-plan',day,primary:'ejaculation',safety:'none',flags:[],checkins:[]},saves=[],home=[];
  w.HTMLMediaElement.prototype.pause=function(){this.dataset.paused='yes'};
@@ -23,11 +23,11 @@ test('five original posters and five-second technique clip are real, independent
  const mp4=fs.readFileSync(path.join(root,'premium-v2/assets/videos/techniques/stop-squeeze.mp4'));
  const offset=mp4.indexOf('mvhd');assert.ok(offset>0);const timescale=mp4.readUInt32BE(offset+16);
  const seconds=mp4.readUInt32BE(offset+20)/timescale;assert.ok(seconds>4.5&&seconds<6,'real MP4 duration is approximately five seconds');
- const h=harness();try{assert.deepEqual([...h.api.scheduledDays],[8,10,12,24])}finally{h.close()}
+ const h=harness();try{assert.deepEqual([...h.api.scheduledDays],[1,3,5,24])}finally{h.close()}
 });
 test('third page preserves all five source illustrations around video and fourth page offers a closed recap',()=>{
  const h=harness();try{
-  assert.equal(h.api.open(8,{origin:'dailyPlan'}),true);
+  assert.equal(h.api.open(1,{origin:'dailyPlan'}),true);
   assert.match(h.ui.querySelector('#stage img').src,/step-1\.webp$/);
   h.ui.querySelector('#next').click();assert.match(h.ui.querySelector('#stage img').src,/step-2\.webp$/);
   h.ui.querySelector('#next').click();
@@ -50,7 +50,7 @@ test('third page preserves all five source illustrations around video and fourth
 });
 test('moving the needle, timer, stop button and patient-day recording work for Stop Squeeze',async()=>{
  const h=harness();try{
-  assert.equal(h.api.open(8,{origin:'dailyPlan'}),true);await wait();
+  assert.equal(h.api.open(1,{origin:'dailyPlan'}),true);await wait();
   h.ui.querySelector('#next').click();const slider=h.ui.querySelector('.adjust');slider.value='7';slider.dispatchEvent(new h.w.Event('input',{bubbles:true}));
   assert.equal(h.ui.querySelector('.gauge').getAttribute('aria-valuenow'),'7');
   h.ui.querySelector('#next').click();h.ui.querySelector('#next').click();
@@ -58,19 +58,19 @@ test('moving the needle, timer, stop button and patient-day recording work for S
   h.ui.querySelector('#timerBtn').click();reg.click();assert.equal(h.ui.querySelector('#count').textContent,'1');
   h.ui.querySelector('#next').click();h.ui.querySelector('#feeling').value='similar';h.ui.querySelector('#saveBtn').click();await wait();
   assert.equal(h.saves.length,1);assert.equal(h.saves[0].id,'main');
-  assert.equal(h.saves[0].v.tech,'squeeze');assert.equal(h.saves[0].v.stops,1);assert.equal(h.saves[0].v.arousal,7);assert.equal(h.saves[0].d,8);
+  assert.equal(h.saves[0].v.tech,'squeeze');assert.equal(h.saves[0].v.stops,1);assert.equal(h.saves[0].v.arousal,7);assert.equal(h.saves[0].d,1);
   assert.equal(h.ui.querySelector('#saveBtn').disabled,true);
   h.ui.querySelector('#next').click();assert.equal(h.host.hidden,true);assert.equal(h.home.length,1);
  }finally{h.close()}
 });
 test('clinical routing preserves the approved mixed fourth week and refuses unsafe access',()=>{
  const h=harness();try{
-  h.ctx.day=9;assert.equal(h.api.open(8,{origin:'dailyPlan'}),false);
-  h.ctx.day=8;h.ctx.safety='review';assert.equal(h.api.open(8,{origin:'dailyPlan'}),false);
-  h.ctx.safety='none';h.ctx.primary='erection';assert.equal(h.api.open(8,{origin:'dailyPlan'}),false);
+  h.ctx.day=2;assert.equal(h.api.open(1,{origin:'dailyPlan'}),false);
+  h.ctx.day=1;h.ctx.safety='review';assert.equal(h.api.open(1,{origin:'dailyPlan'}),false);
+  h.ctx.safety='none';h.ctx.primary='erection';assert.equal(h.api.open(1,{origin:'dailyPlan'}),false);
   const m=legacy.match(/const SCHEDULE=(\{[^;]+\});/);assert.ok(m);
   const schedule=Function('return ('+m[1]+')')();
-  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[8,10,12,24]);
+  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,24]);
   assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='combined').map(([n])=>Number(n)),[15,17,19,26]);
   assert.match(legacy,/SPM_SQUEEZE_V1/,'Squeeze slots route to approved new module');
  }finally{h.close()}
@@ -90,7 +90,7 @@ test('patient program and 28-day reviewer load premium Stop-Squeeze before the u
 
 test('page 2 keeps its full headline and complete legend bands, rather than slicing through text',()=>{
  const h=harness();try{
-  h.api.open(8,{origin:'dailyPlan'});h.ui.querySelector('#next').click();
+  h.api.open(1,{origin:'dailyPlan'});h.ui.querySelector('#next').click();
   const slices=[...h.ui.querySelector('#stage').querySelectorAll('.slice')];
   assert.equal(slices.length,2);
   assert.equal(slices[0].style.aspectRatio,'941/702.240','top source region extends past entire title and subtitle');
@@ -101,7 +101,7 @@ test('page 2 keeps its full headline and complete legend bands, rather than slic
 });
 test('the final button fits its intended mobile label and retains a full accessible description',()=>{
  const h=harness();try{
-  h.api.open(8,{origin:'dailyPlan'});
+  h.api.open(1,{origin:'dailyPlan'});
   for(let i=0;i<4;i++)h.ui.querySelector('#next').click();
   const next=h.ui.querySelector('#next');
   assert.equal(next.textContent,'Finalizar');
@@ -113,7 +113,7 @@ test('audio stages contain a focused intro, numeric scale, all five precise clin
  const h=harness(),spoken=[];
  try{
   h.w.speechSynthesis.speak=u=>spoken.push(u.text);
-  h.api.open(8,{origin:'dailyPlan'});
+  h.api.open(1,{origin:'dailyPlan'});
   for(let i=0;i<5;i++){
    h.ui.querySelector('#listen').click();
    if(i<4)h.ui.querySelector('#next').click();
@@ -145,5 +145,17 @@ test('pre-entry message remains short; all existing weekly schedule slots stay u
  assert.doesNotMatch(m[0],/primero reconoce|después aplicas|tres sesiones semanales/i);
  const schedule=Function('return ('+legacy.match(/const SCHEDULE=(\{[^;]+\});/)[1]+')')();
  assert.equal(Object.keys(schedule).length,12);
- assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[8,10,12,24]);
+ assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,24]);
+});
+
+test('completed historical Stop–Start day-1 session cannot be overwritten by Squeeze',async()=>{
+ const h=harness();
+ try{
+  h.w.SPM_DAILY_RECORDS.read=async(scope,day)=>day===1?{main:{day:1,completed:true,tech:'startstop',stops:3}}:{};
+  assert.equal(h.api.open(1,{origin:'dailyPlan'}),true);await wait();
+  for(let n=0;n<4;n++)h.ui.querySelector('#next').click();
+  assert.match(h.ui.querySelector('#stage').textContent,/registro.*(conserv|anterior)/i);
+  assert.equal(h.ui.querySelector('#saveBtn').disabled,true);
+  assert.equal(h.saves.length,0);
+ }finally{h.close();}
 });
