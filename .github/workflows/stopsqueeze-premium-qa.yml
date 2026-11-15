@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'premium-v2/ejaculatory-squeeze-v1.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
       - 'premium-v2/assets/ep/stop-squeeze/**'
       - 'premium-v2/assets/videos/techniques/stop-squeeze.mp4'
       - 'tests/squeeze-premium-integration.test.cjs'
@@ -11,6 +14,9 @@ on:
   pull_request:
     paths:
       - 'premium-v2/ejaculatory-squeeze-v1.js'
+      - 'premium-v2/ejaculatory-control.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
       - 'tests/squeeze-premium-integration.test.cjs'
 jobs:
   squeeze-integration:

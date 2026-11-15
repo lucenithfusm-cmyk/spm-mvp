@@ -75,3 +75,14 @@ test('clinical routing preserves the approved mixed fourth week and refuses unsa
   assert.match(legacy,/SPM_SQUEEZE_V1/,'Squeeze slots route to approved new module');
  }finally{h.close()}
 });
+test('patient program and 28-day reviewer load premium Stop-Squeeze before the unified control router',()=>{
+ const live=fs.readFileSync(path.join(root,'premium-v2/live.html'),'utf8');
+ const review=fs.readFileSync(path.join(root,'premium-v2/program-review-v1.js'),'utf8');
+ for(const html of [live,review]){
+  const squeeze=html.indexOf('ejaculatory-squeeze-v1.js'),router=html.indexOf('ejaculatory-control.js');
+  assert.ok(squeeze>0,'Stop-Squeeze module must be loaded');
+  assert.ok(router>squeeze,'Stop-Squeeze must load before unified control router');
+ }
+ assert.match(legacy,/selected\.tech==='squeeze'\)return window\.SPM_SQUEEZE_V1\?\.open\?\./);
+ assert.match(legacy,/selected\.tech==='startstop'\)return window\.SPM_STARTSTOP_V2\?\.open\?\./);
+});
