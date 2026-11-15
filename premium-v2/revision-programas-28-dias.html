@@ -9,7 +9,7 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="spm-resources.css?v=20261113-recetario2">
-  <link rel="stylesheet" href="program-review-v1.css">
+  <link rel="stylesheet" href="program-review-v1.css?v=20261115-focusii-direct-review2">
 </head>
 <body>
   <header class="review-header">
@@ -23,12 +23,16 @@
       <div class="review-arrows"><button class="btn sec" id="reviewPrevious" type="button" disabled>← Anterior</button><button class="btn sec" id="reviewNext" type="button" disabled>Siguiente →</button></div>
     </nav>
     <p id="reviewStatus" role="status" aria-live="polite">Cargando la revisión…</p>
+    <section id="reviewFocusII" class="review-focusii" hidden aria-label="Acceso directo a Focalización II">
+      <div><strong>Focalización Sensorial II · Día 19</strong><p>Recorre sus cinco pantallas y elige la práctica individual o en pareja.</p></div>
+      <button id="reviewOpenFocusII" type="button" disabled>▶ Abrir Focus II</button>
+    </section>
     <button id="reviewReset" type="button" disabled>Reiniciar las pruebas de este programa</button>
     <details class="review-about"><summary>Qué incluye este recorrido</summary><p>Se muestran las actividades que el programa asigna a este perfil de ejemplo. Recuperación, nutrición, sueño y las demás herramientas aparecen según el día. Las condiciones de seguridad y progresión de cada práctica se mantienen.</p></details>
   </header>
   <div id="profileTitle" hidden></div>
   <main id="plan" aria-label="Actividades del día"></main>
   <noscript>Activa JavaScript para abrir las prácticas del programa.</noscript>
-  <script src="program-review-v1.js?v=20261115-focusii-premium1"></script>
+  <script src="program-review-v1.js?v=20261115-focusii-direct-review2"></script>
 </body>
 </html>
