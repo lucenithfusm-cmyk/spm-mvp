@@ -20,10 +20,12 @@ const EXTRA_PHOTOS={
  connection:'../assets/commercial-cinema/spm-connection-men-v1.webp',
  beginning:'../assets/commercial-cinema/spm-new-beginning-v1.webp',
  reflection:'../assets/commercial-cinema/spm-reflective-moment-v2.webp',
- breathing:'../assets/commercial-cinema/breathing-guided.jpg'
+ breathing:'../assets/commercial-cinema/breathing-guided.jpg',
+ confidence:'../assets/commercial-cinema/spm-confident-moment-v3.webp',
+ recovery:'../assets/commercial-cinema/day-11-recovery.jpg'
 };
 const STEP_PHOTOS={
- 'sf-i-1':['reflection','forearm','breathing','release','beginning'],
+ 'sf-i-1':['reflection','breathing','beginning','confidence','recovery'],
  'sf-i-2':['forearm','seated','release','intro','beginning'],
  'sf-i-3':['partner','connection','forearm','intro','beginning'],
  'sf-i-4':['seated','partner','connection','forearm','beginning'],
