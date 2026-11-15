@@ -898,3 +898,25 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  box-shadow:0 1cqw 4cqw #061a2377;
 }
 .spm-art-prep-entry:focus-visible{outline:3px solid #ffdc9b;outline-offset:2px}
+
+
+/* Preserve the photographic SPM header and its stone-and-gold atmosphere
+   without changing the original artwork used by 1/3/4. Screens 2 and 5 have
+   independent images and live controls, but share the visual brand header. */
+.spm-artwork-screen::before{
+ content:"";position:absolute;z-index:1;inset:0 0 auto 0;
+ height:19.5%;pointer-events:none;
+ background:url("../assets/sensate-premium/spm-approved-focus-screen-atlas.avif") no-repeat left top;
+ background-size:100% auto;
+}
+.spm-artwork-screen .spm-art-header{display:none}
+.spm-artwork-screen .spm-art-progress{top:17.75%;height:.55cqw}
+.spm-artwork-screen .spm-art-meta{top:18.65%;font-size:clamp(10px,2.25cqw,14px)}
+.spm-artwork-screen .spm-art-panel{top:22.5%;bottom:10.6%}
+.spm-artwork-5 .spm-art-panel{top:21.0%;bottom:10.7%}
+.spm-artwork-5 .spm-art-content-close .spm-art-photo{max-height:28cqw}
+.spm-artwork-screen .spm-approved-hit:first-of-type{z-index:6}
+@media(max-width:390px){
+ .spm-artwork-5 .spm-art-content h2{margin:.6cqw 0 .3cqw}
+ .spm-artwork-5 .spm-art-content-close{gap:.4cqw}
+}
