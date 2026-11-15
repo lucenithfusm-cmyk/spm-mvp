@@ -15,7 +15,7 @@ const sensate={
  8:{id:'sensate-first',title:'Focalización I · primer contacto',summary:'Contacto no genital por turnos, solo si ambos desean participar. También puedes elegir preparación individual.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1'},
  12:{id:'sensate-presence',title:'Presencia corporal individual',summary:'Baja el ritmo y presta atención a las sensaciones de tu cuerpo. Observa qué te ayuda a conectar.',steps:[3],minutes:3,practiceId:'sf-solo'},
  16:{id:'sensate-repeat',title:'Focalización I · repetir con comodidad',summary:'Repite el contacto no genital y registra presencia, presión y comodidad.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1'},
- 19:{id:'sensate-progress',title:'Focalización · repetir o progresar',summary:'Repite Focus I. Focus II solo se ofrece tras una práctica cómoda y si ambos lo desean hoy.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1',optionalProgression:true},
+ 19:{id:'sensate-progress',title:'Focalización Sensorial II',summary:'Explora nuevas sensaciones de forma gradual, sin exigencia de rendimiento. Elige modalidad individual o en pareja.',steps:[2,3,7,8,6],minutes:15,practiceId:'sf-focus-2'},
  23:{id:'sensate-communicate',title:'Comunicación y conexión',summary:'Practica las cuatro frases de comunicación y vuelve a las sensaciones corporales.',steps:[12,3],minutes:3,practiceId:'sf-communication'},
  26:{id:'sensate-consolidate',title:'Consolidar una práctica cómoda',summary:'Repite la práctica sensorial que resulte cómoda, sin obligación de avanzar.',steps:[2,3,4,5,6],minutes:15,practiceId:'sf-focus-1',optionalProgression:true}
 };
@@ -25,7 +25,8 @@ function relevant(lab,c){return !!c&&routes[lab]?.some(x=>c.primary===x||c.secon
 function activity(lab,day,c){
  const n=Number(day),first=lab==='breathing'&&n===1&&c?.primary==='erection';
  const item=first?firstErectionPractice:({breathing,sensate})[lab]?.[n];
- return item&&relevant(lab,c)?{...item,steps:[...item.steps],day:n,lab,...(first?{guide:window.SPM_PELVIC_GUIDANCE?.firstPractice?.(),optional:c.completed?.includes(1)===true}:{})}:null;
+ const titled=lab==='sensate'&&n===19&&c?.primary==='desire'?{...item,title:'Sensate Focus II'}:item;
+ return titled&&relevant(lab,c)?{...titled,steps:[...titled.steps],day:n,lab,...(first?{guide:window.SPM_PELVIC_GUIDANCE?.firstPractice?.(),optional:c.completed?.includes(1)===true}:{})}:null;
 }
 function assignments(day,c){return ['breathing','sensate'].map(lab=>activity(lab,day,c)).filter(Boolean);}
 window.SPM_DAILY_SUPPORT={activity,assignments,relevant};

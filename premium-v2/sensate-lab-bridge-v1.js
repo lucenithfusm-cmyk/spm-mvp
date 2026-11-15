@@ -70,7 +70,7 @@ async function open(opts={}){
    const rows=await window.SPM_DAILY_RECORDS.read(captured,day);
    if(token!==generation||scopeOf(ctx())!==captured)return false;
    return rows?.[assigned.id]?.completed===true;
-  },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
+  },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,profile:ctx()?.primary||null,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
   const frame=document.createElement('iframe');frame.title='Focalización sensorial · Focalización sensorial';frame.allow='autoplay';frame.src='sensate-lab/index.html?v=20261115-sensate-dualpaths-v3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-sensate-retry]').onclick=()=>open(opts);return false;}
 }
