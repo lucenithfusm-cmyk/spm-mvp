@@ -69,7 +69,7 @@ test('zero-cycle practice can be confirmed and saved, but not silently without c
  try{
   h.api.open(15,{origin:'dailyPlan'});await wait();
   for(let i=0;i<4;i++)h.ui.querySelector('#next').click();
-  for(const [id,value] of [['feeling','dificil'],['difficulty','dificil'],['discomfort','molestia'],['progress','todavia_no']])h.ui.querySelector('#'+id).value=value;
+  for(const [id,value] of [['feeling','dificil'],['difficulty','dificil'],['discomfort','molestia'],['progress','todavia_no']]){const select=h.ui.querySelector('#'+id);select.value=value;select.dispatchEvent(new h.w.Event('change',{bubbles:true}));}
   h.ui.querySelector('#saveBtn').click();await wait();
   assert.equal(h.writes.length,0);assert.match(h.ui.querySelector('#saveStatus').textContent,/Confirma/);
   h.ui.querySelector('#prev').click();

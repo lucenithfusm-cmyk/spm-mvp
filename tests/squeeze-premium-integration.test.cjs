@@ -83,8 +83,8 @@ test('patient program and 28-day reviewer load premium Stop-Squeeze before the u
   assert.ok(squeeze>0,'Stop-Squeeze module must be loaded');
   assert.ok(router>squeeze,'Stop-Squeeze must load before unified control router');
  }
- assert.match(legacy,/selected\.tech==='squeeze'\)return window\.SPM_SQUEEZE_V1\?\.open\?\./);
- assert.match(legacy,/selected\.tech==='startstop'\)return window\.SPM_STARTSTOP_V2\?\.open\?\./);
+ assert.match(legacy,/slot\.tech==='squeeze'\)return window\.SPM_SQUEEZE_V1\?\.open\?\./);
+ assert.match(legacy,/slot\.tech==='startstop'\)return window\.SPM_STARTSTOP_V2\?\.open\?\./);
 });
 
 
@@ -139,15 +139,23 @@ test('audio stages contain a focused intro, numeric scale, all five precise clin
   assert.ok(spoken[2].length>spoken[0].length*2,'the detailed clinical instruction belongs mainly on page 3');
  }finally{h.close()}
 });
-test('pre-entry message remains short; all existing weekly schedule slots stay unchanged',()=>{
- const m=legacy.match(/squeeze:'Hoy practicarás Stop–Squeeze\. ([^']+)'/);
- assert.ok(m&&m[0].length<270);
- assert.doesNotMatch(m[0],/primero reconoce|después aplicas|tres sesiones semanales/i);
- const schedule=Function('return ('+legacy.match(/const SCHEDULE=(\{[^;]+\});/)[1]+')')();
- assert.equal(Object.keys(schedule).length,12);
- assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,22]);
+test('pre-entry uses concise guidance and week four order remains Squeeze, Start then Combined',()=>{
+ const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only'});
+ try{
+  dom.window.eval(legacy);
+  const r=dom.window.SPM_EJACULATORY_CONTROL;
+  const voice=r.introFor(22);
+  assert.match(voice,/Semana cuatro/);
+  assert.match(voice,/Stop–Squeeze/);
+  assert.ok(voice.length<330);
+  assert.doesNotMatch(voice,/tres sesiones|bocina/i);
+  const schedule=r.schedule;
+  assert.equal(Object.keys(schedule).length,12);
+  assert.deepEqual(Object.entries(schedule).filter(([,x])=>x.tech==='squeeze').map(([n])=>Number(n)),[1,3,5,22]);
+  assert.equal(schedule[24].tech,'startstop');
+  assert.equal(schedule[26].tech,'combined');
+ }finally{dom.window.close()}
 });
-
 test('completed historical Stop–Start day-1 session cannot be overwritten by Squeeze',async()=>{
  const h=harness();
  try{

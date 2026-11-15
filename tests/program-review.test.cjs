@@ -340,8 +340,8 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
     const {w}=h;
     const sample=[
       [1,'tres sesiones','compresión'],[3,'repetición','Stop.?Squeeze'],[5,'repetición','Stop.?Squeeze'],
-      [8,'Stop.?Start','sin compresión'],[10,'repetición','sin compresión'],
-      [12,'repetición','sin compresión'],
+      [8,'Stop.?Start','sin compresión'],[10,'repites','sin compresión'],
+      [12,'repites','sin compresión'],
       [15,'Semana tres','piso pélvico'],[17,'repites','técnica combinada'],
       [22,'Semana cuatro','Stop.?Squeeze'],[24,'Semana cuatro','Stop.?Start'],[26,'Semana cuatro','técnica combinada']
     ];
