@@ -10,6 +10,46 @@ const KEY='spm-sensate-records';
 const PREFIX='../assets/sensate-premium/';
 const SCENES={intro:'spm-sensate-intro-matte.webp',seated:'spm-sensate-seated-matte.webp',forearm:'spm-sensate-forearm-matte.webp',release:'spm-sensate-release-matte.webp',partner:'spm-sensate-partner-forearm-matte.webp'};
 const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hombre sentado de costado en postura cómoda',forearm:'Autoexploración del contacto en el antebrazo',release:'Hombre dejando ir tensión corporal',partner:'Contacto de pareja consentido en el antebrazo, sin estimulación genital'};
+// One distinct five-shot photographic strip for each Focus I day.
+// Each step has a clinically relevant photograph. The approved existing scenes are
+// kept as fallbacks until the reviewed per-day photographic strip is available.
+const FOCUSI_PHOTO_STEPS={
+ 'sf-i-1':'focus-i-day-1-steps.webp',
+ 'sf-i-2':'focus-i-day-2-steps.webp',
+ 'sf-i-3':'focus-i-day-3-steps.webp',
+ 'sf-i-4':'focus-i-day-4-steps.webp',
+ 'sf-i-5':'focus-i-day-5-steps.webp'
+};
+const FOCUSI_FALLBACKS={
+ 'sf-i-1':['intro','seated','forearm','release','intro'],
+ 'sf-i-2':['forearm','seated','release','intro','forearm'],
+ 'sf-i-3':['partner','forearm','partner','seated','release'],
+ 'sf-i-4':['partner','seated','partner','forearm','release'],
+ 'sf-i-5':['partner','release','forearm','partner','intro']
+};
+const FOCUSII_FALLBACKS={
+ 'sf-focus-2':['partner','forearm','intro','release','seated'],
+ 'sf-focus-2-solo':['seated','forearm','intro','release','seated']
+};
+function stagePhoto(i){
+ const idName=FOCUSI_PHOTO_STEPS[id],frame=(i/4*100)+'%';
+ const fallback=SCENES[(FOCUSI_FALLBACKS[id]||FOCUSII_FALLBACKS[id]||['intro','seated','forearm','release','partner'])[i]]||SCENES.intro;
+ const images='linear-gradient(90deg,rgba(14,42,54,.94) 0%,rgba(14,42,54,.86) 39%,rgba(14,42,54,.24) 80%,rgba(14,42,54,.12) 100%),'+
+ (idName?'url("'+PREFIX+idName+'"),':'')+'url("'+PREFIX+fallback+'")';
+ const sizes='100% 100%,'+(idName?'100% 500%,':'')+'cover';
+ const position='center,'+(idName?'center '+frame+',':'')+'center';
+ return '<span class="sensate-stage-photo" aria-hidden="true" style="background-image:'+images+';background-size:'+sizes+';background-position:'+position+'"></span>';
+}
+function sessionScene(key,kind){
+ if(isNewFocusI()){
+  const dayImage=FOCUSI_PHOTO_STEPS[id],fallback=SCENES[isPartner()?'partner':key]||SCENES.intro;
+  return '<figure class="sensate-scene sensate-session-scene '+kind+'" role="img" aria-label="Ambiente tranquilo de práctica sensorial">'+
+   '<span aria-hidden="true" class="sensate-session-photo" style="background-image:linear-gradient(90deg,rgba(12,44,50,.07),rgba(12,44,50,.06)),'+
+   'url(&quot;'+PREFIX+dayImage+'&quot;),url(&quot;'+PREFIX+fallback+'&quot;);background-size:100% 100%,100% 500%,cover;background-position:center,center 0%,center"></span></figure>';
+ }
+ return scene(key,kind);
+}
+
 const PHASES={
  // Five distinct Focus I sessions, preserving the seven-day Sensate cadence.
  'sf-i-1':[
@@ -250,7 +290,7 @@ function introScreen(){
  const heading=focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
  const lead=focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
  return '<section class="card intro-card'+(focus2?' focusii-welcome':'')+'"><p class="eyebrow">SPM · FOCALIZACIÓN SENSORIAL</p><h2>'+heading+'</h2><p>'+lead+'</p>'+
- (focus2||focus1&&isPartner()?scene('partner','intro-visual'):scene('intro','intro-visual'))+audioControls()+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
+ (focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+audioControls()+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
 }
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function focusIPrepScreen(){
@@ -260,7 +300,7 @@ function focusIPrepScreen(){
  const copy=solo?'Encuentra un lugar cómodo y escucha las instrucciones de hoy.':'Elijan un momento de conexión. La práctica puede hacerse en su próximo encuentro, cuando ambos quieran.';
  return '<section class="card prep-card focusi-preparation"><p class="eyebrow">FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5</p>'+
  '<h2>Tu práctica '+label.toLowerCase()+'</h2><p>'+copy+'</p>'+
- scene(photo,'focusi-modal-photo')+audioControls()+
+ sessionScene(photo,'focusi-modal-photo')+audioControls()+
  '<button type="button" data-act="branch" data-value="'+(solo?'individual':'partner')+'" class="gold full focusi-start">▶ Iniciar mi práctica</button>'+
  '</section>';
 }
@@ -294,10 +334,11 @@ function focusIIExplainScreen(){
  return '<section class="card focusii-explain" aria-label="Focus II · explicación '+mode+'">'+
  '<p class="eyebrow">'+phaseTitle+' · '+mode.toUpperCase()+' · 3 / 5</p>'+
  '<h2>'+(focus1?safeText(FOCUSI_TITLES[id]):'Explora nuevas sensaciones')+'</h2><p>Escucha cada paso antes de comenzar.</p>'+
- '<div class="focusii-visual">'+scene(isPartner()?'partner':'forearm','focusii-cover')+'</div>'+
+ '<div class="focusii-visual">'+(focus1?sessionScene(isPartner()?'partner':'forearm','focusii-cover'):scene(isPartner()?'partner':'forearm','focusii-cover'))+'</div>'+
  '<h3 class="focusii-heading">Tu práctica guiada</h3>'+
- '<div class="focusii-step-list">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar paso '+(i+1)+': '+safeText(labelForPhase(i))+'"><span class="number">'+(i+1)+'</span><span>'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">🔊</span></button>').join('')+'</div>'+
- '<button type="button" data-act="explainall" data-audio class="focusii-listen" '+(explainingAll?'disabled':'')+'><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Reproduciendo guía…':'Escuchar los 5 pasos')+'</button>'+
+ '<button type="button" data-act="explainall" data-audio class="focusii-listen sensate-play-all" aria-pressed="'+explainingAll+'"><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Detener narración':'Escuchar los 5 pasos')+'</button>'+
+ '<div class="focusii-step-list">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step sensate-photo-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar '+safeText(labelForPhase(i))+'">'+
+ stagePhoto(i)+'<span class="number">'+(i+1)+'</span><span class="sensate-photo-label">'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">▶</span></button>').join('')+'</div>'+
  '<details class="more"><summary>Leer instrucción seleccionada</summary><p>'+safeText(explanatoryText())+'</p></details>'+
  '<p class="compact-footnote">En la siguiente pantalla realizarás los pasos a tu ritmo. No hay tiempo obligatorio.</p></section>';
 }
@@ -468,7 +509,7 @@ root.addEventListener('click',e=>{
   return;
  }
  if(act==='explainstep'){explainStep(Number(button.dataset.value));return}
- if(act==='explainall'){explainAll();return}
+ if(act==='explainall'){if(explainingAll){stopAudio();render()}else explainAll();return}
  if(act==='guideintro'){if(voiceActive)stopAudio();else speech(autoGuideIntro(),null,'[data-act=guideintro]');return}
  if(act==='startguide'){startGuide();return}
  if(act==='pauseguide'){pauseGuide();return}
