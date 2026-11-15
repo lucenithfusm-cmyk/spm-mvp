@@ -282,10 +282,10 @@ function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige c
 function introScreen(){
  const focus2=isDaily&&assigned?.practiceId==='sf-focus-2';
  const focus1=isNewFocusI();
- const heading=focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
- const lead=focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
+ const heading=id==='sf-i-1'?'Conecta con tus sensaciones':focus1?FOCUSI_TITLES[id]:focus2?(META.profile==='desire'?'Sensate Focus II':'Focalización Sensorial II'):'Conecta con tus sensaciones';
+ const lead=id==='sf-i-1'?'Explora esta práctica con calma, sin presión y a tu ritmo.':focus1?(assigned?.summary||'Aprende a reconocer tus sensaciones a tu ritmo.'):focus2?'Explora nuevas sensaciones sin exigencias, a tu propio ritmo.':'Una práctica para estar presente, reducir la presión y recuperar el disfrute del contacto.';
  return '<section class="card intro-card'+(focus2?' focusii-welcome':'')+'"><p class="eyebrow">SPM · FOCALIZACIÓN SENSORIAL</p><h2>'+heading+'</h2><p>'+lead+'</p>'+
- audioControls()+(focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
+ audioControls()+(id==='sf-i-1'?scene('seated','intro-visual'):focus1?sessionScene(isPartner()?'partner':'intro','intro-visual'):focus2?scene('partner','intro-visual'):scene('intro','intro-visual'))+'<div class="sensate-values">'+(focus2?'<span>◌ Explorar el tacto</span><span>◌ Descubrir nuevos estímulos</span><span>◌ Conectar sin presión</span>':focus1?'<span>◌ Atención</span><span>◌ Sensaciones</span><span>◌ Sin presión</span>':'<span>◌ Más conciencia corporal</span><span>◌ Menos ansiedad</span><span>◌ Más conexión y disfrute</span>')+'</div></section>'+(focus2||focus1?'':API_NOTE);
 }
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function focusIPrepScreen(){
@@ -330,29 +330,25 @@ function focusIIExplainScreen(){
  '<p class="eyebrow">'+phaseTitle+' · 3 / 5</p>'+
  '<h2>Tu práctica guiada</h2>'+
  '<p class="sensate-guide-lead">Toca cada paso para escuchar cómo realizarlo. Sin presiones ni tiempos obligatorios.</p>'+
- '<div class="sensate-guide-visual">'+(focus1?sessionScene(isPartner()?'partner':'intro','focusii-cover'):scene(isPartner()?'partner':'intro','focusii-cover'))+'</div>'+
+ '<button type="button" data-act="explainall" data-audio class="focusii-listen sensate-play-all" aria-pressed="'+explainingAll+'"><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Detener narración':'Escuchar los 5 pasos')+'</button>'+
  '<div class="focusii-step-list" role="group" aria-label="Escuchar cada instrucción">'+PHASES[id].map((p,i)=>'<button type="button" data-act="explainstep" data-audio data-value="'+i+'" class="focusii-step sensate-photo-step '+(explainPhase===i?'chosen':'')+'" aria-label="Escuchar el paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+
  stagePhoto(i)+'<span class="number" aria-hidden="true">'+(i+1)+'</span><span class="sensate-photo-label">'+safeText(labelForPhase(i))+'</span><span aria-hidden="true" class="focusii-small-speaker">▶</span></button>').join('')+'</div>'+
- '<button type="button" data-act="explainall" data-audio class="focusii-listen sensate-play-all" aria-pressed="'+explainingAll+'"><span class="focusii-speaker" aria-hidden="true">🔊</span>'+(explainingAll?'Detener narración':'Escuchar los 5 pasos')+'</button>'+
  '<details class="more"><summary>Leer la instrucción seleccionada</summary><p>'+safeText(explanatoryText())+'</p></details>'+
  '<p class="compact-footnote">Continúa para realizar la práctica guiada, con pausas y audio.</p></section>';
 }
+
 function focusIIPracticeScreen(){
  const current=PHASES[id][phase];
  const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
- const status=guideDone?'Puedes registrar tu experiencia.':running?'Escucha, explora y avanza cuando lo desees.':guideStarted?'Pausada. Reanuda cuando quieras.':'Escucha cada paso y practica sin prisa.';
- const imageKey=isPartner()?(phase===0?'seated':'partner'):(phase===2?'forearm':phase===3?'release':'seated');
- return '<section class="card focusii-practice" aria-label="Focus II práctica '+modeTitle()+'">'+
+ const status=guideDone?'Puedes registrar tu experiencia.':running?'Explora sin presión y avanza cuando lo desees.':guideStarted?'Pausada. Puedes reanudar.':'Escucha la guía y comienza cuando estés listo.';
+ return '<section class="card focusii-practice" aria-label="Práctica guiada '+modeTitle()+'">'+
  '<p class="eyebrow">'+phaseTitle+' · '+modeTitle().toUpperCase()+' · 4 / 5</p>'+
- '<h2>Ahora, ponlo en práctica</h2>'+
- '<p class="sensate-first-cue">'+safeText(current[1])+'</p>'+
- (!guideStarted?'<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>':'')+
  '<div class="focusii-phase-nav" aria-label="Fases de la práctica">'+PHASES[id].map((stepData,i)=>'<button type="button" data-act="phase" data-value="'+i+'" '+(!guideStarted?'disabled':'')+' class="'+(phase===i?'current':i<phase?'complete':'')+'" aria-label="Ir al paso '+(i+1)+': '+safeText(labelForPhase(i))+'">'+(i+1)+'</button>').join('')+'</div>'+
- '<p class="focusii-phase-count">Paso '+(phase+1)+' de 5</p><h3 class="focusii-active-title">'+safeText(labelForPhase(phase))+'</h3>'+
+ '<p class="focusii-phase-count">Paso '+(phase+1)+' de 5</p><h2 class="focusii-active-title">'+safeText(labelForPhase(phase))+'</h2>'+
+ (!guideStarted?'<button type="button" data-act="guideintro" data-audio class="focusii-listen focusii-instruction"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar cómo funciona</button>':'<button type="button" data-act="repeataudio" data-audio class="focusii-listen"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar la instrucción</button>')+
+ '<p class="sensate-first-cue">'+safeText(current[1])+'</p>'+
  '<div class="focusii-active-photo sensate-practice-photo" role="img" aria-label="Imagen alusiva a la acción '+safeText(labelForPhase(phase))+'">'+stagePhoto(phase)+'</div>'+
- ''+
- (guideStarted?'<button type="button" data-act="repeataudio" data-audio class="focusii-listen"><span class="focusii-speaker" aria-hidden="true">🔊</span>Escuchar la instrucción</button>':'')+
- '<div class="focusii-timing"><span>Tiempo transcurrido <small>(apoyo opcional)</small></span><strong data-guide-elapsed>'+clockText(t)+'</strong><small>En este paso: <span data-guide-phase-elapsed>'+clockText(phaseElapsed)+'</span></small></div>'+
+ '<div class="focusii-timing"><span>Tiempo transcurrido <small>(opcional)</small></span><strong data-guide-elapsed>'+clockText(t)+'</strong><small>En este paso: <span data-guide-phase-elapsed>'+clockText(phaseElapsed)+'</span></small></div>'+
  '<p class="focusii-status" role="status">'+safeText(status)+'</p>'+
  (!guideStarted||guideDone?'<button type="button" data-act="startguide" class="gold full primary-guide">'+(guideDone?'↻ Volver a practicar':'▶ Iniciar práctica guiada')+'</button>':
  running?'<button type="button" data-act="pauseguide" class="gold full primary-guide">⏸ Pausar práctica</button>':
@@ -360,8 +356,9 @@ function focusIIPracticeScreen(){
  '<div class="focusii-guide-actions"><button type="button" data-act="nextphase" class="secondary" '+(!guideStarted||guideDone?'disabled':'')+'>Siguiente paso →</button>'+
  '<button type="button" data-act="performed" class="secondary" '+(!guideStarted?'disabled':'')+'>✓ Terminar y evaluar</button></div>'+
  '<details class="more"><summary>Leer cómo se realiza</summary><p>'+safeText(current[1])+'</p></details>'+
- '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras. No hay una respuesta obligatoria.</p></section>';
+ '<p class="compact-footnote">Puedes pausar, cambiar el ritmo o terminar cuando quieras.</p></section>';
 }
+
 function focusIICloseScreen(){
  const phaseTitle=isNewFocusI()?'FOCALIZACIÓN I · '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+'/5':'SENSATE FOCUS II';
  const choices=[['0','Ausente'],['1','Bajo'],['2','Aceptable'],['3','Satisfactorio'],['4','Muy bien']];
