@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 941 1672" width="941" height="1672" role="img" aria-label="SPM Focalización sensorial, fondo visual de la pantalla 5">
+<defs>
+ <linearGradient id="base" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#06333c"/><stop offset=".47" stop-color="#12383e"/><stop offset="1" stop-color="#041f2c"/></linearGradient>
+ <radialGradient id="glow1"><stop stop-color="#f1ae6c" stop-opacity=".48"/><stop offset=".62" stop-color="#a9845e" stop-opacity=".1"/><stop offset="1" stop-color="#a9845e" stop-opacity="0"/></radialGradient>
+ <radialGradient id="glow2"><stop stop-color="#91c5b2" stop-opacity=".21"/><stop offset="1" stop-color="#86c0b9" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="30"/></filter>
+ <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#dfbe84" stop-opacity=".22"/><stop offset=".58" stop-color="#e9d29f" stop-opacity=".8"/><stop offset="1" stop-color="#e2c48b" stop-opacity=".23"/></linearGradient>
+</defs>
+<path fill="url(#base)" d="M0 0H941V1672H0Z"/>
+<ellipse cx="790" cy="505" rx="460" ry="490" fill="url(#glow1)" filter="url(#blur)"/>
+<ellipse cx="135" cy="1060" rx="440" ry="650" fill="url(#glow2)" filter="url(#blur)"/>
+<path d="M0 180Q425 115 941 148" stroke="#c5a46c" stroke-opacity=".24" fill="none" stroke-width="1.5"/>
+<path d="M0 195Q400 163 941 179" stroke="#8db9aa" stroke-opacity=".11" fill="none" stroke-width="1"/>
+<path d="M0 1420 Q480 1370 941 1440" fill="none" stroke="url(#edge)" stroke-width="2" opacity=".48"/>
+<g opacity=".20" fill="none" stroke="#c5a46c" stroke-width="1"><path d="M50 140 L890 140 M40 1468 L910 1468"/></g>
+<g opacity=".15" stroke="#7aa99e" fill="none"><path d="M0 780 C370 710 570 850 941 770"/><path d="M0 800 C310 735 660 870 941 800"/></g>
+</svg>
