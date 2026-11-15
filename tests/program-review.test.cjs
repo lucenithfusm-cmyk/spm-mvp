@@ -69,7 +69,7 @@ test('all six domains offer five voluntary Focus I practices, one direct Focus I
    await w.SPM_PROGRAM_REVIEW.select(program,16);
    const c=w.SPM_RESOURCE_CONTEXT(),v=w.SPM_DAILY_PRACTICE.assignments().filter(a=>a.kind==='video'&&a.videoKey==='sensory-focus');
    assert.equal(v.length,1,'only one sensory video on day 16 in '+program);
-   assert.equal(w.SPM_DAILY_SUPPORT.activity('sensate',16,c),undefined,'day 16 does not repeat Focus I in '+program);
+   assert.equal(w.SPM_DAILY_SUPPORT.activity('sensate',16,c),null,'day 16 does not repeat Focus I in '+program);
    for(const [day,practiceId] of focusI){
     const act=w.SPM_DAILY_SUPPORT.activity('sensate',day,c);
     assert.equal(act.practiceId,practiceId);
