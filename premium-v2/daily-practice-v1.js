@@ -25,9 +25,13 @@ function safety(c){
 }
 const educational=new Set(['baseline','context','checklist','review','progress','reassessment','script','planner','priorities','reframe','ifthen']);
 function restricted(c,id){
- const level=safety(c);if(level==='unavailable'||level==='urgent')return true;
+ if(!c)return true;
  if(!id)return false;
  const a=typeof id==='string'?assignments(c).find(x=>x.id===id):id;if(!a)return true;
+ // Focus I and II are voluntary educational practices, not gated clinical interventions.
+ // This does not suppress SPM's independent global assessment and medical notices.
+ if(a.kind==='sensate')return false;
+ const level=safety(c);if(level==='unavailable'||level==='urgent')return true;
  if(a.kind==='wellness'&&a.tip.category==='movement'&&window.SPM_RESOURCES?.restricted?.(c)!==false)return true;
  if(window.SPM_PROGRAM_RECOVERY?.blocks(c,a))return true;
  if(level==='none')return false;
@@ -77,6 +81,12 @@ function assignments(c=ctx()){
  if(safety(c)==='review'&&[7,14,21,28].includes(day)&&main.kind!=='ep-checkpoint')main={id:'main',kind:'worksheet',title:base.title_es,summary:base.practice_es,lesson:base};
  if(c.primary==='erection'&&window.SPM_ERECTION_DAILY)({main,support}=window.SPM_ERECTION_DAILY.compose(main,support,c,safety(c)));
  if(window.SPM_DAILY_RESOURCES)({main,support}=window.SPM_DAILY_RESOURCES.compose(main,support,c));
+ // Day 16 has one independent, already-approved sensory-focus video practice.
+ // Avoid repeating the obsolete Focus I worksheet alongside the same video.
+ if(day===16&&main.kind==='worksheet'&&base.interaction==='timer'){
+  const video=support.find(a=>a.kind==='video'&&a.videoKey==='sensory-focus');
+  if(video){main={...video,id:'main',optional:true,optionalLabel:'VIDEO SENSORIAL · PRÁCTICA INDEPENDIENTE'};support=support.filter(a=>a!==video);}
+ }
  const tips=window.SPM_WELLNESS_DAILY_TIP_V1?.tipsFor(day)||[];
  const wellness=tips.map(tip=>({id:`wellness-${tip.category}`,kind:'wellness',title:`${tip.label} · ${tip.title}`,summary:tip.body,tip,optional:true}));
  const followup=window.SPM_PROGRAM_CHECKPOINT?.assignment(c);

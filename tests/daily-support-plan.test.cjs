@@ -18,7 +18,7 @@ test('all three routes keep the breathing schedule and DE starts with its own da
  for(const route of ['erection','ejaculation','desire']){const h=setup(route);try{
   const plan=h.w.SPM_DAILY_SUPPORT;
   assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('breathing',d,h.c)),route==='erection'?[1,3,6,10,13,17,20,24,27]:[3,6,10,13,17,20,24,27]);
-  assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('sensate',d,h.c)),[4,8,12,16,19,23,26]);
+  assert.deepEqual(Array.from({length:28},(_,i)=>i+1).filter(d=>plan.activity('sensate',d,h.c)),[4,8,12,19,23,26]);
   for(let d=1;d<=28;d++){
    const items=plan.assignments(d,h.c);assert.ok(items.length<=1);
    if(d%7===0)assert.equal(items.length,0);
@@ -32,12 +32,12 @@ test('all three routes keep the breathing schedule and DE starts with its own da
 test('daily buttons match schedule and only the authoritative current day is actionable',async()=>{
  const h=setup();try{await wait();
   const w=h.w,breaths=[...w.document.querySelectorAll('[data-breathing-daily]')],sensate=[...w.document.querySelectorAll('[data-sensate-daily]')];
-  assert.equal(breaths.length,9);assert.equal(sensate.length,7);assert.equal(breaths.filter(x=>!x.disabled).length,1);assert.equal(sensate.filter(x=>!x.disabled).length,0);
+  assert.equal(breaths.length,9);assert.equal(sensate.length,6);assert.equal(breaths.filter(x=>!x.disabled).length,1);assert.equal(sensate.filter(x=>!x.disabled).length,0);
   await w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
   assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'daily');assert.deepEqual([...w.SPM_BREATHING_LAB_HOST.getContext().activity.steps],[11]);
   await w.SPM_BREATHING_LAB_HOST.openLibrary();assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'library');assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().activity,null);await w.SPM_BREATHING_LAB.close();
   h.setContext({...h.c,day:12});await wait();assert.equal(w.document.querySelectorAll('[data-breathing-daily]:enabled').length,0);assert.equal(w.document.querySelectorAll('[data-sensate-daily]:enabled').length,1);
-  await w.SPM_SENSATE_LAB.open({origin:'dailyPlan'});assert.deepEqual([...w.SPM_SENSATE_LAB_HOST.getContext().activity.steps],[3]);await w.SPM_SENSATE_LAB.close();
+  await w.SPM_SENSATE_LAB.open({origin:'dailyPlan'});assert.deepEqual([...w.SPM_SENSATE_LAB_HOST.getContext().activity.steps],[0,1,2,3,4]);await w.SPM_SENSATE_LAB.close();
   assert.equal(h.writes.length,0);
  }finally{h.close()}
 });

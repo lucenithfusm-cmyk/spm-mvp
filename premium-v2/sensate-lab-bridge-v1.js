@@ -2,8 +2,9 @@
 if(window.SPM_SENSATE_LAB)return;
 const keys=['spm-sensate-state','spm-sensate-records'];
 const ctx=()=>window.SPM_RESOURCE_CONTEXT?.(),scopeOf=c=>c?c.userId+':'+c.planId:'',clone=x=>JSON.parse(JSON.stringify(x));
-const restriction=c=>!c||c.safety==='urgent'?'urgent':c.safety!=='none'||c.flags?.length||c.checkins?.some(x=>x.new_safety_flag)?'review':'none';
-function relevant(c){return !!c && ['erection','ejaculation','desire','confidence','anxiety','wellbeing'].some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
+// Sensate Focus I/II is a voluntary educational practice. Medical flags remain elsewhere in SPM.
+const restriction=c=>c?'none':'unavailable';
+function relevant(c){return !!c && ['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed'].some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
 function validState(s){return !!s&&typeof s==='object'&&!Array.isArray(s)&&JSON.stringify(s).length<700000&&Object.entries(s).every(([k,v])=>keys.includes(k)&&typeof v==='string'&&v.length<350000);}
 let modal=null,scope='',state={},day=1,origin='library',activity=null,mode='library',dirty=0,saved=0,timer=0,watch=0,flight=null,generation=0,lastFocus=null;
 function status(text,error=false){const el=modal?.querySelector('[data-sensate-status]');if(el){el.textContent=text;el.dataset.error=String(error);}const retry=modal?.querySelector('[data-sensate-retry]');if(retry)retry.hidden=!error;}
@@ -71,7 +72,7 @@ async function open(opts={}){
    if(token!==generation||scopeOf(ctx())!==captured)return false;
    return rows?.[assigned.id]?.completed===true;
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,profile:ctx()?.primary||null,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Focalización sensorial · Focalización sensorial';frame.allow='autoplay';frame.src='sensate-lab/index.html?v=20261115-focusii-direct-review2&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
+  const frame=document.createElement('iframe');frame.title='Focalización sensorial · Focalización sensorial';frame.allow='autoplay';frame.src='sensate-lab/index.html?v=20261115-sensate-focus1-five-direct6&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');modal.querySelector('main').replaceChildren(frame);status('Progreso conectado a tu programa');return true;
  }catch{if(token!==generation)return false;status('No pudimos recuperar tu progreso. Vuelve a intentarlo.',true);modal.querySelector('[data-sensate-retry]').onclick=()=>open(opts);return false;}
 }
 let scheduled=false;
