@@ -16,6 +16,9 @@ const validDay=value=>/^(?:[1-9]|1\d|2[0-8])$/.test(String(value));
 const params=new URLSearchParams(location.search);
 let program=validProgram(params.get('programa'))?params.get('programa'):'desire';
 let day=validDay(params.get('dia'))?Number(params.get('dia')):1;
+// Direct day-19 review links should open the actual Focus II screens, not stop at the daily overview.
+const initialFocusII=day===19&&['desire','erection','ejaculation'].includes(program)&&params.has('programa');
+let focusing=false;
 let busy=true,ready=false;
 const states=new Map();
 function createState(id){return {
@@ -42,12 +45,38 @@ function controls(){
   $('reviewPrevious').disabled=busy||!ready||day===1;$('reviewNext').disabled=busy||!ready||day===28;
 }
 function updateUrl(){const url=new URL(location.href);url.searchParams.set('programa',program);url.searchParams.set('dia',String(day));history.replaceState(null,'',url);}
+function focusIIControls(){
+ const box=$('reviewFocusII'),btn=$('reviewOpenFocusII');
+ if(!box||!btn)return;
+ const selected=window.SPM_DAILY_SUPPORT?.activity('sensate',day,context());
+ const available=day===19&&selected?.practiceId==='sf-focus-2';
+ box.hidden=!available;
+ btn.disabled=!available||busy||!ready||focusing;
+ const heading=box.querySelector('strong');
+ if(heading&&available)heading.textContent=(program==='desire'?'Sensate Focus II':'Focalización Sensorial II')+' · Día 19';
+}
+async function openFocusII(){
+ if(busy||!ready||focusing||day!==19)return false;
+ const activity=window.SPM_DAILY_SUPPORT?.activity('sensate',day,context());
+ if(activity?.practiceId!=='sf-focus-2'||!window.SPM_SENSATE_LAB?.open){status('No pudimos encontrar Focus II para este perfil de revisión.',true);return false;}
+ focusing=true;focusIIControls();
+ try{
+  const opened=await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day:19});
+  if(opened!==true){status('No pudimos abrir Focus II. Pulsa «Abrir Focus II» para reintentar.',true);return false;}
+  status('Focus II · Día 19 · Abre la bocina y recorre sus cinco pantallas.');
+  return true;
+ }catch{
+  status('No pudimos abrir Focus II. Usa el botón para reintentar.',true);
+  return false;
+ }finally{focusing=false;focusIIControls();}
+}
 function render(){
   const selected=programs.find(p=>p.id===program);$('profileTitle').textContent=selected.profile;
   window.SPM_CURRENT_DAY=day;document.documentElement.dataset.spmCurrentDay=String(day);
   document.title=selected.label+' · Día '+day+' · Revisión SPM';
   controls();updateUrl();window.dispatchEvent(new Event('spm:resourcecontext'));
   window.SPM_DAILY_PRACTICE?.open({focus:false});status(selected.label+' · Día '+day+' de 28 · Perfil de ejemplo');
+  focusIIControls();
 }
 async function closeActivities(){
   for(const name of ['SPM_DESIRE_LAB','SPM_SENSATE_LAB','SPM_BREATHING_LAB','SPM_PELVIC_LAB']){
@@ -127,6 +156,8 @@ async function boot(){
     controls();$('profileTitle').textContent=programs.find(p=>p.id===program).profile;
     for(const src of scripts)await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(Error(src));document.body.append(script);});
     ready=true;busy=false;render();
+    $('reviewOpenFocusII').onclick=()=>void openFocusII();
+    if(initialFocusII)setTimeout(()=>{void openFocusII();},120);
     $('reviewProgram').onchange=e=>select(e.target.value,day);
     $('reviewDay').onchange=e=>select(program,e.target.value);
     $('reviewPrevious').onclick=()=>select(program,day-1);$('reviewNext').onclick=()=>select(program,day+1);
@@ -134,5 +165,5 @@ async function boot(){
     return true;
   }catch{busy=false;ready=false;controls();status('No pudimos preparar esta revisión. Recarga la página para intentarlo de nuevo.',true);return false;}
 }
-window.SPM_PROGRAM_REVIEW={programs,select,ready:boot()};
+window.SPM_PROGRAM_REVIEW={programs,select,openFocusII,ready:boot()};
 })();
