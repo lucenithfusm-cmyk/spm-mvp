@@ -14,6 +14,13 @@ body{margin:0;background:#07171f;color:#f7fafc;font-family:system-ui,-apple-syst
 .review-controls :focus-visible,#reviewReset:focus-visible{outline:3px solid #c5a46c;outline-offset:3px}
 .review-controls :disabled,#reviewReset:disabled{opacity:.45;cursor:wait}
 #reviewStatus{min-height:24px;font-size:14px}#reviewStatus[data-error="true"]{color:#ffcebf}
+.review-focusii{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:13px 0 16px;padding:16px;border-radius:15px;border:1px solid #867453;background:#142f43;color:#f6f8f7}
+.review-focusii strong{font-size:17px;font-weight:850;color:#ead4aa}
+.review-focusii p{font-size:13px;margin:5px 0 0;max-width:40ch}
+.review-focusii button{min-height:51px;padding:12px 18px;background:#c5a46c;color:#102d48;border-radius:12px;border:0;font-weight:850;font-size:15px;cursor:pointer}
+.review-focusii button:disabled{opacity:.5;cursor:wait}
+.review-focusii button:focus-visible{outline:3px solid #e3d0a2;outline-offset:3px}
+@media(max-width:540px){.review-focusii{gap:10px}.review-focusii button{width:100%}}
 #reviewReset{margin:3px 0 10px;border:0;padding:5px 0;background:none;color:#d9be92;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .review-about{font-size:13px;color:#a7bec9}.review-about summary{cursor:pointer}.review-about p{max-width:760px}
 #plan{display:block;padding:10px 0 40px}#spmDailyCoach{display:none!important}
