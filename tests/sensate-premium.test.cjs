@@ -7,10 +7,10 @@ const root=path.resolve(__dirname,'..');
 const ui=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.js'),'utf8');
 const pause=()=>new Promise(resolve=>setTimeout(resolve,35));
 
-function harness({day=8,practiceId='sf-focus-1',restriction='none',mode='daily',saved=[],recordDailyOk=true}={}){
+function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='none',mode='daily',saved=[],recordDailyOk=true}={}){
  const dom=new JSDOM('<!doctype html><html lang="es"><body><div id="sensatePremium"></div></body></html>',{url:'https://spm.test/premium-v2/sensate-lab/index.html',runScripts:'outside-only',pretendToBeVisual:true});
  const w=dom.window,records={'spm-sensate-records':JSON.stringify(saved)},writes=[],calls=[],spoken=[],clock=new Map();
- const cfg={day,origin:mode==='daily'?'dailyPlan':'library',mode,restriction,activity:mode==='daily'?{day,practiceId,title:'Actividad sensorial asignada',optionalProgression:true}:null};
+ const cfg={day,origin:mode==='daily'?'dailyPlan':'library',mode,restriction,profile,activity:mode==='daily'?{day,practiceId,title:'Actividad sensorial asignada'}:null};
  let timerId=0,active=null;
  const host={
   getContext:()=>cfg,
@@ -169,20 +169,61 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
  }
 });
 
-test('Focus II is still restricted to a prior comfortable session; daily communication practice is preserved',()=>{
- const noHistory=harness({mode:'library'});
+test('day 19 has one direct Focus II practice without a prior Focus I record or an approval gate',()=>{
+ for(const mode of ['individual','partner']){
+  const h=harness({day:19,practiceId:'sf-focus-2',saved:[]});
+  try{
+   assert.match(h.page.textContent,/Focalización Sensorial II/);
+   h.click('audio');assert.match(h.spoken.at(-1),/puedes omitirla hoy/i);
+   h.click('next');h.branch(mode);
+   assert.match(h.page.textContent,/Focus II/);
+   assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
+   assert.equal(h.page.querySelector('[data-act=togglefocus]'),null);
+   h.click('next');h.click('startguide');
+   assert.match(h.spoken.at(-1),mode==='partner'?/contacto no genital/:/Acomódate/);
+  }finally{h.close()}
+ }
+});
+
+test('desire welcomes Sensate Focus II without the DE/EP omission warning; skip does not save a completed session',()=>{
+ const desire=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
  try{
-  noHistory.click('next');noHistory.branch('partner');
-  assert.equal(noHistory.page.querySelector('[data-act=togglefocus]'),null);
- }finally{noHistory.close()}
- const prior={day:8,completed:true,practiceId:'sf-focus-1',partnerComfort:8,pressureAfter:2,recommendation:'progress'};
- const eligible=harness({day:19,mode:'daily',saved:[prior]});
- try{
-  eligible.click('next');eligible.branch('partner');
-  const progress=eligible.page.querySelector('[data-act=togglefocus]');assert.ok(progress);
-  progress.click();assert.match(eligible.page.textContent,/Focus II/i);
-  assert.match(ui,/Más lento/);assert.match(ui,/Así está bien/);assert.match(ui,/Prefiero otro contacto/);
- }finally{eligible.close()}
+  assert.match(desire.page.textContent,/Sensate Focus II/);
+  desire.click('audio');
+  assert.match(desire.spoken.at(-1),/deseo/);
+  assert.doesNotMatch(desire.spoken.at(-1),/omitirla hoy|no te resulta cómoda/i);
+  assert.equal(desire.page.querySelector('[data-act=skip]'),null);
+ }finally{desire.close()}
+ for(const profile of ['erection','ejaculation']){
+  const h=harness({day:19,practiceId:'sf-focus-2',profile});
+  try{
+   assert.ok(h.page.querySelector('[data-act=skip]'));
+   h.click('skip');
+   assert.ok(h.calls.includes('close'));
+   assert.equal(h.writes.length,0);
+   assert.equal(h.calls.includes('recordDaily'),false);
+  }finally{h.close()}
+ }
+});
+
+test('day-19 Focus II keeps individual and partner saves distinct and does not repeat Focus I',async()=>{
+ for(const mode of ['individual','partner']){
+  const h=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
+  try{
+   h.advanceToPractice(mode);
+   h.click('startguide');h.click('performed');h.click('next');
+   for(const [field,value] of [['comfort','comodo'],['ease','intermedia'],['attention','conexion'],['repeat','si'],['discomfort','ninguna']])h.choose(field,value);
+   h.click('save');await pause();
+   const records=JSON.parse(h.records['spm-sensate-records']);
+   assert.equal(records.length,1);
+   assert.equal(records[0].practiceId,mode==='partner'?'sf-focus-2':'sf-focus-2-solo');
+   assert.equal(records[0].completed,true);
+   assert.ok(h.calls.includes('recordDaily'));
+  }finally{h.close()}
+ }
+});
+
+test('day-23 communication practice remains available independently',()=>{
  const communication=harness({day:23,practiceId:'sf-communication'});
  try{
   communication.click('next');communication.branch('individual');communication.click('explainall');
