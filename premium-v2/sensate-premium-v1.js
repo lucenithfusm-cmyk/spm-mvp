@@ -9,7 +9,6 @@ if(!root||!api){if(root)root.innerHTML='<p class="offline">Abre Focalización se
 const KEY='spm-sensate-records';
 const PREFIX='../assets/sensate-premium/';
 const IMAGES=['focalizacion-inicio.webp','focalizacion-preparacion.webp','focalizacion-guia.webp','focalizacion-cierre.webp'];
-const VIDEO='https://jogirmziqjlsttbbarcx.supabase.co/storage/v1/object/public/spm-media/videos/sensory-focus.mp4';
 const PHASES={
  'sf-solo':[
   ['Llegar al cuerpo','Siéntate o recuéstate. Afloja mandíbula, hombros y abdomen. Observa el apoyo de tu cuerpo.',60],
@@ -84,7 +83,7 @@ function progress(){return '<div class="progress-rail" role="progressbar" aria-l
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'" '+(key==='sf-focus-2'&&!mayAdvance()?'disabled':'')+'>'+safeText(LABELS[key])+(key==='sf-focus-2'&&!mayAdvance()?' · Primero Focus I cómodo':'')+'</button>').join('')+'</div>'}
 function introScreen(){return '<section class="card"><p class="eyebrow">SPM · SENSATE FOCUS</p><h2>Sentir, sin demostrar</h2><p>Tu objetivo es percibir, no rendir. Vamos a practicar con el recurso clínico de SPM, paso a paso.</p><p class="note">La biblioteca mantiene Focus I, Focus II, práctica individual, comunicación y recuperación.</p>'+(!isDaily?selection():'')+'</section>'+
-'<details class="more"><summary>Ver el video educativo SPM · Foco sensorial</summary><video controls playsinline preload="none" src="'+VIDEO+'"></video><p>Video original de la biblioteca SPM. Verlo no registra una práctica.</p></details>'+API_NOTE;}
+API_NOTE;}
 function range(name,label,lo,hi){return '<label class="range"><span>'+label+' <strong data-val="'+name+'">'+data[name]+'</strong>/10</span><input type="range" min="0" max="10" step="1" data-field="'+name+'" value="'+data[name]+'" aria-label="'+label+'"><small>'+lo+' <span>'+hi+'</span></small></label>'}
 function prepScreen(){const possible=isDaily&&assigned?.practiceId==='sf-focus-1';
 return '<section class="card"><p class="eyebrow">'+(isDaily?'DÍA '+originalDay+' · '+safeText(assigned?.title||'Práctica'):'PRÁCTICA A TU RITMO')+'</p>'+

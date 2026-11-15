@@ -120,8 +120,29 @@ test('Failure to complete the SPM daily save never claims success; retry updates
   assert.equal(tries,2);
  }finally{h.close()}
 });
-test('Original SPM video is attached as an optional library resource, never a completion control',()=>{
- assert.match(ui,/sensory-focus\.mp4/);assert.match(ui,/Ver el video educativo SPM/);
- assert.match(ui,/Verlo no registra una práctica/);
+test('Existing sensory-focus video is kept only in its standalone library/day 16 slot, not replayed inside Focus',()=>{
+ const source=fs.readFileSync(path.join(root,'premium-v2/spm-video-library.js'),'utf8');
+ const plan=fs.readFileSync(path.join(root,'premium-v2/daily-resource-plan-v1.js'),'utf8');
+ assert.doesNotMatch(ui,/sensory-focus\.mp4|Ver el video educativo SPM · Foco sensorial/);
+ assert.match(source,/\{key:'sensory-focus',title:'Foco sensorial: volver a las sensaciones'/);
+ assert.match(plan,/\[16,'sensory-focus',all\]/);
  assert.match(ui,/temperature|temperatura/i);
 });
+test('Day 16 Focus I stays required while its standalone video is accessible but optional',()=>{
+ const d=new JSDOM('<!doctype html><body></body>',{url:'https://spm.test',runScripts:'outside-only'}),w=d.window;
+ try{
+  w.SPM_VIDEO_LIBRARY=[{key:'sensory-focus',title:'Foco sensorial: volver a las sensaciones',duration:'1:09'}];
+  w.SPM_VIDEO_ACTIONS={summary:()=>''};
+  w.eval(fs.readFileSync(path.join(root,'premium-v2/daily-resource-plan-v1.js'),'utf8'));
+  const c={primary:'desire',day:16,safety:'none',flags:[],checkins:[],answers:{}};
+  const {main,support}=w.SPM_DAILY_RESOURCES.compose({id:'main',kind:'sensate',title:'Focalización sensorial I'},[],c);
+  assert.equal(main.kind,'sensate');
+  const video=support.find(a=>a.kind==='video');
+  assert.ok(video,'existing day 16 video stays accessible in Today');
+  assert.equal(video.videoKey,'sensory-focus');
+  assert.equal(video.optional,true,'video must not be an additional mandatory daily exercise');
+  assert.match(video.optionalLabel,/COMPLEMENTARIO/);
+  assert.equal(support.filter(a=>a.videoKey==='sensory-focus').length,1,'no duplicate video activity');
+ }finally{d.window.close()}
+});
+
