@@ -52,8 +52,9 @@ test('day-19 manual Focus II review button opens the same session and preserves 
   const button=w.document.querySelector('#reviewOpenFocusII');
   assert.equal(button.disabled,false);
   assert.equal(w.document.querySelector('#reviewFocusII').hidden,false);
-  assert.equal(await w.SPM_PROGRAM_REVIEW.openFocusII(),true);
-  assert.ok(w.document.querySelector('.spm-sensate-modal[open] iframe'));
+  button.click();
+  await new Promise(resolve=>setTimeout(resolve,100));
+  assert.ok(w.document.querySelector('.spm-sensate-modal[open] iframe'), 'manual action must display the Focus II practice');
   assert.equal(w.SPM_RESOURCE_CONTEXT().userId,'review-only');
   assert.equal(w.SPM_RESOURCE_CONTEXT().day,19);
  }finally{h.close()}
