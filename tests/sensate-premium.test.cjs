@@ -231,12 +231,78 @@ test('day-19 Focus II keeps individual and partner saves distinct and does not r
    h.advanceToPractice(mode);
    h.click('startguide');h.click('performed');h.click('next');
    for(const [field,value] of [['comfort','comodo'],['ease','intermedia'],['attention','conexion'],['repeat','si'],['discomfort','ninguna']])h.choose(field,value);
+   const rating=h.page.querySelector('[data-act=focus2rating][data-value="3"]');assert.ok(rating);rating.click();
    h.click('save');await pause();
    const records=JSON.parse(h.records['spm-sensate-records']);
    assert.equal(records.length,1);
    assert.equal(records[0].practiceId,mode==='partner'?'sf-focus-2':'sf-focus-2-solo');
    assert.equal(records[0].completed,true);
    assert.ok(h.calls.includes('recordDaily'));
+  }finally{h.close()}
+ }
+});
+
+test('Focus II offers a functional five-screen matte audio-first journey without forced time transitions',()=>{
+ for(const mode of ['individual','partner']){
+  const h=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
+  try{
+   assert.ok(h.page.querySelector('.focusii-theme'));
+   assert.match(h.page.textContent,/Sensate Focus II/);
+   assert.match(h.page.textContent,/1 \/ 5/);
+   h.click('audio');assert.match(h.spoken.at(-1),/Sensate Focus II/);
+   h.click('next');assert.match(h.page.textContent,/2 \/ 5/);
+   h.branch(mode);assert.match(h.page.textContent,/3 \/ 5/);
+   assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+   assert.equal(h.page.querySelectorAll('[data-act=explainstep][data-audio]').length,5);
+   h.page.querySelector('[data-act=explainstep][data-value="4"]').click();
+   assert.match(h.spoken.at(-1),/Paso 5 de cinco/);
+   h.click('next');assert.match(h.page.textContent,/4 \/ 5/);
+   assert.ok(h.page.querySelector('[data-act=guideintro][data-audio]'));
+   h.click('startguide');
+   const count=h.spoken.length;
+   h.tick(180);
+   assert.equal(h.spoken.length,count,'Focus II never forces narration/step transitions from optional timer');
+   assert.equal(h.page.querySelector('.focusii-active-title').textContent,mode==='partner'?'Retomen':'Conecta');
+   assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/03:00/);
+   h.click('pauseguide');
+   h.tick(10);
+   assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/03:00/);
+   h.click('resumeguide');
+   h.click('nextphase');
+   assert.equal(h.page.querySelector('.focusii-active-title').textContent,mode==='partner'?'Exploren':'Explora');
+   h.click('performed');h.click('next');
+   assert.match(h.page.textContent,/5 \/ 5/);
+   assert.equal(h.page.querySelectorAll('[data-act=focus2rating]').length,5);
+   assert.equal(h.page.querySelectorAll('[data-act=focus2noticed]').length,3);
+   assert.equal(h.writes.length,0);
+  }finally{h.close()}
+ }
+});
+
+test('Focus II minimal register saves only entered values and preserves current day and two modality IDs',async()=>{
+ for(const mode of ['individual','partner']){
+  const h=harness({day:19,practiceId:'sf-focus-2',profile:'erection'});
+  try{
+   h.advanceToPractice(mode);
+   h.click('startguide');h.click('performed');h.click('next');
+   h.choose('comfort','comodo');
+   h.choose('discomfort','ninguna');
+   h.click('save');
+   assert.match(h.page.textContent,/valor de 0 a 4/);
+   h.page.querySelector('[data-act=focus2rating][data-value="4"]').click();
+   h.page.querySelector('[data-act=focus2noticed][data-value="Más calma"]').click();
+   h.click('save');await pause();
+   assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+   const rows=JSON.parse(h.records['spm-sensate-records']);
+   assert.equal(rows.length,1);
+   assert.equal(rows[0].day,19);
+   assert.equal(rows[0].practiceId,mode==='individual'?'sf-focus-2-solo':'sf-focus-2');
+   assert.equal(rows[0].focus2Rating,4);
+   assert.deepEqual(rows[0].focus2Noted,['Más calma']);
+   assert.equal(rows[0].presenceBefore,null);
+   assert.equal(rows[0].presenceAfter,null);
+   assert.equal(rows[0].pressureAfter,null);
+   assert.equal(rows[0].partnerComfort,null);
   }finally{h.close()}
  }
 });
