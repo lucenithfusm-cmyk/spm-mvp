@@ -342,10 +342,10 @@ function spmArtworkScreen(){
  const dayName=isNewFocusI()?'FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5':'FOCALIZACIÓN SENSORIAL';
  const currentCaption=second?'Tu práctica individual':'Cierre de tu práctica';
  const step=second?2:5;
- const url=second?photoPath(isPartner()?'connection':'seated'):photoPath('beginning');
+ const url=second?photoPath(isPartner()?'connection':'reflection'):photoPath('beginning');
  const footerBack='<button type="button" class="spm-art-nav-back" data-act="back">Anterior</button>';
  const footerAction=second?'<button type="button" class="spm-art-nav-next" data-act="next">Continuar →</button>':
-  '<button type="button" class="spm-art-nav-next" data-act="'+(saved?'close':'save')+'" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button>';
+  '<button type="button" class="spm-art-nav-next" data-act="'+(saved||!performed?'close':'save')+'" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':!performed?'Volver luego':busy?'Guardando…':'Guardar experiencia')+'</button>';
  const listen='<button type="button" class="spm-art-listen" data-act="audio" data-audio aria-label="'+(second?'Escuchar preparación':'Escuchar cierre')+'"><span class="spm-art-speaker" aria-hidden="true">🔊</span><span>'+(second?'Escuchar preparación':'Escuchar cierre')+'</span></button>';
  const read='<button type="button" class="spm-art-read" data-act="approvedread">＋ Leer instrucciones</button>';
  const panels=second?
@@ -363,9 +363,10 @@ function spmArtworkScreen(){
   '<h2>Me sentí</h2><div class="spm-art-chips">'+[['comodo','Cómodo'],['neutro','Neutro'],['tenso','Tenso']].map(([v,t])=>'<button type="button" data-act="approvedchoice" data-field="comfort" data-value="'+v+'" class="'+(data.comfort===v?'chosen':'')+'" aria-pressed="'+(data.comfort===v)+'">'+t+'</button>').join('')+'</div>'+
   '<h2>¿Molestia o dolor?</h2><div class="spm-art-chips">'+[['ninguna','No'],['molestia','Molestia'],['dolor','Dolor']].map(([v,t])=>'<button type="button" data-act="approvedchoice" data-field="discomfort" data-value="'+v+'" class="'+(data.discomfort===v?'chosen':'')+'" aria-pressed="'+(data.discomfort===v)+'">'+t+'</button>').join('')+'</div></div>';
  const feedback=error?'<p class="spm-art-feedback" role="alert">'+safeText(error)+'</p>':notification?'<p class="spm-art-feedback" role="status">'+safeText(notification)+'</p>':'';
- return '<div class="layout sf-matte sensate-approved-layout"><div class="spm-artwork-screen" role="group" aria-label="SPM Focalización sensorial, pantalla '+step+' de 5" style="background-image:url(&quot;'+SPM_APPROVED_ATLAS+'&quot;)">'+
+ return '<div class="layout sf-matte sensate-approved-layout"><div class="spm-artwork-screen spm-artwork-'+step+'" role="group" aria-label="SPM Focalización sensorial, pantalla '+step+' de 5" style="background-image:url(&quot;'+PREFIX+'focus-screen-'+step+'-canvas.svg&quot;)">'+
   '<span class="spm-art-scrim" aria-hidden="true"></span>'+
   spmApprovedButton([26,46,405,133],'close','Volver a mi programa')+
+  '<div class="spm-art-header" aria-hidden="true"><span class="spm-art-back-visual">← Volver a mi programa</span><span class="spm-art-brand"><b>SPM</b><small>FOCALIZACIÓN<br>SENSORIAL</small></span></div>'+ 
   '<div class="spm-art-progress" aria-label="'+step+' de 5" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="'+step+'"><i style="width:'+(step*20)+'%"></i></div>'+
   '<p class="spm-art-meta">'+(isDaily?'DÍA '+originalDay+' / 28':'BIBLIOTECA')+' · FOCALIZACIÓN I · '+step+'/5</p>'+
   '<section class="spm-art-panel">'+panels+'</section><nav class="spm-art-nav" aria-label="Navegar por focalización">'+footerBack+'<span>'+step+' / 5</span>'+footerAction+'</nav>'+
