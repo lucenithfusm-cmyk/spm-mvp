@@ -187,20 +187,31 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
  }
 });
 
-test('Focus I has exactly five distinct interactive sessions, two individual and three in pareja',async()=>{
+test('Focus I has five distinct safe interactive sessions; session 1 uses exact approved artwork with real controls',async()=>{
  const cases=[
-  [4,'sf-i-1','individual','Reconoce tu cuerpo','Siente el apoyo'],
+  [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
   [8,'sf-i-2','individual','Descubre sensaciones','Contrasta texturas'],
   [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
   [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
   [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
  ];
+ const originalImage=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-approved-focus-screen-atlas.avif'));
+ assert.ok(originalImage.length>40000);
+ assert.equal(originalImage.toString('ascii',4,12),'ftypavif','approved screens must be an actual AVIF image');
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
+  const imageJourney=practiceId==='sf-i-1';
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
+   if(imageJourney){
+    const art=h.page.querySelector('.spm-approved-intro');
+    assert.ok(art,'introduction must be the approved artwork screen');
+    assert.match(art.getAttribute('style'),/spm-approved-focus-screen-atlas\.avif/);
+    assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
+    assert.ok(h.page.querySelector('[data-act=approvedread]'),'the written instruction is expandable');
+   }
    h.click('audio');
    assert.match(h.spoken.at(-1),/Hoy|Bienvenido/i);
    signatures.add(h.spoken.at(-1));
@@ -211,13 +222,32 @@ test('Focus I has exactly five distinct interactive sessions, two individual and
    assert.match(h.page.textContent,/3 \/ 5/);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    assert.match(h.page.textContent,new RegExp(firstStep));
-   h.click('next');h.click('startguide');
-   assert.match(h.spoken.at(-1),new RegExp(firstStep));
-   h.tick(150);
-   assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
-   h.click('performed');h.click('next');
+   if(imageJourney){
+    assert.ok(h.page.querySelector('.spm-approved-guide'),'the five action cards are the exact approved artwork');
+    assert.ok(h.page.querySelector('[data-act=explainall]'),'five-step audio button is real');
+    const individual=h.page.querySelector('[data-act=explainstep][data-value="0"]');
+    assert.ok(individual);
+    individual.click();
+    assert.match(h.spoken.at(-1),new RegExp(firstStep),'the picture card must play its actual instruction');
+   }
+   h.click('next');
+   if(imageJourney){
+    assert.ok(h.page.querySelector('.spm-approved-practice'),'practice must use approved third image');
+    assert.ok(h.page.querySelector('[data-act=guideintro]'));
+    h.click('approvedadvance');
+    assert.match(h.spoken.at(-1),new RegExp(firstStep));
+    h.tick(150);
+    assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/02:30/);
+    assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
+    for(let i=0;i<5;i++)h.click('approvedadvance');
+   }else{
+    h.click('startguide');
+    assert.match(h.spoken.at(-1),new RegExp(firstStep));
+    h.tick(150);
+    assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
+    h.click('performed');h.click('next');
+   }
    assert.match(h.page.textContent,/5 \/ 5/);
-   // It is the patient's choice to add reflections; no scale or alert blocks learning.
    h.click('save');await pause();
    assert.equal(h.writes.length,1);
    const record=JSON.parse(h.records['spm-sensate-records'])[0];
@@ -370,7 +400,7 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     if(practiceId==='sf-i-1')h.click('next');
     else h.branch('individual');
     assert.match(h.page.textContent,/3 \/ 5/);
-    h.click('next');h.click('startguide');
+    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'startguide');
     assert.match(h.page.textContent,/4 \/ 5/);
     assert.equal(h.page.querySelector('.warning'),null);
     assert.equal(h.writes.length,0);
