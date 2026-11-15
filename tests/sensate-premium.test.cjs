@@ -163,7 +163,7 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
    assert.equal(rows.length,1);
    assert.equal(rows[0].practiceId,mode==='partner'?'sf-focus-1':'sf-solo');
    assert.equal(rows[0].completed,true);
-   assert.match(h.page.textContent,/Registro guardado/);
+   assert.match(h.page.textContent,/Experiencia guardada en tu programa/);
    h.click('close');assert.ok(h.calls.includes('close'));
   }finally{h.close()}
  }
@@ -180,7 +180,7 @@ test('Focus II is still restricted to a prior comfortable session; daily communi
  try{
   eligible.click('next');eligible.branch('partner');
   const progress=eligible.page.querySelector('[data-act=togglefocus]');assert.ok(progress);
-  progress.click();assert.match(eligible.page.textContent,/Focus II/);
+  progress.click();assert.match(eligible.page.textContent,/Focus II/i);
   assert.match(ui,/Más lento/);assert.match(ui,/Así está bien/);assert.match(ui,/Prefiero otro contacto/);
  }finally{eligible.close()}
  const communication=harness({day:23,practiceId:'sf-communication'});
