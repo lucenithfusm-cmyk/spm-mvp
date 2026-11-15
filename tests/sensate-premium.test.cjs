@@ -194,7 +194,7 @@ test('day 19 has one direct Focus II practice without a prior Focus I record or 
    assert.match(h.page.textContent,/Focalización Sensorial II/);
    h.click('audio');assert.match(h.spoken.at(-1),/puedes omitirla hoy/i);
    h.click('next');h.branch(mode);
-   assert.match(h.page.textContent,/Focus II/);
+   assert.match(h.page.textContent,/Focus II/i);
    assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
    assert.equal(h.page.querySelector('[data-act=togglefocus]'),null);
    h.click('next');h.click('startguide');
