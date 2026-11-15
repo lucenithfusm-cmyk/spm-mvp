@@ -2,8 +2,9 @@
 if(window.SPM_SENSATE_LAB)return;
 const keys=['spm-sensate-state','spm-sensate-records'];
 const ctx=()=>window.SPM_RESOURCE_CONTEXT?.(),scopeOf=c=>c?c.userId+':'+c.planId:'',clone=x=>JSON.parse(JSON.stringify(x));
-const restriction=c=>!c||c.safety==='urgent'?'urgent':c.safety!=='none'||c.flags?.length||c.checkins?.some(x=>x.new_safety_flag)?'review':'none';
-function relevant(c){return !!c && ['erection','ejaculation','desire','confidence','anxiety','wellbeing'].some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
+// Sensate Focus I/II is a voluntary educational practice. Medical flags remain elsewhere in SPM.
+const restriction=c=>c?'none':'unavailable';
+function relevant(c){return !!c && ['erection','ejaculation','desire','confidence','anxiety','wellbeing','lifestyle','optimization','mixed'].some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
 function validState(s){return !!s&&typeof s==='object'&&!Array.isArray(s)&&JSON.stringify(s).length<700000&&Object.entries(s).every(([k,v])=>keys.includes(k)&&typeof v==='string'&&v.length<350000);}
 let modal=null,scope='',state={},day=1,origin='library',activity=null,mode='library',dirty=0,saved=0,timer=0,watch=0,flight=null,generation=0,lastFocus=null;
 function status(text,error=false){const el=modal?.querySelector('[data-sensate-status]');if(el){el.textContent=text;el.dataset.error=String(error);}const retry=modal?.querySelector('[data-sensate-retry]');if(retry)retry.hidden=!error;}
