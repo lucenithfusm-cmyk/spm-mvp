@@ -451,3 +451,57 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  .sf-matte .focusii-practice .sensate-first-cue{font-size:15px!important}
 }
 @media(prefers-reduced-motion:reduce){.sf-matte .sensate-photo-guide button.sensate-photo-step{transition:none}}
+
+
+/* 2026-11-15 · pantallas editoriales aprobadas, con controles HTML accesibles.
+   La fotografía se conserva proporcional y NO actúa como un póster inerte. */
+.layout.sf-matte{max-width:780px;background:radial-gradient(circle at 100% 0%,#26564f 0%,transparent 32%),linear-gradient(170deg,#082f39 0%,#0a2935 72%,#0e3540 100%)}
+.sf-matte header{border-color:rgba(224,204,168,.38);background:linear-gradient(120deg,#082d38,#0b3940 70%,#174343)!important}
+.sf-matte header .brand small{color:#f7db9c!important}
+.sf-matte .progress-rail{height:4px;background:#244955}.sf-matte .progress-rail i{background:linear-gradient(90deg,#e7bb80,#edd6a9)}
+.sf-matte main{padding-bottom:24px}
+.sf-matte .card{border-color:#a4c1b19c;border-radius:25px;box-shadow:0 12px 40px #011a2433;padding:clamp(17px,4.1vw,28px);background:linear-gradient(150deg,#103c44,#123943 65%,#0a323d)}
+.sf-matte .intro-card,.sf-matte .prep-card{background:linear-gradient(150deg,#0e3942,#143d48 80%,#0d323a)!important}
+.sf-matte .intro-card h2{font-size:clamp(26px,6.8vw,39px);line-height:1.11;letter-spacing:-.04em;margin-bottom:8px}
+.sf-matte .intro-card>p:not(.eyebrow){font-size:clamp(15px,4vw,18px);color:#fff6e9;line-height:1.42}
+.sf-matte .sensate-instruction{margin:18px 0 18px;gap:12px}
+.sf-matte .sensate-instruction .audio-control{background:linear-gradient(120deg,#123942,#144b4a);border:1.5px solid #e6c596;min-height:61px;border-radius:24px;letter-spacing:-.025em;font-size:clamp(16px,4.4vw,20px)}
+.sf-matte .sensate-instruction .more{border:1px solid #a1bfc1;background:#254b58;border-radius:19px;padding:1px 15px}
+.sf-matte .intro-visual{border-radius:22px!important;overflow:hidden;margin:18px 0 12px!important;border:1px solid #dcc8a6aa!important}
+.sf-matte .intro-visual img{width:100%;height:auto;max-height:none;aspect-ratio:1.73!important;object-fit:cover!important;object-position:center 43%!important;display:block;filter:saturate(.93)}
+.sf-matte .sensate-values{margin:15px 0 0;gap:8px}
+.sf-matte .sensate-values span{background:linear-gradient(140deg,#214955,#34535b);border:1px solid #abc7b7;border-radius:18px;color:white;font-weight:850;padding:9px 4px;min-height:51px}
+.sf-matte .focusii-explain.sensate-photo-guide{background:linear-gradient(150deg,#0c3842,#0b343f)!important;border-radius:27px;border-color:#a6c3b7ad}
+.sf-matte .sensate-photo-guide h2{font-size:clamp(27px,6.8vw,40px);line-height:1.12;margin:0 0 9px}
+.sf-matte .sensate-photo-guide .sensate-guide-lead{font-size:clamp(14px,3.9vw,17px);line-height:1.48;margin:0 0 17px;color:#fff1e0!important}
+.sf-matte .sensate-photo-guide .focusii-listen.sensate-play-all{margin:11px 0 18px;min-height:64px;border:2px solid #e7c591;background:linear-gradient(115deg,#103e46,#1c4e4a);border-radius:999px;color:white;box-shadow:none}
+.sf-matte .sensate-photo-guide .focusii-step-list{margin:10px 0 19px;gap:11px}
+.sf-matte .sensate-photo-guide button.sensate-photo-step{min-height:115px;border-radius:23px;border:1px solid #cad8c2;background:#143d47;padding:12px 14px;gap:14px}
+.sf-matte .sensate-photo-guide .sensate-photo-step .number{background:linear-gradient(145deg,#f5d9aa,var(--sensate-accent));width:47px;height:47px;border-radius:50%}
+.sf-matte .sensate-photo-guide .sensate-photo-step:nth-child(even) .number{background:linear-gradient(135deg,#cde2bd,#b1ccb5)}
+.sf-matte .sensate-photo-guide .sensate-photo-step .sensate-photo-label{font-size:clamp(17px,4.7vw,23px);max-width:55%;color:#fff}
+.sf-matte .sensate-photo-guide .sensate-photo-step .focusii-small-speaker{width:43px;height:43px;min-width:43px;border-radius:50%;border:2px solid #f0d9af;background:#15353a99}
+.sf-matte .sensate-stage-photo{filter:saturate(1) contrast(1.05)}
+.sf-matte .focusii-practice{border-radius:26px;gap:11px;background:linear-gradient(145deg,#0c3540,#123b44)}
+.sf-matte .focusii-practice .focusii-phase-nav{margin:6px 0 11px}
+.sf-matte .focusii-practice .focusii-phase-nav button{border-radius:50%;aspect-ratio:1;max-width:57px;min-height:unset;justify-self:center;font-size:20px}
+.sf-matte .focusii-practice h2.focusii-active-title{font-size:clamp(29px,7.5vw,42px);color:#fff8e7;letter-spacing:-.045em;line-height:1.1;margin:0}
+.sf-matte .focusii-practice .focusii-instruction,.sf-matte .focusii-practice .focusii-listen{font-size:clamp(15px,4.4vw,20px);border:1.5px solid #e5bf88;min-height:62px;border-radius:25px;margin:7px 0}
+.sf-matte .focusii-practice .sensate-first-cue{order:initial;border-left:0;border-radius:12px;background:#143b44;padding:9px 12px;margin:0!important;color:#f5f2e7!important;font-size:clamp(14px,3.7vw,17px)!important;line-height:1.5}
+.sf-matte .focusii-practice .sensate-practice-photo{height:clamp(175px,48vw,260px);border-radius:23px;overflow:hidden;border-color:#ecd4b5aa}
+.sf-matte .focusii-timing{border:1px solid #99bdad;background:#17434a;border-radius:19px}
+.sf-matte .focusii-timing strong{font-size:clamp(26px,7vw,36px)}
+.sf-matte .foot{position:sticky;bottom:0;background:#082d37ee;backdrop-filter:blur(16px);border-top:1px solid #c0c5b16a;min-height:77px;padding:12px 13px max(13px,env(safe-area-inset-bottom))}
+.sf-matte .foot .gold{background:linear-gradient(125deg,#fbe1b2,#d9ad75);border:1.5px solid #fae9c8;color:#082e39;min-height:54px;font-size:clamp(14px,4.3vw,18px)}
+.sf-matte .foot .secondary{background:#123e47b3;border:1px solid #c7dfd5;color:white;min-height:54px}
+@media(max-width:430px){
+ .sf-matte .card{margin:0 8px 14px;padding:16px 14px;border-radius:22px}
+ .sf-matte main{padding:0 4px 16px}
+ .sf-matte .sensate-photo-guide button.sensate-photo-step{min-height:98px;gap:8px;padding:9px 10px;border-radius:19px}
+ .sf-matte .sensate-photo-guide .sensate-photo-step .number{width:38px;height:38px;font-size:21px}
+ .sf-matte .sensate-photo-guide .sensate-photo-step .focusii-small-speaker{width:33px;height:33px;min-width:33px;font-size:13px}
+ .sf-matte .sensate-photo-guide .sensate-photo-step .sensate-photo-label{font-size:clamp(17px,4.6vw,20px)}
+ .sf-matte .focusii-practice .focusii-phase-nav button{width:44px;height:44px;font-size:18px}
+ .sf-matte .foot{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){.sf-matte .audio-control,.sf-matte .focusii-listen{animation:none!important}}
