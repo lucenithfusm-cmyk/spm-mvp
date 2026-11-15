@@ -56,6 +56,11 @@ const SESSION_GUIDES=Object.freeze({
 function introFor(day){
  const d=Number(day),item=SCHEDULE[d];if(!item)return '';
  if(d===1)return PROGRAM_INTRO;
+ if(item.tech==='squeeze'){
+  if(d===8)return 'Hoy conocerás Stop–Squeeze. La repetición de sus cinco pasos te ayuda a reconocer el aumento de la excitación y anticiparte al punto de no retorno. Abre la práctica para escuchar la guía clínica y ver el video de la compresión.';
+  if(d===24)return 'Hoy retomas Stop–Squeeze como parte de la consolidación del entrenamiento. Abre la práctica para repasar los pasos y, si lo necesitas, revisar el video de la compresión.';
+  return 'Hoy vuelves a practicar Stop–Squeeze. Esta repetición permite afinar tu percepción y anticipar la pausa. Si lo necesitas, repasa la guía visual de la compresión.';
+ }
  const repeat=item.week===4
   ?'Esta es la semana de consolidación. Volverás a encontrar técnicas que ya conoces porque repetirlas en diferentes sesiones te ayuda a reconocer cuál te resulta más útil y cuándo utilizarla.'
   :item.session>1

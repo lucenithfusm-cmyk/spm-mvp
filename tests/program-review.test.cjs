@@ -335,7 +335,7 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
     const {w}=h;
     const sample=[
       [1,'tres sesiones','Start Stop'],[3,'repetición','Start Stop'],
-      [8,'Stop Squeeze','compresión'],[10,'repetición','compresión'],
+      [8,'Stop.?Squeeze','compresión'],[10,'repetición','compresión'],
       [12,'repetición','compresión'],
       [15,'técnica','herramienta'],[17,'repetición','herramienta'],
       [22,'consolidación','Start Stop'],[24,'consolidación','compresión'],[26,'consolidación','herramienta']
@@ -350,7 +350,12 @@ test('EP pre-activity speaker explains repetition in the correct 28-day sessions
       const voice=speaker.getAttribute('data-spm-speak');
       assert.match(voice,new RegExp(needle,'i'),'repetition explanation on day '+day);
       assert.match(voice,new RegExp(topic,'i'),'technique-specific voice on day '+day);
-      assert.match(voice,/tres sesiones|sesión \d de tres/i);
+      if([8,10,12,24].includes(day)){
+         assert.doesNotMatch(voice,/tres sesiones|sesión \d de tres|bocina/i,'avoid repeated weekly cadence and speaker instructions');
+         assert.ok(voice.length<260,'focused, concise entry audio');
+       }else{
+         assert.match(voice,/tres sesiones|sesión \d de tres/i);
+       }
       assert.equal(speaker.dataset.audioLabel,'Escuchar indicación');
     }
     const weeks=[1,8,15,22];
