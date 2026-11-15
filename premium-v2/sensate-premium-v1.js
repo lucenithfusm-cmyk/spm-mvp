@@ -11,6 +11,43 @@ const PREFIX='../assets/sensate-premium/';
 const SCENES={intro:'spm-sensate-intro-matte.webp',seated:'spm-sensate-seated-matte.webp',forearm:'spm-sensate-forearm-matte.webp',release:'spm-sensate-release-matte.webp',partner:'spm-sensate-partner-forearm-matte.webp'};
 const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hombre sentado de costado en postura cómoda',forearm:'Autoexploración del contacto en el antebrazo',release:'Hombre dejando ir tensión corporal',partner:'Contacto de pareja consentido en el antebrazo, sin estimulación genital'};
 const PHASES={
+ // Five distinct Focus I sessions, preserving the seven-day Sensate cadence.
+ 'sf-i-1':[
+  ['Siente el apoyo','Siéntate o recuéstate. Nota el contacto de tus pies, espalda o manos con la superficie. Respira con naturalidad.',60],
+  ['Recorre tu cuerpo','Observa suavemente hombros, manos y brazos. Reconoce dónde sientes calma o tensión, sin tratar de corregir nada.',60],
+  ['Explora el tacto','Apoya una mano sobre tu antebrazo o sobre la ropa. Observa la presión, la temperatura y la textura.',60],
+  ['Elige una sensación','Nombra mentalmente una sensación concreta y vuelve a ella cuando aparezca una distracción.',60],
+  ['Reconoce tu experiencia','Detén el contacto. Identifica qué zona o sensación te resultó más fácil de percibir. No hay nada que demostrar.',60]
+ ],
+ 'sf-i-2':[
+  ['Contrasta texturas','Toca una tela cómoda y después tu antebrazo. Nota cómo cambia la textura sin juzgar la sensación.',60],
+  ['Explora la presión','Con una mano prueba un contacto muy suave y luego un apoyo un poco más firme, siempre cómodo.',60],
+  ['Descubre el ritmo','Desliza lentamente la mano por el antebrazo, detente y observa cómo cambia la percepción.',60],
+  ['Elige lo agradable','Repite el contacto no genital que te resulte más cómodo. Observa temperatura, presión o movimiento.',60],
+  ['Regresa al presente','Si te distraes, vuelve a la sensación elegida. Reconoce cuál descubriste hoy y termina sin evaluar resultados.',60]
+ ],
+ 'sf-i-3':[
+  ['Acuerden límites','Elijan un momento sin prisa. Ambos deciden libremente participar; cualquiera puede pedir una pausa o terminar.',60],
+  ['Primera exploración','Una persona toca suavemente manos, brazos o espalda de la otra. No incluyan genitales ni pecho: hoy no hay meta sexual.',60],
+  ['Recibe y siente','Quien recibe observa temperatura y presión. Puede decir «más despacio», «así está bien» o «pausa».',60],
+  ['Cambien de lugar','Intercambien los turnos con calma. Exploren sensaciones, no intenten provocar una respuesta sexual.',60],
+  ['Terminen conectados','Agradezcan el contacto y compartan, si lo desean, una sensación que disfrutaron. No hace falta continuar con sexo.',60]
+ ],
+ 'sf-i-4':[
+  ['Nombren una preferencia','Fuera de las prisas, cada persona dice un contacto no genital que le gusta o le genera tranquilidad.',60],
+  ['Pidan sin presión','Practiquen frases sencillas: «más suave», «más lento», «así está bien» o «prefiero una pausa».',60],
+  ['Escuchen la respuesta','Una persona propone un contacto, la otra expresa cómo se siente. Escuchen sin corregir ni juzgar.',60],
+  ['Ajusten juntos','Con consentimiento, adapten ritmo o presión según lo expresado. Noten si cambia la sensación de conexión.',60],
+  ['Cierren con gratitud','Cada persona comparte qué le ayudó a sentirse escuchada. El objetivo fue comunicar, no alcanzar una meta sexual.',60]
+ ],
+ 'sf-i-5':[
+  ['Creen un momento','Elijan una situación tranquila. Acuerden qué contacto quieren compartir y que ambos pueden cambiar de opinión.',60],
+  ['Acérquense','Empiecen con una mano entrelazada, un abrazo o una caricia no genital. Observa la cercanía y tu respiración.',60],
+  ['Exploren y sientan','Presta atención a la temperatura, el ritmo, las emociones y las respuestas de tu pareja sin vigilar el desempeño.',60],
+  ['Hablen y ajusten','Compartan qué les agrada y qué quisieran cambiar. Hagan pausas y adapten el contacto de común acuerdo.',60],
+  ['Elijan con libertad','Reconozcan cómo se sintieron. Si ambos desean continuar con otro tipo de intimidad, es una elección libre, no la meta de esta práctica.',60]
+ ],
+
  'sf-solo':[
   ['Llegar al cuerpo','Siéntate o recuéstate. Afloja mandíbula, hombros y abdomen. Observa el apoyo de tu cuerpo.',60],
   ['Respirar','Respira a tu ritmo; nota el contacto con la superficie. No retengas el aire.',60],
@@ -54,7 +91,21 @@ const PHASES={
   ['Cerrar sin examen','Un cambio de firmeza no invalida la práctica. Registra cómo te sentiste.',60]
  ]
 };
-const LABELS={'sf-solo':'Presencia individual','sf-focus-1':'Focalización I · Contacto no genital','sf-focus-2':'Focalización II · En pareja','sf-focus-2-solo':'Focalización II · Individual','sf-communication':'Comunicación sin presión','sf-recovery':'Recuperar calma y conexión'};
+const LABELS={'sf-i-1':'Focus I · Reconoce tu cuerpo','sf-i-2':'Focus I · Descubre sensaciones','sf-i-3':'Focus I · Acércate en pareja','sf-i-4':'Focus I · Comunícate en pareja','sf-i-5':'Focus I · Integra y conecta','sf-solo':'Presencia individual','sf-focus-1':'Focalización I · Contacto no genital','sf-focus-2':'Focalización II · En pareja','sf-focus-2-solo':'Focalización II · Individual','sf-communication':'Comunicación sin presión','sf-recovery':'Recuperar calma y conexión'};
+const FOCUSI_DAILY_IDS=['sf-i-1','sf-i-2','sf-i-3','sf-i-4','sf-i-5'];
+const FOCUSI_INTROS={
+ 'sf-i-1':'Bienvenido a Focalización Sensorial I. Esta práctica te ayuda a reconocer tus propias sensaciones, disminuir la tensión y entrenar tu atención. Hoy empezarás individualmente: busca un espacio tranquilo, observa el contacto de tu cuerpo con el entorno y explora suavemente una sensación, sin buscar excitación ni resultados. Escucharás cada paso y podrás avanzar a tu ritmo.',
+ 'sf-i-2':'Hoy descubrirás nuevas sensaciones en tu propio cuerpo. Explorarás texturas, cambios de presión y ritmos suaves en zonas no genitales. No tienes que evaluarte: observa qué resulta cómodo y vuelve a esa sensación si te distraes.',
+ 'sf-i-3':'Ya aprendiste a reconocer sensaciones en tu cuerpo. Hoy puedes llevar esa atención a un acercamiento con tu pareja. Exploren el contacto no genital por turnos, con consentimiento y sin intención de provocar una respuesta sexual. La meta es sentir y conectar; si no tienen un momento cómodo hoy, pueden retomarlo en un próximo encuentro.',
+ 'sf-i-4':'Hoy la atención se transforma en comunicación. En un momento tranquilo, conversen sobre qué contacto les gusta, cómo desean recibirlo y qué límites necesitan. Después practiquen decir «más suave», «así está bien» o «pausa». La cercanía crece cuando escuchamos sin presión.',
+ 'sf-i-5':'Hoy unirás lo aprendido: sentir tu propio cuerpo, explorar el contacto y escuchar a tu pareja. Busquen una situación de cercanía, comuniquen lo que les agrada y disfruten sin vigilar un resultado. El contacto puede despertar deseo responsivo, pero no es obligatorio que suceda ni que termine en actividad sexual.'
+};
+const FOCUSI_PREP='Elige un momento privado y cómodo. Sigue las cinco acciones con audio y avanza cuando te resulte natural. No existe un tiempo obligatorio. En pareja, ambos participan voluntariamente y pueden detenerse o cambiar el contacto en cualquier momento.';
+const FOCUSI_CLOSE='Terminaste la práctica. Recuerda qué sensación te ayudó a estar presente y qué fue agradable. No necesitas medir una respuesta sexual. Registra cómo te sentiste y vuelve a tu día.';
+const FOCUSI_TITLES={
+ 'sf-i-1':'Reconoce tu cuerpo','sf-i-2':'Descubre sensaciones','sf-i-3':'Acércate sin presión',
+ 'sf-i-4':'Comunica lo que te conecta','sf-i-5':'Conecta y disfruta'
+};
 const INTRO='Focalización sensorial no es una prueba de desempeño. El objetivo es volver a percibir temperatura, presión, textura y ritmo del contacto. No necesitas lograr erección, penetración, orgasmo ni una duración concreta. Puedes practicar a solas o, con consentimiento, en pareja.';
 const PREP='Busca un lugar tranquilo, privado y sin interrupciones. Acomódate y elige la práctica individual o en pareja. En pareja, verifiquen que los dos quieran participar y recuerden que cualquiera puede pedir una pausa o terminar cuando lo necesite. Focus I es contacto no genital, sin pecho ni genitales. Puedes practicar sin meta de erección, penetración ni orgasmo.';
 const PREP_FOCUSII='Busca un lugar privado, donde puedas relajarte. Elige si practicarás individualmente o en pareja. Explora el contacto a tu propio ritmo: puedes variar la intensidad, detenerte o hacer una pausa. En pareja, ambos participan voluntariamente y respetan sus límites.';
@@ -74,7 +125,9 @@ if(!PHASES[id])id='sf-solo';
 let screen=0,phase=0,selectedMode=null,explainPhase=0,explainingAll=false,guideSetupHeard=false,consent=false,performed=false,saved=false,busy=false,hasPain=false;
 let t=0,timer=0,running=false,voiceActive=false,entryId=null,error='',notification='',guideStarted=false,guideDone=false,phaseElapsed=0,halfwayNoted=false;
 let data={presenceBefore:5,pressureBefore:5,presenceAfter:5,pressureAfter:5,enjoyment:5,partnerComfort:7,comfort:'',ease:'',attention:'',repeat:'',discomfort:'',usefulStimuli:[],monitoringIntrusions:0,notes:'',focus2Rating:null,focus2Noted:[]};const touched=new Set();
-const isPartner=()=>id==='sf-focus-1'||id==='sf-focus-2';
+const isPartner=()=>id==='sf-focus-1'||id==='sf-focus-2'||['sf-i-3','sf-i-4','sf-i-5'].includes(id);
+const isNewFocusI=()=>FOCUSI_DAILY_IDS.includes(id);
+const isModernFocus=()=>isNewFocusI()||isFocusII();
 const isFocusII=()=>id==='sf-focus-2'||id==='sf-focus-2-solo';
 const originalDay=Number(META.day)||1;
 const existing=isDaily?readRecords().find(r=>r&&r.day===originalDay&&r.completed===true&&r.origin==='dailyPlan'):null;
