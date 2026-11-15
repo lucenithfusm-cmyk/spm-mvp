@@ -156,7 +156,7 @@ function speech(text,done,control){
 }
 function modeTitle(){return selectedMode==='partner'?'En pareja':'Individual'}
 function explanatoryText(i=explainPhase){const p=PHASES[id][i];return 'Paso '+(i+1)+' de cinco. '+p[0]+'. '+p[1]}
-function autoGuideIntro(){if(isFocusII())return 'Vas a realizar Focus II en modalidad '+(isPartner()?'en pareja':'individual')+'. Son cinco momentos guiados. Escucha cada indicación, practica sin prisa y pulsa Siguiente paso cuando quieras avanzar. El cronómetro es opcional, no marca un tiempo obligatorio. Puedes pausar, escuchar de nuevo o terminar en cualquier momento. El silencio permite sentir, no es un fallo del audio.';return 'Vas a realizar una práctica '+(isPartner()?'en pareja':'individual')+' de cinco acciones. Cada paso tendrá una instrucción hablada y aproximadamente un minuto para practicar en silencio. El silencio forma parte de la guía: no significa que el programa se haya pausado ni terminado. Después escucharás automáticamente el paso siguiente. Puedes pausar, repetir o adelantar cuando lo necesites.'}
+function autoGuideIntro(){if(isNewFocusI())return 'Esta sesión de Focalización I tiene cinco acciones guiadas. Escucha cada indicación y practica a tu ritmo. El reloj es un apoyo opcional: tú decides cuándo pasar al siguiente paso. Puedes pausar, repetir la instrucción o terminar cuando quieras. Los silencios te permiten sentir, no son errores del audio.';if(isFocusII())return 'Vas a realizar Focus II en modalidad '+(isPartner()?'en pareja':'individual')+'. Son cinco momentos guiados. Escucha cada indicación, practica sin prisa y pulsa Siguiente paso cuando quieras avanzar. El cronómetro es opcional, no marca un tiempo obligatorio. Puedes pausar, escuchar de nuevo o terminar en cualquier momento. El silencio permite sentir, no es un fallo del audio.';return 'Vas a realizar una práctica '+(isPartner()?'en pareja':'individual')+' de cinco acciones. Cada paso tendrá una instrucción hablada y aproximadamente un minuto para practicar en silencio. El silencio forma parte de la guía: no significa que el programa se haya pausado ni terminado. Después escucharás automáticamente el paso siguiente. Puedes pausar, repetir o adelantar cuando lo necesites.'}
 function stepAudio(){return 'Paso '+(phase+1)+' de cinco. '+PHASES[id][phase][0]+'. '+PHASES[id][phase][1]}
 function explainStep(i){stopAudio();explainPhase=i;notification='';render();speech(explanatoryText(i),null,'[data-act="explainstep"][data-value="'+i+'"]')}
 function explainAll(){stopAudio();explainingAll=true;let pos=0;function speakNext(){if(!explainingAll||screen!==2)return;if(pos>=5){explainingAll=false;render();return}explainPhase=pos;render();const current=pos++;if(!speech(explanatoryText(current),speakNext,'[data-act="explainstep"][data-value="'+current+'"]')){explainingAll=false;notification='Puedes consultar cada paso en «Leer el paso seleccionado».';render()}}speakNext()}
@@ -164,7 +164,7 @@ function guideTick(){
  if(!running||screen!==3)return;
  phaseElapsed++;t++;
  const elapsed=root.querySelector('[data-guide-elapsed]');if(elapsed)elapsed.textContent=clockText(t);
- if(isFocusII()){const phaseTime=root.querySelector('[data-guide-phase-elapsed]');if(phaseTime)phaseTime.textContent=clockText(phaseElapsed);return;} // No forced phase transitions in Focus II.
+ if(isModernFocus()){const phaseTime=root.querySelector('[data-guide-phase-elapsed]');if(phaseTime)phaseTime.textContent=clockText(phaseElapsed);return;} // No forced phase transitions in Focus II.
  const left=root.querySelector('[data-guide-left]');if(left)left.textContent=clockText(Math.max(0,60-phaseElapsed));
  const progressBar=root.querySelector('[data-guide-bar]');if(progressBar)progressBar.style.width=Math.min(100,phaseElapsed/60*100)+'%';
  if(phaseElapsed>=60)advanceGuide();
@@ -204,15 +204,20 @@ function jumpGuide(n){
  const wasRunning=running;stopAudio();phase=n;phaseElapsed=0;guideDone=false;notification='';render();
  if(wasRunning)speech(stepAudio(),null,'[data-act=repeataudio]');
 }
-function audioText(){if(screen===0)return isDaily&&assigned?.practiceId==='sf-focus-2'?(META.profile==='desire'?FOCUSII_WELCOME_DESIRE:FOCUSII_WELCOME):INTRO;if(screen===1)return isFocusII()?PREP_FOCUSII:PREP;if(screen===2)return explanatoryText();if(screen===3)return guideStarted?stepAudio():autoGuideIntro();return isFocusII()?CLOSING_FOCUSII:CLOSING}
+function audioText(){if(screen===0)return isNewFocusI()?FOCUSI_INTROS[id]:isDaily&&assigned?.practiceId==='sf-focus-2'?(META.profile==='desire'?FOCUSII_WELCOME_DESIRE:FOCUSII_WELCOME):INTRO;if(screen===1)return isNewFocusI()?FOCUSI_PREP:isFocusII()?PREP_FOCUSII:PREP;if(screen===2)return explanatoryText();if(screen===3)return guideStarted?stepAudio():autoGuideIntro();return isNewFocusI()?FOCUSI_CLOSE:isFocusII()?CLOSING_FOCUSII:CLOSING}
 function resetType(next){
- stopAudio();stopClock();id=next;selectedMode=(next==='sf-solo'||next==='sf-focus-2-solo'||next==='sf-communication'||next==='sf-recovery')?'individual':'partner';
+ stopAudio();stopClock();id=next;selectedMode=(next==='sf-solo'||next==='sf-focus-2-solo'||['sf-i-1','sf-i-2'].includes(next)||next==='sf-communication'||next==='sf-recovery')?'individual':'partner';
  phase=0;phaseElapsed=0;t=0;explainPhase=0;guideStarted=false;guideDone=false;
  consent=selectedMode==='partner';performed=false;error='';notification='';screen=2;render();
 }
 function selectBranch(branch){
  if(!['individual','partner'].includes(branch))return;
  if(!canPractice()){error='La práctica física está en pausa por indicación de seguridad.';render();return}
+ if(isDaily&&FOCUSI_DAILY_IDS.includes(assigned?.practiceId)){
+   const required=['sf-i-1','sf-i-2'].includes(assigned.practiceId)?'individual':'partner';
+   if(branch!==required){error='Esta sesión tiene un recorrido propio. Elige la modalidad que aparece en pantalla.';render();return}
+   resetType(assigned.practiceId);return;
+ }
  const next=branch==='individual'?(assigned?.practiceId==='sf-focus-2'?'sf-focus-2-solo':assigned?.practiceId==='sf-communication'?'sf-communication':assigned?.practiceId==='sf-recovery'?'sf-recovery':'sf-solo'):(assigned?.practiceId==='sf-focus-2'?'sf-focus-2':'sf-focus-1');
  resetType(next);
 }
@@ -264,7 +269,7 @@ const GUIDE_LABELS={
  'sf-communication':['Respira','Más lento','Así está bien','Otro contacto','Pausa'],
  'sf-recovery':['Reconoce','Reduce presión','Respira','Elige','Cierra']
 };
-function labelForPhase(i){return (GUIDE_LABELS[id]||GUIDE_LABELS['sf-solo'])[i]}
+function labelForPhase(i){return isNewFocusI()?PHASES[id][i][0]:(GUIDE_LABELS[id]||GUIDE_LABELS['sf-solo'])[i]}
 function wave(active=false){
  return '<div class="wave-stage '+(active?'moving':'')+'" aria-hidden="true"><svg viewBox="0 0 500 95" width="100%" height="74" preserveAspectRatio="none">'+
  [0,1,2,3,4].map((n)=>'<path class="wave-line wave-'+n+'" fill="none" stroke="currentColor" stroke-width="'+(n===2?'1.9':'1.05')+'" opacity="'+(.27+n*.12)+'" d="M0 '+(46+n*2)+' C45 '+(38+n*2)+' 65 '+(60-n*3)+' 104 '+(48+n*2)+' S170 '+(10+n*4)+' 211 '+(46+n)+' S294 '+(88-n*5)+' 335 '+(45+n*2)+' S402 '+(28+n*3)+' 440 '+(46+n)+' S480 '+(47+n)+' 500 '+(47+n)+'"></path>').join('')+'</svg></div>';
