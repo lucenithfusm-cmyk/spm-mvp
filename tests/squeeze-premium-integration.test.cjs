@@ -25,20 +25,26 @@ test('five original posters and five-second technique clip are real, independent
  const seconds=mp4.readUInt32BE(offset+20)/timescale;assert.ok(seconds>4.5&&seconds<6,'real MP4 duration is approximately five seconds');
  const h=harness();try{assert.deepEqual([...h.api.scheduledDays],[8,10,12,24])}finally{h.close()}
 });
-test('page three retains the WHOLE five-step illustration before an extra optional video',()=>{
+test('third page preserves all five source illustrations around video and fourth page offers a closed recap',()=>{
  const h=harness();try{
   assert.equal(h.api.open(8,{origin:'dailyPlan'}),true);
   assert.match(h.ui.querySelector('#stage img').src,/step-1\.webp$/);
   h.ui.querySelector('#next').click();assert.match(h.ui.querySelector('#stage img').src,/step-2\.webp$/);
   h.ui.querySelector('#next').click();
-  const stage=h.ui.querySelector('#stage'),poster=stage.querySelector('img.poster'),clip=stage.querySelector('#squeezeDemo');
-  assert.ok(poster);assert.match(poster.src,/stop-squeeze\/step-3\.webp$/);
-  assert.equal(stage.firstElementChild,poster,'instructional poster with five illustrated steps remains first');
+  const stage=h.ui.querySelector('#stage'),slices=stage.querySelectorAll('.squeeze-step-visual'),clip=stage.querySelector('#squeezeDemo');
+  assert.equal(slices.length,2,'the original artwork is divided only between steps three and four');
+  for(const visual of slices)assert.match(visual.querySelector('img').src,/stop-squeeze\/step-3\.webp$/);
   assert.ok(clip&&clip.controls&&clip.hasAttribute('playsinline'));
   assert.match(clip.getAttribute('src'),/stop-squeeze\.mp4$/);
-  assert.ok(stage.children[1].contains(clip),'microvideo is in a SEPARATE card after all illustrations');
-  h.ui.querySelector('#next').click();assert.equal(h.ui.querySelector('#squeezeDemo'),null);
+  assert.equal(stage.children[1].querySelector('#squeezeDemo'),clip);
+  assert.equal(stage.lastElementChild,slices[1]);
+  h.ui.querySelector('#next').click();
+  assert.equal(h.ui.querySelector('#squeezeDemo'),null);
   assert.match(h.ui.querySelector('#stage img').src,/step-4\.webp$/);
+  const recap=h.ui.querySelector('details.squeeze-mini-demo'),mini=recap?.querySelector('#squeezeDemoMini');
+  assert.ok(recap&&!recap.open,'on page four the video is an optional closed support');
+  assert.ok(mini?.controls&&mini.hasAttribute('playsinline'));
+  assert.equal(mini.preload,'none');
   h.ui.querySelector('#next').click();assert.match(h.ui.querySelector('#stage img').src,/step-5\.webp$/);
  }finally{h.close()}
 });

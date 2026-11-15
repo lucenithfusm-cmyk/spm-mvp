@@ -1,0 +1,27 @@
+name: SPM Stop-Squeeze clinical QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/ejaculatory-squeeze-v1.js'
+      - 'premium-v2/assets/ep/stop-squeeze/**'
+      - 'premium-v2/assets/videos/techniques/stop-squeeze.mp4'
+      - 'tests/squeeze-premium-integration.test.cjs'
+      - '.github/workflows/stopsqueeze-premium-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/ejaculatory-squeeze-v1.js'
+      - 'tests/squeeze-premium-integration.test.cjs'
+jobs:
+  squeeze-integration:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: node --check premium-v2/ejaculatory-squeeze-v1.js
+      - run: node --test tests/squeeze-premium-integration.test.cjs
