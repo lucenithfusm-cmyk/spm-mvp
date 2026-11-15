@@ -433,3 +433,60 @@ test('standalone video remains day-16 optional, never an embedded focalization d
  assert.match(daily,/key==='sensory-focus'\?\{optional:true/);
  assert.doesNotMatch(ui,/sensory-focus\.mp4|Ver el video educativo SPM/);
 });
+
+
+// Regression coverage: first Focus I session keeps real artwork controls on all
+// five pages and a voluntary exit from the guided activity with no fake save.
+test('Focus I first session has tactile screen 2, image-based screen 5 and free advance without false completion',()=>{
+ const h=harness({day:4,practiceId:'sf-i-1'});
+ try{
+  assert.ok(h.page.querySelector('.spm-approved-intro'),'approved screen one remains untouched');
+  h.click('next');
+  assert.ok(h.page.querySelector('.spm-artwork-2'),'second screen has its own canvas');
+  assert.ok(h.page.querySelector('.spm-art-prep-entry[data-act=branch][data-value=individual]'),'photo enters session');
+  assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
+  h.click('next');
+  assert.ok(h.page.querySelector('.spm-approved-guide'),'approved screen three remains intact');
+  h.click('next');
+  assert.ok(h.page.querySelector('.spm-approved-practice'),'approved screen four remains intact');
+  assert.ok(h.page.querySelector('[data-act=skipguide]'),'voluntary route to evaluation');
+  assert.ok(h.page.querySelector('.spm-approved-phase-photo'),'each guided step has its own photo overlay');
+  h.click('skipguide');
+  assert.ok(h.page.querySelector('.spm-artwork-5'),'fifth screen has its own visual canvas');
+  assert.ok(h.page.querySelector('[data-act=close].spm-art-nav-next'),'unfinished practice can be left for later');
+  assert.equal(h.writes.length,0);
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,0);
+  h.page.querySelector('.spm-art-rating [data-value="3"]').click();
+  assert.equal(h.writes.length,0,'rating does not save unfinished practice');
+  h.page.querySelector('.spm-art-nav-next').click();
+  assert.ok(h.calls.includes('close'));
+  assert.equal(h.writes.length,0);
+ }finally{h.close()}
+});
+
+test('Focus I first session pauses between sequential instructions and cancels the pending gap on navigation',()=>{
+ const h=harness({day:4,practiceId:'sf-i-1'});
+ const pending=[];
+ const realSet=h.w.setTimeout,realClear=h.w.clearTimeout;
+ try{
+  h.w.setTimeout=(fn,delay)=>{pending.push({fn,delay});return pending.length+123};
+  h.w.clearTimeout=()=>{};
+  h.click('next');h.click('next');
+  assert.ok(h.page.querySelector('.spm-approved-guide'));
+  h.click('explainall');
+  const initial=h.spoken.length;
+  assert.ok(initial>0);
+  h.finishAudio();
+  assert.equal(h.spoken.length,initial,'second step does not overlap the first');
+  assert.equal(pending.at(-1).delay,1600);
+  pending.at(-1).fn();
+  assert.equal(h.spoken.length,initial+1,'next step begins after the gap');
+  h.click('next');
+  const afterExit=h.spoken.length;
+  pending.at(-1).fn();
+  assert.equal(h.spoken.length,afterExit,'navigation cancels pending narration');
+ }finally{
+  h.w.setTimeout=realSet;h.w.clearTimeout=realClear;
+  h.close();
+ }
+});
