@@ -104,7 +104,7 @@ test('the final button fits its intended mobile label and retains a full accessi
   h.api.open(8,{origin:'dailyPlan'});
   for(let i=0;i<4;i++)h.ui.querySelector('#next').click();
   const next=h.ui.querySelector('#next');
-  assert.equal(next.textContent,'Finalizar y volver');
+  assert.equal(next.textContent,'Finalizar');
   assert.equal(next.getAttribute('aria-label'),'Finalizar y volver a Hoy');
   assert.match(h.ui.querySelector('style').textContent,/\.nav \.btn\{[^}]*white-space:normal/);
  }finally{h.close()}
