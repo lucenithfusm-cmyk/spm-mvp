@@ -240,7 +240,7 @@ test('day 19 has one direct Focus II practice without a prior Focus I record or 
    h.click('audio');assert.match(h.spoken.at(-1),/explorar nuevas sensaciones/i);assert.doesNotMatch(h.spoken.at(-1),/omitirla hoy|pausa de seguridad/i);
    h.click('next');h.branch(mode);
    assert.match(h.page.textContent,/Focalización II/i);
-   assert.match(h.page.textContent,mode='partner'?/Retomen/:/Conecta/);
+   assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
    assert.equal(h.page.querySelector('[data-act=togglefocus]'),null);
    h.click('next');h.click('startguide');
    assert.match(h.spoken.at(-1),mode==='partner'?/contacto no genital/:/Acomódate/);
