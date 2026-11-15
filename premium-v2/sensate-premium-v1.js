@@ -15,37 +15,37 @@ const PHASES={
  'sf-i-1':[
   ['Siente el apoyo','Siéntate o recuéstate. Nota el contacto de tus pies, espalda o manos con la superficie. Respira con naturalidad.',60],
   ['Recorre tu cuerpo','Observa suavemente hombros, manos y brazos. Reconoce dónde sientes calma o tensión, sin tratar de corregir nada.',60],
-  ['Explora el tacto','Apoya una mano sobre tu antebrazo o sobre la ropa. Observa la presión, la temperatura y la textura.',60],
+  ['Observa un punto','Lleva tu atención al apoyo de las manos sobre tus piernas. Percibe una sola sensación, sin cambiarla ni evaluarla.',60],
   ['Elige una sensación','Nombra mentalmente una sensación concreta y vuelve a ella cuando aparezca una distracción.',60],
   ['Reconoce tu experiencia','Detén el contacto. Identifica qué zona o sensación te resultó más fácil de percibir. No hay nada que demostrar.',60]
  ],
  'sf-i-2':[
-  ['Contrasta texturas','Toca una tela cómoda y después tu antebrazo. Nota cómo cambia la textura sin juzgar la sensación.',60],
+  ['Contrasta texturas','Explora con las yemas de los dedos dos texturas próximas, como una tela y la palma de tu mano. ¿En qué se diferencian?',60],
   ['Explora la presión','Con una mano prueba un contacto muy suave y luego un apoyo un poco más firme, siempre cómodo.',60],
-  ['Descubre el ritmo','Desliza lentamente la mano por el antebrazo, detente y observa cómo cambia la percepción.',60],
+  ['Descubre el ritmo','Acerca y aleja las yemas de los dedos de la palma de la otra mano. Observa el cambio cuando te detienes.',60],
   ['Elige lo agradable','Repite el contacto no genital que te resulte más cómodo. Observa temperatura, presión o movimiento.',60],
   ['Regresa al presente','Si te distraes, vuelve a la sensación elegida. Reconoce cuál descubriste hoy y termina sin evaluar resultados.',60]
  ],
  'sf-i-3':[
   ['Acuerden límites','Elijan un momento sin prisa. Ambos deciden libremente participar; cualquiera puede pedir una pausa o terminar.',60],
   ['Primera exploración','Una persona toca suavemente manos, brazos o espalda de la otra. No incluyan genitales ni pecho: hoy no hay meta sexual.',60],
-  ['Recibe y siente','Quien recibe observa temperatura y presión. Puede decir «más despacio», «así está bien» o «pausa».',60],
+  ['Recibe y siente','Quien recibe presta atención al calor y a la forma del contacto. Puede pedir una pausa o detenerse cuando lo necesite.',60],
   ['Cambien de lugar','Intercambien los turnos con calma. Exploren sensaciones, no intenten provocar una respuesta sexual.',60],
   ['Terminen conectados','Agradezcan el contacto y compartan, si lo desean, una sensación que disfrutaron. No hace falta continuar con sexo.',60]
  ],
  'sf-i-4':[
-  ['Nombren una preferencia','Fuera de las prisas, cada persona dice un contacto no genital que le gusta o le genera tranquilidad.',60],
-  ['Pidan sin presión','Practiquen frases sencillas: «más suave», «más lento», «así está bien» o «prefiero una pausa».',60],
-  ['Escuchen la respuesta','Una persona propone un contacto, la otra expresa cómo se siente. Escuchen sin corregir ni juzgar.',60],
-  ['Ajusten juntos','Con consentimiento, adapten ritmo o presión según lo expresado. Noten si cambia la sensación de conexión.',60],
-  ['Cierren con gratitud','Cada persona comparte qué le ayudó a sentirse escuchada. El objetivo fue comunicar, no alcanzar una meta sexual.',60]
+  ['Elijan una sensación','Por turnos, cada persona nombra una sensación corporal agradable que haya descubierto: calor, apoyo, textura o movimiento.',60],
+  ['Describan sin juzgar','Uno describe con sus propias palabras cómo siente un contacto no genital. El otro escucha, sin interpretar ni aconsejar.',60],
+  ['Comprueben el significado','Quien escuchó resume con una frase lo que entendió. La otra persona puede confirmar o aclarar su percepción.',60],
+  ['Prueben un pequeño cambio','Si ambos lo desean, realicen el contacto acordado y ajusten una sola cualidad: la presión o el movimiento.',60],
+  ['Guarden una señal compartida','Cada uno dice qué gesto le ayudó a sentirse escuchado. No necesitan repetir el diálogo ni continuar con un encuentro sexual.',60]
  ],
  'sf-i-5':[
-  ['Creen un momento','Elijan una situación tranquila. Acuerden qué contacto quieren compartir y que ambos pueden cambiar de opinión.',60],
-  ['Acérquense','Empiecen con una mano entrelazada, un abrazo o una caricia no genital. Observa la cercanía y tu respiración.',60],
-  ['Exploren y sientan','Presta atención a la temperatura, el ritmo, las emociones y las respuestas de tu pareja sin vigilar el desempeño.',60],
-  ['Hablen y ajusten','Compartan qué les agrada y qué quisieran cambiar. Hagan pausas y adapten el contacto de común acuerdo.',60],
-  ['Elijan con libertad','Reconozcan cómo se sintieron. Si ambos desean continuar con otro tipo de intimidad, es una elección libre, no la meta de esta práctica.',60]
+  ['Preparen un espacio de conexión','Elijan un lugar cómodo, sin pantallas. Acuerden que hoy explorarán juntos sin buscar una respuesta sexual específica.',60],
+  ['Descubran un gesto de cercanía','Elijan juntos un abrazo, manos entrelazadas u otro contacto no genital. Noten su temperatura y su apoyo.',60],
+  ['Compartan la atención','Durante unos instantes observen juntos una cualidad del contacto: el calor, el movimiento o la sensación de seguridad.',60],
+  ['Cambien de experiencia','Intercambien quién inicia el contacto. Perciban cómo se siente ahora dar y recibir, sin comparar ni examinar el desempeño.',60],
+  ['Cierren con libertad','Terminen cuando quieran y reconozcan una sensación compartida. Si desean continuar con intimidad, es una elección libre, nunca la meta del ejercicio.',60]
  ],
 
  'sf-solo':[
@@ -97,8 +97,8 @@ const FOCUSI_INTROS={
  'sf-i-1':'Bienvenido a Focalización Sensorial I. Esta práctica te ayuda a reconocer tus propias sensaciones, disminuir la tensión y entrenar tu atención. Hoy empezarás individualmente: busca un espacio tranquilo, observa el contacto de tu cuerpo con el entorno y explora suavemente una sensación, sin buscar excitación ni resultados. Escucharás cada paso y podrás avanzar a tu ritmo.',
  'sf-i-2':'Hoy descubrirás nuevas sensaciones en tu propio cuerpo. Explorarás texturas, cambios de presión y ritmos suaves en zonas no genitales. No tienes que evaluarte: observa qué resulta cómodo y vuelve a esa sensación si te distraes.',
  'sf-i-3':'Ya aprendiste a reconocer sensaciones en tu cuerpo. Hoy puedes llevar esa atención a un acercamiento con tu pareja. Exploren el contacto no genital por turnos, con consentimiento y sin intención de provocar una respuesta sexual. La meta es sentir y conectar; si no tienen un momento cómodo hoy, pueden retomarlo en un próximo encuentro.',
- 'sf-i-4':'Hoy la atención se transforma en comunicación. En un momento tranquilo, conversen sobre qué contacto les gusta, cómo desean recibirlo y qué límites necesitan. Después practiquen decir «más suave», «así está bien» o «pausa». La cercanía crece cuando escuchamos sin presión.',
- 'sf-i-5':'Hoy unirás lo aprendido: sentir tu propio cuerpo, explorar el contacto y escuchar a tu pareja. Busquen una situación de cercanía, comuniquen lo que les agrada y disfruten sin vigilar un resultado. El contacto puede despertar deseo responsivo, pero no es obligatorio que suceda ni que termine en actividad sexual.'
+ 'sf-i-4':'Hoy escucharás a tu pareja desde las sensaciones. No repetiremos las frases del video de comunicación: cada uno describirá un contacto agradable, el otro contará qué entendió y juntos probarán un pequeño ajuste. Tu objetivo es comprender y conectar, no hacerlo perfecto.',
+ 'sf-i-5':'Hoy integrarás lo que ya aprendiste. Compartirás una pequeña experiencia sensorial en pareja, alternando quién da y quién recibe contacto. Observa cómo cambia la sensación al compartir la atención. El objetivo es conexión y disfrute, no cumplir una meta.'
 };
 const FOCUSI_PREP='Elige un momento privado y cómodo. Sigue las cinco acciones con audio y avanza cuando te resulte natural. No existe un tiempo obligatorio. En pareja, ambos participan voluntariamente y pueden detenerse o cambiar el contacto en cualquier momento.';
 const FOCUSI_CLOSE='Terminaste la práctica. Recuerda qué sensación te ayudó a estar presente y qué fue agradable. No necesitas medir una respuesta sexual. Registra cómo te sentiste y vuelve a tu día.';
