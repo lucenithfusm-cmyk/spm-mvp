@@ -106,7 +106,7 @@ async function select(nextProgram,nextDay,reset=false){
     if(changed||reset)window.dispatchEvent(new CustomEvent('spm:session-change',{detail:{userId:'review-only-reset'}}));
     render();return true;
   }catch{status('No se pudo cambiar de día. La prueba actual se conserva; vuelve a intentarlo.',true);return false;}
-  finally{busy=false;controls();}
+  finally{busy=false;controls();focusIIControls();}
 }
 function installRecords(){
   window.SPM_RESOURCE_CONTEXT=()=>clone(context());
