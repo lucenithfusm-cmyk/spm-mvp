@@ -450,7 +450,14 @@ test('Focus I first session has tactile screen 2, image-based screen 5 and free 
   h.click('next');
   assert.ok(h.page.querySelector('.spm-approved-practice'),'approved screen four remains intact');
   assert.ok(h.page.querySelector('[data-act=skipguide]'),'voluntary route to evaluation');
-  assert.ok(h.page.querySelector('.spm-approved-phase-photo'),'each guided step has its own photo overlay');
+  assert.equal(h.page.querySelector('.spm-approved-phase-photo'),null,'first step keeps approved photograph');
+  const skip=h.page.querySelector('[data-act=skipguide]');
+  assert.match(skip.textContent,/Saltar actividad/);
+  assert.match(skip.getAttribute('aria-label'),/sin marcarla como realizada/);
+  h.click('approvedadvance');h.click('approvedadvance');
+  const phaseImage=h.page.querySelector('.spm-approved-phase-photo');
+  assert.ok(phaseImage,'second step has its own relevant photograph');
+  assert.match(phaseImage.getAttribute('style'),/spm-sensate-forearm-matte\.webp/);
   h.click('skipguide');
   assert.ok(h.page.querySelector('.spm-artwork-5'),'fifth screen has its own visual canvas');
   assert.ok(h.page.querySelector('[data-act=close].spm-art-nav-next'),'unfinished practice can be left for later');
@@ -489,4 +496,16 @@ test('Focus I first session pauses between sequential instructions and cancels t
   h.w.setTimeout=realSet;h.w.clearTimeout=realClear;
   h.close();
  }
+});
+
+test('Focus I uses approved top header, higher skip, and only own practice photos',()=>{
+ const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
+ assert.match(css,/\.spm-approved-skip\{[\s\S]*?top:25\.55%/);
+ assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
+ assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:21\.3%/);
+ assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:20\.35%/);
+ assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):photoPath\('release'\)/);
+ const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
+ assert.ok(seq);
+ assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
 });

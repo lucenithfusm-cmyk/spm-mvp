@@ -880,11 +880,12 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 /* Preserves the primary guided sequence and adds a separate, clearly labeled
    escape to screen five for users who prefer to return to the activity later. */
 .spm-approved-skip{
- position:absolute;z-index:8;top:87.15%;left:4.7%;width:47%;height:4.3%;
+ /* Above the activity, next to "Paso n de 5", not among bottom controls. */
+ position:absolute;z-index:8;top:25.55%;left:55.6%;width:40.3%;height:3.1%;
  min-height:0;border:1px solid #d3cab0;border-radius:99px;
  background:rgba(6,47,58,.97);color:#fff0d6;
- font-size:clamp(11px,2.75vw,16px);line-height:1.13;
- font-weight:850;display:grid;place-items:center;padding:3px 7px;
+ font-size:clamp(10px,2.55vw,14px);line-height:1.1;
+ font-weight:850;display:grid;place-items:center;padding:3px 5px;
  cursor:pointer;
 }
 .spm-approved-skip:focus-visible{outline:3px solid #fce0a3;outline-offset:2px}
@@ -919,4 +920,27 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 @media(max-width:390px){
  .spm-artwork-5 .spm-art-content h2{margin:.6cqw 0 .3cqw}
  .spm-artwork-5 .spm-art-content-close{gap:.4cqw}
+}
+
+/* Framing of the already-approved 2/5 and 5/5 visual compositions;
+   the zen-stones/brand header from the unchanged approved atlas stays visible. */
+.spm-artwork-2 .spm-art-panel{
+ top:21.3%;bottom:10.75%;padding:2.7cqw 3cqw;
+}
+.spm-artwork-2 .spm-art-content-prep{gap:1.05cqw}
+.spm-artwork-2 .spm-art-content-prep .spm-art-photo{
+ margin-top:.4cqw;min-height:34cqw;background-position:center 35%;
+}
+.spm-artwork-5 .spm-art-panel{
+ top:20.35%;bottom:10.7%;padding:2.15cqw 2.9cqw;
+}
+.spm-artwork-5 .spm-art-content-close{gap:.42cqw}
+.spm-artwork-5 .spm-art-content-close .spm-art-photo{
+ min-height:16cqw;max-height:32cqw;margin-top:.1cqw;
+ background-position:center 43%;
+}
+@media(max-width:390px){
+ .spm-artwork-2 .spm-art-panel{padding:2.4cqw 2.7cqw}
+ .spm-artwork-5 .spm-art-panel{padding:1.95cqw 2.5cqw}
+ .spm-approved-skip{font-size:10px}
 }

@@ -24,14 +24,16 @@ const EXTRA_PHOTOS={
  confidence:'../assets/commercial-cinema/spm-confident-moment-v3.webp',
  recovery:'../assets/commercial-cinema/day-11-recovery.jpg'
 };
+// Use only photography specific to Sensate Focalizacion during each guided
+// step; never reuse unrelated wellness, performance or promotional pictures.
 const STEP_PHOTOS={
- 'sf-i-1':['reflection','breathing','beginning','confidence','recovery'],
- 'sf-i-2':['forearm','seated','release','intro','beginning'],
- 'sf-i-3':['partner','connection','forearm','intro','beginning'],
- 'sf-i-4':['seated','partner','connection','forearm','beginning'],
- 'sf-i-5':['seated','partner','connection','release','beginning'],
- 'sf-focus-2':['partner','connection','forearm','release','beginning'],
- 'sf-focus-2-solo':['seated','forearm','intro','release','beginning']
+ 'sf-i-1':['seated','forearm','intro','release','seated'],
+ 'sf-i-2':['forearm','intro','seated','release','forearm'],
+ 'sf-i-3':['partner','forearm','seated','release','partner'],
+ 'sf-i-4':['partner','seated','forearm','release','partner'],
+ 'sf-i-5':['partner','release','forearm','seated','partner'],
+ 'sf-focus-2':['partner','forearm','seated','release','partner'],
+ 'sf-focus-2-solo':['seated','forearm','intro','release','seated']
 };
 function photoPath(key){return EXTRA_PHOTOS[key]||PREFIX+(SCENES[key]||SCENES.intro)}
 function stagePhoto(i){
@@ -321,11 +323,13 @@ function spmApprovedScreen(){
   {
    const key=(STEP_PHOTOS[id]||[])[phase]||'reflection';
    if(phase!==0)overlays+='<div class="spm-approved-phase-title"><small>Paso '+(phase+1)+' de 5</small><strong>'+safeText(PHASES[id][phase][0])+'</strong></div>';
-   overlays+='<div class="spm-approved-phase-photo" role="img" aria-label="Fotografía renovada de la acción '+safeText(PHASES[id][phase][0])+'" style="background-image:url(&quot;'+photoPath(key)+'&quot;)"></div>';
+   // Step one already contains its approved photograph in the full-screen art.
+   // Only overlay the relevant focalization photograph on subsequent phases.
+   if(phase>0)overlays+='<div class="spm-approved-phase-photo" role="img" aria-label="Fotografía de focalización para '+safeText(PHASES[id][phase][0])+'" style="background-image:url(&quot;'+photoPath(key)+'&quot;)"></div>';
   }
   overlays+='<strong class="spm-approved-clock" data-guide-elapsed>'+clockText(t)+'</strong>';
   if(guideStarted&&!guideDone)overlays+='<button type="button" class="spm-approved-pause" data-act="'+(running?'pauseguide':'resumeguide')+'">'+(running?'⏸ Pausar':'▶ Reanudar')+'</button>';
-  overlays+='<button type="button" class="spm-approved-skip" data-act="skipguide">Ir al cierre sin completar →</button>';
+  overlays+='<button type="button" class="spm-approved-skip" data-act="skipguide" aria-label="Saltar actividad e ir al cierre sin marcarla como realizada">Saltar actividad →</button>';
   overlays+='<button type="button" class="spm-approved-next" data-act="approvedadvance">'+(!guideStarted?'Iniciar guía →':phase===4?'Terminar y evaluar →':'Siguiente paso →')+'</button>';
  }
  const caption=screen===0?'Conecta con tus sensaciones · 1 / 5':screen===2?'Tu práctica guiada · 3 / 5 · '+PHASES[id].map(p=>p[0]).join(' · '):'Práctica en curso · 4 / 5 · Paso '+(phase+1)+' · '+PHASES[id][phase][0];
@@ -344,7 +348,7 @@ function spmArtworkScreen(){
  const dayName=isNewFocusI()?'FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5':'FOCALIZACIÓN SENSORIAL';
  const currentCaption=second?'Tu práctica individual':'Cierre de tu práctica';
  const step=second?2:5;
- const url=second?photoPath(isPartner()?'connection':'reflection'):photoPath('beginning');
+ const url=second?photoPath(isPartner()?'partner':'reflection'):photoPath('release');
  const footerBack='<button type="button" class="spm-art-nav-back" data-act="back">Anterior</button>';
  const footerAction=second?'<button type="button" class="spm-art-nav-next" data-act="next">Continuar →</button>':
   '<button type="button" class="spm-art-nav-next" data-act="'+(saved||!performed?'close':'save')+'" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':!performed?'Volver luego':busy?'Guardando…':'Guardar experiencia')+'</button>';
