@@ -93,8 +93,8 @@ test('page 2 keeps its full headline and complete legend bands, rather than slic
   h.api.open(8,{origin:'dailyPlan'});h.ui.querySelector('#next').click();
   const slices=[...h.ui.querySelector('#stage').querySelectorAll('.slice')];
   assert.equal(slices.length,2);
-  assert.equal(slices[0].style.aspectRatio,'941 / 702.24','top source region extends past entire title and subtitle');
-  assert.equal(slices[1].style.aspectRatio,'941 / 418','bottom starts before the first complete scale legend');
+  assert.equal(slices[0].style.aspectRatio,'941/702.240','top source region extends past entire title and subtitle');
+  assert.equal(slices[1].style.aspectRatio,'941/418.000','bottom starts before the first complete scale legend');
   assert.match(slices[1].querySelector('img').style.transform,/translateY\(-75/);
   assert.ok(h.ui.querySelector('section .gauge'),'interactive scale is retained');
  }finally{h.close()}
