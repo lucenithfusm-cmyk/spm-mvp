@@ -316,3 +316,10 @@ main{min-height:60vh}
 .sf-matte button:focus-visible{outline:3px solid #c6e0d7;outline-offset:2px}
 @media(max-width:420px){.sf-matte .prep-visual img{max-height:280px}.sf-matte .sensate-values span{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.sf-matte .focusii-listen .focusii-speaker,.sf-matte .audio-control{animation:none}}
+
+/* Focus I individual/partner: one choice-free preparation card, preserving the full face. */
+.sf-matte .focusi-preparation .focusi-modal-photo{max-height:none;margin:12px 0 16px;background:#19364c;box-shadow:none}
+.sf-matte .focusi-preparation .focusi-modal-photo img{width:100%;height:auto;max-height:360px;aspect-ratio:auto!important;object-fit:contain!important;object-position:center!important}
+.sf-matte .focusi-preparation .focusi-start{margin:5px 0 15px;font-size:16px;min-height:54px}
+.sf-matte .focusii-register small{font-size:11px;font-weight:500;color:#cdded9}
+.sf-matte .focusii-register-note{grid-column:1/-1;font-size:12px!important;color:#bbd7d3!important;margin:0!important}
