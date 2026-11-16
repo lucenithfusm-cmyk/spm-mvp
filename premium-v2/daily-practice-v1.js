@@ -291,8 +291,15 @@ function refreshContinuation(){
  if(['desire','breathing','sensate','pelvic'].includes(a?.kind)){module?.querySelector('[data-spm-next]')?.remove();return;}
  if(module)continuation(module);
 }
+function returnToToday(){
+ if(!ctx())return false;
+ // Al finalizar conserva el registro; no avanza el día ni abre otra actividad.
+ // Evita desplazar el foco detrás de diálogos todavía abiertos.
+ active=null;open({focus:!document.querySelector('dialog[open]')});return true;
+}
 function showContinuation(){
- if(!validActive())return;open({focus:false});const box=$('#spmDailyWorkspace');if(!box)return;box.replaceChildren();$('#spmDailySession').dataset.continuation='true';continuation(box);focus(box);
+ if(!validActive())return false;
+ return returnToToday();
 }
 const dailyAdvice=[
  ['Si hoy compartes un momento de intimidad, pregunta: «¿Qué te haría sentir a gusto hoy?». Escucha sin intentar resolver ni demostrar nada.','Si estás solo, identifica una cosa que te ayude a sentirte a gusto.'],
@@ -364,7 +371,7 @@ window.addEventListener('spm:pelvic-readiness',()=>render());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:resource-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
 let continuationPending=false;
 new MutationObserver(()=>{if(continuationPending||!validActive())return;continuationPending=true;requestAnimationFrame(()=>{continuationPending=false;refreshContinuation();});}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','class']});
