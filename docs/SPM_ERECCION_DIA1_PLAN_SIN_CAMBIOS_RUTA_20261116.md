@@ -36,3 +36,17 @@ Los cinco guiones completos y el esquema de interacción están codificados en `
 - Guía EAU (2026): historia sexual, rigidez de erecciones y valoración de factores de riesgo son parte del abordaje de DE.
 
 **Este borrador NO es una orden de reestructurar ruta ni autoriza desplegar cambios en producción.**
+
+## Estado técnico de prueba (actualizado)
+
+Se creó `premium-v2/erection-day1-premium-preview-v1.js` y se incorporó exclusivamente a `premium-v2/live.html` **de esta rama de revisión**. El script intercepta únicamente la apertura de `SPM_ERECTION_PRACTICE.open` para la actividad principal del **día 1**. Las demás 27 jornadas y los apoyos transversales continúan con las funciones originales.
+
+- Pantallas táctiles provisionales (5): introducción, selección EHS, explicación vascular, primera acción opcional y cierre.
+- El audio de EHS utiliza el MP3 original del día 1; los otros cuatro son síntesis provisional según la voz disponible en el dispositivo, todavía no locuciones premium aprobadas.
+- La lámina médica original conserva su control de ampliación.
+- El registro se guarda con el identificador original `main`; los datos EHS mantienen los valores y semántica previos.
+- La imagen fotográfica de portada y la lámina anatómica premium definitivas **todavía no están incorporadas a este prototipo**. Los dibujos SVG de la vista preliminar no reemplazan las imágenes aprobadas.
+- Pruebas programáticas: compilación JavaScript, rutas de los días 2–28 inalteradas, campos de validación y función `supports` originales intactos, sin referencias a rutas transversales, y orden correcto de carga.
+- **Pendiente:** revisión clínica de la microacción, revisión visual en móvil, calidad de audios, validación con usuario de prueba y posterior decisión sobre una integración definitiva. No existe publicación en producción.
+
+**Advertencia:** un despliegue de vista preliminar en Vercel no equivale a aprobación clínica ni a que la nueva experiencia esté publicada para los pacientes.
