@@ -331,6 +331,9 @@ test('Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso
    h.click('next');check(4,mode==='individual'?'04A_Practica_individual':'04B_Practica_en_pareja');
    assert.ok(h.page.querySelector('[data-act=f2toggle]'),'botón táctil Pausar/Iniciar');
    assert.equal(h.page.querySelector('[data-act=nextphase]').disabled,true,'no avanzar sin iniciar');
+   h.click('repeataudio');
+   assert.match(h.spoken.at(-1),mode==='individual'?/Reconecta con tu cuerpo/:/Volver a lo conocido/,'escuchar paso sirve aun sin iniciar reloj');
+   assert.equal(h.writes.length,0);
    h.click('next');assert.match(h.page.querySelector('[role=alert]').textContent,/Inicia los pasos/);
    assert.equal(h.writes.length,0);
    h.click('f2toggle');
