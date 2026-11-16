@@ -10,7 +10,7 @@ Convertir el día 1 en cinco pantallas premium, empleando la metodología visual
 1. **Pantalla de entrada:** preservar «Reconoce tu punto de partida», audio breve y botón de inicio.
 2. **Evaluación:** conservar lámina médica de firmeza de SPM, grados 4–1; las opciones 0 y «No evaluable» son distintas. Basarse solo en experiencia reciente, sin inducir nueva erección.
 3. **Comprender el mecanismo vascular:** lámina educativa realista sobre flujo sanguíneo y respuesta eréctil, explicada en audio, sin exigir lectura.
-4. **Mi primera acción específica:** ensayo erótico breve **opcional** de 2–3 min, en privacidad y sin objetivo de firmeza, basado en un recuerdo o fantasía elegida por el adulto, o posibilidad de omitir sin penalización. Solo introducción y práctica, no una segunda EHS. Reservar el entrenamiento eréctil estructurado para su día original; revisar posibles solapamientos antes de integrarlo.
+4. **Activa tu respuesta eréctil — objetivo clínico específico:** micropráctica **opcional de 3–5 min** de activación sexual voluntaria mediante recuerdo, fantasía o contacto genital suave, elegidos por el adulto. La habilidad central es mantener la atención en el estímulo erótico y regresar a él cuando aparezca vigilancia sobre la firmeza, sin necesitar una erección ni repetir EHS. Registrar únicamente una microobservación de atención (mantuvo / detectó comprobación y regresó / le costó / omitió). No sustituye los entrenamientos eréctiles de los días posteriores ni módulos transversales.
 5. **Cierre:** mostrar «Tu primer paso está hecho» y guardar el valor EHS inicial mediante la misma actividad `main` y el sistema de registros ya existente.
 
 ## Separación clínica
@@ -50,3 +50,9 @@ Se creó `premium-v2/erection-day1-premium-preview-v1.js` y se incorporó exclus
 - **Pendiente:** revisión clínica de la microacción, revisión visual en móvil, calidad de audios, validación con usuario de prueba y posterior decisión sobre una integración definitiva. No existe publicación en producción.
 
 **Advertencia:** un despliegue de vista preliminar en Vercel no equivale a aprobación clínica ni a que la nueva experiencia esté publicada para los pacientes.
+
+## Criterio clínico de seguimiento para la micropráctica (16/11/2026)
+- **Variable principal de proceso:** capacidad de atender a un estímulo erótico, o regresar a él después de comprobar mentalmente la firmeza. Esto es una observación interna de SPM, **no una escala validada de eficacia terapéutica**.
+- **Variables que no se miden durante esta práctica:** grado EHS (ya registrado previamente), aumento de firmeza y supuesta oxigenación peneana.
+- **Seguridad/elección:** la actividad puede omitirse y no interfiere con la valoración clínica inicial ni con la continuidad del día. Detener ante incomodidad o dolor. No inferir una causa orgánica o psicógena a partir de la respuesta.
+- **Racional clínico:** educación sobre respuesta sexual y redirección de atención sexual, coherente con componentes de intervenciones psicosexuales; la eficacia del ejercicio breve específico no está establecida por sí sola (EAU 2026, manejo de disfunción eréctil: https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/management-of-erectile-dysfunction).
