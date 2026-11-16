@@ -524,7 +524,7 @@ test('Focalización I sesión 1: los cinco recursos aprobados son únicos y no m
  }
  const html=fs.readFileSync(path.join(root,'premium-v2/sensate-lab/index.html'),'utf8');
  assert.equal(html.split('sensate-premium-v1.js').length-1,1);
- assert.match(html,/20261116-foc-i-s1-five-screens-v1/);
+ assert.match(html,/20261116-foc-i-s1-close-today-v2/);
  assert.ok(!ui.includes('EXTRA_PHOTOS')&&!ui.includes('commercial-cinema/'));
  const h=harness({day:4,practiceId:'sf-i-1'});
  try{
