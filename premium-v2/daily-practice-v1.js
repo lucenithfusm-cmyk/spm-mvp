@@ -199,7 +199,7 @@ async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(c
    // Los módulos en ventana deben cerrar su sesión después de guardar.
    // Los formularios integrados devuelven a Hoy cuando se guardan.
    const module=$(moduleSelectors[activity.kind]||'#no-spm-module');
-   const waitForModuleClose=!!module||(activity.kind==='wellness'&&!!$('.slModal'));
+   const waitForModuleClose=!!module||(activity.kind==='wellness'&&!!$('.slModal'))||activity.kind==='program-checkpoint';
    if(!waitForModuleClose)returnToToday();
   }
  }
