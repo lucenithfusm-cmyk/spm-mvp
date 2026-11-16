@@ -190,7 +190,7 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
 test('Focus I has five distinct safe interactive sessions; session 1 uses exact approved artwork with real controls',async()=>{
  const cases=[
   [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
-  [8,'sf-i-2','individual','Descubre sensaciones','Contrasta texturas'],
+  [8,'sf-i-2','individual','Descubre lo que te gusta','Llega a tu cuerpo'],
   [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
   [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
   [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
@@ -201,7 +201,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
-  const imageJourney=practiceId==='sf-i-1';
+  const imageJourney=practiceId==='sf-i-1',imageLesson=practiceId==='sf-i-2';
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
@@ -219,7 +219,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
    assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
    assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
    h.click('next');
-   assert.match(h.page.textContent,/3 \/ 5/);
+   assert.match(h.page.textContent,imageLesson?/3 \/ 4/:/3 \/ 5/);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    assert.match(h.page.textContent,new RegExp(firstStep));
    if(imageJourney){
@@ -240,6 +240,9 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
     assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/02:30/);
     assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
     for(let i=0;i<5;i++)h.click('approvedadvance');
+   }else if(imageLesson){
+    assert.ok(h.page.querySelector('.spm-s2-artwork-screen'));
+    assert.equal(h.page.querySelector('[data-act=startguide]'),null);
    }else{
     h.click('startguide');
     assert.match(h.spoken.at(-1),new RegExp(firstStep));
@@ -247,7 +250,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
     assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
     h.click('performed');h.click('next');
    }
-   assert.match(h.page.textContent,/5 \/ 5/);
+   assert.match(h.page.textContent,imageLesson?/4 \/ 4/:/5 \/ 5/);
    h.click('save');await pause();
    assert.equal(h.writes.length,1);
    const record=JSON.parse(h.records['spm-sensate-records'])[0];
@@ -533,5 +536,33 @@ test('Focus I uses only the two user-approved photographs in session one, with n
   h.click('next');h.click('next');h.click('skipguide');
   assert.equal(h.page.querySelectorAll('.spm-art-content-close .spm-art-photo').length,1);
    assert.ok(h.page.querySelector('.spm-art-content-close .spm-art-photo').getAttribute('style').includes('spm-focus-session1-screen5-user-20261115.avif'),'screen 5 photo only');
+ }finally{h.close()}
+});
+
+
+test('sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica íntima',async()=>{
+ for(let i=1;i<=4;i++){
+  const bytes=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s2-screen-'+i+'-approved.webp'));
+  assert.ok(bytes.length>120000);assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ }
+ const h=harness({day:8,practiceId:'sf-i-2'});
+ try{
+  const check=(number)=>{const el=h.page.querySelector('.spm-s2-artwork-screen');assert.ok(el);assert.match(el.getAttribute('style'),new RegExp('screen-'+number+'-approved.webp'));assert.ok(h.page.querySelectorAll('.spm-s2-hit').length>=5);for(const b of h.page.querySelectorAll('.spm-s2-hit'))assert.ok(b.getAttribute('aria-label')&&b.dataset.act)};
+  check(1);h.click('audio');assert.match(h.spoken.at(-1),/zonas de tu cuerpo/);
+  h.page.querySelector('[data-act=s2value][data-value=atencion]').click();assert.ok(h.page.querySelector('[data-act=s2value][data-value=atencion]').classList.contains('chosen'));
+  h.click('approvedread');assert.ok(h.page.querySelector('.spm-s2-info').open);h.click('approvedinfo-close');
+  h.click('next');check(2);h.click('audio');assert.match(h.spoken.at(-1),/solo aprenderás la técnica/);
+  assert.ok(h.page.querySelector('[data-act=branch][data-value=individual]'));h.click('next');check(3);
+  assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+  h.page.querySelector('[data-act=explainstep][data-value="3"]').click();assert.match(h.spoken.at(-1),/Reconoce tu excitación/);
+  assert.ok(h.page.querySelector('[data-act=explainstep][data-value="3"]').classList.contains('chosen'));
+  assert.equal(h.writes.length,0);h.click('next');check(4);
+  h.page.querySelector('[data-act=s2task][data-value=contactos]').click();assert.match(h.spoken.at(-1),/dos formas de contacto/);
+  h.click('audio');assert.match(h.spoken.at(-1),/Tu tarea es practicar/);
+  h.click('save');await pause();
+  assert.equal(h.writes.length,1);const record=JSON.parse(h.records['spm-sensate-records'])[0];
+  assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+  assert.ok(h.page.querySelector('.spm-s2-saved-overlay'));h.click('close');assert.ok(h.calls.includes('close'));
  }finally{h.close()}
 });
