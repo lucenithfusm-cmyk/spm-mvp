@@ -318,9 +318,9 @@ test('Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso
    h.click('audio');assert.match(h.spoken.at(-1),/Sensate Focus II/);
    h.click('next');check(2,'02_Elige_modalidad');
    h.branch(mode);
-   assert.equal(h.page.querySelector('[data-act=branch][data-value="'+mode+'"]').getAttribute('aria-pressed'),'true');
-   assert.equal(h.page.querySelectorAll('.spm-f2-hit.chosen[data-act=branch]').length,1,'no ambiguous second modality');
-   h.click('next');check(3,mode==='individual'?'03A_Guia_individual':'03B_Guia_en_pareja');
+   // One tap opens the selected guide; no extra Continuar.
+   check(3,mode==='individual'?'03A_Guia_individual':'03B_Guia_en_pareja');
+   assert.equal(h.page.querySelectorAll('[data-act=branch]').length,0,'la modalidad ya está resuelta');
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    h.page.querySelector('[data-act=explainstep][data-value="4"]').click();
    assert.match(h.spoken.at(-1),mode==='individual'?/Integra lo que sentiste/:/Cerrar sin expectativas/);
@@ -365,6 +365,7 @@ test('Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso
    h.click('save');await pause();
    assert.equal(h.writes.length,1,'una sola escritura');
    assert.equal(h.calls.filter(v=>v==='recordDaily').length,1);
+   assert.equal(h.calls.filter(v=>v==='close').length,1,'Finalizar regresa automáticamente a Hoy');
    const rows=JSON.parse(h.records['spm-sensate-records']);
    assert.equal(rows.length,1,'sin duplicación');
    assert.equal(rows[0].day,19);
@@ -390,7 +391,6 @@ test('Focus II: acceso sin prerrequisitos y salida anticipada no simula práctic
    assert.equal(h.page.querySelector('[data-act=skip]'),null);
    h.click('next');
    h.branch('individual');
-   h.click('next');
    h.click('next');
    h.click('next');
    assert.match(h.page.querySelector('[role=alert]').textContent,/Inicia los pasos/);
@@ -420,7 +420,7 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     assert.equal(h.page.querySelector('.warning'),null);
     h.click('next');
     if(practiceId==='sf-i-1')h.click('next');
-    else {h.branch('individual');h.click('next');}
+    else {h.branch('individual');}
     assert.match(h.page.textContent,practiceId==='sf-i-1'?/3 \/ 5/:/3 \/ 6/);
     h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'f2toggle');
     assert.match(h.page.textContent,practiceId==='sf-i-1'?/4 \/ 5/:/4 \/ 6/);
