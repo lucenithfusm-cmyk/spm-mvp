@@ -176,7 +176,7 @@ async function save(s,form){
   // There is no asynchronous work between this final check and the scoped save.
   if(!matches(s))return;
   await window.SPM_DAILY_PRACTICE.saveActivity('main',record,s.scope,s.day);
-  if(matches(s)){s.prior=record;message(s,'Práctica guardada. Puedes continuar con tus actividades.');button.textContent='Práctica guardada ✓';}
+  if(matches(s)){s.prior=record;message(s,'Práctica guardada. Regresaste a Hoy.');button.textContent='Práctica guardada ✓';}
  }catch{
   if(!matches(s))return;
   s.saving=false;button.disabled=false;message(s,'No pudimos guardar. Tus respuestas siguen aquí; reintenta. El día no ha avanzado.');
