@@ -514,3 +514,24 @@ test('Focus I uses approved top header, higher skip, and only own practice photo
  assert.doesNotMatch(css,/background-size:225% auto/,'el cierre utiliza la fotografía original sin zoom forzado');
  assert.doesNotMatch(ui,/if\(phase>0\)overlays\+='\<div class="spm-approved-phase-photo"/);
 });
+
+test('Focus I uses only the two user-approved photographs in session one, with no legacy commercial fallback',()=>{
+ const media='premium-v2/assets/sensate-premium/';
+ for(const name of ['spm-focus-session1-screen2-user-20261115.avif','spm-focus-session1-screen5-user-20261115.avif']){
+   const data=fs.readFileSync(path.join(root,media,name));
+   assert.ok(data.length>7500,'original approved photograph exists: '+name);
+   assert.equal(data.toString('ascii',4,8),'ftyp','AVIF image is valid: '+name);
+ }
+ const html=fs.readFileSync(path.join(root,'premium-v2/sensate-lab/index.html'),'utf8');
+ assert.equal((html.match(/sensate-premium-v1\\.js/g)||[]).length,1,'only one active script for the module');
+ assert.doesNotMatch(ui,/EXTRA_PHOTOS|commercial-cinema\\//,'no unrelated photographs in active focalization module');
+ const h=harness({day:4,practiceId:'sf-i-1'});
+ try{
+  h.click('next');
+  assert.equal(h.page.querySelectorAll('.spm-art-prep-entry').length,1);
+  assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-focus-session1-screen2-user-20261115\\.avif/);
+  h.click('next');h.click('next');h.click('skipguide');
+  assert.equal(h.page.querySelectorAll('.spm-art-content-close .spm-art-photo').length,1);
+  assert.match(h.page.querySelector('.spm-art-content-close .spm-art-photo').getAttribute('style'),/spm-focus-session1-screen5-user-20261115\\.avif/);
+ }finally{h.close()}
+});

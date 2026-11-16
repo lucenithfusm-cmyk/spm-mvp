@@ -16,14 +16,7 @@ const SCENE_ALT={intro:'Persona relajada observando su respiración',seated:'Hom
 const FOCUSI_PHOTO_STEPS={'sf-i-1':'focus-i-day-1-steps.webp'};
 // Use adult, calm, photographed environments only; no generic UI screenshots,
 // distress scenes or sexual-performance advertising from unrelated modules.
-const EXTRA_PHOTOS={
- connection:'../assets/commercial-cinema/spm-connection-men-v1.webp',
- beginning:'../assets/commercial-cinema/spm-new-beginning-v1.webp',
- reflection:'../assets/commercial-cinema/spm-reflective-moment-v2.webp',
- breathing:'../assets/commercial-cinema/breathing-guided.jpg',
- confidence:'../assets/commercial-cinema/spm-confident-moment-v3.webp',
- recovery:'../assets/commercial-cinema/day-11-recovery.jpg'
-};
+// Eliminar rutas heredadas de fotografías ajenas a Focalización.
 // Use only photography specific to Sensate Focalizacion during each guided
 // step; never reuse unrelated wellness, performance or promotional pictures.
 const STEP_PHOTOS={
@@ -35,7 +28,7 @@ const STEP_PHOTOS={
  'sf-focus-2':['partner','forearm','seated','release','partner'],
  'sf-focus-2-solo':['seated','forearm','intro','release','seated']
 };
-function photoPath(key){return EXTRA_PHOTOS[key]||PREFIX+(SCENES[key]||SCENES.intro)}
+function photoPath(key){return PREFIX+(SCENES[key]||SCENES.intro)}
 function stagePhoto(i){
  const strip=FOCUSI_PHOTO_STEPS[id],frame=(i/4*100)+'%';
  const photo=(STEP_PHOTOS[id]||['intro','seated','forearm','release','partner'])[i]||'intro';
