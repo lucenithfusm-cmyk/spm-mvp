@@ -396,6 +396,83 @@ function spmArtworkScreen(){
   '<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
 }
 
+/* SPM Focalización I, sesión 1: las cinco imágenes originales son pantallas completas. */
+const SPM_S1_APPROVED_FILES=[
+ 'spm-focus-i-s1-01_Conecta_con_tus_sensaciones.webp',
+ 'spm-focus-i-s1-02_Tu_practica_individual.webp',
+ 'spm-focus-i-s1-03_Tu_practica_guiada.webp',
+ 'spm-focus-i-s1-04_Llevalo_a_tu_vida.webp',
+ 'spm-focus-i-s1-05_Cierre_de_tu_practica.webp'
+];
+const SPM_S1_CLINICAL_AUDIO={
+ atencion:'Atención. Elige una sensación concreta, como el apoyo del cuerpo o la temperatura de tu piel. Si te distraes, vuelve con calma a lo que percibes.',
+ sensaciones:'Sensaciones. Reconoce la textura, la presión, la temperatura y el contacto. No hace falta cambiarlos ni buscar un resultado especial.',
+ sinpresion:'Sin presión. No necesitas provocar erección ni alcanzar una meta sexual. Puedes seguir tu propio ritmo.',
+ privacidad:'Privacidad. Elige un lugar cómodo en el que puedas estar sin interrupciones.',
+ calma:'Calma. Acomódate y permite que tu respiración siga un ritmo natural, sin forzarla.',
+ sinexigencias:'Sin exigencias. Hoy vas a reconocer las sensaciones de tu cuerpo, no a evaluar tu respuesta sexual.',
+ lugar:'Elige un lugar cómodo. Puede ser una silla, un sofá o tu cama. Ajusta tu postura según lo que necesites.',
+ minutos:'Dedica unos minutos. No hay un tiempo obligatorio. Escucha tu cuerpo y decide cuándo es suficiente.',
+ sensacion:'Observa una sensación agradable. Percibe el calor, la textura o el contacto. Cuando te distraigas, vuelve a sentir.',
+ terminar:'Termina cuando lo necesites. Una pausa o el final de la práctica también son decisiones válidas.',
+ tarea:'Llévalo a tu vida. Cuando tengas un momento tranquilo, acomódate donde te sientas bien y observa el apoyo de tu cuerpo. Dedica unos minutos a una sensación agradable. Puede ser una textura, la temperatura o el contacto. Si aparecen pensamientos, déjalos pasar y vuelve a sentir. Puedes terminar cuando lo desees.'
+};
+let spmS1Concept='',spmS1Prep='',spmS1Task='';
+function spmS1Hit(rect,act,label,value,{audio=false,choice=false,active=false,field='',disabled=false}={}){
+ const attr=(audio?'data-audio ':'')+(choice?'aria-pressed="'+active+'" ':'')+(field?'data-field="'+field+'" ':'')+(disabled?'disabled ':'');
+ return spmApprovedButton(rect,act,label,value,attr);
+}
+function spmApprovedSession1Screen(){
+ const page=screen+1,image=SPM_S1_APPROVED_FILES[screen];
+ const b=spmS1Hit;
+ let taps=b([33,22,441,113],'close','Volver a mi programa');
+ if(screen===0){
+  taps+=b([88,1103,858,1224],'audio','Escuchar introducción',undefined,{audio:true});
+  taps+=b([93,1230,849,1336],'approvedread','Leer instrucciones de introducción');
+  for(const [key,r,label] of [['atencion',[27,1344,303,1503],'Atención'],['sensaciones',[318,1344,609,1503],'Sensaciones'],['sinpresion',[622,1344,913,1503],'Sin presión']])
+   taps+=b(r,'s1concept','Escuchar concepto: '+label,key,{audio:true,choice:true,active:spmS1Concept===key});
+  taps+=b([28,1526,334,1635],'close','Anterior: volver a mi programa');
+  taps+=b([540,1526,915,1635],'next','Comenzar la sesión');
+ }else if(screen===1){
+  taps+=b([93,1020,852,1136],'audio','Escuchar preparación',undefined,{audio:true});
+  taps+=b([93,1143,850,1238],'approvedread','Leer instrucciones de preparación');
+  for(const [key,r,label] of [['privacidad',[25,1250,306,1393],'Privacidad'],['calma',[318,1250,614,1393],'Calma'],['sinexigencias',[624,1250,911,1393],'Sin exigencias']])
+   taps+=b(r,'s1prep','Escuchar: '+label,key,{audio:true,choice:true,active:spmS1Prep===key});
+  taps+=b([25,1413,910,1510],'branch','Iniciar práctica individual','individual');
+  taps+=b([26,1531,329,1636],'back','Anterior: volver a introducción');
+  taps+=b([538,1531,915,1636],'next','Continuar a práctica guiada');
+ }else if(screen===2){
+  const steps=[[24,487,907,666],[24,675,907,845],[24,851,907,1024],[24,1030,907,1190],[24,1194,907,1357]];
+  steps.forEach((r,i)=>taps+=b(r,'explainstep','Escuchar paso '+(i+1)+': '+PHASES[id][i][0],i,{audio:true,choice:true,active:explainPhase===i}));
+  taps+=b([69,1384,858,1503],'explainall','Escuchar los cinco pasos',undefined,{audio:true});
+  taps+=b([27,1528,336,1632],'back','Anterior: volver a preparación');
+  taps+=b([541,1528,915,1632],'next','Continuar a tarea');
+ }else if(screen===3){
+  for(const [key,r,label] of [['lugar',[93,590,846,714],'Elige un lugar cómodo'],['minutos',[93,724,846,845],'Dedica unos minutos'],['sensacion',[93,855,846,980],'Observa una sensación agradable'],['terminar',[93,984,846,1103],'Termina cuando lo necesites']])
+   taps+=b(r,'s1task','Escuchar consejo: '+label,key,{audio:true,choice:true,active:spmS1Task===key});
+  taps+=b([81,1381,846,1507],'s1task','Escuchar mi tarea','tarea',{audio:true,choice:true,active:spmS1Task==='tarea'});
+  taps+=b([27,1528,332,1632],'back','Anterior: volver a guía');
+  taps+=b([539,1528,916,1632],'next','Continuar a cierre');
+ }else if(screen===4){
+  taps+=b([109,689,814,786],'audio','Escuchar cierre',undefined,{audio:true});
+  taps+=b([108,795,817,879],'approvedread','Leer instrucciones de cierre');
+  [[28,196],[204,374],[382,554],[561,732],[741,913]].forEach(([x,x2],i)=>
+   taps+=b([x,946,x2,1053],'focus2rating','Bienestar '+i+' de 4',i,{choice:true,active:data.focus2Rating===i}));
+  for(const [v,r] of [['Más calma',[27,1135,321,1216]],['Más conexión',[328,1135,613,1216]],['Menos presión',[621,1135,914,1216]]])
+   taps+=b(r,'focus2noticed','Hoy noté: '+v,v,{choice:true,active:data.focus2Noted.includes(v)});
+  for(const [v,r,label] of [['comodo',[27,1284,321,1374],'Cómodo'],['neutro',[329,1284,613,1374],'Neutro'],['tenso',[621,1284,913,1374],'Tenso']])
+   taps+=b(r,'approvedchoice','Me sentí '+label,v,{choice:true,active:data.comfort===v,field:'comfort'});
+  for(const [v,r,label] of [['ninguna',[27,1437,320,1524],'No'],['molestia',[327,1437,611,1524],'Molestia'],['dolor',[618,1437,913,1524],'Dolor']])
+   taps+=b(r,'approvedchoice','Molestia o dolor: '+label,v,{choice:true,active:data.discomfort===v,field:'discomfort'});
+  taps+=b([24,1538,332,1646],'back','Anterior: volver a tarea');
+  taps+=b([542,1538,918,1646],saved?'close':'save',saved?'Volver al programa':'Guardar el aprendizaje y volver al programa',undefined,{disabled:busy});
+ }
+ const labels=['Conecta con tus sensaciones','Tu práctica individual','Tu práctica guiada','Llévalo a tu vida','Cierre de tu práctica'];
+ const status=error?'<div class="spm-s1-feedback error" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-s1-feedback" role="status">'+safeText(notification)+'</div>':'';
+ return '<div class="layout sf-matte sensate-approved-layout spm-s1-layout"><div class="spm-approved-screen spm-s1-artwork" role="group" aria-label="SPM Focalización I · sesión 1 de 5 · pantalla '+page+' de 5" style="background-image:url(&quot;'+PREFIX+image+'&quot;)">'+
+  '<span class="spm-approved-sr">'+safeText(labels[screen]+' · '+page+' / 5')+'</span>'+taps+'</div>'+status+
+  '<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
+}
 /* Sesión 2 · cuatro láminas aprobadas como lienzos únicos; zonas HTML táctiles reales. */
 const SPM_S2_FILES={0:'spm-focus-i-s2-screen-1-approved.webp',1:'spm-focus-i-s2-screen-2-approved.webp',2:'spm-focus-i-s2-screen-3-approved.webp',4:'spm-focus-i-s2-screen-4-approved.webp'};
 const SPM_S2_VALUES={
@@ -990,6 +1067,7 @@ function footer(){
  return '<div class="foot">'+back+'<span>5 / 5</span><button type="button" data-act="'+(saved?'close':'save')+'" class="gold" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button></div>';
 }
 function render(){
+ if(id==='sf-i-1'&&screen>=0&&screen<=4){root.innerHTML=spmApprovedSession1Screen();return;}
  if(isFocusII()&&screen>=0&&screen<=5){
   root.innerHTML=spmApprovedFocusIIScreen();
   return;
@@ -1033,7 +1111,7 @@ function readValue(el){const key=el.dataset.field;if(!key)return;if(key==='conse
 function recommendation(){if(data.discomfort==='dolor')return 'reduce-pressure';if(data.pressureAfter>=7||data.monitoringIntrusions>=4)return 'reduce-pressure';if(isPartner()&&['presenceAfter','pressureAfter','enjoyment','partnerComfort'].every(k=>touched.has(k))&&data.presenceAfter>=7&&data.pressureAfter<=3&&data.enjoyment>=6&&data.partnerComfort>=6)return 'progress';return 'repeat'}
 async function save(){error='';notification='';if(saved){notification='Esta práctica ya está guardada.';render();return}if(busy)return;
 if(!canPractice()){error='Esta sesión pertenece a otro día del programa. Regresa a tu actividad asignada.';render();return}
-if(!performed&&!isFocusILesson()){error='Primero confirma que realizaste la práctica guiada.';render();return}
+if(!performed&&!isFocusILesson()&&id!=='sf-i-1'){error='Primero confirma que realizaste la práctica guiada.';render();return}
 if(!isModernFocus()&&isPartner()&&!consent){error='Para una práctica en pareja, ambos deben haber aceptado participar.';render();return}
 const missing=(isModernFocus()?[]:['comfort','ease','attention','repeat','discomfort']).find(x=>!data[x]);
 if(missing){error='Selecciona cómo te sentiste, dificultad, atención, ganas de repetir y molestias.';render();return}
@@ -1043,7 +1121,7 @@ try{
  const rows=readRecords(),day=Number(api.getContext().day),entry={
   id:entryId||(entryId=(window.crypto?.randomUUID?.()||'sensate-'+Date.now()+'-'+Math.floor(Math.random()*100000))),
   day,origin:isDaily?'dailyPlan':'library',practiceId:id,completed:true,savedAt:new Date().toISOString(),
-  ...(isFocusILesson()?{lessonCompleted:true,intimatePracticeCompleted:null,lessonFormat:'learn-now-practice-later',followUp:null}:{}),
+  ...((isFocusILesson()||id==='sf-i-1')?{lessonCompleted:true,intimatePracticeCompleted:null,lessonFormat:'learn-now-practice-later',followUp:null}:{}),
   presenceBefore:isModernFocus()?null:data.presenceBefore,presenceAfter:isModernFocus()&&!touched.has('presenceAfter')?null:data.presenceAfter,
   pressureBefore:isModernFocus()?null:data.pressureBefore,pressureAfter:isModernFocus()&&!touched.has('pressureAfter')?null:data.pressureAfter,
   enjoyment:isModernFocus()&&!touched.has('enjoyment')?null:data.enjoyment,monitoringIntrusions:data.monitoringIntrusions,
@@ -1055,7 +1133,7 @@ try{
  if(!api.write(KEY,JSON.stringify(rows)))throw Error('session');
  await api.flush();
  if(isDaily){const ok=await api.recordDaily();if(ok===false)throw Error('daily')}
- saved=true;notification=isFocusILesson()?'Aprendizaje guardado ✓. Lleva la técnica a tu vida cuando quieras.':'Experiencia guardada en tu programa SPM ✓';
+ saved=true;notification=(isFocusILesson()||id==='sf-i-1')?'Aprendizaje guardado ✓. Lleva la técnica a tu vida cuando quieras.':'Experiencia guardada en tu programa SPM ✓';
 }catch(e){error='No se pudo guardar o completar la actividad. Tus respuestas permanecen aquí para reintentar.'}
 finally{busy=false;render()}
  // Al guardar, Finalizar retorna a Hoy. Si falla el cierre, el registro permanece.
@@ -1068,6 +1146,19 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
+ if(id==='sf-i-1'&&['s1concept','s1prep','s1task'].includes(act)){
+  const key=button.dataset.value,text=SPM_S1_CLINICAL_AUDIO[key];
+  if(!Object.prototype.hasOwnProperty.call(SPM_S1_CLINICAL_AUDIO,key))return;
+  if(button.classList.contains('playing')){stopAudio();return}
+  stopAudio();
+  if(act==='s1concept')spmS1Concept=key;
+  if(act==='s1prep')spmS1Prep=key;
+  if(act==='s1task')spmS1Task=key;
+  render();
+  speech(text,null,'[data-act="'+act+'"][data-value="'+key+'"]');
+  return;
+ }
+
 
  if(isFocusII()&&act==='f2concept'){
   const key=button.dataset.value;

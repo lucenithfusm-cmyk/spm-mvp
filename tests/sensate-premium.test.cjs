@@ -187,7 +187,7 @@ test('both modalities use precisely the same screen 5 evaluation and save throug
  }
 });
 
-test('Focus I has five distinct safe interactive sessions; session 1 uses exact approved artwork with real controls',async()=>{
+test('Focus I: cinco sesiones independientes, la primera conserva cinco imágenes originales táctiles y las demás no cambian',async()=>{
  const cases=[
   [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
   [8,'sf-i-2','individual','Descubre lo que te gusta','Llega a tu cuerpo'],
@@ -195,76 +195,63 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
   [23,'sf-i-4','partner','Comunica lo que disfrutas','Observa qué disfrutas'],
   [26,'sf-i-5','partner','Integra y disfruta','Empiecen con calma']
  ];
- const originalImage=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-approved-focus-screen-atlas.avif'));
- assert.ok(originalImage.length>40000);
- assert.equal(originalImage.toString('ascii',4,12),'ftypavif','approved screens must be an actual AVIF image');
+ const assets=['01_Conecta_con_tus_sensaciones','02_Tu_practica_individual','03_Tu_practica_guiada','04_Llevalo_a_tu_vida','05_Cierre_de_tu_practica'];
+ for(const asset of assets){
+  const bytes=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s1-'+asset+'.webp'));
+  assert.ok(bytes.length>160000,'Imagen aprobada completa '+asset);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF');
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ }
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
-  const imageJourney=practiceId==='sf-i-1',imageLesson=['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(practiceId),image3=practiceId==='sf-i-3',image4=practiceId==='sf-i-4',image5=practiceId==='sf-i-5';
+  const isS1=practiceId==='sf-i-1',otherLesson=['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(practiceId);
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
-   if(imageJourney){
-    const art=h.page.querySelector('.spm-approved-intro');
-    assert.ok(art,'introduction must be the approved artwork screen');
-    assert.match(art.getAttribute('style'),/spm-approved-focus-screen-atlas\.avif/);
-    assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
-    assert.ok(h.page.querySelector('[data-act=approvedread]'),'the written instruction is expandable');
+   if(isS1){
+    assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-01_Conecta_con_tus_sensaciones\.webp/);
+    assert.ok(h.page.querySelector('[data-act=approvedread]'));
+    assert.equal(h.page.querySelectorAll('[data-act=s1concept]').length,3);
    }
-   h.click('audio');
-   assert.ok(h.spoken.at(-1).length>60,'intro offers complete spoken guidance');
+   h.click('audio');assert.ok(h.spoken.at(-1).length>60);
    signatures.add(h.spoken.at(-1));
    h.click('next');
-   if(image3||image4||image5){assert.equal(h.page.querySelectorAll('[data-act=branch]').length,0,'partner journey is predetermined');}else{
-    assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
-    assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
-   }
+   assert.equal(h.page.querySelectorAll('[data-act=branch]').length,isS1||practiceId==='sf-i-2'?1:0);
+   if(isS1)assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-02_Tu_practica_individual\.webp/);
    h.click('next');
-   assert.match(h.page.textContent,imageLesson?/3 \/ 4/:/3 \/ 5/);
+   assert.match(h.page.textContent,otherLesson?/3 \/ 4/:/3 \/ 5/);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
    assert.match(h.page.textContent,new RegExp(firstStep));
-   if(imageJourney){
-    assert.ok(h.page.querySelector('.spm-approved-guide'),'the five action cards are the exact approved artwork');
-    assert.ok(h.page.querySelector('[data-act=explainall]'),'five-step audio button is real');
-    const individual=h.page.querySelector('[data-act=explainstep][data-value="0"]');
-    assert.ok(individual);
-    individual.click();
-    assert.match(h.spoken.at(-1),new RegExp(firstStep),'the picture card must play its actual instruction');
+   if(isS1){
+    assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-03_Tu_practica_guiada\.webp/);
+    h.page.querySelector('[data-act=explainstep][data-value="0"]').click();
+    assert.match(h.spoken.at(-1),new RegExp(firstStep));
+    h.click('explainall');assert.match(h.spoken.at(-1),new RegExp(firstStep));
    }
    h.click('next');
-   if(imageJourney){
-    assert.ok(h.page.querySelector('.spm-approved-practice'),'practice must use approved third image');
-    assert.ok(h.page.querySelector('[data-act=guideintro]'));
-    h.click('approvedadvance');
-    assert.match(h.spoken.at(-1),new RegExp(firstStep));
-    h.tick(150);
-    assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/02:30/);
-    assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
-    for(let i=0;i<5;i++)h.click('approvedadvance');
-   }else if(imageLesson){
-    assert.ok(h.page.querySelector(image5?'.spm-s5-artwork-screen':image4?'.spm-s4-artwork-screen':image3?'.spm-s3-artwork-screen':'.spm-s2-artwork-screen'));
+   if(isS1){
+    assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-04_Llevalo_a_tu_vida\.webp/);
+    const audio=h.page.querySelector('[data-act=s1task][data-value=tarea]');
+    assert.ok(audio);
+    audio.click();assert.match(h.spoken.at(-1),/Llévalo a tu vida/);
+    h.click('next');
+    assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-05_Cierre_de_tu_practica\.webp/);
+    assert.equal(h.page.querySelectorAll('[data-act=focus2rating]').length,5);
+   }else if(otherLesson){
+    assert.ok(h.page.querySelector(practiceId==='sf-i-5'?'.spm-s5-artwork-screen':practiceId==='sf-i-4'?'.spm-s4-artwork-screen':practiceId==='sf-i-3'?'.spm-s3-artwork-screen':'.spm-s2-artwork-screen'));
     assert.equal(h.page.querySelector('[data-act=startguide]'),null);
-   }else{
-    h.click('startguide');
-    assert.match(h.spoken.at(-1),new RegExp(firstStep));
-    h.tick(150);
-    assert.equal(h.page.querySelector('.focusii-active-title').textContent,firstStep,'optional timer does not force a new activity');
-    h.click('performed');h.click('next');
    }
-   assert.match(h.page.textContent,imageLesson?/4 \/ 4/:/5 \/ 5/);
+   assert.match(h.page.textContent,otherLesson?/4 \/ 4/:/5 \/ 5/);
    h.click('save');await pause();
    assert.equal(h.writes.length,1);
    const record=JSON.parse(h.records['spm-sensate-records'])[0];
-   assert.equal(record.day,day);
-   assert.equal(record.practiceId,practiceId);
-   assert.equal(record.completed,true);
-   assert.equal(record.wellbeingRating,null);
-   assert.equal(record.pressureAfter,null);
-   assert.equal(record.modality,mode);
+   assert.equal(record.day,day);assert.equal(record.practiceId,practiceId);assert.equal(record.completed,true);
+   assert.equal(record.wellbeingRating,null);assert.equal(record.pressureAfter,null);assert.equal(record.modality,mode);
+   if(isS1){assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null)}
   }finally{h.close()}
  }
- assert.equal(signatures.size,5,'each day offers a different welcome audio');
+ assert.equal(signatures.size,5,'cada sesión conserva su propia bienvenida');
 });
 
 test('Focus II: ocho imágenes aprobadas sin pérdida, seis etapas y sin duplicar Focalización I',()=>{
@@ -422,7 +409,7 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     if(practiceId==='sf-i-1')h.click('next');
     else {h.branch('individual');}
     assert.match(h.page.textContent,practiceId==='sf-i-1'?/3 \/ 5/:/3 \/ 6/);
-    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'f2toggle');
+    h.click('next');if(practiceId==='sf-i-1')h.page.querySelector('[data-act=s1task][data-value=tarea]').click();else h.click('f2toggle');
     assert.match(h.page.textContent,practiceId==='sf-i-1'?/4 \/ 5/:/4 \/ 6/);
     assert.equal(h.page.querySelector('.warning'),null);
     assert.equal(h.writes.length,0);
@@ -459,105 +446,95 @@ test('standalone video remains day-16 optional, never an embedded focalization d
 
 // Regression coverage: first Focus I session keeps real artwork controls on all
 // five pages and a voluntary exit from the guided activity with no fake save.
-test('Focus I first session has tactile screen 2, image-based screen 5 and free advance without false completion',()=>{
+test('Focalización I sesión 1: 5 lienzos táctiles, navegación, audios y salida sin guardado involuntario',async()=>{
  const h=harness({day:4,practiceId:'sf-i-1'});
+ const art=()=>h.page.querySelector('.spm-s1-artwork');
+ const expected=['01_Conecta_con_tus_sensaciones','02_Tu_practica_individual','03_Tu_practica_guiada','04_Llevalo_a_tu_vida','05_Cierre_de_tu_practica'];
  try{
-  assert.ok(h.page.querySelector('.spm-approved-intro'),'approved screen one remains untouched');
-  h.click('next');
-  assert.ok(h.page.querySelector('.spm-artwork-2'),'second screen has its own canvas');
-   assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-focus-session1-screen2-user-20261115\.avif/,'screen 2 uses only the new approved photo');
-  assert.ok(h.page.querySelector('.spm-art-prep-entry[data-act=branch][data-value=individual]'),'photo enters session');
-  assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
-  h.click('next');
-  assert.ok(h.page.querySelector('.spm-approved-guide'),'approved screen three remains intact');
-  h.click('next');
-  assert.ok(h.page.querySelector('.spm-approved-practice'),'approved screen four remains intact');
-  assert.ok(h.page.querySelector('[data-act=skipguide]'),'voluntary route to evaluation');
-  assert.equal(h.page.querySelector('.spm-approved-phase-photo'),null,'first step keeps approved photograph');
-  const skip=h.page.querySelector('[data-act=skipguide]');
-  assert.match(skip.textContent,/Saltar actividad/);
-  assert.match(skip.getAttribute('aria-label'),/sin marcarla como realizada/);
-  h.click('approvedadvance');h.click('approvedadvance');
-  assert.equal(h.page.querySelector('.spm-approved-phase-photo'),null,'la práctica no muestra fotografías recicladas');
-  assert.match(h.page.querySelector('.spm-approved-practice').getAttribute('style'),/spm-approved-focus-screen-atlas\.avif/);
-  assert.ok(h.page.querySelector('.spm-approved-phase-title'),'el título del paso se actualiza sobre el arte aprobado');
-  h.click('skipguide');
-  assert.ok(h.page.querySelector('.spm-artwork-5'),'fifth screen has its own visual canvas');
-  assert.ok(h.page.querySelector('[data-act=close].spm-art-nav-next'),'unfinished practice can be left for later');
+  for(let i=0;i<5;i++){
+   assert.ok(art(),'pantalla '+(i+1));
+   assert.match(art().getAttribute('style'),new RegExp('spm-focus-i-s1-'+expected[i]+'.webp'));
+   assert.match(art().getAttribute('aria-label'),new RegExp('pantalla '+(i+1)+' de 5'));
+   assert.ok(h.page.querySelectorAll('.spm-approved-hit[data-act]').length>=4);
+   assert.ok([...h.page.querySelectorAll('.spm-approved-hit')].every(b=>b.getAttribute('aria-label')));
+   if(i<4)h.click('next');
+  }
   assert.equal(h.writes.length,0);
-  assert.equal(h.calls.filter(x=>x==='recordDaily').length,0);
-  h.page.querySelector('.spm-art-rating [data-value="3"]').click();
-  assert.equal(h.writes.length,0,'rating does not save unfinished practice');
-  h.page.querySelector('.spm-art-nav-next').click();
-  assert.ok(h.calls.includes('close'));
+  const opt=h.page.querySelector('[data-act=focus2rating][data-value="3"]');opt.click();
+  assert.equal(opt.getAttribute('aria-pressed'),'true');
   assert.equal(h.writes.length,0);
+  h.click('back');assert.match(art().getAttribute('style'),/s1-04_Llevalo_a_tu_vida/);
+  h.click('close');assert.ok(h.calls.includes('close'));
+  assert.equal(h.writes.length,0,'salir sin pulsar Volver luego no marca actividad completada');
  }finally{h.close()}
+ const done=harness({day:4,practiceId:'sf-i-1'});
+ try{
+  for(let i=0;i<4;i++)done.click('next');
+  done.page.querySelector('[data-act=focus2rating][data-value="4"]').click();
+  done.page.querySelector('[data-act=focus2noticed][data-value="Más calma"]').click();
+  done.page.querySelector('[data-act=approvedchoice][data-field=comfort][data-value=comodo]').click();
+  done.click('save');await pause();
+  assert.equal(done.writes.length,1);
+  assert.equal(done.calls.filter(x=>x==='recordDaily').length,1);
+  const record=JSON.parse(done.records['spm-sensate-records'])[0];
+  assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);
+  assert.equal(record.wellbeingRating,4);
+  assert.deepEqual(record.focus2Noted,['Más calma']);
+  assert.ok(done.calls.includes('close'));
+ }finally{done.close()}
 });
 
-test('Focus I first session pauses between sequential instructions and cancels the pending gap on navigation',()=>{
+test('Focalización I sesión 1: secuencia de cinco audios mantiene pausa y cancela al cambiar pantalla',()=>{
  const h=harness({day:4,practiceId:'sf-i-1'});
- const pending=[];
- const realSet=h.w.setTimeout,realClear=h.w.clearTimeout;
+ const pending=[];const realSet=h.w.setTimeout,realClear=h.w.clearTimeout;
  try{
   h.w.setTimeout=(fn,delay)=>{pending.push({fn,delay});return pending.length+123};
   h.w.clearTimeout=()=>{};
   h.click('next');h.click('next');
-  assert.ok(h.page.querySelector('.spm-approved-guide'));
-  h.click('explainall');
-  const initial=h.spoken.length;
+  assert.match(h.page.querySelector('.spm-s1-artwork').getAttribute('style'),/s1-03_Tu_practica_guiada/);
+  h.click('explainall');const initial=h.spoken.length;
   assert.ok(initial>0);
-  h.finishAudio();
-  assert.equal(h.spoken.length,initial,'second step does not overlap the first');
+  h.finishAudio();assert.equal(h.spoken.length,initial);
   assert.equal(pending.at(-1).delay,1600);
-  pending.at(-1).fn();
-  assert.equal(h.spoken.length,initial+1,'next step begins after the gap');
-  h.click('next');
-  const afterExit=h.spoken.length;
-  pending.at(-1).fn();
-  assert.equal(h.spoken.length,afterExit,'navigation cancels pending narration');
- }finally{
-  h.w.setTimeout=realSet;h.w.clearTimeout=realClear;
-  h.close();
- }
+  pending.at(-1).fn();assert.equal(h.spoken.length,initial+1);
+  h.click('next');const afterExit=h.spoken.length;
+  pending.at(-1).fn();assert.equal(h.spoken.length,afterExit);
+ }finally{h.w.setTimeout=realSet;h.w.clearTimeout=realClear;h.close()}
 });
 
-test('Focus I uses approved top header, higher skip, and only own practice photos',()=>{
+test('Focalización I sesión 1: estilos táctiles de cinco láminas respetan 941×1672 y audio accesible',()=>{
  const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
- assert.match(css,/\.spm-approved-skip\{[\s\S]*?top:25\.55%/);
- assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
- assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:20\.2%/);
- assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:19\.9%/);
- assert.match(ui,/const url=PREFIX\+\(second\?'spm-focus-session1-screen2-user-20261115\.avif':'spm-focus-session1-screen5-user-20261115\.avif'\)/);
- const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
- assert.ok(seq);
- assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
- assert.match(css,/\.spm-artwork-screen\{min-height:100dvh\}/);
- assert.ok(css.includes('background:url("./assets/sensate-premium/spm-approved-focus-screen-atlas.avif") no-repeat left top'),'the approved header stays unchanged');
- assert.doesNotMatch(css,/background-size:225% auto/,'el cierre utiliza la fotografía original sin zoom forzado');
- assert.doesNotMatch(ui,/if\(phase>0\)overlays\+='\<div class="spm-approved-phase-photo"/);
+ assert.match(css,/\.spm-s1-artwork\{[\s\S]*?background:#f8e6d5 center top \/ 100% 100% no-repeat!important/);
+ assert.match(css,/\.spm-s1-artwork \.spm-approved-hit\[data-audio\]/);
+ assert.match(css,/\.spm-s1-artwork \.spm-approved-hit\[aria-pressed="true"\]/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+ assert.match(ui,/const SPM_S1_APPROVED_FILES=\[/);
+ assert.match(ui,/if\(id==='sf-i-1'&&screen>=0&&screen<=4\)/);
+ assert.doesNotMatch(ui,/if\(id==='sf-i-1'&&screen>=0&&screen<=4\)\{root.innerHTML=spmApprovedScreen\(\)/);
 });
 
-test('Focus I uses only the two user-approved photographs in session one, with no legacy commercial fallback',()=>{
- const media='premium-v2/assets/sensate-premium/';
- for(const name of ['spm-focus-session1-screen2-user-20261115.avif','spm-focus-session1-screen5-user-20261115.avif']){
-   const data=fs.readFileSync(path.join(root,media,name));
-   assert.ok(data.length>7500,'original approved photograph exists: '+name);
-   assert.equal(data.toString('ascii',4,8),'ftyp','AVIF image is valid: '+name);
+test('Focalización I sesión 1: los cinco recursos aprobados son únicos y no mezcla fotografías comerciales',()=>{
+ const imageNames=['01_Conecta_con_tus_sensaciones','02_Tu_practica_individual','03_Tu_practica_guiada','04_Llevalo_a_tu_vida','05_Cierre_de_tu_practica'];
+ for(const name of imageNames){
+  const data=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s1-'+name+'.webp'));
+  assert.ok(data.length>160000,'recurso real '+name);
+  assert.equal(data.toString('ascii',0,4),'RIFF');
+  assert.equal(data.toString('ascii',8,12),'WEBP');
  }
  const html=fs.readFileSync(path.join(root,'premium-v2/sensate-lab/index.html'),'utf8');
- assert.equal(html.split('sensate-premium-v1.js').length-1,1,'only one active script for the module');
- assert.ok(!ui.includes('EXTRA_PHOTOS')&&!ui.includes('commercial-cinema/'),'no unrelated photographs in active focalization module');
+ assert.equal(html.split('sensate-premium-v1.js').length-1,1);
+ assert.match(html,/20261116-foc-i-s1-five-screens-v1/);
+ assert.ok(!ui.includes('EXTRA_PHOTOS')&&!ui.includes('commercial-cinema/'));
  const h=harness({day:4,practiceId:'sf-i-1'});
  try{
-  h.click('next');
-  assert.equal(h.page.querySelectorAll('.spm-art-prep-entry').length,1);
-   assert.ok(h.page.querySelector('.spm-art-prep-entry').getAttribute('style').includes('spm-focus-session1-screen2-user-20261115.avif'),'screen 2 photo only');
-  h.click('next');h.click('next');h.click('skipguide');
-  assert.equal(h.page.querySelectorAll('.spm-art-content-close .spm-art-photo').length,1);
-   assert.ok(h.page.querySelector('.spm-art-content-close .spm-art-photo').getAttribute('style').includes('spm-focus-session1-screen5-user-20261115.avif'),'screen 5 photo only');
+  for(let i=0;i<5;i++){
+   assert.ok(h.page.querySelector('.spm-s1-artwork'));
+   assert.equal(h.page.querySelectorAll('.spm-art-prep-entry').length,0);
+   assert.equal(h.page.querySelectorAll('.spm-approved-intro').length,0);
+   if(i<4)h.click('next');
+  }
  }finally{h.close()}
 });
-
 
 test('sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica íntima',async()=>{
  for(let i=1;i<=4;i++){

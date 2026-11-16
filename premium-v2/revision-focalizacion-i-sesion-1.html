@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>SPM · Revisión Focalización I · Sesión 1</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#0d2b3b;color:#f7f4ea}
+body{padding:env(safe-area-inset-top,0) 6px env(safe-area-inset-bottom,0)}
+header{max-width:550px;margin:0 auto;padding:10px 8px}
+header small{color:#f0cd8e;letter-spacing:.1em;font-size:11px;font-weight:800}
+header h1{font-size:clamp(17px,4.5vw,24px);line-height:1.15;margin:3px 0 5px}
+header p{font-size:12px;line-height:1.4;color:#dae5e9;margin:0 0 8px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+button{font:inherit;font-size:13px;min-height:42px;border-radius:13px;border:1px solid #c3dbd4;padding:8px 14px;background:#e0bc82;color:#14313e;font-weight:800;cursor:pointer}
+button:focus-visible{outline:3px solid #fff4d3;outline-offset:3px}
+main{max-width:550px;margin:0 auto}
+iframe{display:block;width:100%;height:calc(100dvh - 158px);min-height:520px;border:1px solid #5b7682;border-radius:15px;background:#f8e6d5}
+#qaStatus{font-size:12px;color:#b9d4cf}
+footer{font-size:11px;color:#c3d5d4;text-align:center;padding:9px 4px}
+@media(max-width:420px){iframe{height:calc(100dvh - 162px);min-height:490px}header{padding-top:7px}}
+</style>
+<script>
+(()=>{
+ 'use strict';
+ const KEY='spm-sensate-records';
+ const context={day:4,origin:'dailyPlan',mode:'daily',profile:'erection',primary:'erection',
+  activity:{day:4,practiceId:'sf-i-1',title:'Focalización I · Sesión 1'}};
+ let records={[KEY]:'[]'};
+ let completed=false;
+ function status(text){const el=document.getElementById('qaStatus');if(el)el.textContent=text}
+ function restart(){
+  records={[KEY]:'[]'};completed=false;
+  status('Revisión sin datos reales');
+  const frame=document.getElementById('qaFrame');
+  if(frame)frame.src='sensate-lab/index.html?v=20261116-foc-i-s1-five-screens-v1&review=1';
+ }
+ window.SPM_SENSATE_LAB_HOST={
+  getContext(){return {...context,activity:{...context.activity}}},
+  getState(){return {...records}},
+  write(k,v){if(k!==KEY)return false;records[k]=String(v);return true},
+  async flush(){return true},
+  async recordDaily(){completed=true;status('Aprendizaje de demostración guardado, sin datos de pacientes');return true},
+  async isDailyCompleted(){return completed},
+  async close(){status(completed?'Revisión terminada. Usa Reiniciar para recorrerla de nuevo.':'Saliste sin guardar. Usa Reiniciar para volver a entrar.');return true},
+  async openLibrary(){return true}
+ };
+ document.addEventListener('DOMContentLoaded',()=>document.getElementById('reiniciar').addEventListener('click',restart));
+})();
+</script>
+</head>
+<body>
+<header>
+<small>SPM · VISTA DE REVISIÓN · SIN PACIENTES</small>
+<h1>Focalización I · Sesión 1</h1>
+<p>Las cinco imágenes aprobadas son pantallas táctiles. Prueba los audios, Anterior, Continuar y el cierre.</p>
+<nav><span id="qaStatus">Revisión sin datos reales</span><button id="reiniciar" type="button">↻ Reiniciar</button></nav>
+</header>
+<main><iframe id="qaFrame" title="Focalización I sesión 1 · cinco pantallas táctiles con audio" src="sensate-lab/index.html?v=20261116-foc-i-s1-five-screens-v1&amp;review=1" allow="autoplay"></iframe></main>
+<footer>Prueba aislada. El programa comercial y los pagos permanecen pausados.</footer>
+</body>
+</html>
