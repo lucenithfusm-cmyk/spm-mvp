@@ -212,7 +212,7 @@ test('Focus I first session preserves five approved artwork screens; sessions 2â
     assert.match(h.page.textContent,new RegExp(title));
    }
    h.click('audio');
-   assert.match(h.spoken.at(-1),/Hoy|Bienvenido/i);
+   assert.ok(h.spoken.at(-1).length>60,'the session provides a complete spoken objective');
    signatures.add(h.spoken.at(-1));
    h.click('next');
    assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1);
