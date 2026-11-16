@@ -57,7 +57,7 @@ function focusIIControls(){
  if(heading&&available)heading.textContent=selected.title+' · Día '+day;
  if(available)btn.textContent=selected.practiceId==='sf-focus-2'?'▶ Abrir Focus II':'▶ Abrir Focus I';
  const explanation=box.querySelector('p');
- if(available&&explanation)explanation.textContent=selected.practiceId==='sf-focus-2'?'Recorre cinco pantallas y elige la modalidad individual o en pareja.':'Recorre las cinco pantallas de la actividad asignada, con audio y práctica a tu ritmo.';
+ if(available&&explanation)explanation.textContent=selected.practiceId==='sf-focus-2'?'Explora ocho imágenes originales en seis etapas, con opción individual o en pareja.':'Abre las pantallas táctiles con audio de la sesión asignada, a tu propio ritmo.';
 }
 async function openFocusII(){
  if(busy||!ready||focusing||!focalDays.has(day))return false;
@@ -67,7 +67,7 @@ async function openFocusII(){
  try{
   const opened=await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day});
   if(opened!==true){status('No pudimos abrir la focalización de hoy. Usa el botón para reintentar.',true);return false;}
-  status(activity.title+' · Día '+day+' · Escucha y recorre sus cinco pantallas.');
+  status(activity.title+' · Día '+day+' · Pantallas táctiles y audios habilitados.');
   return true;
  }catch{
   status('No pudimos abrir la práctica de focalización. Usa el botón para reintentar.',true);
@@ -146,7 +146,7 @@ const scripts=[
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261114-pelvic-entry2','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
-  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261115-sensate-approved-image-v1','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
+  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261116-focusii-eight-screens-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
   'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261114-pelvic-adaptive6','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261113-firmness-1','daily-practice-v1.js?v=20261115-sensate-focus1-five-direct6'
 ];
 async function boot(){

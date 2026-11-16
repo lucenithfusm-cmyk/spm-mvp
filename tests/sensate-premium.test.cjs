@@ -267,120 +267,137 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
  assert.equal(signatures.size,5,'each day offers a different welcome audio');
 });
 
-test('day 19 has one direct Focus II practice without a prior Focus I record or an approval gate',()=>{
- for(const mode of ['individual','partner']){
-  const h=harness({day:19,practiceId:'sf-focus-2',saved:[]});
-  try{
-   assert.match(h.page.textContent,/Focalización Sensorial II/);
-   h.click('audio');assert.match(h.spoken.at(-1),/explorar nuevas sensaciones/i);assert.doesNotMatch(h.spoken.at(-1),/omitirla hoy|pausa de seguridad/i);
-   h.click('next');h.branch(mode);
-   assert.match(h.page.textContent,/Focalización II/i);
-   assert.match(h.page.textContent,mode==='partner'?/Retomen/:/Conecta/);
-   assert.equal(h.page.querySelector('[data-act=togglefocus]'),null);
-   h.click('next');h.click('startguide');
-   assert.match(h.spoken.at(-1),mode==='partner'?/contacto no genital/:/Acomódate/);
-  }finally{h.close()}
+test('Focus II: ocho imágenes aprobadas sin pérdida, seis etapas y sin duplicar Focalización I',()=>{
+ const images=['01_Introduccion','02_Elige_modalidad','03A_Guia_individual','03B_Guia_en_pareja','04A_Practica_individual','04B_Practica_en_pareja','05_Registro_bienestar','06_Cierre_y_guardado'];
+ for(const image of images){
+  const file=path.join(root,'premium-v2/assets/sensate-premium/spm-focus2-'+image+'.webp');
+  const bytes=fs.readFileSync(file);
+  assert.ok(bytes.length>185000,'imagen íntegra '+image);
+  assert.equal(bytes.toString('ascii',0,4),'RIFF');
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
  }
-});
-
-test('all Focus II routes have direct access with no warnings; closing does not save an incomplete session',()=>{
- const desire=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
+ const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
+ assert.match(css,/\.spm-f2-artwork/);
+ assert.match(css,/@keyframes spm-f2-audio-invite/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+ const h=harness({day:19,practiceId:'sf-focus-2'});
  try{
-  assert.match(desire.page.textContent,/Sensate Focus II/);
-  desire.click('audio');
-  assert.match(desire.spoken.at(-1),/deseo/);
-  assert.doesNotMatch(desire.spoken.at(-1),/omitirla hoy|no te resulta cómoda/i);
-  assert.equal(desire.page.querySelector('[data-act=skip]'),null);
- }finally{desire.close()}
- for(const profile of ['erection','ejaculation']){
-  const h=harness({day:19,practiceId:'sf-focus-2',profile});
-  try{
-   assert.equal(h.page.querySelector('[data-act=skip]'),null);
-   h.click('close');
-   assert.ok(h.calls.includes('close'));
-   assert.equal(h.writes.length,0);
-   assert.equal(h.calls.includes('recordDaily'),false);
-  }finally{h.close()}
- }
+  assert.ok(h.page.querySelector('.spm-f2-artwork'));
+  assert.match(h.page.querySelector('.spm-f2-artwork').getAttribute('style'),/spm-focus2-01_Introduccion.webp/);
+  assert.match(h.page.textContent,/1 \/ 6/);
+  assert.ok(h.page.querySelector('[data-act=audio][data-audio]'));
+  assert.equal(h.page.querySelectorAll('[data-act=f2concept]').length,3);
+  h.click('audio');assert.match(h.spoken.at(-1),/Focalización Sensorial II/);
+  h.page.querySelector('[data-act=f2concept][data-value=ritmo]').click();
+  assert.match(h.spoken.at(-1),/Ritmo/);
+  assert.equal(h.page.querySelector('[data-act=f2concept][data-value=ritmo]').getAttribute('aria-pressed'),'true');
+  h.click('approvedread');assert.ok(h.page.querySelector('.spm-f2-instructions').hasAttribute('open'));
+  h.click('approvedinfo-close');
+  h.click('next');
+  assert.match(h.page.querySelector('.spm-f2-artwork').getAttribute('style'),/spm-focus2-02_Elige_modalidad.webp/);
+  assert.equal(h.page.querySelectorAll('[data-act=branch]').length,2,'modalidades táctiles');
+  h.click('next');assert.match(h.page.querySelector('[role=alert]').textContent,/Elige Individual o En pareja/);
+  assert.equal(h.writes.length,0,'selección no guarda datos');
+ }finally{h.close()}
 });
 
-test('day-19 Focus II keeps individual and partner saves distinct and does not repeat Focus I',async()=>{
+test('Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso sin falsos registros',async()=>{
  for(const mode of ['individual','partner']){
   const h=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
+  const check=(page,filename)=>{
+   const art=h.page.querySelector('.spm-f2-artwork');
+   assert.ok(art,'lienzo táctil '+page);
+   assert.match(art.getAttribute('style'),new RegExp('spm-focus2-'+filename+'.webp'));
+   assert.match(art.getAttribute('aria-label'),new RegExp('pantalla '+page+' de 6'));
+   const buttons=[...h.page.querySelectorAll('.spm-f2-hit')];
+   assert.ok(buttons.length>=3,'botones reales en '+page);
+   assert.ok(buttons.every(b=>b.dataset.act&&b.getAttribute('aria-label')));
+  };
   try{
-   h.advanceToPractice(mode);
-   h.click('startguide');h.click('performed');h.click('next');
-   for(const [field,value] of [['comfort','comodo'],['ease','intermedia'],['attention','conexion'],['repeat','si'],['discomfort','ninguna']])h.choose(field,value);
-   const rating=h.page.querySelector('[data-act=focus2rating][data-value="3"]');assert.ok(rating);rating.click();
-   h.click('save');await pause();
-   const records=JSON.parse(h.records['spm-sensate-records']);
-   assert.equal(records.length,1);
-   assert.equal(records[0].practiceId,mode==='partner'?'sf-focus-2':'sf-focus-2-solo');
-   assert.equal(records[0].completed,true);
-   assert.ok(h.calls.includes('recordDaily'));
-  }finally{h.close()}
- }
-});
-
-test('Focus II offers a functional five-screen matte audio-first journey without forced time transitions',()=>{
- for(const mode of ['individual','partner']){
-  const h=harness({day:19,practiceId:'sf-focus-2',profile:'desire'});
-  try{
-   assert.ok(h.page.querySelector('.focusii-theme'));
-   assert.match(h.page.textContent,/Sensate Focus II/);
-   assert.match(h.page.textContent,/1 \/ 5/);
+   check(1,'01_Introduccion');
    h.click('audio');assert.match(h.spoken.at(-1),/Sensate Focus II/);
-   h.click('next');assert.match(h.page.textContent,/2 \/ 5/);
-   h.branch(mode);assert.match(h.page.textContent,/3 \/ 5/);
+   h.click('next');check(2,'02_Elige_modalidad');
+   h.branch(mode);
+   assert.equal(h.page.querySelector('[data-act=branch][data-value="'+mode+'"]').getAttribute('aria-pressed'),'true');
+   assert.equal(h.page.querySelectorAll('.spm-f2-hit.chosen[data-act=branch]').length,1,'no ambiguous second modality');
+   h.click('next');check(3,mode==='individual'?'03A_Guia_individual':'03B_Guia_en_pareja');
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
-   assert.equal(h.page.querySelectorAll('[data-act=explainstep][data-audio]').length,5);
    h.page.querySelector('[data-act=explainstep][data-value="4"]').click();
-   assert.match(h.spoken.at(-1),mode==='partner'?/Cerrar sin expectativas/:/Integra lo que sentiste/);
-   h.click('next');assert.match(h.page.textContent,/4 \/ 5/);
-   assert.ok(h.page.querySelector('[data-act=guideintro][data-audio]'));
-   h.click('startguide');
+   assert.match(h.spoken.at(-1),mode==='individual'?/Integra lo que sentiste/:/Cerrar sin expectativas/);
+   h.click('explainall');
+   assert.match(h.spoken.at(-1),mode==='individual'?/Reconecta con tu cuerpo/:/Volver a lo conocido/);
+   for(let i=0;i<5;i++)h.finishAudio();
+   assert.ok(h.page.querySelector('[data-act=explainall]'));
+   h.click('next');check(4,mode==='individual'?'04A_Practica_individual':'04B_Practica_en_pareja');
+   assert.ok(h.page.querySelector('[data-act=f2toggle]'),'botón táctil Pausar/Iniciar');
+   assert.equal(h.page.querySelector('[data-act=nextphase]').disabled,true,'no avanzar sin iniciar');
+   h.click('repeataudio');
+   assert.match(h.spoken.at(-1),mode==='individual'?/Reconecta con tu cuerpo/:/Volver a lo conocido/,'escuchar paso sirve aun sin iniciar reloj');
+   assert.equal(h.writes.length,0);
+   h.click('next');assert.match(h.page.querySelector('[role=alert]').textContent,/Inicia los pasos/);
+   assert.equal(h.writes.length,0);
+   h.click('f2toggle');
+   assert.match(h.spoken.at(-1),mode==='individual'?/Reconecta con tu cuerpo/:/Volver a lo conocido/);
    const count=h.spoken.length;
    h.tick(180);
-   assert.equal(h.spoken.length,count,'Focus II never forces narration/step transitions from optional timer');
-   assert.equal(h.page.querySelector('.focusii-active-title').textContent,mode==='partner'?'Retomen':'Conecta');
-   assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/03:00/);
-   h.click('pauseguide');
-   h.tick(10);
-   assert.match(h.page.querySelector('[data-guide-elapsed]').textContent,/03:00/);
-   h.click('resumeguide');
-   h.click('nextphase');
-   assert.equal(h.page.querySelector('.focusii-active-title').textContent,mode==='partner'?'Exploren':'Explora');
-   h.click('performed');h.click('next');
-   assert.match(h.page.textContent,/5 \/ 5/);
+   assert.equal(h.spoken.length,count,'sin transiciones automáticas, tiempo opcional');
+   assert.equal(h.page.querySelector('[data-guide-elapsed]').textContent,'03:00');
+   h.click('f2toggle');h.tick(30);
+   assert.equal(h.page.querySelector('[data-guide-elapsed]').textContent,'03:00','pausa detiene reloj');
+   h.click('f2toggle');assert.ok(h.spoken.length>count);
+   for(let k=0;k<4;k++)h.click('nextphase');
+   assert.match(h.page.querySelector('.spm-f2-active-step strong').textContent,mode==='individual'?/Integra lo que sentiste/:/Cerrar sin expectativas/);
+   h.click('next');check(5,'05_Registro_bienestar');
    assert.equal(h.page.querySelectorAll('[data-act=focus2rating]').length,5);
    assert.equal(h.page.querySelectorAll('[data-act=focus2noticed]').length,3);
-   assert.equal(h.writes.length,0);
-  }finally{h.close()}
- }
-});
-
-test('Focus II minimal register saves only entered values and preserves current day and two modality IDs',async()=>{
- for(const mode of ['individual','partner']){
-  const h=harness({day:19,practiceId:'sf-focus-2',profile:'erection'});
-  try{
-   h.advanceToPractice(mode);
-   h.click('startguide');h.click('performed');h.click('next');
-   h.choose('comfort','comodo');
-   h.choose('discomfort','ninguna');
-   h.page.querySelector('[data-act=focus2rating][data-value="4"]').click();
-   h.page.querySelector('[data-act=focus2noticed][data-value="Más calma"]').click();
+   const rating=h.page.querySelector('[data-act=focus2rating][data-value="4"]');rating.click();
+   assert.equal(rating.getAttribute('aria-pressed'),'true');
+   h.page.querySelector('[data-act=focus2noticed][data-value="Más conexión"]').click();
+   assert.equal(h.writes.length,0,'bienestar opcional todavía no guarda');
+   h.click('next');check(6,'06_Cierre_y_guardado');
+   h.page.querySelector('[data-act=approvedchoice][data-field=comfort][data-value=comodo]').click();
+   h.page.querySelector('[data-act=approvedchoice][data-field=discomfort][data-value=ninguna]').click();
+   h.click('f2extra');
+   assert.ok(h.page.querySelector('.spm-f2-extra').hasAttribute('open'));
+   const note=h.page.querySelector('.spm-f2-extra [data-field=notes]');note.value='Ejemplo privado';
+   note.dispatchEvent(new h.w.Event('input',{bubbles:true}));
+   h.click('f2extraclose');
    h.click('save');await pause();
-   assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+   assert.equal(h.writes.length,1,'una sola escritura');
+   assert.equal(h.calls.filter(v=>v==='recordDaily').length,1);
    const rows=JSON.parse(h.records['spm-sensate-records']);
-   assert.equal(rows.length,1);
+   assert.equal(rows.length,1,'sin duplicación');
    assert.equal(rows[0].day,19);
    assert.equal(rows[0].practiceId,mode==='individual'?'sf-focus-2-solo':'sf-focus-2');
    assert.equal(rows[0].focus2Rating,4);
-   assert.deepEqual(rows[0].focus2Noted,['Más calma']);
-   assert.equal(rows[0].presenceBefore,null);
+   assert.deepEqual(rows[0].focus2Noted,['Más conexión']);
+   assert.equal(rows[0].completed,true);
+   assert.equal(rows[0].modality,mode);
    assert.equal(rows[0].presenceAfter,null);
    assert.equal(rows[0].pressureAfter,null);
-   assert.equal(rows[0].partnerComfort,null);
+   assert.equal(rows[0].notes,'Ejemplo privado');
+   assert.ok(h.page.querySelector('.spm-f2-saved'));
+   h.click('close');assert.ok(h.calls.includes('close'));
+  }finally{h.close()}
+ }
+});
+
+test('Focus II: acceso sin prerrequisitos y salida anticipada no simula práctica completada',async()=>{
+ for(const profile of ['erection','ejaculation','desire']){
+  const h=harness({day:19,practiceId:'sf-focus-2',profile});
+  try{
+   assert.ok(h.page.querySelector('.spm-f2-artwork'));
+   assert.equal(h.page.querySelector('[data-act=skip]'),null);
+   h.click('next');
+   h.branch('individual');
+   h.click('next');
+   h.click('next');
+   h.click('next');
+   assert.match(h.page.querySelector('[role=alert]').textContent,/Inicia los pasos/);
+   assert.equal(h.writes.length,0);
+   h.click('close');
+   assert.equal(h.writes.length,0);
+   assert.equal(h.calls.includes('recordDaily'),false);
   }finally{h.close()}
  }
 });
@@ -403,10 +420,10 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     assert.equal(h.page.querySelector('.warning'),null);
     h.click('next');
     if(practiceId==='sf-i-1')h.click('next');
-    else h.branch('individual');
-    assert.match(h.page.textContent,/3 \/ 5/);
-    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'startguide');
-    assert.match(h.page.textContent,/4 \/ 5/);
+    else {h.branch('individual');h.click('next');}
+    assert.match(h.page.textContent,practiceId==='sf-i-1'?/3 \/ 5/:/3 \/ 6/);
+    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'f2toggle');
+    assert.match(h.page.textContent,practiceId==='sf-i-1'?/4 \/ 5/:/4 \/ 6/);
     assert.equal(h.page.querySelector('.warning'),null);
     assert.equal(h.writes.length,0);
    }finally{h.close()}
