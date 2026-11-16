@@ -1187,3 +1187,20 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 .spm-s1-feedback{background:#f7eddf;border-top:1px solid #bf985a;padding:12px 16px;text-align:center;color:#45301e;font-size:13px;line-height:1.4}
 .spm-s1-feedback.error{background:#fff0e9;color:#953c32}
 @media(prefers-reduced-motion:reduce){.spm-s1-artwork .spm-approved-hit[data-audio]{animation:none}}
+
+/* Solo SPM Focalización I sesión 1: tapa el rótulo rasterizado «Volver luego» sin tocar la foto. */
+.spm-s1-artwork .spm-approved-hit.spm-s1-close-button{
+ display:flex;align-items:center;justify-content:center;
+ border:2px solid #f8dda7;border-radius:999px;
+ background:linear-gradient(110deg,#fce6bd,#e8b252)!important;
+ box-shadow:0 2px 10px rgba(99,69,27,.21);
+ color:#352312;letter-spacing:.01em;
+ text-align:center;
+}
+.spm-s1-artwork .spm-s1-close-button>span{
+ pointer-events:none;color:#352312;
+ font-weight:850;font-size:clamp(17px,5.2vw,26px);
+ line-height:1.1;
+}
+.spm-s1-artwork .spm-s1-close-button:active{background:#f8cd7d!important}
+.spm-s1-artwork .spm-s1-close-button:disabled{opacity:.75;cursor:wait}
