@@ -135,7 +135,12 @@ const FOCUSI_INTROS={
 const FOCUSI_PREP_S3='Hoy aprenderán una guía para un próximo momento de cercanía. Ambos deben desear participar; pueden empezar con un abrazo, una mirada o un beso suave. No hay obligación de continuar: cualquiera puede detenerse o cambiar de idea. Después de escuchar los cinco pasos, elijan juntos cuándo llevarlos a su vida íntima, sin presión por el resultado.';
 const FOCUSI_PREP_LESSON='Hoy solo aprenderás la técnica. Busca un momento tranquilo para escuchar las cinco indicaciones. Después puedes realizar la experiencia en privado, a solas o con tu pareja según esta sesión. En pareja, el contacto siempre requiere acuerdo y cualquiera puede hacer una pausa o terminar. No hay obligación de tener relaciones sexuales.';
 const FOCUSI_HOMEWORK={
- 'sf-i-3':{previous:'sf-i-2',question:'Desde la sesión anterior, ¿tuviste oportunidad de explorar qué contactos te resultan agradables a solas?'},
+ 'sf-i-3':{
+  title:'Comparte un momento de cercanía',
+  lead:'En su próximo encuentro, si ambos lo desean, comiencen con besos, abrazos o caricias no genitales. Presten atención al calor de la piel, la respiración y el contacto.',
+  focus:'Si aparece “¿y si fallo?”, reconoce el pensamiento y vuelve a una sensación que estés disfrutando.',
+  audio:'Tu tarea en pareja no es demostrar nada. En un momento elegido por ambos, exploren contacto no genital, besos y respiración compartida. Si aparece el miedo a fallar, vuelve a una sensación agradable. Pueden hacer una pausa o terminar cuando quieran.'
+ },
  'sf-i-2':{
   title:'Conócete en un momento a solas',
   lead:'En un momento privado, elige dos zonas y dos formas de contacto agradables. Observa si despiertan calma, conexión, interés o excitación, sin perseguir una erección.',
