@@ -698,3 +698,47 @@ test('sesión 4: cuatro imágenes completas, interacción táctil, audios correc
   h.click('close');assert.ok(h.calls.includes('close'));
  }finally{h.close()}
 });
+
+
+test('sesión 4: audios menos repetitivos y halo en los 18 botones narrados',()=>{
+ const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
+ assert.match(css,/\.spm-s4-artwork-screen \.spm-s4-hit\[data-audio\]\s*\{/);
+ assert.match(css,/@keyframes spm-s4-audio-invite/);
+ assert.match(css,/\.spm-s4-artwork-screen \.spm-s4-hit\[data-audio\]\.playing/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+ const h=harness({day:23,practiceId:'sf-i-4'});
+ const assertHaloCount=expected=>{
+  const all=[...h.page.querySelectorAll('.spm-s4-hit[data-audio]')];
+  assert.equal(all.length,expected,'todos los controles narrados mantienen halo táctil');
+  assert.ok(all.every(button=>!button.disabled&&button.getAttribute('aria-label')));
+  assert.ok(h.page.querySelector('[data-act=next]:not([data-audio])') || expected===5,'no se añade halo a navegación');
+ };
+ try{
+  assertHaloCount(4);
+  h.click('next');assertHaloCount(4);
+  h.click('audio');
+  const prep=h.spoken.at(-1);
+  for(const text of ['Me encantan tus caricias','Acércate más','Espera un momento, quiero disfrutar esta sensación'])assert.ok(prep.includes(text));
+  assert.doesNotMatch(prep,/Me gusta así|Más suave/);
+  h.click('next');assertHaloCount(5);
+  h.page.querySelector('[data-act=explainstep][data-value="2"]').click();
+  const step=h.spoken.at(-1);
+  assert.match(step,/No te detengas, me encanta/);
+  assert.match(step,/Sigue así/);
+  assert.doesNotMatch(step,/más suave, más lento/);
+  h.click('next');assertHaloCount(5);
+  for(const key of ['frase','observa','calma','ancla']){
+   const button=h.page.querySelector('[data-act=s4task][data-value="'+key+'"]');
+   assert.ok(button.hasAttribute('data-audio'),'cada tarjeta ofrece narración');
+   button.click();
+   assert.ok(h.spoken.at(-1).length>30);
+   assert.ok(h.page.querySelector('[data-act=s4task][data-value="'+key+'"]').classList.contains('chosen'));
+  }
+  h.click('audio');
+  const closing=h.spoken.at(-1);
+  assert.match(closing,/Sigue así, me encanta/);
+  assert.match(closing,/Quiero que me beses/);
+  assert.doesNotMatch(closing,/Me gusta así|Más suave o Más lento/);
+  assert.equal(h.writes.length,0,'escuchar audios no marca completada la sesión');
+ }finally{h.close()}
+});

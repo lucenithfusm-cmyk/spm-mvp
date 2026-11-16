@@ -67,7 +67,7 @@ const PHASES={
  'sf-i-4':[
   ['Observa qué disfrutas','Identifica una sensación, caricia o gesto que te resulte agradable. Nota cómo se siente tu cuerpo sin evaluarte ni exigirte resultados.',60],
   ['Exprésalo con claridad','Comparte tu preferencia con una frase sencilla y amable. Puedes decir: Me gusta así, o me siento cómodo cuando me acaricias despacio. Habla de lo que sientes, sin juzgar a tu pareja.',60],
-  ['Pide cambios con suavidad','Si quieres modificar algo, pídelo sin crítica. Por ejemplo: más suave, más lento, aquí me gusta más, o prefiero otro contacto. Ambos pueden cambiar de opinión.',60],
+  ['Pide cambios con suavidad','Si quieres guiar el contacto, exprésalo con suavidad y naturalidad. Por ejemplo: No te detengas, me encanta. Sigue así. Lo importante es comunicar lo que disfrutas de una manera clara, tranquila y cercana. Ambos pueden cambiar de opinión o pedir una pausa.',60],
   ['Escucha la respuesta','Escucha qué disfruta o necesita tu pareja. Pregunta si así está bien, sin dar nada por supuesto, y respeta si alguien prefiere detenerse.',60],
   ['Confirma lo que se sintió bien','Cuando ambos lo deseen, reconozcan qué gesto, caricia o frase les ayudó a sentirse comprendidos. Agradezcan lo agradable sin convertir el encuentro en una prueba.',60]
  ],
@@ -131,7 +131,7 @@ const FOCUSI_INTROS={
  'sf-i-4':'Hoy aprenderás a expresar lo agradable, pedir cambios con claridad y compartir tu experiencia sin exigencias. Escucharás cinco pasos para reconocer qué disfrutas, expresarlo con amabilidad y escuchar lo que disfruta tu pareja. No necesitas hacerlo perfecto ni buscar un resultado sexual determinado. Luego podrás llevarlo a un momento de cercanía que ambos elijan.',
  'sf-i-5':'Hoy integrarás lo que ya aprendiste. Compartirás una pequeña experiencia sensorial en pareja, alternando quién da y quién recibe contacto. Observa cómo cambia la sensación al compartir la atención. El objetivo es conexión y disfrute, no cumplir una meta.'
 };
-const FOCUSI_PREP_S4='Hoy aprenderás a hablar de lo que disfrutas con tu pareja. En un momento tranquilo que ambos elijan, prueba una frase sencilla, como Me gusta así, o pide un ajuste, como Más suave. Escucha también la respuesta de tu pareja. Pueden cambiar de idea, hacer una pausa o terminar cuando quieran. No hay presión por lograr una respuesta sexual.';
+const FOCUSI_PREP_S4='Hoy aprenderás a hablar de lo que disfrutas con tu pareja. En un momento tranquilo que ambos elijan, puedes expresar lo agradable con una frase como: Me encantan tus caricias. También puedes pedir un ajuste: Acércate más, o Espera un momento, quiero disfrutar esta sensación. Escucha lo que tu pareja disfruta y respeta sus preferencias. Ambos pueden cambiar de idea, hacer una pausa o terminar cuando quieran. No hay presión por lograr una respuesta sexual.';
 const FOCUSI_PREP_S3='Hoy aprenderán una guía para un próximo momento de cercanía. Ambos deben desear participar; pueden empezar con un abrazo, una mirada o un beso suave. No hay obligación de continuar: cualquiera puede detenerse o cambiar de idea. Después de escuchar los cinco pasos, elijan juntos cuándo llevarlos a su vida íntima, sin presión por el resultado.';
 const FOCUSI_PREP_LESSON='Hoy solo aprenderás la técnica. Busca un momento tranquilo para escuchar las cinco indicaciones. Después puedes realizar la experiencia en privado, a solas o con tu pareja según esta sesión. En pareja, el contacto siempre requiere acuerdo y cualquiera puede hacer una pausa o terminar. No hay obligación de tener relaciones sexuales.';
 const FOCUSI_HOMEWORK={
@@ -139,7 +139,7 @@ const FOCUSI_HOMEWORK={
   title:'Comunica lo que disfrutas',
   lead:'En un próximo momento de cercanía, expresa una preferencia y escucha lo que siente tu pareja.',
   focus:'Habla desde lo que sientes y escucha sin juzgar.',
-  audio:'En un momento de cercanía que ambos elijan, prueba a expresar una preferencia sencilla. Puedes decir Me gusta así, Más suave o Más lento. Observa si al comunicarte te sientes más cómodo, conectado o comprendido. Escucha también lo que tu pareja disfruta. Si algo no se siente bien, dilo con calma y claridad. El objetivo no es hacerlo perfecto ni garantizar una respuesta sexual; es hablar desde lo que sientes y escuchar sin juzgar.'
+  audio:'En un momento de cercanía que ambos elijan, prueba a expresar una preferencia sencilla. Puedes decir: Sigue así, me encanta, o Quiero que me beses. Observa si al comunicarte te sientes más cómodo, conectado o comprendido. Escucha también lo que tu pareja disfruta. Si algo no se siente bien, dilo con calma y claridad. No necesitas hacerlo perfecto ni garantizar una respuesta sexual. Lo importante es comunicar lo que sientes y disfrutar la experiencia con mayor conexión.'
  },
  'sf-i-3':{
   title:'Comparte un momento de cercanía',
