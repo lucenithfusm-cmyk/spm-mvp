@@ -600,7 +600,7 @@ test('sesión 3: cuatro imágenes aprobadas, cinco audios, botones táctiles y g
   h.click('approvedinfo-close');
   h.click('next');assertArt(2);
   assert.equal(h.page.querySelector('[data-act=branch]'),null);
-  h.click('audio');assert.match(h.spoken.at(-1),/ambos deben desear participar/);
+  h.click('audio');assert.match(h.spoken.at(-1),/ambos deben desear participar/i);
   h.page.querySelector('[data-act=s3prep][data-value=libertad]').click();
   assert.match(h.spoken.at(-1),/No hay obligación/);
   h.click('next');assertArt(3);
