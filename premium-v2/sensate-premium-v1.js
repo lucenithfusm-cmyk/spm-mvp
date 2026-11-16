@@ -409,6 +409,64 @@ function spmArtworkScreen(){
   '<dialog class="spm-approved-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
 }
 
+
+/* Sesión 2 · cuatro láminas aprobadas como lienzos únicos; zonas HTML táctiles reales. */
+const SPM_S2_FILES={0:'spm-focus-i-s2-screen-1-approved.webp',1:'spm-focus-i-s2-screen-2-approved.webp',2:'spm-focus-i-s2-screen-3-approved.webp',4:'spm-focus-i-s2-screen-4-approved.webp'};
+const SPM_S2_VALUES={
+ atencion:'Atención. Lleva tu mente a lo que percibes ahora, sin evaluarte.',
+ sensaciones:'Sensaciones. Observa temperatura, textura, presión y las caricias que te resultan agradables.',
+ sinpresion:'Sin presión. No tienes que conseguir una respuesta sexual determinada para aprender de esta actividad.'
+};
+const SPM_S2_TASKS={
+ zonas:'Cuando dispongas de un momento privado, elige dos zonas de tu cuerpo donde el contacto te resulte agradable. Puedes cambiar de idea.',
+ contactos:'Prueba dos formas de contacto, como una caricia lenta y un roce ligero. Observa cuál te agrada, sin forzar una respuesta.',
+ observa:'Reconoce si aparece calma, interés, deseo o excitación. También es válido que no aparezcan. No necesitas evaluarte.'
+};
+let spmS2Value='',spmS2Task='',spmS2Step=-1;
+function spmS2Hit(rect,action,label,value,opts={}){
+ const extras=(opts.audio?' data-audio':'')+(opts.selectable?' aria-pressed="'+String(!!opts.chosen)+'"':'')+(opts.disabled?' disabled':'');
+ return spmApprovedButton(rect,action,label,value,extras).replace('class="spm-approved-hit"','class="spm-approved-hit spm-s2-hit'+(opts.chosen?' chosen':'')+'"');
+}
+function spmApprovedSession2Screen(){
+ const page=screen===4?4:screen+1;
+ const caption=screen===0?'Descubre lo que te gusta · 1 / 4':
+  screen===1?'Tu práctica individual · 2 / 4 · No necesitas realizar la actividad íntima frente a la pantalla.':
+  screen===2?'Aprende la técnica · 3 / 4 · '+PHASES[id].map(step=>step[0]).join(' · '):
+  'Llévalo a tu vida · 4 / 4 · Guarda lo aprendido, sin afirmar que ya realizaste la experiencia íntima.';
+ let hits=spmS2Hit([25,25,446,130],'close','Volver a mi programa');
+ if(screen===0){
+  hits+=spmS2Hit([99,1150,856,1272],'audio','Escuchar introducción',undefined,{audio:true});
+  hits+=spmS2Hit([103,1278,852,1393],'approvedread','Leer instrucciones');
+  const values=[['atencion',[31,1405,300,1551],'Atención'],['sensaciones',[319,1405,617,1551],'Sensaciones'],['sinpresion',[636,1405,931,1551],'Sin presión']];
+  for(const [key,rect,label] of values)hits+=spmS2Hit(rect,'s2value','Escuchar concepto: '+label,key,{audio:true,selectable:true,chosen:spmS2Value===key});
+  hits+=spmS2Hit([31,1557,342,1668],'close','Anterior: volver a mi programa');
+  hits+=spmS2Hit([550,1552,923,1667],'next','Comenzar: ir a preparación');
+ }else if(screen===1){
+  hits+=spmS2Hit([99,1150,855,1270],'audio','Escuchar preparación',undefined,{audio:true});
+  hits+=spmS2Hit([102,1279,851,1392],'approvedread','Leer instrucciones de preparación');
+  hits+=spmS2Hit([101,1402,876,1545],'branch','Aprender los cinco pasos','individual');
+  hits+=spmS2Hit([30,1558,341,1668],'back','Anterior: volver a introducción');
+  hits+=spmS2Hit([544,1554,923,1668],'next','Continuar a los cinco pasos');
+ }else if(screen===2){
+  const rects=[[23,525,921,679],[23,693,921,853],[23,860,921,1020],[23,1035,921,1196],[23,1209,921,1375]];
+  for(let i=0;i<5;i++)hits+=spmS2Hit(rects[i],'explainstep','Escuchar paso '+(i+1)+': '+PHASES[id][i][0],i,{audio:true,selectable:true,chosen:spmS2Step===i});
+  hits+=spmS2Hit([33,1502,342,1606],'back','Anterior: volver a preparación');
+  hits+=spmS2Hit([542,1499,926,1607],'next','Llévalo a tu vida: ver tarea');
+ }else{
+  const tasks=[['zonas',[118,520,866,680],'Elige dos zonas agradables'],['contactos',[118,682,866,839],'Prueba dos formas de contacto'],['observa',[118,845,866,991],'Observa calma, interés o deseo']];
+  for(const [key,rect,label] of tasks)hits+=spmS2Hit(rect,'s2task','Escuchar tarea: '+label,key,{audio:true,selectable:true,chosen:spmS2Task===key});
+  hits+=spmS2Hit([75,1278,901,1410],'audio','Escuchar mi tarea',undefined,{audio:true});
+  hits+=spmS2Hit([45,1503,342,1606],'back','Anterior: volver a los cinco pasos');
+  hits+=spmS2Hit([548,1500,930,1613],saved?'close':'save',saved?'Finalizar: aprendizaje guardado':'Guardar aprendizaje',undefined,{disabled:busy});
+ }
+ const state=error?'<p class="spm-s2-feedback spm-s2-error" role="alert">'+safeText(error)+'</p>':notification?'<p class="spm-s2-feedback" role="status">'+safeText(notification)+'</p>':'';
+ const overlay=screen===4&&(busy||saved)?'<span class="spm-s2-saved-overlay" aria-hidden="true">'+(busy?'Guardando…':'Guardado ✓')+'</span>':'';
+ return '<div class="layout sf-matte sensate-approved-layout spm-s2-layout">'+
+  '<div class="spm-s2-artwork-screen'+(screen===4?' focusi-takeaway':'')+'" role="group" aria-label="SPM Focalización I, sesión 2, pantalla '+page+' de 4" style="background-image:url(&quot;'+PREFIX+SPM_S2_FILES[screen]+'&quot;)">'+
+  '<span class="spm-approved-sr">'+safeText(caption)+'</span>'+hits+overlay+'</div>'+state+
+  '<dialog class="spm-approved-info spm-s2-info" aria-label="Leer instrucciones"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
+}
+
 function progress(){const total=isFocusILesson()?4:5,current=isFocusILesson()&&screen===4?4:screen+1;return '<div class="progress-rail" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="'+total+'" aria-valuenow="'+current+'"><i style="width:'+(current/total*100)+'%"></i></div>'}
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-focus-2-solo','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'">'+safeText(LABELS[key])+'</button>').join('')+'</div>'}
@@ -604,6 +662,10 @@ function footer(){
  return '<div class="foot">'+back+'<span>5 / 5</span><button type="button" data-act="'+(saved?'close':'save')+'" class="gold" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button></div>';
 }
 function render(){
+ if(id==='sf-i-2'&&[0,1,2,4].includes(screen)){
+  root.innerHTML=spmApprovedSession2Screen();
+  return;
+ }
  if(id==='sf-i-1'&&[0,2,3].includes(screen)){
   root.innerHTML=spmApprovedScreen();
   return;
@@ -657,8 +719,18 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
- if(act==='approvedread'){root.querySelector('.spm-approved-info')?.showModal();return}
- if(act==='approvedinfo-close'){root.querySelector('.spm-approved-info')?.close();return}
+ if(id==='sf-i-2'&&act==='s2value'){
+  const key=button.dataset.value;if(!Object.prototype.hasOwnProperty.call(SPM_S2_VALUES,key))return;
+  if(spmS2Value===key&&voiceActive){stopAudio();return}
+  stopAudio();spmS2Value=key;render();speech(SPM_S2_VALUES[key],null,'[data-act="s2value"][data-value="'+key+'"]');return;
+ }
+ if(id==='sf-i-2'&&act==='s2task'){
+  const key=button.dataset.value;if(!Object.prototype.hasOwnProperty.call(SPM_S2_TASKS,key))return;
+  if(spmS2Task===key&&voiceActive){stopAudio();return}
+  stopAudio();spmS2Task=key;render();speech(SPM_S2_TASKS[key],null,'[data-act="s2task"][data-value="'+key+'"]');return;
+ }
+ if(act==='approvedread'){const dlg=root.querySelector('.spm-approved-info');if(typeof dlg?.showModal==='function')dlg.showModal();else dlg?.setAttribute('open','');return}
+ if(act==='approvedinfo-close'){const dlg=root.querySelector('.spm-approved-info');if(typeof dlg?.close==='function')dlg.close();else dlg?.removeAttribute('open');return}
  if(act==='skipguide'){go(4);if(!performed){notification='Puedes revisar el cierre y volver después a practicar. Esta actividad no se marcará como realizada.';render()}return;}
  if(act==='approvedadvance'){
   if(!guideStarted||guideDone){startGuide();return}
@@ -691,7 +763,7 @@ root.addEventListener('click',e=>{
   if(screen===3){go(4);if(!performed){notification='Puedes revisar el cierre y volver después a practicar.';render()}return}
   return;
  }
- if(act==='explainstep'){explainStep(Number(button.dataset.value));return}
+ if(act==='explainstep'){if(id==='sf-i-2')spmS2Step=Number(button.dataset.value);explainStep(Number(button.dataset.value));return}
  if(act==='explainall'){if(explainingAll){stopAudio();render()}else explainAll();return}
  if(act==='guideintro'){if(voiceActive)stopAudio();else speech(autoGuideIntro(),null,'[data-act=guideintro]');return}
  if(act==='startguide'){startGuide();return}

@@ -598,3 +598,31 @@ test('Focus I approved first session and Focus II keep their five-screen guided 
   }finally{h.close()}
  }
 });
+
+
+test('sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica íntima',async()=>{
+ for(let i=1;i<=4;i++){
+  const bytes=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s2-screen-'+i+'-approved.webp'));
+  assert.ok(bytes.length>120000);assert.equal(bytes.toString('ascii',0,4),'RIFF');assert.equal(bytes.toString('ascii',8,12),'WEBP');
+ }
+ const h=harness({day:8,practiceId:'sf-i-2'});
+ try{
+  const check=(number)=>{const el=h.page.querySelector('.spm-s2-artwork-screen');assert.ok(el);assert.match(el.getAttribute('style'),new RegExp('screen-'+number+'-approved.webp'));assert.ok(h.page.querySelectorAll('.spm-s2-hit').length>=5);for(const b of h.page.querySelectorAll('.spm-s2-hit'))assert.ok(b.getAttribute('aria-label')&&b.dataset.act)};
+  check(1);h.click('audio');assert.match(h.spoken.at(-1),/zonas de tu cuerpo/);
+  h.page.querySelector('[data-act=s2value][data-value=atencion]').click();assert.ok(h.page.querySelector('[data-act=s2value][data-value=atencion]').classList.contains('chosen'));
+  h.click('approvedread');assert.ok(h.page.querySelector('.spm-s2-info').open);h.click('approvedinfo-close');
+  h.click('next');check(2);h.click('audio');assert.match(h.spoken.at(-1),/solo aprenderás la técnica/);
+  assert.ok(h.page.querySelector('[data-act=branch][data-value=individual]'));h.click('next');check(3);
+  assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+  h.page.querySelector('[data-act=explainstep][data-value="3"]').click();assert.match(h.spoken.at(-1),/Reconoce tu excitación/);
+  assert.ok(h.page.querySelector('[data-act=explainstep][data-value="3"]').classList.contains('chosen'));
+  assert.equal(h.writes.length,0);h.click('next');check(4);
+  h.page.querySelector('[data-act=s2task][data-value=contactos]').click();assert.match(h.spoken.at(-1),/dos formas de contacto/);
+  h.click('audio');assert.match(h.spoken.at(-1),/Tu tarea es practicar/);
+  h.click('save');await pause();
+  assert.equal(h.writes.length,1);const record=JSON.parse(h.records['spm-sensate-records'])[0];
+  assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+  assert.ok(h.page.querySelector('.spm-s2-saved-overlay'));h.click('close');assert.ok(h.calls.includes('close'));
+ }finally{h.close()}
+});
