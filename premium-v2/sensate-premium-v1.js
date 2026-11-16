@@ -21,7 +21,6 @@ const FOCUSI_PHOTO_STEPS={'sf-i-1':'focus-i-day-1-steps.webp'};
 // step; never reuse unrelated wellness, performance or promotional pictures.
 const STEP_PHOTOS={
  'sf-i-1':['seated','forearm','intro','release','seated'],
- 'sf-i-5':['partner','release','forearm','seated','partner'],
  'sf-focus-2':['partner','forearm','seated','release','partner'],
  'sf-focus-2-solo':['seated','forearm','intro','release','seated']
 };
@@ -72,13 +71,12 @@ const PHASES={
   ['Confirma lo que se sintió bien','Cuando ambos lo deseen, reconozcan qué gesto, caricia o frase les ayudó a sentirse comprendidos. Agradezcan lo agradable sin convertir el encuentro en una prueba.',60]
  ],
  'sf-i-5':[
-  ['Preparen un espacio de conexión','Elijan un lugar cómodo, sin pantallas. Acuerden que hoy explorarán juntos sin buscar una respuesta sexual específica.',60],
-  ['Descubran un gesto de cercanía','Elijan juntos un abrazo, manos entrelazadas u otro contacto no genital. Noten su temperatura y su apoyo.',60],
-  ['Compartan la atención','Durante unos instantes observen juntos una cualidad del contacto: el calor, el movimiento o la sensación de seguridad.',60],
-  ['Cambien de experiencia','Intercambien quién inicia el contacto. Perciban cómo se siente ahora dar y recibir, sin comparar ni examinar el desempeño.',60],
-  ['Cierren con libertad','Terminen cuando quieran y reconozcan una sensación compartida. Si desean continuar con intimidad, es una elección libre, nunca la meta del ejercicio.',60]
+  ['Empiecen con calma','Comiencen sin prisa. Acuerden un momento que ambos deseen compartir. Respiren con naturalidad y presten atención a cómo se sienten, sin proponerse una meta sexual.',60],
+  ['Retomen una caricia agradable','Vuelvan a una caricia, abrazo o beso que ya sepan que disfrutan. Los dos pueden decidir y cambiar de idea. Permitan que la cercanía sea agradable por sí misma.',60],
+  ['Ajusten con palabras simples','Si quieren orientar el contacto, exprésenlo con frases breves y amables. Por ejemplo: Así me gusta, quédate cerca, o me encanta este beso. Escuchen también lo que cada uno prefiere.',60],
+  ['Quédense donde hay bienestar','Si encuentran comodidad y placer, no necesitan ir más allá. Pueden disfrutar la cercanía, pedir un ajuste o hacer una pausa cuando quieran.',60],
+  ['Cierren y recuerden','Al terminar, reconozcan qué gesto, palabra o caricia les ayudó a sentirse bien. Pueden volver a ello en próximos encuentros, siempre por elección, sin evaluar resultados.',60]
  ],
-
  'sf-solo':[
   ['Llegar al cuerpo','Siéntate o recuéstate. Afloja mandíbula, hombros y abdomen. Observa el apoyo de tu cuerpo.',60],
   ['Respirar','Respira a tu ritmo; nota el contacto con la superficie. No retengas el aire.',60],
@@ -129,12 +127,19 @@ const FOCUSI_INTROS={
  'sf-i-2':'Hoy aprenderás a reconocer qué zonas de tu cuerpo y qué formas de contacto te generan comodidad, interés, deseo o excitación. Conocerte te permite disfrutar más conscientemente y dejar de vigilar tu desempeño. Aquí aprenderás cinco pasos y luego podrás llevarlos a tu próximo momento a solas, sin cronómetro ni metas de erección.',
  'sf-i-3':'Esta sesión enseña a llevar la atención desde el rendimiento hacia la conexión con tu pareja. Reconocer el calor de su piel, su respiración, sus besos y sus caricias puede ayudarte a regresar al presente cuando aparezca el miedo a fallar. Aprenderán cinco pasos para un encuentro voluntario, sin exigencias y sin necesidad de practicarlo ahora.',
  'sf-i-4':'Hoy aprenderás a expresar lo agradable, pedir cambios con claridad y compartir tu experiencia sin exigencias. Escucharás cinco pasos para reconocer qué disfrutas, expresarlo con amabilidad y escuchar lo que disfruta tu pareja. No necesitas hacerlo perfecto ni buscar un resultado sexual determinado. Luego podrás llevarlo a un momento de cercanía que ambos elijan.',
- 'sf-i-5':'Hoy integrarás lo que ya aprendiste. Compartirás una pequeña experiencia sensorial en pareja, alternando quién da y quién recibe contacto. Observa cómo cambia la sensación al compartir la atención. El objetivo es conexión y disfrute, no cumplir una meta.'
+ 'sf-i-5':'En esta sesión integrarás lo que te ha ayudado en Focalización I: atención al cuerpo, comunicación sencilla y contacto agradable sin exigencias. No se trata de hacerlo perfecto, sino de reconocer qué les hace sentir bien, compartirlo con amabilidad y sostener la conexión sin presión. Escucha los cinco pasos y llévalos a un momento que ambos elijan.',
 };
+const FOCUSI_PREP_S5='Para integrar lo aprendido, elijan un momento tranquilo y sin prisa. Retomen una caricia, un abrazo o un beso que ambos disfruten. Cuando algo se sienta bien, díganlo con calma. Pueden ajustar el contacto con palabras sencillas, quedarse en lo agradable o hacer una pausa cuando quieran. Lo importante es la comodidad, la conexión y el disfrute compartido, nunca cumplir una meta.';
 const FOCUSI_PREP_S4='Hoy aprenderás a hablar de lo que disfrutas con tu pareja. En un momento tranquilo que ambos elijan, puedes expresar lo agradable con una frase como: Me encantan tus caricias. También puedes pedir un ajuste: Acércate más, o Espera un momento, quiero disfrutar esta sensación. Escucha lo que tu pareja disfruta y respeta sus preferencias. Ambos pueden cambiar de idea, hacer una pausa o terminar cuando quieran. No hay presión por lograr una respuesta sexual.';
 const FOCUSI_PREP_S3='Hoy aprenderán una guía para un próximo momento de cercanía. Ambos deben desear participar; pueden empezar con un abrazo, una mirada o un beso suave. No hay obligación de continuar: cualquiera puede detenerse o cambiar de idea. Después de escuchar los cinco pasos, elijan juntos cuándo llevarlos a su vida íntima, sin presión por el resultado.';
 const FOCUSI_PREP_LESSON='Hoy solo aprenderás la técnica. Busca un momento tranquilo para escuchar las cinco indicaciones. Después puedes realizar la experiencia en privado, a solas o con tu pareja según esta sesión. En pareja, el contacto siempre requiere acuerdo y cualquiera puede hacer una pausa o terminar. No hay obligación de tener relaciones sexuales.';
 const FOCUSI_HOMEWORK={
+ 'sf-i-5':{
+  title:'Integra y disfruta',
+  lead:'En un próximo encuentro, recuperen una preferencia, una caricia agradable y una pausa si la necesitan.',
+  focus:'Regresa a la sensación, palabra o caricia que más bienestar les dio.',
+  audio:'Cuando estén a gusto, comiencen con una caricia o un beso que ambos disfruten. Usen una frase breve, como Así me gusta, quédate ahí o me encanta estar cerca de ti, si quieren orientar el contacto. Si aparece tensión, vuelvan a la respiración natural o a una caricia agradable. No necesitan demostrar nada ni avanzar más allá de lo que desean. Recuperen la sensación, palabra o gesto que les dio bienestar. Pueden seguir aplicando lo aprendido en sus próximos encuentros con calma, conexión y libertad.'
+ },
  'sf-i-4':{
   title:'Comunica lo que disfrutas',
   lead:'En un próximo momento de cercanía, expresa una preferencia y escucha lo que siente tu pareja.',
@@ -158,7 +163,7 @@ const FOCUSI_PREP='Elige un momento privado y cómodo. Sigue las cinco acciones 
 const FOCUSI_CLOSE='Terminaste la práctica. Recuerda qué sensación te ayudó a estar presente y qué fue agradable. No necesitas medir una respuesta sexual. Registra cómo te sentiste y vuelve a tu día.';
 const FOCUSI_TITLES={
  'sf-i-1':'Reconoce tu cuerpo','sf-i-2':'Descubre lo que te gusta','sf-i-3':'Conecta sin presión',
- 'sf-i-4':'Comunica lo que disfrutas','sf-i-5':'Conecta y disfruta'
+ 'sf-i-4':'Comunica lo que disfrutas','sf-i-5':'Integra y disfruta'
 };
 const INTRO='Focalización sensorial no es una prueba de desempeño. El objetivo es volver a percibir temperatura, presión, textura y ritmo del contacto. No necesitas lograr erección, penetración, orgasmo ni una duración concreta. Puedes practicar a solas o, con consentimiento, en pareja.';
 const PREP='Busca un lugar tranquilo, privado y sin interrupciones. Acomódate y elige la práctica individual o en pareja. En pareja, verifiquen que los dos quieran participar y recuerden que cualquiera puede pedir una pausa o terminar cuando lo necesite. Focus I es contacto no genital, sin pecho ni genitales. Puedes practicar sin meta de erección, penetración ni orgasmo.';
@@ -183,7 +188,7 @@ let t=0,timer=0,running=false,voiceActive=false,entryId=null,error='',notificati
 let data={presenceBefore:5,pressureBefore:5,presenceAfter:5,pressureAfter:5,enjoyment:5,partnerComfort:7,comfort:'',ease:'',attention:'',repeat:'',discomfort:'',usefulStimuli:[],monitoringIntrusions:0,notes:'',focus2Rating:null,focus2Noted:[]};const touched=new Set();
 const isPartner=()=>id==='sf-focus-1'||id==='sf-focus-2'||['sf-i-3','sf-i-4','sf-i-5'].includes(id);
 const isNewFocusI=()=>FOCUSI_DAILY_IDS.includes(id);
-const isFocusILesson=()=>['sf-i-2','sf-i-3','sf-i-4'].includes(id);
+const isFocusILesson=()=>['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(id);
 const isModernFocus=()=>isNewFocusI()||isFocusII();
 const isFocusII=()=>id==='sf-focus-2'||id==='sf-focus-2-solo';
 const originalDay=Number(META.day)||1;
@@ -261,7 +266,7 @@ function jumpGuide(n){
  const wasRunning=running;stopAudio();phase=n;phaseElapsed=0;guideDone=false;notification='';render();
  if(wasRunning)speech(stepAudio(),null,'[data-act=repeataudio]');
 }
-function audioText(){if(screen===0)return isNewFocusI()?FOCUSI_INTROS[id]:isDaily&&assigned?.practiceId==='sf-focus-2'?(META.profile==='desire'?FOCUSII_WELCOME_DESIRE:FOCUSII_WELCOME):INTRO;if(screen===1)return id==='sf-i-4'?FOCUSI_PREP_S4:id==='sf-i-3'?FOCUSI_PREP_S3:isFocusILesson()?FOCUSI_PREP_LESSON:isNewFocusI()?FOCUSI_PREP:isFocusII()?PREP_FOCUSII:PREP;if(screen===2)return explanatoryText();if(screen===3)return guideStarted?stepAudio():autoGuideIntro();return isFocusILesson()?FOCUSI_HOMEWORK[id].audio:isNewFocusI()?FOCUSI_CLOSE:isFocusII()?CLOSING_FOCUSII:CLOSING}
+function audioText(){if(screen===0)return isNewFocusI()?FOCUSI_INTROS[id]:isDaily&&assigned?.practiceId==='sf-focus-2'?(META.profile==='desire'?FOCUSII_WELCOME_DESIRE:FOCUSII_WELCOME):INTRO;if(screen===1)return id==='sf-i-5'?FOCUSI_PREP_S5:id==='sf-i-4'?FOCUSI_PREP_S4:id==='sf-i-3'?FOCUSI_PREP_S3:isFocusILesson()?FOCUSI_PREP_LESSON:isNewFocusI()?FOCUSI_PREP:isFocusII()?PREP_FOCUSII:PREP;if(screen===2)return explanatoryText();if(screen===3)return guideStarted?stepAudio():autoGuideIntro();return isFocusILesson()?FOCUSI_HOMEWORK[id].audio:isNewFocusI()?FOCUSI_CLOSE:isFocusII()?CLOSING_FOCUSII:CLOSING}
 function resetType(next){
  stopAudio();stopClock();id=next;selectedMode=(next==='sf-solo'||next==='sf-focus-2-solo'||['sf-i-1','sf-i-2'].includes(next)||next==='sf-communication'||next==='sf-recovery')?'individual':'partner';
  phase=0;phaseElapsed=0;t=0;explainPhase=0;guideStarted=false;guideDone=false;
@@ -604,6 +609,83 @@ function spmApprovedSession4Screen(){
   '<dialog class="spm-approved-info spm-s4-info" aria-label="Leer instrucciones de sesión 4"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
 }
 
+/* Focalización I, sesión 5: 4 láminas JPEG originales como pantallas y
+   zonas táctiles superpuestas. Se conserva el host y su guardado original. */
+const SPM_S5_FILES={
+ 0:'spm-focus-i-s5-screen-1-approved.jpg',
+ 1:'spm-focus-i-s5-screen-2-approved.jpg',
+ 2:'spm-focus-i-s5-screen-3-approved.jpg',
+ 4:'spm-focus-i-s5-screen-4-approved.jpg'
+};
+const SPM_S5_CONCEPTS={
+ integracion:'Integración. Une lo que ya funcionó: atención a las sensaciones, caricias agradables, palabras sencillas y respeto por el ritmo de ambos.',
+ disfrute:'Disfrute. Permítanse disfrutar lo que se siente bien, sin prisa ni obligación de lograr un resultado.',
+ conexion:'Conexión. Escuchar al otro y expresar lo agradable fortalece la confianza. Ambos pueden pedir cambios o decidir cuándo terminar.'
+};
+const SPM_S5_PREPARATION={
+ caricia:'Retomen una caricia que disfruten. Elijan un abrazo, beso o contacto que se sienta bien para ambos, sin la obligación de avanzar más.',
+ palabras:'Digan con calma qué se siente bien. Una frase sencilla puede ayudarles a cuidarse y disfrutar juntos, sin evaluar el desempeño.',
+ bienestar:'Quédense donde haya comodidad y placer. Pueden quedarse en lo agradable, hacer una pausa o terminar cuando lo deseen.'
+};
+const SPM_S5_TASKS={
+ caricia:'Empiecen con una caricia o un beso que ambos disfruten y que les haga sentir cómodos.',
+ frase:'Usen una frase breve para expresar lo que les gusta. Escuchen también qué prefiere la otra persona sin presión.',
+ tension:'Si aparece tensión, vuelvan a la respiración natural o a un contacto agradable. Pueden detenerse en cualquier momento.',
+ ancla:'Ancla de disfrute. Regresen a la sensación, palabra o caricia que más bienestar les dio. Esta referencia puede acompañarlos en próximos encuentros.'
+};
+let spmS5Concept='',spmS5Prep='',spmS5Task='',spmS5Step=-1;
+function spmS5Hit([x0,y0,x1,y1],act,label,value,options={}){
+ const pct=n=>String(Math.round(n*1000)/1000)+'%';
+ const style='left:'+pct(x0/864*100)+';top:'+pct(y0/1536*100)+';width:'+pct((x1-x0)/864*100)+';height:'+pct((y1-y0)/1536*100)+';';
+ const attrs=(value===undefined?'':' data-value="'+safeText(value)+'"')+
+  (options.audio?' data-audio':'')+
+  (options.choice?' aria-pressed="'+String(!!options.active)+'"':'')+
+  (options.disabled?' disabled':'');
+ return '<button type="button" class="spm-approved-hit spm-s5-hit'+(options.active?' chosen':'')+'" data-act="'+act+'"'+attrs+' aria-label="'+safeText(label)+'" style="'+style+'"></button>';
+}
+function spmApprovedSession5Screen(){
+ const page=screen===4?4:screen+1;
+ const caption=screen===0?'Integra y disfruta · 1 / 4':
+  screen===1?'Tu práctica en pareja · 2 / 4':
+  screen===2?'Guía de integración · 3 / 4 · '+PHASES[id].map(p=>p[0]).join(' · '):
+  'Llévalo a tu vida · 4 / 4 · Guarda lo aprendido, sin afirmar que realizaste la experiencia íntima.';
+ let actions=spmS5Hit([28,20,413,104],'close','Volver a mi programa');
+ const group=(items,act,bank,selected)=>items.forEach(([key,rect,label])=>{
+  actions+=spmS5Hit(rect,act,'Escuchar: '+label,key,{audio:true,choice:true,active:selected===key});
+ });
+ if(screen===0){
+  actions+=spmS5Hit([88,1027,792,1143],'audio','Escuchar introducción',undefined,{audio:true});
+  actions+=spmS5Hit([91,1147,793,1246],'approvedread','Leer instrucciones');
+  group([['integracion',[23,1250,289,1408],'Integración'],['disfrute',[296,1250,575,1408],'Disfrute'],['conexion',[581,1250,856,1408],'Conexión']],'s5concept',SPM_S5_CONCEPTS,spmS5Concept);
+  actions+=spmS5Hit([28,1419,324,1534],'close','Anterior: volver a mi programa');
+  actions+=spmS5Hit([501,1416,859,1534],'next','Comenzar sesión 5');
+ }else if(screen===1){
+  group([['caricia',[43,843,823,960],'Retomen una caricia que disfruten'],['palabras',[44,968,825,1079],'Digan con calma qué se siente bien'],['bienestar',[43,1088,821,1210],'Quédense donde haya comodidad y placer']],'s5prep',SPM_S5_PREPARATION,spmS5Prep);
+  actions+=spmS5Hit([79,1217,790,1325],'audio','Escuchar preparación',undefined,{audio:true});
+  actions+=spmS5Hit([74,1328,795,1422],'approvedread','Leer instrucciones de preparación');
+  actions+=spmS5Hit([28,1446,325,1534],'back','Anterior: volver a introducción');
+  actions+=spmS5Hit([496,1443,860,1534],'next','Continuar a la guía');
+ }else if(screen===2){
+  [[20,504,853,673],[20,684,853,851],[20,859,853,1025],[20,1037,853,1204],[20,1212,853,1381]].forEach((rect,i)=>{
+   actions+=spmS5Hit(rect,'explainstep','Escuchar paso '+(i+1)+': '+PHASES[id][i][0],i,{audio:true,choice:true,active:spmS5Step===i});
+  });
+  actions+=spmS5Hit([28,1423,323,1533],'back','Anterior: volver a preparación');
+  actions+=spmS5Hit([478,1423,862,1533],'next','Llévalo a tu vida');
+ }else{
+  group([['caricia',[51,775,829,892],'Empiecen con una caricia o beso'],['frase',[51,895,829,1004],'Usen una frase breve'],['tension',[51,1008,828,1116],'Si aparece tensión'],['ancla',[46,1118,824,1264],'Ancla de disfrute']],'s5task',SPM_S5_TASKS,spmS5Task);
+  actions+=spmS5Hit([51,1300,811,1412],'audio','Escuchar actividad completa',undefined,{audio:true});
+  actions+=spmS5Hit([25,1431,325,1533],'back','Anterior: volver a guía');
+  actions+=spmS5Hit([485,1430,859,1533],saved?'close':'save',saved?'Finalizar y cerrar':'Finalizar y guardar aprendizaje',undefined,{disabled:busy});
+ }
+ const feedback=error?'<p class="spm-s5-feedback spm-s5-error" role="alert">'+safeText(error)+'</p>':
+  notification?'<p class="spm-s5-feedback" role="status">'+safeText(notification)+'</p>':'';
+ const overlay=screen===4&&(busy||saved)?'<span class="spm-s5-saved-overlay" aria-hidden="true">'+(busy?'Guardando…':'Guardado ✓')+'</span>':'';
+ return '<div class="layout sf-matte sensate-approved-layout spm-s5-layout">'+
+  '<div class="spm-s5-artwork-screen" role="group" aria-label="SPM Focalización I sesión 5, pantalla '+page+' de 4" style="background-image:url(&quot;'+PREFIX+SPM_S5_FILES[screen]+'&quot;)">'+
+  '<span class="spm-approved-sr">'+safeText(caption)+'</span>'+actions+overlay+'</div>'+feedback+
+  '<dialog class="spm-approved-info spm-s5-info" aria-label="Leer instrucciones de sesión 5"><button type="button" data-act="approvedinfo-close" aria-label="Cerrar instrucciones">×</button><h2>Instrucciones</h2><p>'+safeText(audioText())+'</p></dialog></div>';
+}
+
 function progress(){return '<div class="progress-rail" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="5" aria-valuenow="'+(screen+1)+'"><i style="width:'+((screen+1)*20)+'%"></i></div>'}
 function selection(){return '<div class="mode-picker"><p class="eyebrow">Elige cómo practicar</p>'+
   ['sf-solo','sf-focus-1','sf-focus-2','sf-focus-2-solo','sf-communication','sf-recovery'].map(key=>'<button type="button" data-act="mode" data-value="'+key+'" class="mode-card'+(id===key?' selected':'')+'">'+safeText(LABELS[key])+'</button>').join('')+'</div>'}
@@ -772,6 +854,10 @@ function footer(){
  return '<div class="foot">'+back+'<span>5 / 5</span><button type="button" data-act="'+(saved?'close':'save')+'" class="gold" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':busy?'Guardando…':'Guardar experiencia')+'</button></div>';
 }
 function render(){
+ if(id==='sf-i-5'&&[0,1,2,4].includes(screen)){
+  root.innerHTML=spmApprovedSession5Screen();
+  return;
+ }
  if(id==='sf-i-4'&&[0,1,2,4].includes(screen)){
   root.innerHTML=spmApprovedSession4Screen();
   return;
@@ -837,6 +923,18 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
+ if(id==='sf-i-5'&&['s5concept','s5prep','s5task'].includes(act)){
+  const bank=act==='s5concept'?SPM_S5_CONCEPTS:act==='s5prep'?SPM_S5_PREPARATION:SPM_S5_TASKS;
+  const key=button.dataset.value;
+  if(!Object.prototype.hasOwnProperty.call(bank,key))return;
+  if(button.classList.contains('playing')){stopAudio();return}
+  stopAudio();
+  if(act==='s5concept')spmS5Concept=key;
+  else if(act==='s5prep')spmS5Prep=key;
+  else spmS5Task=key;
+  render();speech(bank[key],null,'[data-act="'+act+'"][data-value="'+key+'"]');
+  return;
+ }
  if(id==='sf-i-4'&&['s4concept','s4prep','s4task'].includes(act)){
   const bank=act==='s4concept'?SPM_S4_CONCEPTS:act==='s4prep'?SPM_S4_PREPARATION:SPM_S4_TASKS;
   const key=button.dataset.value;
@@ -887,7 +985,7 @@ root.addEventListener('click',e=>{
   data[f]=v;root.querySelectorAll('[data-act=approvedchoice][data-field='+f+']').forEach(b=>{const active=b.dataset.value===v;b.classList.toggle('chosen',active);b.setAttribute('aria-pressed',String(active))});
   if(f==='discomfort'&&v==='dolor'){notification='Si aparece dolor, detén el contacto y busca orientación si persiste.';render()}return;
  }
- if(act==='audio'){if(['sf-i-2','sf-i-3','sf-i-4'].includes(id)?button.classList.contains('playing'):voiceActive)stopAudio();else speech(audioText(),null,['sf-i-2','sf-i-3','sf-i-4'].includes(id)?'[data-act=audio]':undefined);return}
+ if(act==='audio'){if(['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(id)?button.classList.contains('playing'):voiceActive)stopAudio();else speech(audioText(),null,['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(id)?'[data-act=audio]':undefined);return}
  if(act==='close'||act==='skip'){stopAudio();stopClock();void api.close();return}
  if(act==='library'){stopAudio();stopClock();if(isDaily){void api.openLibrary();return}go(0);return}
  if(act==='back'){if(screen>0)go(isFocusILesson()&&screen===4?2:screen-1);return}
@@ -900,7 +998,7 @@ root.addEventListener('click',e=>{
   if(screen===3){go(4);if(!performed){notification='Puedes revisar el cierre y volver después a practicar.';render()}return}
   return;
  }
- if(act==='explainstep'){if(id==='sf-i-2')spmS2Step=Number(button.dataset.value);if(id==='sf-i-3')spmS3Step=Number(button.dataset.value);if(id==='sf-i-4')spmS4Step=Number(button.dataset.value);explainStep(Number(button.dataset.value));return}
+ if(act==='explainstep'){if(id==='sf-i-2')spmS2Step=Number(button.dataset.value);if(id==='sf-i-3')spmS3Step=Number(button.dataset.value);if(id==='sf-i-4')spmS4Step=Number(button.dataset.value);if(id==='sf-i-5')spmS5Step=Number(button.dataset.value);explainStep(Number(button.dataset.value));return}
  if(act==='explainall'){if(explainingAll){stopAudio();render()}else explainAll();return}
  if(act==='guideintro'){if(voiceActive)stopAudio();else speech(autoGuideIntro(),null,'[data-act=guideintro]');return}
  if(act==='startguide'){startGuide();return}
