@@ -61,16 +61,17 @@ const spec={
     },
     {
       "id": "accion",
-      "title": "Primera práctica eréctil",
-      "purpose": "Introducción opcional y breve a reconocer la excitación sin medición; no sustituye el entrenamiento completo de días posteriores",
+      "title": "Activa tu respuesta eréctil",
+      "purpose": "Entrenar el inicio de la activación sexual prestando atención al estímulo erótico y reduciendo la comprobación de rigidez; no medir firmeza ni sustituir el entrenamiento de días posteriores",
       "visual": "imagen adulta de privacidad y bienestar sexual, no usar las fotografías de Focalización ni Movimiento",
       "actions": [
         "Escuchar instrucciones",
         "Cronómetro opcional",
         "Realicé la práctica",
+        "Registro breve de atención (opcional)",
         "Prefiero omitirla hoy"
       ],
-      "audio": "Si te sientes cómodo, reserva dos o tres minutos en privado. Puedes evocar una fantasía o recuerdo erótico de tu elección, sin realizar un examen de firmeza. Permite que aparezca o no excitación y termina cuando lo prefieras. Si la actividad genera presión, incomodidad o no te interesa hoy, omítela. Esta práctica no busca forzar una erección ni promete aumentar la oxigenación inmediatamente."
+      "audio": "Si te resulta cómodo, reserva tres a cinco minutos en privado. Elige un estímulo erótico agradable: recuerdo, fantasía o contacto genital suave y voluntario. Entrena tu atención al estímulo sin buscar una rigidez determinada. Si aparece la necesidad de comprobar la erección, vuelve al estímulo con calma. Puede haber excitación y respuesta corporal, o no. Puedes detenerte u omitir la práctica. No es una prueba de oxigenación ni de firmeza."
     },
     {
       "id": "cierre",
@@ -81,17 +82,19 @@ const spec={
         "Guardar y finalizar",
         "Volver a Hoy"
       ],
-      "audio": "Ya reconociste tu punto de partida. Una respuesta aislada no define tu capacidad sexual. Continuaremos entrenando progresivamente las habilidades propias de Erección y firmeza. Tu resultado inicial queda registrado y puedes volver a Hoy."
+      "audio": "Registraste el punto de partida y, si quisiste, entrenaste la atención durante una estimulación erótica voluntaria. No repetimos la firmeza en esta sesión. La respuesta corporal puede variar; tu ruta de veintiocho días continúa sin cambios."
     }
   ],
+  "clinicalObjective": "Facilitar el entrenamiento inicial de la atención a estímulos eróticos voluntarios y del retorno al estímulo ante la autoevaluación, sin evaluar firmeza ni prometer aumento inmediato de oxigenación.",
   "optionalMicroAction": {
-    "durationMinutes": "2–3",
+    "durationMinutes": "3–5",
     "required": false,
     "choices": [
       "realizada",
       "omitida"
     ],
     "doesNotRepeatEhs": true,
+    "outcomeMetric": "Atención al estímulo: mantenida / retorno tras comprobación / dificultad / omitida",
     "doesNotCompleteTransversal": true
   },
   "constraints": {
