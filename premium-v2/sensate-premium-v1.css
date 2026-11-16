@@ -907,7 +907,7 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 .spm-artwork-screen::before{
  content:"";position:absolute;z-index:1;inset:0 0 auto 0;
  height:19.5%;pointer-events:none;
- background:url("../assets/sensate-premium/spm-approved-focus-screen-atlas.avif") no-repeat left top;
+ background:url("./assets/sensate-premium/spm-approved-focus-screen-atlas.avif") no-repeat left top;
  background-size:100% auto;
 }
 .spm-artwork-screen .spm-art-header{display:none}
@@ -949,6 +949,16 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  background-size:cover;background-position:center 34%;
 }
 .spm-artwork-5 .spm-art-content-close h2{margin:.7cqw 0 .25cqw}
+/* Cierre: fotografía de recurso propio SPM; encuadrar retrato sin duplicar
+   los rótulos existentes en la imagen original completa. */
+.spm-artwork-5 .spm-art-content-close .spm-art-photo{
+ background-size:225% auto;
+ background-position:left 34%;
+}
+/* El encabezado es compartido solo por los lienzos 2 y 5. */
+.spm-artwork-2 .spm-art-progress,.spm-artwork-5 .spm-art-progress{top:16.85%}
+.spm-artwork-2 .spm-art-meta,.spm-artwork-5 .spm-art-meta{top:18.1%}
+
 @media(max-width:390px){
  .spm-artwork-2 .spm-art-panel{padding:2cqw 2.5cqw}
  .spm-artwork-5 .spm-art-panel{padding:1.7cqw 2.2cqw}

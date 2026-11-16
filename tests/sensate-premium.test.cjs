@@ -505,10 +505,12 @@ test('Focus I uses approved top header, higher skip, and only own practice photo
  assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
  assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:20\.2%/);
  assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:19\.9%/);
- assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):photoPath\('release'\)/);
+ assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):PREFIX\+'focalizacion-cierre\\.webp'/);
  const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
  assert.ok(seq);
  assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
  assert.match(css,/\.spm-artwork-screen\{min-height:100dvh\}/);
+ assert.match(css,/background:url\("\.\/assets\/sensate-premium\/spm-approved-focus-screen-atlas\\.avif"\)/,'la cabecera utiliza la ruta real desde la hoja CSS');
+ assert.match(css,/\.spm-artwork-5 \.spm-art-content-close \.spm-art-photo\{[\s\S]*?background-size:225% auto/,'el cierre encuadra el retrato sin rótulos duplicados');
  assert.doesNotMatch(ui,/if\(phase>0\)overlays\+='\<div class="spm-approved-phase-photo"/);
 });
