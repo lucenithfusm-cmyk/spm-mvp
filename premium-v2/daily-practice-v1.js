@@ -193,7 +193,16 @@ async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(c
  const activity=assignments(c).find(a=>a.id===id);if(!activity)throw Error('Esta actividad no está asignada hoy.');if(activity.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(data))throw Error('Completa la evaluación antes de registrarla.');if(directErection(c,activity)&&!window.SPM_ERECTION_PRACTICE.valid(data,day))throw Error('Completa las acciones de tu práctica antes de guardarla.');if(activity.kind==='pelvic'&&(!freshPelvicResult(activity)||data.confirmed!==true||JSON.stringify(data.pelvicResult)!==JSON.stringify(active.pelvicResult)))throw Error('Realiza la práctica de hoy y confirma su resultado antes de registrarla.');data={...data,...(activity.tip?{tipId:activity.tip.id}:{}),activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
  if(activity.kind==='pelvic'&&active?.id===id)delete active.pelvicResult;
- if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');if(active?.id===id){showContinuation();refreshContinuation();}const a=assignments().find(x=>x.id===id);const module=a&&!directErection(ctx(),a)&&$(moduleSelectors[a.kind]||'#no-spm-module');if(module)focus(module.querySelector('[data-spm-next]'));}
+ if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){
+  records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');
+  if(active?.id===id){
+   // Los módulos en ventana deben cerrar su sesión después de guardar.
+   // Los formularios integrados devuelven a Hoy cuando se guardan.
+   const module=$(moduleSelectors[activity.kind]||'#no-spm-module');
+   const waitForModuleClose=!!module||(activity.kind==='wellness'&&!!$('.slModal'))||activity.kind==='program-checkpoint';
+   if(!waitForModuleClose)returnToToday();
+  }
+ }
  return {ok:true};
 }
 function confirmActivity(id){
@@ -253,46 +262,21 @@ async function launch(id){
   else if(a.kind==='sensate')await window.SPM_SENSATE_LAB.open({origin:'dailyPlan',day:Number(c.day)});
   else if(a.kind==='wellness')wellness(a);
   else worksheet(a);
- refreshContinuation();
+
  }catch{delete $('#spmDailySession')?.dataset.focusedPractice;status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
 }
 const moduleSelectors={desire:'.spm-desire-modal[open]',sensate:'.spm-sensate-modal[open]',breathing:'.spm-breathing-modal[open]',pelvic:'.spm-pf-modal[open],#spmPelvicV2:not([hidden])',erection:'#spmDeModal.on',ejaculation:'#spmEcModal.on',confidence:'.sr-dialog[open]',response:'.sr-dialog[open]',recovery:'.sr-dialog[open]'};
 function validActive(){const c=ctx();return active&&active.scope===scopeOf(c)&&active.day===Number(c?.day);}
 function nextActivities(){return assignments().filter(a=>!recordComplete(a));}
-async function leaveActivity(){
- const a=assignments().find(a=>a.id===active?.id);if(!a)return true;
- if(directErection(ctx(),a)){window.SPM_ERECTION_PRACTICE?.stop();return true;}
- if(a.kind==='pelvic'&&$('#spmPelvicV2:not([hidden])')){window.SPM_PELVIC_V2?.close();return !$('#spmPelvicV2:not([hidden])');}
- const api={desire:'SPM_DESIRE_LAB',sensate:'SPM_SENSATE_LAB',breathing:'SPM_BREATHING_LAB',pelvic:'SPM_PELVIC_LAB'}[a.kind];
- if(api&&window[api]?.close)return await window[api].close()!==false;
- const root=$(moduleSelectors[a.kind]||'#no-spm-module');
- if(root){const close=root.querySelector('.deClose,.ecClose,[data-sr-close]');if(!close)return false;close.click();}
- return true;
-}
-function continuation(root){
- if(!root||!validActive())return;
- const c=ctx(),items=nextActivities(),a=assignments(c).find(x=>x.id===active.id),currentDone=a&&recordComplete(a);
- let panel=root.querySelector('[data-spm-next]');if(!panel){panel=document.createElement('section');panel.dataset.spmNext='';panel.className='spm-daily-work';root.appendChild(panel);}
- const sig=JSON.stringify([active,items.map(x=>[x.id,restricted(c,x)]),currentDone]);if(panel.dataset.signature===sig)return;panel.dataset.signature=sig;
- panel.innerHTML=`<h3>Continúa tu día ${c.day}</h3>${a&&!currentDone?`<p>«${esc(a.title)}» sigue pendiente. Abrirla o detenerla no la marca como realizada.</p><button type="button" class="btn sec" data-next-record>${a.kind==='desire'||a.kind==='pelvic'||directErection(c,a)?'Retomar mi práctica':'Ya la realicé · Registrar'}</button>`:''}${items.filter(x=>x.id!==active.id).map(x=>wellnessCard(x).replaceAll('data-daily-open=','data-next-id=')||`<div><b>${esc(x.title)}</b><p>${x.optional?'Recomendación opcional':'Actividad pendiente'}</p><button type="button" class="btn pri" data-next-id="${esc(x.id)}">Continuar aquí →</button></div>`).join('')}${items.length===0?'<p>Terminaste las actividades de hoy. Continúa con constancia, a tu ritmo; no necesitas repetirlas ahora.</p>':''}${items.every(x=>x.optional)?'<button type="button" class="btn pri" data-next-day>Completar mi día</button>':''}<button type="button" class="btn sec" data-next-today>Ver todas mis actividades de hoy</button><p role="status"></p>`;
- const go=async fn=>{try{if(!await leaveActivity())throw Error();if(!validActive())throw Error();open({focus:false});fn();}catch{panel.querySelector('[role=status]').textContent='No pudimos guardar o salir. Conserva esta pantalla y vuelve a intentarlo.';}};
- panel.querySelectorAll('[data-nutrition-library]').forEach(b=>b.onclick=()=>go(()=>window.SPM_RESOURCES?.open('nutrition',Number(c.day),{origin:'dailyPlan'})));
- panel.querySelectorAll('[data-next-id]').forEach(b=>b.onclick=()=>go(()=>launch(b.dataset.nextId)));
- panel.querySelector('[data-next-record]')?.addEventListener('click',()=>go(()=>confirmActivity(a.id)));
- panel.querySelector('[data-next-today]').onclick=()=>go(()=>open());
- panel.querySelector('[data-next-day]')?.addEventListener('click',()=>go(complete));
-}
-function refreshContinuation(){
- if(view!=='today'||!validActive())return;
- const a=assignments().find(x=>x.id===active.id),module=a&&$(moduleSelectors[a.kind]||'#no-spm-module');
- if(directErection(ctx(),a))return;
- // Iframe labs hand off to the daily workspace after closing. An extra footer
- // inside their fixed-height dialogs would squeeze the practice out of view.
- if(['desire','breathing','sensate','pelvic'].includes(a?.kind)){module?.querySelector('[data-spm-next]')?.remove();return;}
- if(module)continuation(module);
+function returnToToday(){
+ if(!ctx())return false;
+ // Al finalizar conserva el registro; no avanza el día ni abre otra actividad.
+ // Evita desplazar el foco detrás de diálogos todavía abiertos.
+ active=null;open({focus:!document.querySelector('dialog[open]')});return true;
 }
 function showContinuation(){
- if(!validActive())return;open({focus:false});const box=$('#spmDailyWorkspace');if(!box)return;box.replaceChildren();$('#spmDailySession').dataset.continuation='true';continuation(box);focus(box);
+ if(!validActive())return false;
+ return returnToToday();
 }
 const dailyAdvice=[
  ['Si hoy compartes un momento de intimidad, pregunta: «¿Qué te haría sentir a gusto hoy?». Escucha sin intentar resolver ni demostrar nada.','Si estás solo, identifica una cosa que te ayude a sentirte a gusto.'],
@@ -364,9 +348,7 @@ window.addEventListener('spm:pelvic-readiness',()=>render());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:resource-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx(),a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
-let continuationPending=false;
-new MutationObserver(()=>{if(continuationPending||!validActive())return;continuationPending=true;requestAnimationFrame(()=>{continuationPending=false;refreshContinuation();});}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['open','hidden','class']});
 layout();load();
 })();

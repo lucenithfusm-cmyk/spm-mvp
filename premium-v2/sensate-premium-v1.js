@@ -1058,6 +1058,11 @@ try{
  saved=true;notification=isFocusILesson()?'Aprendizaje guardado ✓. Lleva la técnica a tu vida cuando quieras.':'Experiencia guardada en tu programa SPM ✓';
 }catch(e){error='No se pudo guardar o completar la actividad. Tus respuestas permanecen aquí para reintentar.'}
 finally{busy=false;render()}
+ // Al guardar, Finalizar retorna a Hoy. Si falla el cierre, el registro permanece.
+ if(saved){
+  try{const closed=await api.close();if(closed===false){notification='Tu sesión se guardó. Pulsa Volver a mi programa para regresar a Hoy.';render()}}
+  catch{notification='Tu sesión se guardó. Pulsa Volver a mi programa para regresar a Hoy.';render()}
+ }
 }
 
 root.addEventListener('click',e=>{
@@ -1074,7 +1079,11 @@ root.addEventListener('click',e=>{
  if(isFocusII()&&act==='branch'&&screen===1){
   const key=button.dataset.value;
   if(!['individual','partner'].includes(key))return;
-  stopAudio();spmF2Choice=key;render();return;
+  // Un toque inicia directamente la guía de esa modalidad, sin paso intermedio.
+  spmF2Choice=key;
+  spmF2HeardStep=-1;
+  resetType(key==='individual'?'sf-focus-2-solo':'sf-focus-2');
+  return;
  }
  if(isFocusII()&&act==='f2step'){
   const index=Number(button.dataset.value);

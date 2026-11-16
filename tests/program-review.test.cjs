@@ -272,7 +272,9 @@ test('erection days 1–5 open the recorded inline practice and save only its ex
       assert.equal(w.SPM_RESOURCE_CONTEXT().day,day);assert.equal(w.SPM_RESOURCE_CONTEXT().completed.length,0);
       assert.equal(w.document.querySelector('[data-erection-practice]'),null);
       assert.equal(w.document.querySelector('#spmDailySession').dataset.focusedPractice,undefined);
-      assert.ok(w.document.querySelector('#spmDailyWorkspace [data-spm-next]'),'save returns to available activities');
+      assert.equal(w.document.querySelector('#spmDailyWorkspace [data-spm-next]'),null,'no intermediate continuation');
+      assert.equal(w.document.querySelector('#plan').dataset.spmDailyView,'today','save returns directly to Hoy');
+      assert.ok(w.document.querySelector('[data-activity="main"] .spm-daily-saved'),'record is reflected in Hoy');
       assert.equal(w.document.querySelector('#spmDailyComplete').disabled,true,'other required activities remain pending');
       if(day===1){assert.equal(records.main.ehs,null);assert.equal(records.main.ehsEvaluable,false);}
       if(day===2)assert.equal(records.main.contexts.solo,'variable');
