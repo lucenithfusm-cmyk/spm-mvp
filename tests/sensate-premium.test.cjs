@@ -443,7 +443,7 @@ test('Focus I first session has tactile screen 2, image-based screen 5 and free 
   assert.ok(h.page.querySelector('.spm-approved-intro'),'approved screen one remains untouched');
   h.click('next');
   assert.ok(h.page.querySelector('.spm-artwork-2'),'second screen has its own canvas');
-  assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-reflective-moment-v2\.webp/,'restore previous approved preparation photo');
+   assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-focus-session1-screen2-user-20261115\.avif/,'screen 2 uses only the new approved photo');
   assert.ok(h.page.querySelector('.spm-art-prep-entry[data-act=branch][data-value=individual]'),'photo enters session');
   assert.equal(h.page.querySelectorAll('[data-act=audio]').length,1);
   h.click('next');
@@ -505,12 +505,12 @@ test('Focus I uses approved top header, higher skip, and only own practice photo
  assert.match(css,/\.spm-artwork-screen::before\{[\s\S]*?spm-approved-focus-screen-atlas\.avif/);
  assert.match(css,/\.spm-artwork-2 \.spm-art-panel\{[\s\S]*?top:20\.2%/);
  assert.match(css,/\.spm-artwork-5 \.spm-art-panel\{[\s\S]*?top:19\.9%/);
- assert.match(ui,/const url=second\?photoPath\(isPartner\(\)\?'partner':'reflection'\):photoPath\('release'\)/);
+ assert.match(ui,/const url=PREFIX\+\(second\?'spm-focus-session1-screen2-user-20261115\.avif':'spm-focus-session1-screen5-user-20261115\.avif'\)/);
  const seq=ui.match(/const STEP_PHOTOS=\{([\s\S]*?)\};/);
  assert.ok(seq);
  assert.doesNotMatch(seq[1],/breathing|confidence|recovery|connection|beginning|reflection/);
  assert.match(css,/\.spm-artwork-screen\{min-height:100dvh\}/);
- assert.match(css,/background:url\("\.\/assets\/sensate-premium\/spm-approved-focus-screen-atlas\\.avif"\)/,'la cabecera utiliza la ruta real desde la hoja CSS');
+ assert.ok(css.includes('background:url("./assets/sensate-premium/spm-approved-focus-screen-atlas.avif") no-repeat left top'),'the approved header stays unchanged');
  assert.doesNotMatch(css,/background-size:225% auto/,'el cierre utiliza la fotografía original sin zoom forzado');
  assert.doesNotMatch(ui,/if\(phase>0\)overlays\+='\<div class="spm-approved-phase-photo"/);
 });
@@ -523,15 +523,15 @@ test('Focus I uses only the two user-approved photographs in session one, with n
    assert.equal(data.toString('ascii',4,8),'ftyp','AVIF image is valid: '+name);
  }
  const html=fs.readFileSync(path.join(root,'premium-v2/sensate-lab/index.html'),'utf8');
- assert.equal((html.match(/sensate-premium-v1\\.js/g)||[]).length,1,'only one active script for the module');
- assert.doesNotMatch(ui,/EXTRA_PHOTOS|commercial-cinema\\//,'no unrelated photographs in active focalization module');
+ assert.equal(html.split('sensate-premium-v1.js').length-1,1,'only one active script for the module');
+ assert.ok(!ui.includes('EXTRA_PHOTOS')&&!ui.includes('commercial-cinema/'),'no unrelated photographs in active focalization module');
  const h=harness({day:4,practiceId:'sf-i-1'});
  try{
   h.click('next');
   assert.equal(h.page.querySelectorAll('.spm-art-prep-entry').length,1);
-  assert.match(h.page.querySelector('.spm-art-prep-entry').getAttribute('style'),/spm-focus-session1-screen2-user-20261115\\.avif/);
+   assert.ok(h.page.querySelector('.spm-art-prep-entry').getAttribute('style').includes('spm-focus-session1-screen2-user-20261115.avif'),'screen 2 photo only');
   h.click('next');h.click('next');h.click('skipguide');
   assert.equal(h.page.querySelectorAll('.spm-art-content-close .spm-art-photo').length,1);
-  assert.match(h.page.querySelector('.spm-art-content-close .spm-art-photo').getAttribute('style'),/spm-focus-session1-screen5-user-20261115\\.avif/);
+   assert.ok(h.page.querySelector('.spm-art-content-close .spm-art-photo').getAttribute('style').includes('spm-focus-session1-screen5-user-20261115.avif'),'screen 5 photo only');
  }finally{h.close()}
 });
