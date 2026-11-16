@@ -960,3 +960,52 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
  .spm-artwork-5 .spm-art-content-close .spm-art-photo{min-height:18cqw}
  .spm-approved-skip{font-size:10px}
 }
+
+
+/* Focalización I / sesiones 2–5: aprendizaje, práctica íntima posterior y seguimiento opcional. */
+.sensate-followup{background:linear-gradient(145deg,#173d46,#25494a);border:1px solid #b6c9b7;border-radius:20px;margin:12px 0;padding:14px;box-shadow:0 6px 17px #02182024}
+.sensate-followup strong{display:block;font-size:clamp(16px,4vw,19px);color:#f2d8ad;margin-bottom:5px}
+.sensate-followup p{font-size:clamp(13px,3.6vw,16px)!important;color:#fff!important;margin:5px 0 13px!important;line-height:1.4}
+.sensate-followup small{display:block;margin-top:10px;color:#c7ddd3;line-height:1.35;font-size:12px}
+.sensate-followup-options{display:flex;flex-wrap:wrap;gap:8px}
+.sensate-followup-options button{flex:1 1 auto;min-width:90px;min-height:44px;padding:9px 10px;border-radius:999px;background:#19404b;border:1px solid #9dbfb8;color:#fff;font-size:clamp(11px,3vw,14px);font-weight:850}
+.sensate-followup-options button.chosen{background:#ecd0a5;color:#123641;border-color:#ffe7c3}
+.sf-matte .focusi-takeaway{background:linear-gradient(150deg,#11373f,#18474a 68%,#0b323d)!important;border:1px solid #b9cbba;padding:clamp(16px,4vw,25px);border-radius:26px}
+.focusi-takeaway h2{font-size:clamp(28px,7vw,38px)!important;margin:2px 0 12px!important}
+.focusi-takeaway h3{font-size:clamp(19px,5vw,24px);color:#f6dfb9;margin:12px 0 8px}
+.focusi-takeaway>p{font-size:clamp(14px,3.9vw,17px)!important;line-height:1.5!important;color:#f8f5ec!important}
+.focusi-homework-hero{height:clamp(150px,43vw,220px);overflow:hidden;border-radius:20px;border:1px solid #e4ceb0;background:#123942;margin:12px 0 15px}
+.focusi-homework-hero .sensate-scene{height:100%;margin:0;max-height:none;border:0;border-radius:0}
+.focusi-homework-hero .sensate-session-photo{display:block;width:100%;height:100%;background-size:cover}
+.focusi-homework-hero img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 40%;max-height:none}
+.focusi-homework-anchor{padding:14px;border:1px solid #e5c79b;border-radius:18px;background:linear-gradient(140deg,#244852,#183b43);margin-top:15px}
+.focusi-homework-anchor strong{font-size:clamp(16px,4.3vw,21px);color:#ffe2ad}
+.focusi-homework-anchor p{font-size:clamp(14px,3.7vw,17px)!important;color:#fff!important;line-height:1.48!important;margin:7px 0 0!important}
+.focusi-homework-note{font-size:13px!important;color:#dbe9df!important;margin-top:16px!important}
+.focusi-homework-save{font-size:15px!important;font-weight:800;color:#ffe1b1!important;margin-top:14px!important}
+.sf-matte.sensate-day-2 .intro-card,.sf-matte.sensate-day-2 .focusi-takeaway{border-color:#bcd6c9}
+.sf-matte.sensate-day-3 .intro-card,.sf-matte.sensate-day-3 .focusi-takeaway{border-color:#d9bf9a}
+.sf-matte.sensate-day-4 .intro-card,.sf-matte.sensate-day-4 .focusi-takeaway{border-color:#d5bfae}
+.sf-matte.sensate-day-5 .intro-card,.sf-matte.sensate-day-5 .focusi-takeaway{border-color:#c5d3b9}
+@media(max-width:420px){.sensate-followup-options button{flex:1 1 27%;min-width:0;padding:8px 5px;font-size:11px}.focusi-homework-hero{height:185px}}
+
+
+/* Focalización I · Sesión 2: arte intacto 941×1672 con zonas HTML superpuestas. */
+.layout.sensate-approved-layout.spm-s2-layout{width:min(100%,540px);max-width:540px;padding:0;min-height:100dvh;background:#faf1e6;overflow:visible}
+.spm-s2-artwork-screen{position:relative;display:block;width:100%;aspect-ratio:941 / 1672;overflow:hidden;background-color:#faf1e6;background-repeat:no-repeat;background-position:center top;background-size:100% 100%;color:#161616;border-radius:0}
+.spm-s2-artwork-screen.focusi-takeaway{padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;border-radius:0!important;background-size:100% 100%!important}
+.spm-s2-artwork-screen .spm-s2-hit{z-index:4;background:transparent;border:2px solid transparent;border-radius:999px;outline-offset:-1px}
+.spm-s2-artwork-screen .spm-s2-hit:active{background:rgba(201,145,38,.20);box-shadow:inset 0 0 0 2px rgba(186,124,18,.43)}
+.spm-s2-artwork-screen .spm-s2-hit.chosen{background:rgba(238,180,60,.14);border-color:rgba(181,125,19,.7);box-shadow:inset 0 0 0 2px rgba(255,251,232,.53)}
+.spm-s2-artwork-screen .spm-s2-hit.playing{background:rgba(246,197,90,.19);border-color:#b5822b;box-shadow:inset 0 0 0 2px #fff1c3,0 0 14px 3px rgba(217,161,49,.55);animation:spm-approved-audio-pulse 1.3s ease-in-out infinite alternate}
+.spm-s2-artwork-screen .spm-s2-hit:focus-visible{outline:3px solid #93601a;box-shadow:inset 0 0 0 2px #fff}
+.spm-s2-artwork-screen .spm-s2-hit[disabled]{opacity:1}
+.spm-s2-saved-overlay{position:absolute;z-index:5;left:58.2%;top:89.7%;width:40%;height:6.5%;background:linear-gradient(115deg,#e8bc67,#b9872a);color:#392707;border-radius:99px;pointer-events:none;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(12px,3.3vw,19px);box-shadow:inset 0 0 0 2px #fff4d1}
+.spm-s2-feedback{display:block;margin:0;padding:10px 14px;background:#e5f0dc;color:#254221;text-align:center;line-height:1.4;font-size:13px;font-weight:800}
+.spm-s2-feedback.spm-s2-error{background:#ffe5df;color:#8a2518}
+.spm-s2-info{max-width:min(92vw,510px);max-height:80dvh;overflow:auto;background:#173b44;color:#fff;border:1px solid #efcc8d;border-radius:18px;padding:25px}
+.spm-s2-info::backdrop{background:rgba(10,21,29,.76)}.spm-s2-info p{font-size:16px;line-height:1.6}.spm-s2-info [data-act="approvedinfo-close"]{min-width:44px;min-height:44px}
+@media(prefers-reduced-motion:reduce){.spm-s2-artwork-screen .spm-s2-hit.playing{animation:none}}
+
+/* The fourth image remains the actual background, even with the legacy .focusi-takeaway marker used by regression tests. */
+.spm-s2-artwork-screen.focusi-takeaway{background-image:url('./assets/sensate-premium/spm-focus-i-s2-screen-4-approved.webp')!important}
