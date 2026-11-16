@@ -192,7 +192,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
   [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
   [8,'sf-i-2','individual','Descubre lo que te gusta','Llega a tu cuerpo'],
   [12,'sf-i-3','partner','Conecta sin presión','Acuerden un encuentro libre'],
-  [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
+  [23,'sf-i-4','partner','Comunica lo que disfrutas','Observa qué disfrutas'],
   [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
  ];
  const originalImage=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-approved-focus-screen-atlas.avif'));
@@ -201,7 +201,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
-  const imageJourney=practiceId==='sf-i-1',imageLesson=['sf-i-2','sf-i-3'].includes(practiceId),image3=practiceId==='sf-i-3';
+  const imageJourney=practiceId==='sf-i-1',imageLesson=['sf-i-2','sf-i-3','sf-i-4'].includes(practiceId),image3=practiceId==='sf-i-3',image4=practiceId==='sf-i-4';
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
@@ -216,7 +216,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
    assert.ok(h.spoken.at(-1).length>60,'intro offers complete spoken guidance');
    signatures.add(h.spoken.at(-1));
    h.click('next');
-   if(image3){assert.equal(h.page.querySelectorAll('[data-act=branch]').length,0,'partner journey is predetermined');}else{
+   if(image3||image4){assert.equal(h.page.querySelectorAll('[data-act=branch]').length,0,'partner journey is predetermined');}else{
     assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
     assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
    }
@@ -243,7 +243,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
     assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
     for(let i=0;i<5;i++)h.click('approvedadvance');
    }else if(imageLesson){
-    assert.ok(h.page.querySelector(image3?'.spm-s3-artwork-screen':'.spm-s2-artwork-screen'));
+    assert.ok(h.page.querySelector(image4?'.spm-s4-artwork-screen':image3?'.spm-s3-artwork-screen':'.spm-s2-artwork-screen'));
     assert.equal(h.page.querySelector('[data-act=startguide]'),null);
    }else{
     h.click('startguide');
@@ -630,6 +630,71 @@ test('sesión 3: cuatro imágenes aprobadas, cinco audios, botones táctiles y g
   assert.equal(row.lessonFormat,'learn-now-practice-later');
   assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
   assert.ok(h.page.querySelector('.spm-s3-saved-overlay'));
+  h.click('close');assert.ok(h.calls.includes('close'));
+ }finally{h.close()}
+});
+
+
+test('sesión 4: cuatro imágenes completas, interacción táctil, audios correctos y finalización única',async()=>{
+ for(let i=1;i<=4;i++){
+  const bytes=fs.readFileSync(path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s4-screen-'+i+'-approved.jpg'));
+  assert.ok(bytes.length>390000,'asset JPEG aprobado '+i);
+  assert.equal(bytes[0],0xff);assert.equal(bytes[1],0xd8);
+ }
+ const h=harness({day:23,practiceId:'sf-i-4'});
+ const check=(i)=>{
+  const art=h.page.querySelector('.spm-s4-artwork-screen');
+  assert.ok(art,'lámina funcional '+i);
+  assert.match(art.getAttribute('style'),new RegExp('screen-'+i+'-approved.jpg'));
+  assert.match(art.getAttribute('aria-label'),new RegExp('pantalla '+i+' de 4'));
+  const touches=[...h.page.querySelectorAll('.spm-s4-hit')];
+  assert.ok(touches.length>=5,'zonas táctiles reales');
+  assert.ok(touches.every(b=>b.dataset.act&&b.getAttribute('aria-label')));
+ };
+ try{
+  check(1);h.click('audio');
+  assert.match(h.spoken.at(-1),/expresar lo agradable/);
+  for(const [key,label] of [['claridad','Claridad'],['respeto','Respeto'],['conexion','Conexión']]){
+   h.page.querySelector('[data-act=s4concept][data-value='+key+']').click();
+   assert.match(h.spoken.at(-1),new RegExp(label));
+   assert.equal(h.page.querySelector('[data-act=s4concept][data-value='+key+']').getAttribute('aria-pressed'),'true');
+  }
+  h.click('approvedread');
+  assert.equal(h.page.querySelector('.spm-s4-info').hasAttribute('open'),true);
+  h.click('approvedinfo-close');
+  h.click('next');check(2);
+  assert.equal(h.page.querySelector('[data-act=branch]'),null,'sin elección redundante de modalidad');
+  h.click('audio');assert.match(h.spoken.at(-1),/hablar de lo que disfrutas/);
+  for(const [key,phrase] of [['simple','Exprésalo simple'],['ajuste','Pide ajustes'],['escucha','Escucha también']]){
+   h.page.querySelector('[data-act=s4prep][data-value='+key+']').click();
+   assert.match(h.spoken.at(-1),new RegExp(phrase));
+  }
+  h.click('next');check(3);
+  assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+  for(const [idx,phrase] of ['Observa qué disfrutas','Exprésalo con claridad','Pide cambios con suavidad','Escucha la respuesta','Confirma lo que se sintió bien'].entries()){
+   h.page.querySelector('[data-act=explainstep][data-value="'+idx+'"]').click();
+   assert.match(h.spoken.at(-1),new RegExp(phrase));
+   assert.equal(h.page.querySelector('[data-act=explainstep][data-value="'+idx+'"]').getAttribute('aria-pressed'),'true');
+  }
+  assert.equal(h.writes.length,0,'escuchar no implica registrar práctica íntima');
+  h.click('next');check(4);
+  assert.equal(h.page.querySelector('[data-act=startguide]'),null,'sin cronometrar tarea de otro momento');
+  for(const key of ['frase','observa','calma','ancla']){
+   h.page.querySelector('[data-act=s4task][data-value='+key+']').click();
+   assert.equal(h.page.querySelector('[data-act=s4task][data-value='+key+']').getAttribute('aria-pressed'),'true');
+  }
+  h.click('audio');assert.match(h.spoken.at(-1),/En un momento de cercanía/);
+  h.click('back');check(3);h.click('next');check(4);
+  h.click('save');await pause();
+  assert.equal(h.writes.length,1,'sin registros duplicados');
+  const rec=JSON.parse(h.records['spm-sensate-records'])[0];
+  assert.equal(rec.day,23);assert.equal(rec.practiceId,'sf-i-4');
+  assert.equal(rec.modality,'partner');assert.equal(rec.completed,true);
+  assert.equal(rec.lessonCompleted,true);
+  assert.equal(rec.intimatePracticeCompleted,null);
+  assert.equal(rec.lessonFormat,'learn-now-practice-later');
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+  assert.ok(h.page.querySelector('.spm-s4-saved-overlay'));
   h.click('close');assert.ok(h.calls.includes('close'));
  }finally{h.close()}
 });
