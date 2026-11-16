@@ -43,7 +43,10 @@ test('Desire day one has one entry button and keeps audio and recording inside i
  assert.ok(h.w.document.querySelector('.is-nutrition [data-nutrition-library]'));
  card.querySelector('button').click();await wait();assert.equal(h.opens.at(-1)[0],'DESIRE');assert.equal(h.opens.at(-1)[1].origin,'dailyPlan');
  assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
- h.w.SPM_DAILY_PRACTICE.showContinuation();const resume=h.w.document.querySelector('[data-next-record]');assert.equal(resume.textContent,'Retomar mi práctica');resume.click();await wait();
+ h.w.SPM_DAILY_PRACTICE.showContinuation();
+ assert.equal(h.w.document.querySelector('#plan').dataset.spmDailyView,'today');
+ assert.equal(h.w.document.querySelector('[data-spm-next]'),null);
+ h.w.document.querySelector('[data-daily-open="main"]').click();await wait();
  assert.equal(h.opens.at(-1)[0],'DESIRE');assert.equal(h.writes.length,0);assert.equal(h.w.document.querySelector('#spmDailyWorkspace form'),null);
  }finally{h.close()}
 });
@@ -231,21 +234,23 @@ test('checkpoint entry has one action and no summary text, speaker or shortcut r
 });
 
  test('missing followups do not prevent completion or final report in any domain',async()=>{const h=harness();try{await wait();for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(const day of [14,28]){const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});assert.equal(items[0].optional,true);assert.ok(items.filter(a=>a.kind==='program-checkpoint'||a.kind==='ep-checkpoint').every(a=>a.optional));assert.ok(items.some(a=>!a.optional));}}finally{h.close();}});
-test('continuation uses actual pending assignments in all six routes and excludes completed tasks',async()=>{
+test('all six routes return to Hoy without an intermediate continuation panel',async()=>{
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
-  const h=harness(route,1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
-  const items=h.w.SPM_DAILY_PRACTICE.nextActivities();assert(!items.some(a=>a.id==='main'));
-  const panel=h.w.document.querySelector('#spmDailyWorkspace [data-spm-next]');assert(panel);
-  for(const a of items){
-   assert(panel.querySelector(`[data-next-id="${a.id}"]`),`${route}: ${a.id} is actionable`);
-   if(a.kind==='wellness'&&['sleep','nutrition'].includes(a.tip.category)){
-    const card=panel.querySelector(`[data-activity="${a.id}"]`);assert(card);
-    const title=a.tip.category==='sleep'?h.w.SPM_SLEEP_LIBRARY_V1.tips.find(t=>t.id===a.tip.sleepTipId).title:a.tip.title;
-    assert(card.textContent.includes(title),`${route}: the assigned original card is shown`);
-   }else assert(panel.textContent.includes(a.title));
-  }
-  assert(!panel.querySelector('[data-next-id="main"]'));
-  assert.equal(h.w.document.querySelector('#spmDailySession').dataset.continuation,'true');assert.equal(h.c.day,1);
+  const h=harness(route,1);try{
+   await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;
+   api.open();await api.launch('main');await api.saveActivity('main',{confirmed:true});
+   assert.equal(d.querySelector('#plan').dataset.spmDailyView,'today');
+   assert.equal(d.querySelector('[data-spm-next]'),null,'no continuation panel');
+   assert.equal(d.querySelector('[data-next-id]'),null,'no intermediate buttons');
+   assert.equal(d.querySelector('#spmDailyWorkspace').children.length,0);
+   assert.equal(api.active(),null,'active session released');
+   assert.equal(h.c.day,1,'never advance the day');
+   assert.deepEqual(h.c.completed,[],'do not complete day without its other activities');
+   assert.equal(h.writes.length,1,'one save only');
+   assert.ok(d.querySelector('[data-activity="main"] .spm-daily-saved'));
+   for(const a of api.nextActivities()){
+    assert(d.querySelector('[data-daily-open="'+a.id+'"]'),route+': remaining '+a.id+' stays available in Hoy');
+   }
   }finally{h.close();}
  }
 });
@@ -284,23 +289,35 @@ for(const [kind,day] of [['breathing',3],['sensate',4]])for(const completed of [
   assert.equal(h.writes.length,writesBefore);assert.equal(h.c.day,day);assert.deepEqual(h.c.completed,[]);
   if(!completed){
    modal.close();modal.remove();api.showContinuation();await wait();
-   const panel=d.querySelector('#spmDailyWorkspace [data-spm-next]');assert.ok(panel);
-   assert.ok(panel.textContent.includes(activity.title));assert.match(panel.textContent,/sigue pendiente/);
-   assert.ok(panel.querySelector('[data-next-record]'));
-   assert.ok(api.nextActivities().some(a=>a.id===activity.id),'Returning without saveActivity must leave the assignment pending');
+   assert.equal(d.querySelector('#plan').dataset.spmDailyView,'today');
+   assert.equal(d.querySelector('[data-spm-next]'),null);
+   assert.ok(d.querySelector('[data-daily-open="'+activity.id+'"]'),'the pending activity is directly in Hoy');
+   assert.ok(api.nextActivities().some(a=>a.id===activity.id),'Returning without saveActivity keeps this assignment pending');
    assert.equal(h.writes.length,0);assert.equal(h.c.day,day);assert.deepEqual(h.c.completed,[]);
   }
  }finally{h.close();}
 });
 
-test('a finished EP modal shows a working next-activity button and closes through its own lifecycle',async()=>{
- const h=harness('ejaculation',1);try{await wait();h.w.SPM_DAILY_PRACTICE.open();h.w.SPM_EJACULATORY_CONTROL.open=()=>{
- const m=h.w.document.createElement('div');m.id='spmEcModal';m.className='on';m.innerHTML='<button class="ecClose">Cerrar</button>';m.querySelector('button').onclick=()=>m.classList.remove('on');h.w.document.body.append(m);};
- await h.w.SPM_DAILY_PRACTICE.launch('main');await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true});
- const modal=h.w.document.querySelector('#spmEcModal');const button=modal.querySelector('[data-next-id]');assert(button);const id=button.dataset.nextId;button.click();await wait();assert(!modal.classList.contains('on'));assert.equal(h.w.SPM_DAILY_PRACTICE.active().id,id);
+test('a saved EP session closes to Hoy without continuing to another activity',async()=>{
+ const h=harness('ejaculation',1);try{
+  await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;api.open();
+  h.w.SPM_EJACULATORY_CONTROL.open=()=>{
+   const m=d.createElement('div');m.id='spmEcModal';m.className='on';m.innerHTML='<button class="ecClose">Cerrar</button>';
+   m.querySelector('button').onclick=()=>{m.classList.remove('on');api.open();};
+   d.body.append(m);
+  };
+  await api.launch('main');await api.saveActivity('main',{confirmed:true});
+  const modal=d.querySelector('#spmEcModal');
+  assert(modal.classList.contains('on'),'the modal stays open until its own close action');
+  assert.equal(modal.querySelector('[data-spm-next]'),null);
+  modal.querySelector('.ecClose').click();await wait();
+  assert.equal(modal.classList.contains('on'),false);
+  assert.equal(d.querySelector('#plan').dataset.spmDailyView,'today');
+  assert.equal(d.querySelector('[data-spm-next]'),null);
+  assert.ok(d.querySelector('[data-activity="main"] .spm-daily-saved'));
+  assert.equal(h.c.day,1);
  }finally{h.close();}
 });
-
 test('day 3 sleep audio keeps only the introduction in Today and its card without changing written steps',async()=>{
  const h=harness('desire',3);try{
   await wait();h.w.SPM_DAILY_PRACTICE.open();const d=h.w.document,library=h.w.SPM_SLEEP_LIBRARY_V1,spoken=[];
@@ -335,7 +352,7 @@ test('Today shows the existing sleep design and practical nutrition with its lib
   await h.w.SPM_DAILY_PRACTICE.launch('wellness-nutrition');assert.equal(d.querySelectorAll('.spm-food-steps li').length,3);assert(d.querySelector('[data-wellness-library]'));assert(d.querySelector('[data-wellness-session] [data-spm-speak]'));assert(!d.querySelector('[data-wellness-next]'));
   d.querySelector('[data-wellness-return]').click();assert.equal(d.querySelector('#spmDailyWorkspace').children.length,0);
   await h.w.SPM_DAILY_PRACTICE.launch('wellness-sleep');assert.equal(d.querySelectorAll('.slModal .slTip').length,1);assert.equal(d.querySelector('.slModal .slTipCopy b').textContent,h.w.SPM_SLEEP_LIBRARY_V1.tips[0].title);assert(d.querySelector('.slModal [data-spm-speak]'));
-  d.querySelector('[data-sl-done]').click();await wait();assert.equal(h.writes.at(-1)[0],'wellness-sleep');assert.equal(h.writes.at(-1)[1].tipId,'slp.sl-horario-01');assert.equal(d.querySelector('.slModal'),null);assert(d.querySelector('[data-spm-next] .spm-food-card'));assert(d.querySelector('[data-spm-next] [data-nutrition-library]'));
+  d.querySelector('[data-sl-done]').click();await wait();assert.equal(h.writes.at(-1)[0],'wellness-sleep');assert.equal(h.writes.at(-1)[1].tipId,'slp.sl-horario-01');assert.equal(d.querySelector('.slModal'),null);assert.equal(d.querySelector('[data-spm-next]'),null);assert.equal(d.querySelector('#plan').dataset.spmDailyView,'today');assert(d.querySelector('[data-activity="wellness-nutrition"] [data-nutrition-library]'));
  }finally{h.close();}
 });
 
