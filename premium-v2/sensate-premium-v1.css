@@ -1087,3 +1087,52 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 @media(prefers-reduced-motion:reduce){
   .spm-s4-artwork-screen .spm-s4-hit[data-audio]{animation:none}
 }
+
+
+/* Sesión 5: imágenes íntegramente originales, capa táctil accesible */
+.layout.sensate-approved-layout.spm-s5-layout{width:min(100%,540px);max-width:540px;min-height:100dvh;margin:0 auto;padding:0;background:#faeee2;box-shadow:none}
+.spm-s5-artwork-screen{position:relative;display:block;width:100%;aspect-ratio:864 / 1536;background-color:#faeee2;background-size:100% 100%;background-position:center top;background-repeat:no-repeat;overflow:hidden}
+.spm-s5-artwork-screen .spm-s5-hit{z-index:4;border:2px solid transparent;border-radius:999px;background:transparent;min-height:0;outline-offset:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.spm-s5-artwork-screen .spm-s5-hit:active{background:rgba(226,160,51,.20);box-shadow:inset 0 0 0 2px #c38e42aa}
+.spm-s5-artwork-screen .spm-s5-hit.chosen{background:rgba(249,190,95,.15);border-color:rgba(166,101,21,.74);box-shadow:inset 0 0 0 1px #ffefd3}
+.spm-s5-artwork-screen .spm-s5-hit.playing{background:rgba(239,178,73,.22);border-color:#b37716;box-shadow:inset 0 0 0 2px #ffedba,0 0 14px 3px #dfaa5480;animation:spm-approved-audio-pulse 1.3s ease-in-out infinite alternate}
+.spm-s5-artwork-screen .spm-s5-hit:focus-visible{outline:3px solid #995d0c;outline-offset:-3px;box-shadow:0 0 0 2px #fff}
+.spm-s5-artwork-screen .spm-s5-hit:disabled{opacity:1}
+.spm-s5-saved-overlay{position:absolute;z-index:5;pointer-events:none;top:93.7%;left:54%;width:44%;height:5.8%;display:flex;justify-content:center;align-items:center;background:linear-gradient(125deg,#ffe4a5,#e2aa40);border:2px solid #fff1ce;border-radius:999px;font-weight:900;color:#3c2708;font-size:clamp(12px,3.3vw,19px)}
+.spm-s5-feedback{margin:0;padding:10px 12px;text-align:center;background:#e5f0df;color:#23401c;font-size:13px;font-weight:800;line-height:1.4}
+.spm-s5-feedback.spm-s5-error{background:#ffe8e0;color:#8f241f}
+.spm-s5-info{background:#21464b;color:#fff;border:1px solid #dfbf8f;border-radius:18px;padding:25px;max-width:min(92vw,520px);max-height:80dvh;overflow:auto}
+.spm-s5-info::backdrop{background:#071b2499}.spm-s5-info p{line-height:1.6;font-size:16px}.spm-s5-info [data-act="approvedinfo-close"]{min-width:44px;min-height:44px}
+@media(prefers-reduced-motion:reduce){.spm-s5-artwork-screen .spm-s5-hit.playing{animation:none}}
+
+
+/* SPM Focalización I / sesión 5: halo de invitación solo en botones
+   que realmente tienen narración. Sin editar las cuatro imágenes base. */
+.spm-s5-artwork-screen .spm-s5-hit[data-audio]{
+  border:2px solid rgba(187,122,23,.67);
+  background:rgba(255,226,159,.035);
+  box-shadow:0 0 0 2px rgba(255,247,218,.62),0 0 11px 3px rgba(241,176,67,.56),inset 0 0 10px rgba(255,237,195,.19);
+  animation:spm-s5-audio-invite 3.8s ease-in-out infinite alternate;
+  transition:border-color .22s ease,background-color .22s ease;
+}
+@keyframes spm-s5-audio-invite{
+  from{box-shadow:0 0 0 2px rgba(255,247,218,.50),0 0 8px 2px rgba(228,162,54,.39),inset 0 0 8px rgba(255,237,195,.12)}
+  to{box-shadow:0 0 0 3px rgba(255,249,223,.76),0 0 16px 4px rgba(238,171,56,.65),inset 0 0 13px rgba(255,238,197,.22)}
+}
+.spm-s5-artwork-screen .spm-s5-hit[data-audio].chosen{
+  background:rgba(246,180,70,.15);
+  border-color:rgba(158,93,8,.88);
+}
+.spm-s5-artwork-screen .spm-s5-hit[data-audio].playing{
+  background:rgba(255,192,78,.20);
+  border-color:#a96b0b;
+  box-shadow:0 0 0 3px #fff0be,0 0 19px 5px rgba(234,154,34,.78);
+  animation:spm-approved-audio-pulse 1.25s ease-in-out infinite alternate;
+}
+.spm-s5-artwork-screen .spm-s5-hit[data-audio]:focus-visible{
+  outline:3px solid #815210;
+  outline-offset:1px;
+}
+@media(prefers-reduced-motion:reduce){
+  .spm-s5-artwork-screen .spm-s5-hit[data-audio]{animation:none}
+}
