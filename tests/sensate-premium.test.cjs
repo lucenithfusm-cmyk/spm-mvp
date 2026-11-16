@@ -9,7 +9,7 @@ const pause=()=>new Promise(resolve=>setTimeout(resolve,35));
 
 function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='none',mode='daily',saved=[],recordDailyOk=true}={}){
  const dom=new JSDOM('<!doctype html><html lang="es"><body><div id="sensatePremium"></div></body></html>',{url:'https://spm.test/premium-v2/sensate-lab/index.html',runScripts:'outside-only',pretendToBeVisual:true});
- const w=dom.window,records={'spm-sensate-records':JSON.stringify(saved)},writes=[],calls=[],spoken=[],clock=new Map();
+ const w=dom.window,records={'spm-sensate-records':JSON.stringify(saved)},writes=[],calls=[],closeArgs=[],spoken=[],clock=new Map();
  const cfg={day,origin:mode==='daily'?'dailyPlan':'library',mode,restriction,profile,activity:mode==='daily'?{day,practiceId,title:'Actividad sensorial asignada'}:null};
  let timerId=0,active=null;
  const host={
@@ -19,7 +19,7 @@ function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='
   async flush(){calls.push('flush')},
   async recordDaily(){calls.push('recordDaily');return typeof recordDailyOk==='function'?recordDailyOk():recordDailyOk},
   async isDailyCompleted(){return false},
-  async close(){calls.push('close');return true},
+  async close(resume=true){calls.push('close');closeArgs.push(resume);return true},
   async openLibrary(){calls.push('library');return true}
  };
  Object.defineProperty(w,'parent',{value:{SPM_SENSATE_LAB_HOST:host},configurable:true});
@@ -35,7 +35,7 @@ function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='
  function tick(n){for(let i=0;i<n;i++)for(const [id,obj] of [...clock]){if(clock.has(id))obj.cb()}}
  function branch(value){const b=page.querySelector('[data-act="branch"][data-value="'+value+'"]');assert.ok(b,'missing mode '+value);b.click();}
  function advanceToPractice(value='individual'){click('next');branch(value);click('next');}
- return {w,page,cfg,host,records,writes,calls,spoken,click,choose,tick,branch,advanceToPractice,utter(){return active},finishAudio(){const a=active;a?.onend?.()},close(){w.close()}};
+ return {w,page,cfg,host,records,writes,calls,closeArgs,spoken,click,choose,tick,branch,advanceToPractice,utter(){return active},finishAudio(){const a=active;a?.onend?.()},close(){w.close()}};
 }
 
 test('original Focus curriculum, transversal days and approved medical scene assets remain intact',()=>{
@@ -524,7 +524,7 @@ test('Focalización I sesión 1: los cinco recursos aprobados son únicos y no m
  }
  const html=fs.readFileSync(path.join(root,'premium-v2/sensate-lab/index.html'),'utf8');
  assert.equal(html.split('sensate-premium-v1.js').length-1,1);
- assert.match(html,/20261116-foc-i-s1-five-screens-v1/);
+ assert.match(html,/20261116-foc-i-s1-close-today-v2/);
  assert.ok(!ui.includes('EXTRA_PHOTOS')&&!ui.includes('commercial-cinema/'));
  const h=harness({day:4,practiceId:'sf-i-1'});
  try{
@@ -807,4 +807,55 @@ test('sesión 5: cuatro láminas aprobadas, 18 audios táctiles y guardado segur
   assert.ok(h.page.querySelector('.spm-s5-saved-overlay'));
   h.click('close');assert.ok(h.calls.includes('close'));
  }finally{h.close()}
+});
+
+
+test('Sesión 1: el botón Cerrar sustituye Volver luego, guarda aprendizaje y retorna a Hoy sin continuación',async()=>{
+ const h=harness({day:4,practiceId:'sf-i-1'});
+ try{
+  for(let i=0;i<4;i++)h.click('next');
+  const button=h.page.querySelector('.spm-s1-close-button');
+  assert.ok(button,'Existe un control real superpuesto a la quinta lámina');
+  assert.equal(button.textContent.trim(),'Cerrar');
+  assert.equal(button.dataset.act,'save');
+  assert.match(button.getAttribute('aria-label'),/volver a Hoy/);
+  button.click();await pause();
+  assert.equal(h.writes.length,1);
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+  assert.deepEqual(h.closeArgs,[false],'retorna directamente a Hoy, sin pantalla de continuación');
+  const record=JSON.parse(h.records['spm-sensate-records'])[0];
+  assert.equal(record.lessonCompleted,true);
+  assert.equal(record.intimatePracticeCompleted,null);
+ }finally{h.close()}
+ const exiting=harness({day:4,practiceId:'sf-i-1'});
+ try{
+  exiting.click('close');await pause();
+  assert.deepEqual(exiting.closeArgs,[false],'también sale directamente a Hoy desde encabezado');
+  assert.equal(exiting.writes.length,0,'el cierre anticipado no guarda una actividad');
+ }finally{exiting.close()}
+});
+
+test('Vista de revisión: Cerrar realmente oculta la sesión y muestra Hoy en vez de dejar el iframe visible',async()=>{
+ const html=fs.readFileSync(path.join(root,'premium-v2/revision-focalizacion-i-sesion-1.html'),'utf8');
+ const dom=new JSDOM(html,{url:'https://spm.test/premium-v2/revision-focalizacion-i-sesion-1.html',runScripts:'outside-only'});
+ try{
+  const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(script,'la vista de revisión contiene su puente simulado');
+  dom.window.eval(script);
+  const {document,SPM_SENSATE_LAB_HOST:host}=dom.window;
+  assert.equal(document.getElementById('qaToday').hidden,true);
+  await host.close(false);
+  assert.equal(document.getElementById('qaFrame').hidden,true,'la sesión deja de verse');
+  assert.equal(document.getElementById('qaToday').hidden,false,'se presenta Hoy');
+  assert.match(document.getElementById('qaStatus').textContent,/Has regresado a Hoy/);
+  assert.match(document.querySelector('[data-qa-outcome]').textContent,/sin guardar/);
+ }finally{dom.window.close()}
+});
+
+test('CSS de sesión 1 tapa el texto Volver luego original con un botón visual Cerrar',()=>{
+ const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
+ assert.match(css,/\.spm-s1-artwork \.spm-approved-hit\.spm-s1-close-button\{/);
+ assert.match(css,/\.spm-s1-artwork \.spm-s1-close-button>span\{/);
+ assert.match(css,/background:linear-gradient\(110deg,#fce6bd,#e8b252\)!important/);
+ assert.doesNotMatch(css,/\.spm-s1-artwork\{[^}]*background:[^}]*!important/);
 });

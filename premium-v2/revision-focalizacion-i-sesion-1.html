@@ -19,6 +19,11 @@ button{font:inherit;font-size:13px;min-height:42px;border-radius:13px;border:1px
 button:focus-visible{outline:3px solid #fff4d3;outline-offset:3px}
 main{max-width:550px;margin:0 auto}
 iframe{display:block;width:100%;height:calc(100dvh - 158px);min-height:520px;border:1px solid #5b7682;border-radius:15px;background:#f8e6d5}
+#qaFrame[hidden],#qaToday[hidden]{display:none!important}
+#qaToday{min-height:280px;padding:34px 22px;border:1px solid #809e9a;border-radius:16px;background:linear-gradient(135deg,#183d4b,#0f2e40);display:flex;flex-direction:column;gap:14px;align-items:flex-start;justify-content:center}
+#qaToday small{color:#e3c28d;letter-spacing:.1em;font-weight:800}
+#qaToday h2{font-size:clamp(24px,6.5vw,32px);margin:0}
+#qaToday p{line-height:1.55;color:#d6e8e5;margin:0}
 #qaStatus{font-size:12px;color:#b9d4cf}
 footer{font-size:11px;color:#c3d5d4;text-align:center;padding:9px 4px}
 @media(max-width:420px){iframe{height:calc(100dvh - 162px);min-height:490px}header{padding-top:7px}}
@@ -36,7 +41,8 @@ footer{font-size:11px;color:#c3d5d4;text-align:center;padding:9px 4px}
   records={[KEY]:'[]'};completed=false;
   status('Revisión sin datos reales');
   const frame=document.getElementById('qaFrame');
-  if(frame)frame.src='sensate-lab/index.html?v=20261116-foc-i-s1-five-screens-v1&review=1';
+  if(frame){frame.hidden=false;frame.src='sensate-lab/index.html?v=20261116-foc-i-s1-close-today-v2&review=1';}
+  const today=document.getElementById('qaToday');if(today)today.hidden=true;
  }
  window.SPM_SENSATE_LAB_HOST={
   getContext(){return {...context,activity:{...context.activity}}},
@@ -45,7 +51,17 @@ footer{font-size:11px;color:#c3d5d4;text-align:center;padding:9px 4px}
   async flush(){return true},
   async recordDaily(){completed=true;status('Aprendizaje de demostración guardado, sin datos de pacientes');return true},
   async isDailyCompleted(){return completed},
-  async close(){status(completed?'Revisión terminada. Usa Reiniciar para recorrerla de nuevo.':'Saliste sin guardar. Usa Reiniciar para volver a entrar.');return true},
+  async close(){
+   const frame=document.getElementById('qaFrame'),today=document.getElementById('qaToday');
+   if(frame){frame.hidden=true;frame.src='about:blank'}
+   if(today){
+    today.hidden=false;
+    const note=today.querySelector('[data-qa-outcome]');
+    if(note)note.textContent=completed?'Aprendizaje de demostración guardado. No se modificaron datos de pacientes.':'Saliste sin guardar el aprendizaje. La sesión puede retomarse desde Hoy.';
+   }
+   status('Has regresado a Hoy · Día 4');
+   return true;
+  },
   async openLibrary(){return true}
  };
  document.addEventListener('DOMContentLoaded',()=>document.getElementById('reiniciar').addEventListener('click',restart));
@@ -59,7 +75,16 @@ footer{font-size:11px;color:#c3d5d4;text-align:center;padding:9px 4px}
 <p>Las cinco imágenes aprobadas son pantallas táctiles. Prueba los audios, Anterior, Continuar y el cierre.</p>
 <nav><span id="qaStatus">Revisión sin datos reales</span><button id="reiniciar" type="button">↻ Reiniciar</button></nav>
 </header>
-<main><iframe id="qaFrame" title="Focalización I sesión 1 · cinco pantallas táctiles con audio" src="sensate-lab/index.html?v=20261116-foc-i-s1-five-screens-v1&amp;review=1" allow="autoplay"></iframe></main>
+<main>
+<iframe id="qaFrame" title="Focalización I sesión 1 · cinco pantallas táctiles con audio" src="sensate-lab/index.html?v=20261116-foc-i-s1-close-today-v2&amp;review=1" allow="autoplay"></iframe>
+<section id="qaToday" hidden aria-label="Hoy, día 4, simulación">
+ <small>SPM CENTRAL · VISTA DE REVISIÓN</small>
+ <h2>Hoy · Día 4</h2>
+ <p data-qa-outcome>Has regresado a tu día del programa.</p>
+ <p>Focalización I · Sesión 1. Esta es una demostración sin pacientes ni pagos.</p>
+ <button type="button" onclick="document.getElementById('reiniciar').click()">Reiniciar sesión 1</button>
+</section>
+</main>
 <footer>Prueba aislada. El programa comercial y los pagos permanecen pausados.</footer>
 </body>
 </html>
