@@ -465,7 +465,12 @@ function spmApprovedSession1Screen(){
   for(const [v,r,label] of [['ninguna',[27,1437,320,1524],'No'],['molestia',[327,1437,611,1524],'Molestia'],['dolor',[618,1437,913,1524],'Dolor']])
    taps+=b(r,'approvedchoice','Molestia o dolor: '+label,v,{choice:true,active:data.discomfort===v,field:'discomfort'});
   taps+=b([24,1538,332,1646],'back','Anterior: volver a tarea');
-  taps+=b([542,1538,918,1646],saved?'close':'save',saved?'Volver al programa':'Guardar el aprendizaje y volver al programa',undefined,{disabled:busy});
+  // Tapa el rótulo antiguo integrado en la foto sin modificar las cinco láminas.
+  // En esta sesión «Cerrar» guarda el aprendizaje pendiente y vuelve a Hoy;
+  // si ya está guardado solo cierra. No registra una práctica íntima inexistente.
+  taps+=b([542,1538,918,1646],saved?'close':'save',saved?'Cerrar y volver a Hoy':'Guardar aprendizaje y cerrar: volver a Hoy',undefined,{disabled:busy})
+   .replace('class="spm-approved-hit"','class="spm-approved-hit spm-s1-close-button"')
+   .replace('></button>','><span aria-hidden="true">Cerrar</span></button>');
  }
  const labels=['Conecta con tus sensaciones','Tu práctica individual','Tu práctica guiada','Llévalo a tu vida','Cierre de tu práctica'];
  const status=error?'<div class="spm-s1-feedback error" role="alert">'+safeText(error)+'</div>':notification?'<div class="spm-s1-feedback" role="status">'+safeText(notification)+'</div>':'';
@@ -1138,7 +1143,7 @@ try{
 finally{busy=false;render()}
  // Al guardar, Finalizar retorna a Hoy. Si falla el cierre, el registro permanece.
  if(saved){
-  try{const closed=await api.close();if(closed===false){notification='Tu sesión se guardó. Pulsa Volver a mi programa para regresar a Hoy.';render()}}
+  try{const closed=await api.close(id==='sf-i-1'?false:undefined);if(closed===false){notification='Tu sesión se guardó. Pulsa Volver a mi programa para regresar a Hoy.';render()}}
   catch{notification='Tu sesión se guardó. Pulsa Volver a mi programa para regresar a Hoy.';render()}
  }
 }
@@ -1280,7 +1285,7 @@ root.addEventListener('click',e=>{
   if(f==='discomfort'&&v==='dolor'){notification='Si aparece dolor, detén el contacto y busca orientación si persiste.';render()}return;
  }
  if(act==='audio'){if(['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(id)||isFocusII()?button.classList.contains('playing'):voiceActive)stopAudio();else speech(audioText(),null,(['sf-i-2','sf-i-3','sf-i-4','sf-i-5'].includes(id)||isFocusII())?'[data-act=audio]':undefined);return}
- if(act==='close'||act==='skip'){stopAudio();stopClock();void api.close();return}
+ if(act==='close'||act==='skip'){stopAudio();stopClock();void api.close(id==='sf-i-1'?false:undefined);return}
  if(act==='library'){stopAudio();stopClock();if(isDaily){void api.openLibrary();return}go(0);return}
  if(act==='back'){if(screen>0)go(isFocusILesson()&&screen===4?2:screen-1);return}
  if(act==='branch'){selectBranch(button.dataset.value);return}
