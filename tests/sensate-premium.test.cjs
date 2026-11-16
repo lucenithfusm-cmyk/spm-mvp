@@ -417,10 +417,10 @@ test('all six SPM routes can open Focus I and II without restriction banners or 
     assert.equal(h.page.querySelector('.warning'),null);
     h.click('next');
     if(practiceId==='sf-i-1')h.click('next');
-    else h.branch('individual');
-    assert.match(h.page.textContent,/3 \/ 5/);
-    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'startguide');
-    assert.match(h.page.textContent,/4 \/ 5/);
+    else {h.branch('individual');h.click('next');}
+    assert.match(h.page.textContent,practiceId==='sf-i-1'?/3 \/ 5/:/3 \/ 6/);
+    h.click('next');h.click(practiceId==='sf-i-1'?'approvedadvance':'f2toggle');
+    assert.match(h.page.textContent,practiceId==='sf-i-1'?/4 \/ 5/:/4 \/ 6/);
     assert.equal(h.page.querySelector('.warning'),null);
     assert.equal(h.writes.length,0);
    }finally{h.close()}
