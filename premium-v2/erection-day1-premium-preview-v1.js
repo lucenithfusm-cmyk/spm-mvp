@@ -11,10 +11,10 @@ const texts=[
 'Bienvenido al primer día de Erección y firmeza. Hoy vamos a establecer tu punto de partida y a conocer el mecanismo de la respuesta eréctil. Después podrás realizar una primera práctica breve. No necesitas provocar ni demostrar una erección.',
 'Recuerda una experiencia real y reciente. Mira las descripciones de firmeza y elige la que corresponda. Cero significa ausencia de respuesta; No evaluable significa que no tuviste una experiencia que puedas valorar. Son opciones distintas. No hagas una prueba de erección para responder.',
 'La excitación puede aumentar el flujo sanguíneo hacia los tejidos eréctiles del pene. Nervios, vasos sanguíneos y estado de salud influyen en este proceso. La firmeza puede variar y una sola experiencia no define tu capacidad.',
-'Si te resulta cómodo, reserva dos o tres minutos en privacidad. Puedes recordar un estímulo erótico agradable o elegir un contacto íntimo de tu preferencia. Sin buscar una rigidez concreta ni comprobar constantemente la erección. Si aparece incomodidad, detente. También puedes omitir esta primera práctica.',
-'Has dado el primer paso: tu evaluación inicial queda registrada una sola vez. No volveremos a medir la firmeza en esta sesión. Más adelante entrenarás habilidades eréctiles progresivas, dentro del programa que ya tienes asignado.'
+'Hoy vas a entrenar el inicio de la activación sexual sin examinar tu rigidez. Si te resulta cómodo, reserva tres a cinco minutos en privado y elige un estímulo erótico que te resulte agradable, como un recuerdo, una fantasía o contacto genital suave y voluntario. Permanece atento al estímulo, no a comprobar si la erección funciona. Si te descubres evaluando la firmeza, regresa al estímulo con calma. Puede aparecer una respuesta corporal o no. Si sientes presión o incomodidad, detente. Puedes omitir la actividad.',
+'Hoy registraste la firmeza de una experiencia previa y, si lo elegiste, entrenaste la atención a un estímulo erótico sin comprobar continuamente la rigidez. El objetivo de la práctica es desarrollar esta habilidad, no provocar una erección inmediata. La evaluación inicial se guarda una sola vez y tu ruta de veintiocho días continúa sin cambios.'
 ];
-const titles=['Mi punto de partida','Reconoce tu firmeza','Comprende tu respuesta','Primera práctica eréctil','Tu primer paso'];
+const titles=['Mi punto de partida','Reconoce tu firmeza','Comprende tu respuesta','Activa tu respuesta eréctil','Tu primer paso'];
 let current=null,token=0,player=null,speech=null,timer=null;
 function stopAudioOnly(){
 try{player?.pause();player=null;}catch(_){}
@@ -132,8 +132,16 @@ const selections=[['4','4','Erección completa'],['3','3','Permite penetración'
 return `<div role="group" aria-label="Selecciona tu firmeza" class="de1-choices">`+selections.map(([val,large,label])=>`<button type="button" class="de1-option" data-de1-ehs="${val}" aria-pressed="${s.ehs===val}"><strong>${large}</strong>${label}</button>`).join('')+'</div>';
 }
 function actionMarkup(s){
-const a=[['imagery','Recuerdo o fantasía erótica voluntaria'],['contact','Contacto íntimo cómodo y voluntario'],['skip','Prefiero omitir la práctica hoy']];
+const a=[['imagery','Recuerdo o fantasía sexual voluntaria'],['contact','Contacto genital suave y voluntario'],['skip','Prefiero omitir la práctica hoy']];
 return `<div role="group" aria-label="Selecciona tu primera práctica" class="de1-choices" data-kind="action">`+a.map(([k,label])=>`<button type="button" class="de1-option" data-de1-action="${k}" aria-pressed="${s.action===k}">${esc(label)}</button>`).join('')+'</div>';
+}
+function observationMarkup(s){
+return `<div data-de1-attention ${s.action==='skip'?'hidden':''} style="margin-top:16px">
+<strong style="display:block;font-size:14px;color:#15535b">Registro breve de la habilidad (opcional)</strong>
+<p style="margin:5px 0;font-size:13px;color:#466873">¿Cómo fue mantenerte atento al estímulo sin comprobar la firmeza?</p>
+<div class="de1-choices" data-kind="action">
+${[['present','Pude mantener la atención'],['returned','Noté vigilancia y volví al estímulo'],['difficult','Me costó dejar de comprobar']].map(([k,label])=>`<button type="button" class="de1-option" data-de1-attention-option="${k}" aria-pressed="${s.attention===k}">${esc(label)}</button>`).join('')}
+</div></div>`;
 }
 function markup(s){
 const h=`<div class="de1-head"><div class="de1-brand"><span>SPM <span style="color:#bb944d">|</span> ERECCIÓN Y FIRMEZA</span><span class="de1-chip">DÍA 1</span></div><h2>${titles[s.page]}</h2><div class="de1-prog" aria-label="Paso ${s.page+1} de 5">${Array.from({length:5},(_,i)=>`<span class="${i<=s.page?'on':''}"></span>`).join('')}</div></div>`;
@@ -141,8 +149,8 @@ let body='';
 if(s.page===0)body=`<figure class="de1-hero">${introArt()}<figcaption>Conoce tu respuesta sin convertirla en un examen.</figcaption></figure><p class="de1-sub">Hoy reconocerás tu firmeza inicial y tendrás una primera práctica eréctil opcional.</p>`;
 if(s.page===1)body=`<p class="de1-sub">Recuerda una experiencia reciente. No necesitas provocar una erección para medirla.</p><div class="de1-firmness">${window.SPM_FIRMNESS_GUIDE?.html()||`<img src="/premium-v2/assets/images/erection/response-firmness-spm-20261113.jpg" alt="Escala visual de firmeza">`}</div>${optionsMarkup(s)}<p class="de1-fine">«0 · Sin respuesta» y «No evaluable» son situaciones distintas.</p>`;
 if(s.page===2)body=`<div class="de1-flow">${flowArt()}<strong>Excitación → flujo sanguíneo → firmeza</strong><span>El estado vascular y nervioso, el estímulo y el contexto influyen en la respuesta. No es una prueba de tu cuerpo.</span></div>`;
-if(s.page===3)body=`<p class="de1-sub">Elige una opción. Si lo deseas, realiza una exploración erótica breve sin perseguir una erección.</p>${actionMarkup(s)}<div class="de1-timer"><span>Tiempo opcional</span><output data-de1-clock>00:00</output><button type="button" data-de1-timer>${s.running?'Pausar':'Iniciar'}</button></div><p class="de1-notice">Esta práctica no pretende demostrar una mejora inmediata de la oxigenación. Puedes omitirla sin perder tu evaluación ni tu progreso.</p>`;
-if(s.page===4)body=`<div class="de1-flow" style="padding:32px 16px"><div style="font-size:56px;color:#078678">✓</div><strong>Tu punto de partida quedó identificado.</strong><span>Firmeza recordada: <b>${s.ehs==='na'?'No evaluable':esc(s.ehs)}</b></span><span>${s.action==='skip'?'Hoy preferiste omitir la práctica erótica.':s.action?'Has elegido una primera acción breve.':'La práctica erótica sigue siendo opcional.'}</span></div><p class="de1-notice">El registro de firmeza corresponde a una experiencia previa, no a la práctica de hoy.</p>`;
+if(s.page===3)body=`<p class="de1-sub"><strong>Objetivo clínico:</strong> entrenar el inicio de la activación sexual y mantener la atención en un estímulo erótico, sin evaluar la firmeza.</p>${actionMarkup(s)}${observationMarkup(s)}<div class="de1-timer"><span>Tiempo opcional · 3–5 min</span><output data-de1-clock>00:00</output><button type="button" data-de1-timer>${s.running?'Pausar':'Iniciar'}</button></div><p class="de1-notice">Esta práctica no promete aumentar la oxigenación ni mejorar la rigidez de inmediato. Puedes omitirla sin perder tu evaluación ni tu progreso.</p>`;
+if(s.page===4)body=`<div class="de1-flow" style="padding:32px 16px"><div style="font-size:56px;color:#078678">✓</div><strong>Tu punto de partida quedó identificado.</strong><span>Firmeza recordada: <b>${s.ehs==='na'?'No evaluable':esc(s.ehs)}</b></span><span>${s.action==='skip'?'Hoy preferiste omitir la práctica erótica.':s.action?'Has practicado una habilidad de atención durante la excitación.':'La práctica erótica sigue siendo opcional.'}</span></div><p class="de1-notice">El registro de firmeza corresponde a una experiencia previa, no a la práctica de hoy.</p>`;
 return `<section class="spm-de1" data-spm-de1><div>${h}</div><div class="de1-body"><div class="de1-toolbar"><button type="button" class="de1-audio" data-de1-audio>🔊 Escuchar guía</button><span style="color:#6e8a8b;font-size:12px">Paso ${s.page+1} / 5</span></div><details><summary>Leer indicaciones</summary><p>${esc(texts[s.page])}</p></details>${body}<div class="de1-footer">${s.page>0?'<button type="button" class="de1-back" data-de1-back>Anterior</button>':'<button type="button" class="de1-back" data-de1-exit>Volver</button>'}<button type="button" class="de1-next" data-de1-next ${s.saving?'disabled':''}>${s.page===4?'Guardar y finalizar':s.page===0?'Iniciar práctica':'Siguiente'}</button></div><p role="status" aria-live="polite" data-de1-status></p></div></section>`;
 }
 function paint(s){
@@ -154,7 +162,8 @@ s.host.querySelector('[data-de1-audio]')?.addEventListener('click',()=>play(s));
 s.host.querySelector('[data-de1-back]')?.addEventListener('click',()=>{s.page--;paint(s)});
 s.host.querySelector('[data-de1-next]')?.addEventListener('click',()=>next(s));
 s.host.querySelectorAll('[data-de1-ehs]').forEach(b=>b.addEventListener('click',()=>{s.ehs=b.dataset.de1Ehs;s.host.querySelectorAll('[data-de1-ehs]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
-s.host.querySelectorAll('[data-de1-action]').forEach(b=>b.addEventListener('click',()=>{s.action=b.dataset.de1Action;s.host.querySelectorAll('[data-de1-action]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
+s.host.querySelectorAll('[data-de1-action]').forEach(b=>b.addEventListener('click',()=>{s.action=b.dataset.de1Action;s.host.querySelectorAll('[data-de1-action]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const q=s.host.querySelector('[data-de1-attention]');if(q)q.hidden=s.action==='skip';}));
+s.host.querySelectorAll('[data-de1-attention-option]').forEach(b=>b.addEventListener('click',()=>{s.attention=b.dataset.de1AttentionOption;s.host.querySelectorAll('[data-de1-attention-option]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
 s.host.querySelector('[data-de1-timer]')?.addEventListener('click',()=>{if(!matches(s))return;if(s.running){updateTimer(s);s.running=false;if(timer!==null){clearInterval(timer);timer=null;}updateTimer(s);return;}s.running=true;s.timerSince=Date.now();timer=setInterval(()=>updateTimer(s),1000);updateTimer(s);});
 }
 function updateTimer(s){
@@ -175,7 +184,7 @@ const choice=s.ehs==='na'?null:Number(s.ehs);
 const record={...s.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,
  activity:'Reconoce tu punto de partida',confirmed:true,anxiety:Number.isInteger(s.prior.anxiety)?s.prior.anxiety:null,confidence:Number.isInteger(s.prior.confidence)?s.prior.confidence:null,
  date:new Date().toISOString(),ehs:choice,ehsEvaluable:s.ehs!=='na',
- deDay1PreviewVersion:1,initialPracticeChoice:s.action||'skip',initialPracticeSeconds:s.seconds};
+ deDay1PreviewVersion:2,initialPracticeChoice:s.action||'skip',initialPracticeSeconds:s.seconds,initialPracticeAttention:s.action==='skip'?'skipped':s.attention||null};
 if(!original.valid(record,1)){s.saving=false;btn.disabled=false;setStatus(s,'Revisa tu selección antes de guardar.');return;}
 try{
  await window.SPM_DAILY_PRACTICE.saveActivity('main',record,s.scope,1);
@@ -186,7 +195,7 @@ async function openDay1(a){
 stop();
 const c=context(),scope=c?.userId+':'+c?.planId,host=document.getElementById('spmDailyWorkspace');
 if(!c||!allowed(c)||!host?.isConnected||window.SPM_DAILY_PRACTICE?.active?.()?.id!=='main')return false;
-colors();const s={token,scope,host,page:0,ehs:null,action:null,seconds:0,running:false,timerSince:0,saving:false,prior:{}};current=s;
+colors();const s={token,scope,host,page:0,ehs:null,action:null,attention:null,seconds:0,running:false,timerSince:0,saving:false,prior:{}};current=s;
 host.innerHTML='<section class="spm-de1" style="padding:28px">Recuperando tu punto de partida…</section>';
 try{
 const r=await window.SPM_DAILY_RECORDS.read(scope,1);
