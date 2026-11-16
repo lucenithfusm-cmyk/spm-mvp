@@ -344,7 +344,7 @@ function spmArtworkScreen(){
  const dayName=isNewFocusI()?'FOCALIZACIÓN I · SESIÓN '+(FOCUSI_DAILY_IDS.indexOf(id)+1)+' DE 5':'FOCALIZACIÓN SENSORIAL';
  const currentCaption=second?'Tu práctica individual':'Cierre de tu práctica';
  const step=second?2:5;
- const url=second?photoPath(isPartner()?'partner':'reflection'):photoPath('release');
+ const url=PREFIX+(second?'spm-focus-session1-screen2-user-20261115.avif':'spm-focus-session1-screen5-user-20261115.avif');
  const footerBack='<button type="button" class="spm-art-nav-back" data-act="back">Anterior</button>';
  const footerAction=second?'<button type="button" class="spm-art-nav-next" data-act="next">Continuar →</button>':
   '<button type="button" class="spm-art-nav-next" data-act="'+(saved||!performed?'close':'save')+'" '+(busy?'disabled':'')+'>'+(saved?'Finalizar':!performed?'Volver luego':busy?'Guardando…':'Guardar experiencia')+'</button>';
