@@ -923,7 +923,7 @@ finally{busy=false;render()}
 root.addEventListener('click',e=>{
  const button=e.target.closest('[data-act]');if(!button||button.disabled)return;
  const act=button.dataset.act;
- if(id==='sf-i-4'&&['s5concept','s5prep','s5task'].includes(act)){
+ if(id==='sf-i-5'&&['s5concept','s5prep','s5task'].includes(act)){
   const bank=act==='s5concept'?SPM_S5_CONCEPTS:act==='s5prep'?SPM_S5_PREPARATION:SPM_S5_TASKS;
   const key=button.dataset.value;
   if(!Object.prototype.hasOwnProperty.call(bank,key))return;
