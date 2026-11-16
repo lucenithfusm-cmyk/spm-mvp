@@ -504,7 +504,8 @@ test('Focalización I sesión 1: secuencia de cinco audios mantiene pausa y canc
 
 test('Focalización I sesión 1: estilos táctiles de cinco láminas respetan 941×1672 y audio accesible',()=>{
  const css=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.css'),'utf8');
- assert.match(css,/\.spm-s1-artwork\{[\s\S]*?background:#f8e6d5 center top \/ 100% 100% no-repeat!important/);
+ assert.match(css,/\.spm-s1-artwork\{[^}]*background-color:#f8e6d5;[^}]*background-size:100% 100%/);
+ assert.doesNotMatch(css,/\.spm-s1-artwork\{[^}]*background:[^}]*!important/,"el fondo CSS no debe tapar las cinco imágenes aprobadas");
  assert.match(css,/\.spm-s1-artwork \.spm-approved-hit\[data-audio\]/);
  assert.match(css,/\.spm-s1-artwork \.spm-approved-hit\[aria-pressed="true"\]/);
  assert.match(css,/prefers-reduced-motion:reduce/);
