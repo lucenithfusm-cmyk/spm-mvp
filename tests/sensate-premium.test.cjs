@@ -191,7 +191,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
  const cases=[
   [4,'sf-i-1','individual','Conecta con tus sensaciones','Siente el apoyo'],
   [8,'sf-i-2','individual','Descubre lo que te gusta','Llega a tu cuerpo'],
-  [12,'sf-i-3','partner','Acércate sin presión','Acuerden límites'],
+  [12,'sf-i-3','partner','Conecta sin presión','Acuerden un encuentro libre'],
   [23,'sf-i-4','partner','Comunica lo que te conecta','Elijan una sensación'],
   [26,'sf-i-5','partner','Conecta y disfruta','Preparen un espacio de conexión']
  ];
@@ -201,7 +201,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
  const signatures=new Set();
  for(const [day,practiceId,mode,title,firstStep] of cases){
   const h=harness({day,practiceId,profile:'desire',restriction:'review'});
-  const imageJourney=practiceId==='sf-i-1',imageLesson=practiceId==='sf-i-2';
+  const imageJourney=practiceId==='sf-i-1',imageLesson=['sf-i-2','sf-i-3'].includes(practiceId),image3=practiceId==='sf-i-3';
   try{
    assert.ok(h.page.querySelector('.sf-matte'));
    assert.match(h.page.textContent,new RegExp(title));
@@ -213,11 +213,13 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
     assert.ok(h.page.querySelector('[data-act=approvedread]'),'the written instruction is expandable');
    }
    h.click('audio');
-   assert.match(h.spoken.at(-1),/Hoy|Bienvenido/i);
+   assert.ok(h.spoken.at(-1).length>60,'intro offers complete spoken guidance');
    signatures.add(h.spoken.at(-1));
    h.click('next');
-   assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
-   assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
+   if(image3){assert.equal(h.page.querySelectorAll('[data-act=branch]').length,0,'partner journey is predetermined');}else{
+    assert.equal(h.page.querySelectorAll('[data-act=branch]').length,1,'no redundant modality choice');
+    assert.equal(h.page.querySelector('[data-act=branch]').dataset.value,mode);
+   }
    h.click('next');
    assert.match(h.page.textContent,imageLesson?/3 \/ 4/:/3 \/ 5/);
    assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
@@ -241,7 +243,7 @@ test('Focus I has five distinct safe interactive sessions; session 1 uses exact 
     assert.equal(h.page.querySelectorAll('.spm-approved-pause').length,1);
     for(let i=0;i<5;i++)h.click('approvedadvance');
    }else if(imageLesson){
-    assert.ok(h.page.querySelector('.spm-s2-artwork-screen'));
+    assert.ok(h.page.querySelector(image3?'.spm-s3-artwork-screen':'.spm-s2-artwork-screen'));
     assert.equal(h.page.querySelector('[data-act=startguide]'),null);
    }else{
     h.click('startguide');
@@ -564,5 +566,70 @@ test('sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica
   assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);
   assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
   assert.ok(h.page.querySelector('.spm-s2-saved-overlay'));h.click('close');assert.ok(h.calls.includes('close'));
+ }finally{h.close()}
+});
+
+
+test('sesión 3: cuatro imágenes aprobadas, cinco audios, botones táctiles y guardado de aprendizaje independiente',async()=>{
+ for(let i=1;i<=4;i++){
+  const file=path.join(root,'premium-v2/assets/sensate-premium/spm-focus-i-s3-screen-'+i+'-approved.jpg');
+  const bytes=fs.readFileSync(file);
+  assert.ok(bytes.length>380000,'foto íntegra '+i);
+  assert.equal(bytes[0],0xff);assert.equal(bytes[1],0xd8);
+ }
+ const h=harness({day:12,practiceId:'sf-i-3'});
+ const assertArt=(i)=>{
+  const art=h.page.querySelector('.spm-s3-artwork-screen');
+  assert.ok(art,'pantalla '+i);
+  assert.match(art.getAttribute('style'),new RegExp('screen-'+i+'-approved.jpg'));
+  assert.match(art.getAttribute('aria-label'),new RegExp('pantalla '+i+' de 4'));
+  const hits=[...h.page.querySelectorAll('.spm-s3-hit')];
+  assert.ok(hits.length>=5,'controles reales sobre la imagen');
+  assert.ok(hits.every(b=>b.getAttribute('aria-label')&&b.dataset.act));
+ };
+ try{
+  assertArt(1);
+  h.click('audio');
+  assert.match(h.spoken.at(-1),/la conexión con tu pareja/);
+  h.page.querySelector('[data-act=s3concept][data-value=besos]').click();
+  assert.match(h.spoken.at(-1),/Besos/);
+  assert.equal(h.page.querySelector('[data-act=s3concept][data-value=besos]').getAttribute('aria-pressed'),'true');
+  h.page.querySelector('[data-act=s3concept][data-value=cercania]').click();
+  assert.match(h.spoken.at(-1),/Cercanía/);
+  h.click('approvedread');assert.ok(h.page.querySelector('.spm-s3-info').hasAttribute('open'));
+  h.click('approvedinfo-close');
+  h.click('next');assertArt(2);
+  assert.equal(h.page.querySelector('[data-act=branch]'),null);
+  h.click('audio');assert.match(h.spoken.at(-1),/ambos deben desear participar/);
+  h.page.querySelector('[data-act=s3prep][data-value=libertad]').click();
+  assert.match(h.spoken.at(-1),/No hay obligación/);
+  h.click('next');assertArt(3);
+  assert.equal(h.page.querySelectorAll('[data-act=explainstep]').length,5);
+  for(let i=0;i<5;i++){
+   const b=h.page.querySelector('[data-act=explainstep][data-value="'+i+'"]');
+   assert.ok(b);b.click();
+   assert.equal(h.page.querySelector('[data-act=explainstep][data-value="'+i+'"]').getAttribute('aria-pressed'),'true');
+  }
+  assert.match(h.spoken.at(-1),/Regresen a las sensaciones/);
+  assert.equal(h.writes.length,0);
+  h.click('next');assertArt(4);
+  assert.equal(h.page.querySelector('[data-act=startguide]'),null,'sin práctica cronometrada');
+  h.page.querySelector('[data-act=s3task][data-value=volver]').click();
+  assert.match(h.spoken.at(-1),/si fallo/);
+  h.click('audio');assert.match(h.spoken.at(-1),/Tu tarea en pareja/);
+  h.click('back');assertArt(3);h.click('next');assertArt(4);
+  h.click('save');await pause();
+  assert.equal(h.writes.length,1,'no duplicate');
+  const row=JSON.parse(h.records['spm-sensate-records'])[0];
+  assert.equal(row.practiceId,'sf-i-3');
+  assert.equal(row.day,12);
+  assert.equal(row.modality,'partner');
+  assert.equal(row.completed,true);
+  assert.equal(row.lessonCompleted,true);
+  assert.equal(row.intimatePracticeCompleted,null);
+  assert.equal(row.lessonFormat,'learn-now-practice-later');
+  assert.equal(h.calls.filter(x=>x==='recordDaily').length,1);
+  assert.ok(h.page.querySelector('.spm-s3-saved-overlay'));
+  h.click('close');assert.ok(h.calls.includes('close'));
  }finally{h.close()}
 });
