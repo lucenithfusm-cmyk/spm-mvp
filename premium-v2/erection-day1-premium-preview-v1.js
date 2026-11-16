@@ -16,10 +16,14 @@ const texts=[
 ];
 const titles=['Mi punto de partida','Reconoce tu firmeza','Comprende tu respuesta','Primera práctica eréctil','Tu primer paso'];
 let current=null,token=0,player=null,speech=null,timer=null;
-function stopMedia(){
+function stopAudioOnly(){
 try{player?.pause();player=null;}catch(_){}
 try{window.speechSynthesis?.cancel();speech=null;}catch(_){}
+}
+function stopMedia(){
+stopAudioOnly();
 if(timer!==null){clearInterval(timer);timer=null;}
+if(current?.running){current.seconds+=Math.floor((Date.now()-current.timerSince)/1000);current.running=false;}
 }
 function stop(){
 token++;current=null;stopMedia();
@@ -32,7 +36,7 @@ return current===s&&s.token===token&&context()?.userId+':'+context()?.planId===s
 }
 function play(s){
 if(!matches(s))return;
-stopMedia();const index=s.page;
+stopAudioOnly();const index=s.page;
 if(index===1){
   player=new Audio(ehsAudio);
   player.onended=()=>{if(matches(s))setStatus(s,'Guía terminada. Selecciona tu firmeza cuando quieras.');};
@@ -151,7 +155,7 @@ s.host.querySelector('[data-de1-back]')?.addEventListener('click',()=>{s.page--;
 s.host.querySelector('[data-de1-next]')?.addEventListener('click',()=>next(s));
 s.host.querySelectorAll('[data-de1-ehs]').forEach(b=>b.addEventListener('click',()=>{s.ehs=b.dataset.de1Ehs;s.host.querySelectorAll('[data-de1-ehs]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
 s.host.querySelectorAll('[data-de1-action]').forEach(b=>b.addEventListener('click',()=>{s.action=b.dataset.de1Action;s.host.querySelectorAll('[data-de1-action]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}));
-s.host.querySelector('[data-de1-timer]')?.addEventListener('click',()=>{if(!matches(s))return;if(s.running){s.running=false;stopMedia();updateTimer(s);return;}s.running=true;s.timerSince=Date.now();timer=setInterval(()=>updateTimer(s),1000);updateTimer(s);});
+s.host.querySelector('[data-de1-timer]')?.addEventListener('click',()=>{if(!matches(s))return;if(s.running){updateTimer(s);s.running=false;if(timer!==null){clearInterval(timer);timer=null;}updateTimer(s);return;}s.running=true;s.timerSince=Date.now();timer=setInterval(()=>updateTimer(s),1000);updateTimer(s);});
 }
 function updateTimer(s){
 if(s.running){s.seconds+=Math.floor((Date.now()-s.timerSince)/1000);s.timerSince=Date.now();}
@@ -169,7 +173,7 @@ if(!matches(s)||s.saving||s.ehs===null)return;
 s.saving=true;const btn=s.host.querySelector('[data-de1-next]');if(btn)btn.disabled=true;setStatus(s,'Guardando tu registro inicial…');
 const choice=s.ehs==='na'?null:Number(s.ehs);
 const record={...s.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,
- activity:'Reconoce tu punto de partida',confirmed:true,anxiety:null,confidence:null,
+ activity:'Reconoce tu punto de partida',confirmed:true,anxiety:Number.isInteger(s.prior.anxiety)?s.prior.anxiety:null,confidence:Number.isInteger(s.prior.confidence)?s.prior.confidence:null,
  date:new Date().toISOString(),ehs:choice,ehsEvaluable:s.ehs!=='na',
  deDay1PreviewVersion:1,initialPracticeChoice:s.action||'skip',initialPracticeSeconds:s.seconds};
 if(!original.valid(record,1)){s.saving=false;btn.disabled=false;setStatus(s,'Revisa tu selección antes de guardar.');return;}
@@ -181,7 +185,7 @@ try{
 async function openDay1(a){
 stop();
 const c=context(),scope=c?.userId+':'+c?.planId,host=document.getElementById('spmDailyWorkspace');
-if(!c||!allowed(c)||!host?.isConnected)return false;
+if(!c||!allowed(c)||!host?.isConnected||window.SPM_DAILY_PRACTICE?.active?.()?.id!=='main')return false;
 colors();const s={token,scope,host,page:0,ehs:null,action:null,seconds:0,running:false,timerSince:0,saving:false,prior:{}};current=s;
 host.innerHTML='<section class="spm-de1" style="padding:28px">Recuperando tu punto de partida…</section>';
 try{
