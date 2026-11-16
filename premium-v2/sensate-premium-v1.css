@@ -1173,3 +1173,17 @@ body{background:linear-gradient(150deg,#092e36,#122d3b 60%,#0b2733)}
 .spm-f2-dialog select,.spm-f2-dialog textarea{display:block;width:100%;margin:7px 0 0;border:1px solid #c9ae89;border-radius:12px;padding:12px;font-size:15px;background:#fffaf4;color:#312a23}
 .spm-f2-dialog .spm-f2-done{padding:12px 25px;min-height:44px;border:0;border-radius:99px;background:#e9b657;color:#2d2115;font-weight:800}
 @media(prefers-reduced-motion:reduce){.spm-f2-artwork .spm-f2-hit[data-audio]{animation:none}}
+
+
+/* Focalización I, sesión 1 · cinco imágenes aprobadas, cada una es un lienzo completo. */
+.layout.sensate-approved-layout.spm-s1-layout{width:min(100%,540px);max-width:540px;min-height:100dvh;margin:0 auto;padding:0;background:#f8e6d5;box-shadow:none}
+.spm-s1-artwork{position:relative;display:block;width:100%;aspect-ratio:941 / 1672;background:#f8e6d5 center top / 100% 100% no-repeat!important;overflow:hidden}
+.spm-s1-artwork .spm-approved-hit{border-radius:18px}
+.spm-s1-artwork .spm-approved-hit[data-audio]{border:2px solid rgba(204,146,37,.30);box-shadow:0 0 9px 1px rgba(234,166,57,.23);animation:spm-s1-audio-halo 3.5s ease-in-out infinite alternate}
+.spm-s1-artwork .spm-approved-hit[data-audio].playing{border-color:#d99b28;background:rgba(255,211,126,.09);box-shadow:0 0 0 2px rgba(255,250,219,.58),0 0 15px 3px rgba(219,158,48,.35);animation:spm-s1-audio-halo 1.5s ease-in-out infinite alternate}
+.spm-s1-artwork .spm-approved-hit[aria-pressed="true"]{background:rgba(236,176,80,.17);outline:2px solid rgba(179,112,25,.72);outline-offset:-2px}
+.spm-s1-artwork .spm-approved-hit:focus-visible{outline:3px solid #b27c2b;outline-offset:-3px}
+@keyframes spm-s1-audio-halo{to{box-shadow:0 0 13px 3px rgba(227,167,65,.45)}}
+.spm-s1-feedback{background:#f7eddf;border-top:1px solid #bf985a;padding:12px 16px;text-align:center;color:#45301e;font-size:13px;line-height:1.4}
+.spm-s1-feedback.error{background:#fff0e9;color:#953c32}
+@media(prefers-reduced-motion:reduce){.spm-s1-artwork .spm-approved-hit[data-audio]{animation:none}}
