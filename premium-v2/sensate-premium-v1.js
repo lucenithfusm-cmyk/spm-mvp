@@ -1081,6 +1081,11 @@ root.addEventListener('click',e=>{
   if(!guideStarted){error='Para cambiar de paso, primero inicia tu práctica guiada.';render();return}
   jumpGuide(index);return;
  }
+ if(isFocusII()&&act==='repeataudio'){
+  if(button.classList.contains('playing'))stopAudio();
+  else speech(stepAudio(),null,'[data-act=repeataudio]');
+  return;
+ }
  if(isFocusII()&&act==='f2toggle'){
   if(!guideStarted||guideDone)startGuide();
   else if(running)pauseGuide();
