@@ -1074,7 +1074,11 @@ root.addEventListener('click',e=>{
  if(isFocusII()&&act==='branch'&&screen===1){
   const key=button.dataset.value;
   if(!['individual','partner'].includes(key))return;
-  stopAudio();spmF2Choice=key;render();return;
+  // Un toque inicia directamente la guía de esa modalidad, sin paso intermedio.
+  spmF2Choice=key;
+  spmF2HeardStep=-1;
+  resetType(key==='individual'?'sf-focus-2-solo':'sf-focus-2');
+  return;
  }
  if(isFocusII()&&act==='f2step'){
   const index=Number(button.dataset.value);
