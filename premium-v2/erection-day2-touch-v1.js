@@ -83,20 +83,21 @@
    hits+=button([49,1701,1032,1833],'save','Guardar y continuar mi ruta de hoy',{disabled:m.busy});
   }
   const toolbar=`<nav class="spm-ed2-toolbar" aria-label="Navegación de Erección y firmeza día 2"><button type="button" data-ed2-act="back">${page===1?'← Volver a Hoy':'← Anterior'}</button><span>${page} de 4 · Día 2</span>${page===2?'<button type="button" data-ed2-act="audio" data-ed2-audio="guide" aria-label="Escuchar guía de condiciones">🔊 Guía</button>':'<button type="button" data-ed2-act="exit">Salir a Hoy</button>'}</nav>`;
-  m.host.innerHTML=`<section class="spm-ed2-session" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día 2, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+  m.host.innerHTML=`<section class="spm-ed2-session spm-er-fullscreen" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día 2, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  }
  function status(m){const p=m?.host?.querySelector('[data-ed2-status]');if(p)p.textContent=m.message||'';}
+ function required(m,text){m.message=text;status(m);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
  function next(m){if(!m.valid()||m.busy)return;stopVoice(m);
-  if(m.page===1){const missing=CONTEXTS.filter(([k])=>!m.contexts[k]);if(missing.length){m.message='Selecciona una respuesta en los tres contextos. Si alguno no ocurrió, elige No evaluable.';status(m);return;}}
-  if(m.page===3&&!m.aspect){m.message='Elige el aspecto que mejor describe tu experiencia, o No evaluable.';status(m);return;}
-  m.page=Math.min(4,m.page+1);m.message='';render(m);m.host.querySelector('.spm-ed2-session')?.scrollIntoView?.({block:'start',behavior:'instant'});
+  if(m.page===1){const missing=CONTEXTS.filter(([k])=>!m.contexts[k]);if(missing.length){required(m,'Selecciona una respuesta en los tres contextos. Si alguno no ocurrió, elige No evaluable.');return;}}
+  if(m.page===3&&!m.aspect){required(m,'Elige el aspecto que mejor describe tu experiencia, o No evaluable.');return;}
+  m.page=Math.min(4,m.page+1);m.message='';render(m);window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);
  }
  function previous(m){stopVoice(m);if(m.page===1){m.onBack();return}m.page--;m.message='';render(m)}
  async function save(m){
   if(m.busy||!m.valid())return;
-  if(CONTEXTS.some(([k])=>!m.contexts[k])){m.message='Faltan respuestas de la primera pantalla. Vuelve y completa los tres contextos.';status(m);return;}
-  if(!m.aspect){m.message='Antes de guardar, elige tu dificultad principal en la pantalla 3.';status(m);return;}
-  if(!m.plan){m.message='Elige una condición para preparar, o No fue posible hoy.';status(m);return;}
+  if(CONTEXTS.some(([k])=>!m.contexts[k])){required(m,'Faltan respuestas de la primera pantalla. Vuelve y completa los tres contextos.');return;}
+  if(!m.aspect){required(m,'Antes de guardar, elige tu dificultad principal en la pantalla 3.');return;}
+  if(!m.plan){required(m,'Elige una condición para preparar, o No fue posible hoy.');return;}
   const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:2,activity:'Reconoce tus contextos',confirmed:true,anxiety:null,confidence:null,
    date:new Date().toISOString(),contexts:{...m.contexts},responseAspect:m.aspect,
    favourableConditions:m.conditions.slice(),contextPlan:m.plan,contextActionPrepared:m.plan!=='not_possible',lessonFormat:'four-approved-touch-screens'};

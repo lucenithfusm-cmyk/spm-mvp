@@ -117,14 +117,15 @@ function stage(m){let hits='',more='';
   }
   more+=`<div class="spm-ed1-answer-label" role="status">${m.outcome===null?'Toca una respuesta para seleccionarla. La primera es ilustrativa.':`Tu respuesta: ${esc(OUTCOME_LABELS[m.outcome])}`}</div>`;
  }
- return `<section class="spm-ed1-session" data-ed1-session data-screen="${m.screen}" aria-label="Erección y firmeza, día 1, pantalla ${m.screen} de 6"><div class="spm-ed1-canvas" style="background-image:url(&quot;${IMAGES[m.screen-1]}&quot;)" role="group" aria-label="Lámina aprobada ${m.screen} de 6"><span class="spm-ed1-sr">${m.screen} de 6</span>${hits}${more}</div>${nav(m)}<p class="spm-ed1-status" data-ed1-status role="status" aria-live="polite">${esc(m.notice)}</p>${dialogs()}</section>`;
+ return `<section class="spm-ed1-session spm-er-fullscreen" data-ed1-session data-screen="${m.screen}" aria-label="Erección y firmeza, día 1, pantalla ${m.screen} de 6"><div class="spm-ed1-canvas" style="background-image:url(&quot;${IMAGES[m.screen-1]}&quot;)" role="group" aria-label="Lámina aprobada ${m.screen} de 6"><span class="spm-ed1-sr">${m.screen} de 6</span>${hits}${more}</div>${nav(m)}<p class="spm-ed1-status" data-ed1-status role="status" aria-live="polite">${esc(m.notice)}</p>${dialogs()}</section>`;
 }
 function dialogs(){
  return `<dialog class="spm-ed1-dialog spm-ed1-ehs-dialog" data-ed1-ehs-dialog aria-label="Lámina médica ampliada de firmeza"><button type="button" data-ed1-act="close-ehs">× Cerrar</button><h3>Firmeza de la erección · lámina educativa</h3><img src="${GUIDE_IMAGE}" alt="Lámina educativa EHS-4: grados 4, 3, 2 y 1. Para registrar 0 o No evaluable, utiliza las opciones propias de la pantalla 2." loading="lazy"><p>La imagen es orientativa. Selecciona el nivel por su descripción, no por el ángulo de la ilustración.</p></dialog>`;
 }
 function updateStatus(m){const p=m?.host?.querySelector('[data-ed1-status]');if(p)p.textContent=m.notice||'';}
+function required(m,text){m.notice=text;updateStatus(m);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
 function paint(m){if(!m||!m.host.isConnected)return;m.host.innerHTML=stage(m);m.panel=m.host.querySelector('[data-ed1-session]');}
-function go(m,next){if(!m||!m.valid()||m.busy)return;stopVoice(m);if(next===3&&m.ehs===null){m.notice='Elige un nivel de firmeza o No evaluable para continuar.';updateStatus(m);return;}m.screen=Math.max(1,Math.min(5,next));m.notice='';paint(m);m.host.querySelector('[data-ed1-session]')?.scrollIntoView?.({block:'start',behavior:'instant'});}
+function go(m,next){if(!m||!m.valid()||m.busy)return;stopVoice(m);if(next===3&&m.ehs===null){required(m,'Elige un nivel de firmeza o No evaluable para continuar.');return;}m.screen=Math.max(1,Math.min(5,next));m.notice='';paint(m);window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);}
 function showSuccess(m){
  if(successOverlay){successOverlay.remove();successOverlay=null}
  const layer=document.createElement('section');layer.className='spm-ed1-success-overlay';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');layer.setAttribute('aria-label','Práctica registrada, continuar ruta de hoy');
@@ -155,8 +156,8 @@ function showSuccess(m){
 }
 async function save(m){
  if(m.busy||!m.valid())return;
- if(m.ehs===null){m.notice='Para registrar tu punto de partida, selecciona un nivel o No evaluable en la pantalla 2.';updateStatus(m);return}
- if(m.outcome===null){m.notice='Selecciona cómo fue tu práctica o si preferiste omitirla.';updateStatus(m);return}
+ if(m.ehs===null){required(m,'Para registrar tu punto de partida, selecciona un nivel o No evaluable en la pantalla 2.');return}
+ if(m.outcome===null){required(m,'Selecciona cómo fue tu práctica o si preferiste omitirla.');return}
  const ehs=m.ehs==='na'?null:Number(m.ehs);
  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,activity:'Reconoce tu punto de partida',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),ehs,ehsEvaluable:m.ehs!=='na',attentionPracticeOutcome:m.outcome,attentionPracticeCompleted:m.outcome!=='omitted',attentionPracticeSeconds:null,lessonFormat:'six-approved-touch-screens',sensateModuleCompleted:null};
  m.busy=true;m.notice='Guardando tu sesión de hoy…';updateStatus(m);const b=m.host.querySelector('[data-ed1-act="save"]');if(b)b.disabled=true;stopVoice(m);
