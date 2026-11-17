@@ -4,7 +4,8 @@ if(window.SPM_ED_DAY1_TOUCH)return;
 const BASE='/premium-v2/assets/erection-day1/';
 const IMAGES=[1,2,3,4,5,6].map(n=>BASE+'spm-de-day1-screen-0'+n+'.webp');
 const EHS_AUDIO='/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3';
-const GUIDE_IMAGE='/premium-v2/assets/images/erection/response-firmness-spm-20261113.jpg';
+// Copia independiente de EHS-4 exclusiva del Día 1; la pantalla no depende del archivo compartido.
+const GUIDE_IMAGE='/premium-v2/assets/erection-day1/spm-de-day1-ehs4-guide.jpg';
 const LABELS={
  '0':['Sin respuesta','No hubo respuesta eréctil en la experiencia recordada.'],
  '1':['Aumento de tamaño','Hubo aumento de tamaño, sin rigidez suficiente para considerarlo una erección.'],
@@ -121,7 +122,7 @@ function stage(m){let hits='',more='';
 }
 function dialogs(){
  return `<dialog class="spm-ed1-dialog" data-ed1-guide aria-label="Práctica de atención guiada"><div class="spm-ed1-dialog-head"><strong>Tu práctica · paso <span data-ed1-step-count>1</span> de 3</strong><button data-ed1-act="close-guide" type="button" aria-label="Cerrar práctica guiada">×</button></div><h3 data-ed1-step-title>Elige un estímulo agradable</h3><p data-ed1-step-copy></p><p class="spm-ed1-clock" aria-label="Tiempo transcurrido" data-ed1-time>00:00</p><p class="spm-ed1-time-note">Cronómetro opcional. No hay tiempo obligatorio ni cambio automático.</p><div class="spm-ed1-dialog-actions"><button type="button" data-ed1-act="repeat-step" data-ed1-audio="repeat">🔊 Escuchar paso</button><button type="button" data-ed1-act="pause-clock">Pausar</button></div><button type="button" data-ed1-act="next-step" class="spm-ed1-primary">Siguiente paso →</button><button type="button" data-ed1-act="skip-guide" class="spm-ed1-tertiary">Omitir y registrar lo que ocurrió</button></dialog>
- <dialog class="spm-ed1-dialog spm-ed1-ehs-dialog" data-ed1-ehs-dialog aria-label="Lámina médica ampliada de firmeza"><button type="button" data-ed1-act="close-ehs">× Cerrar</button><h3>Firmeza de la erección · lámina educativa</h3><img src="${GUIDE_IMAGE}" alt="Lámina clínica de respuesta eréctil; usa las descripciones escritas de los cinco niveles para seleccionarlos." loading="lazy"><p>La imagen es orientativa. Selecciona el nivel por su descripción, no por el ángulo de la ilustración.</p></dialog>`;
+ <dialog class="spm-ed1-dialog spm-ed1-ehs-dialog" data-ed1-ehs-dialog aria-label="Lámina médica ampliada de firmeza"><button type="button" data-ed1-act="close-ehs">× Cerrar</button><h3>Firmeza de la erección · lámina educativa</h3><img src="${GUIDE_IMAGE}" alt="Lámina educativa EHS-4: grados 4, 3, 2 y 1. Para registrar 0 o No evaluable, utiliza las opciones propias de la pantalla 2." loading="lazy"><p>La imagen es orientativa. Selecciona el nivel por su descripción, no por el ángulo de la ilustración.</p></dialog>`;
 }
 function updateStatus(m){const p=m?.host?.querySelector('[data-ed1-status]');if(p)p.textContent=m.notice||'';}
 function paint(m){if(!m||!m.host.isConnected)return;m.host.innerHTML=stage(m);m.panel=m.host.querySelector('[data-ed1-session]');}
