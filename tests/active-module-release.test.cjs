@@ -48,3 +48,29 @@ test('Focalización y demás módulos conservan sus rutas y pausas',()=>{
  assert.match(routes,/program-paused\.html/);
  assert.match(routes,/must-revalidate/);
 });
+
+test('La lámina EHS reutilizada y su visor médico se conservan en la versión aprobada',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const artwork=path.resolve(root,'premium-v2/assets/images/erection/response-firmness-spm-20261113.jpg');
+ assert.ok(fs.statSync(artwork).size>100000,'la imagen EHS original debe estar disponible');
+ const guide=read('premium-v2/firmness-guide-v1.js');
+ const day1=read('premium-v2/erection-day1-touch-v1.js');
+ const previous=read('premium-v2/erectile-function-route.js');
+ assert.match(guide,/response-firmness-spm-20261113\.jpg/);
+ assert.match(guide,/SPM_FIRMNESS_GUIDE=\{src,levels,html,bind,open,close\}/);
+ assert.match(day1,/GUIDE_IMAGE/);
+ assert.match(day1,/data-ed1-ehs-dialog/);
+ assert.match(day1,/ehsEvaluable/);
+ assert.match(previous,/function ehsHtml\(/);
+ assert.match(previous,/if\(type==='final'\)return ehsHtml\(\)/);
+});
+test('No se borra el botón de sincronización del calendario; se oculta solo para los días sustituidos',()=>{
+ const app=read('premium-v2/app-live.js');
+ const route=read('premium-v2/erectile-function-route.js');
+ assert.match(app,/class="btn pri doneBtn"/);
+ assert.match(app,/card\.querySelector\('\.doneBtn'\)\.textContent='Completado ✓'/);
+ assert.match(route,/if\(\[1,2,3,4\]\.includes\(d\)\)/);
+ assert.match(route,/legacySave\.style\.display='none'/);
+ assert.match(route,/obsolete\.style\.display='none'/);
+ assert.doesNotMatch(route,/area\.replaceChildren\(button,note\)/);
+});
