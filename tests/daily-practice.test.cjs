@@ -61,7 +61,7 @@ test('other Desire days retain their audio and route registration through the ac
 });
 test('saving one activity does not complete or advance the day; stale and restricted writes fail',async()=>{
  const h=harness('confidence',12);try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,true);
- await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='urgent';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,primary==='erection'?0:1);
+ await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='urgent';h.c.day=12;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
  }finally{h.close()}
 });
 test('day 16 uses the approved sensory video as one independent voluntary practice, without Focus I duplication',async()=>{
