@@ -7,6 +7,7 @@ if(window.SPM_ACTIVE_MODULE_RELEASE)return;
 const erection=Object.freeze({
  1:Object.freeze({key:'erection-day1',version:'2026-11-16-approved6',screens:6,title:'Reconoce tu punto de partida',preview:'/premium-v2/assets/erection-day1/spm-de-day1-screen-01.webp',module:'SPM_ED_DAY1_TOUCH',bridge:'SPM_ERECTION_DAY1_BRIDGE'}),
  2:Object.freeze({key:'erection-day2',version:'2026-11-16-approved4',screens:4,title:'Reconoce tus contextos',preview:'/premium-v2/assets/erection-day2/spm-de-day2-screen-01.webp',module:'SPM_ED_DAY2_TOUCH',bridge:'SPM_ERECTION_DAY2_BRIDGE'}),
+ 3:Object.freeze({key:'erection-day3',version:'2026-11-17-approved3',screens:3,title:'Reconoce y suelta la tensión',preview:'/premium-v2/assets/erection-day3/spm-de-day3-screen-01.webp',module:'SPM_ED_DAY3_TOUCH',bridge:'SPM_ERECTION_DAY3_BRIDGE'}),
  4:Object.freeze({key:'erection-day4',version:'2026-11-17-approved3',screens:3,title:'Vuelve a las sensaciones',preview:'/premium-v2/assets/erection-day4/spm-de-day4-screen-01.webp',module:'SPM_ED_DAY4_TOUCH',bridge:'SPM_ERECTION_DAY4_BRIDGE'})
 });
 const connections=Object.freeze({
@@ -27,5 +28,5 @@ function ready(context,activity){
  return !!(window[released.module]&&window[released.bridge]&&window.SPM_ERECTION_PRACTICE?.open);
 }
 function status(){return Object.freeze(Object.fromEntries(Object.entries(connections).map(([name,api])=>[name,!!window[api]])));}
-window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-16-single-active-1',erection,connections,resolve,ready,status});
+window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-17-de34-canonical2',erection,connections,resolve,ready,status});
 })();
