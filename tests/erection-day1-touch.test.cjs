@@ -58,3 +58,11 @@ test('las rutas comerciales siguen pausadas',()=>{
  assert.match(routes,/program-paused\.html/);
  assert.doesNotMatch(live,/wompi.*activate|activate.*wompi/i);
 });
+test('pantalla 5: ningún chulito fijo, solo círculo azul en la opción marcada',()=>{
+ assert.match(moduleSource,/if\(m\.outcome!==null\)/);
+ assert.match(moduleSource,/OUTCOMES\.indexOf\(m\.outcome\)/);
+ assert.match(moduleSource,/data-ed1-radio/);
+ assert.match(moduleSource,/radioCenters=\[\[821,640\]/);
+ assert.match(style,/\.spm-ed1-radio-check/);
+ assert.match(style,/pointer-events:none/);
+});

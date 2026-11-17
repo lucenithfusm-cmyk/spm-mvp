@@ -43,3 +43,12 @@
 
 .spm-ed1-omitted-message{position:absolute;z-index:2;left:3%;top:26%;width:94%;min-height:22%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6%;background:linear-gradient(145deg,#e3f3fc,#bbdff6);border:2px solid #e6bf70;border-radius:20px;color:#0a2d54;box-shadow:0 6px 16px #123f5b55}
 .spm-ed1-omitted-message strong{font-size:clamp(20px,6vw,30px);line-height:1.13}.spm-ed1-omitted-message span{font-size:clamp(13px,4vw,19px);margin-top:6px;line-height:1.3}
+
+/* Chulito azul dinámico: solo la respuesta elegida (nunca impreso). */
+.spm-ed1-radio-check{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;
+ border-radius:50%;box-sizing:border-box;background:linear-gradient(140deg,#13579c 0%,#092d60 85%);
+ color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:clamp(13px,4.1vw,22px);
+ font-weight:950;line-height:1;border:3px solid #d3a34f;box-shadow:0 0 0 2px #fff7da,0 0 10px 2px #d3a34f7a;
+ animation:spmEd1RadioEnter .18s ease-out both}
+@keyframes spmEd1RadioEnter{from{transform:scale(.8);opacity:.4}to{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.spm-ed1-radio-check{animation:none}}

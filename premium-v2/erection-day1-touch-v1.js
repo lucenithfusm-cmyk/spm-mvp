@@ -105,6 +105,16 @@ function stage(m){let hits='',more='';
   hits+=hotspot([185,305,765,415],'audio','Escuchar indicaciones para registrar la práctica',{audio:'review'});
   [[55,541,886,725],[55,742,886,929],[55,936,886,1121],[55,1136,886,1319]].forEach((coords,i)=>hits+=hotspot(coords,'outcome','Elegir '+OUTCOME_LABELS[OUTCOMES[i]],{value:OUTCOMES[i],selected:m.outcome===OUTCOMES[i]}));
   hits+=hotspot([26,1484,915,1606],'save','Guardar mi punto de partida y continuar',{disabled:m.busy});
+  // Un único chulito azul se dibuja sobre la opción realmente seleccionada.
+  // La lámina original está corregida: la primera opción no trae un check fijo.
+  if(m.outcome!==null){
+   const radioCenters=[[821,640],[821,842],[821,1044],[821,1242]];
+   const idx=OUTCOMES.indexOf(m.outcome);
+   if(idx>=0){
+    const [cx,cy]=radioCenters[idx];
+    more+=`<span class="spm-ed1-radio-check" aria-hidden="true" data-ed1-radio="${esc(m.outcome)}" style="${rect(cx-29,cy-29,cx+29,cy+29)}">✓</span>`;
+   }
+  }
   more+=`<div class="spm-ed1-answer-label" role="status">${m.outcome===null?'Toca una respuesta para seleccionarla. La primera es ilustrativa.':`Tu respuesta: ${esc(OUTCOME_LABELS[m.outcome])}`}</div>`;
  }
  return `<section class="spm-ed1-session" data-ed1-session data-screen="${m.screen}" aria-label="Erección y firmeza, día 1, pantalla ${m.screen} de 6"><div class="spm-ed1-canvas" style="background-image:url(&quot;${IMAGES[m.screen-1]}&quot;)" role="group" aria-label="Lámina aprobada ${m.screen} de 6"><span class="spm-ed1-sr">${m.screen} de 6</span>${hits}${more}</div>${nav(m)}<p class="spm-ed1-status" data-ed1-status role="status" aria-live="polite">${esc(m.notice)}</p>${dialogs()}</section>`;
