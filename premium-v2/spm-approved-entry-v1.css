@@ -1,0 +1,9 @@
+/* SPM · Acceso único a pantallas aprobadas, sólo DE días 1 y 2 */
+.spm-approved-activity-preview{display:flex;align-items:center;gap:14px;margin:18px 0;padding:13px;border:1px solid #e5c3878a;border-radius:16px;background:linear-gradient(135deg,#194454,#0b293b);color:#fff;max-width:100%;box-sizing:border-box}
+.spm-approved-activity-preview img{width:96px;height:166px;max-width:30%;flex:0 0 auto;object-fit:contain;border:1px solid #e6c38b;border-radius:10px;background:#12385c}
+.spm-approved-activity-preview>div{min-width:0;flex:1}
+.spm-approved-activity-preview strong{display:block;font-size:13px;line-height:1.4;color:#f0cf8e;letter-spacing:.04em}
+.spm-approved-activity-preview p{font-size:15px;font-weight:700;line-height:1.5;margin:9px 0;color:#eef7f6}
+.spm-approved-activity-preview small{font-size:12px;line-height:1.5;color:#b7dedf}
+.spm-approved-legacy-note{color:#f3d38e;font-size:14px;line-height:1.5;margin:12px 0}
+@media(max-width:440px){.spm-approved-activity-preview{padding:11px;gap:12px}.spm-approved-activity-preview img{width:74px;height:132px}.spm-approved-activity-preview p{font-size:14px}}

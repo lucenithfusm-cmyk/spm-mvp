@@ -34,7 +34,10 @@ test('reemplazo sólo en día 1 sin alterar el resto de Erección y firmeza',()=
 test('audio original de escala sin cortes y audios táctiles propios por pantalla',()=>{
  assert.match(moduleSource,/erection-day-1-ehs-20261113\.mp3/);
  assert.doesNotMatch(moduleSource,/currentTime\s*=\s*[1-9]/);
- for(const key of ['intro','ehs','science','practice','review','end','blood','nerves','emotions','step0','step1','step2'])assert.ok(moduleSource.includes(key));
+ for(const key of ['intro','ehs','science','practice','review','end','blood','nerves','emotions'])assert.ok(moduleSource.includes(key));
+ // Las tres narraciones se generan con claves dinámicas ('step'+i), no con literales step0/1/2.
+ assert.match(moduleSource,/const STEPS=\[/);
+ assert.match(moduleSource,/audio:'step'\+i/);
  assert.match(moduleSource,/SpeechSynthesisUtterance/);
  assert.match(moduleSource,/window\.speechSynthesis\?\.cancel/);
  assert.match(style,/\.spm-ed1-hit\.audio/);
