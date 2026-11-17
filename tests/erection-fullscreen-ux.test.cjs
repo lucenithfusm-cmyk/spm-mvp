@@ -63,7 +63,7 @@ test('el diseño conserva las láminas y usa un viewport móvil sin anchos rígi
  const c=read('premium-v2/erection-fullscreen-v1.css');
  assert.ok(c.includes('position:fixed!important'));
  assert.ok(c.includes('height:100dvh!important'));
- assert.ok(c.includes('max-width:calc(56.25dvh - 52px)!important'));
+ assert.ok(c.includes('max-width:540px!important'));
  assert.ok(c.includes('spm-er-alert-layer'));
  assert.ok(c.includes('background:rgba(2,19,35,.55)'));
 });

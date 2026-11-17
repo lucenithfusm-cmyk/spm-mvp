@@ -43,33 +43,33 @@ test('el cronómetro es opcional, visible, con pausa y límite de cinco minutos'
  assert.match(js,/if\(m\.timerStart!==null\)\{pauseTimer\(m\);clockUI\(m\);return\}/);
  assert.match(js,/seconds:m\.timerUsed\?/);
 });
-test('guardado con datos válidos del día 4 y regreso a Hoy sin marcar acciones ajenas',()=>{
- assert.match(clinical,/if\(Number\(day\)===4\)return senses\.includes\(record\.attentionSense\)/);
- assert.match(bridge,/Number\(c\.day\)!==4/);
+test('la cuarta sesión se guarda el día 9 sin marcar acciones ajenas',()=>{
+ assert.match(clinical,/if\(lesson===4\)return senses\.includes\(record\.attentionSense\)/);
+ assert.match(bridge,/Number\(c\.day\)!==9/);
  assert.match(bridge,/c\.primary!=='erection'/);
- assert.match(bridge,/SPM_DAILY_PRACTICE\.saveActivity\('main',record,s,4\)/);
- assert.match(js,/erectionPracticeVersion:1,day:4/);
+ assert.ok(bridge.includes("saveActivity('main',{...record,day:9,erectionLesson:4},s,9)"));
+ assert.match(js,/erectionPracticeVersion:1,day:m\.calendarDay,erectionLesson:4/);
  assert.match(js,/attentionSense:m\.sense,practiceExperience:m\.result/);
  assert.match(js,/if\(!m\.result\)/);
  assert.match(js,/if\(m\.host\.isConnected\)\{try\{m\.onBack\(\)\}/);
- assert.match(review,/spm-review:day4/);
+ assert.match(review,/spm-review:day9/);
  assert.match(review,/Datos simulados/);
 });
 test('única ruta actual y versiones de días anteriores intactas',()=>{
  for(const s of ['erection-day4-touch-v1.css','erection-day4-touch-v1.js','erection-day4-bridge-v1.js'])assert.match(live,new RegExp(s.replace('.','\\.')));
  assert.ok(live.indexOf('erection-day4-bridge-v1.js')>live.indexOf('erection-day2-bridge-v1.js'));
  assert.ok(live.indexOf('erection-day4-bridge-v1.js')<live.indexOf('daily-practice-v1.js'));
- for(const n of [1,2,4])assert.match(release,new RegExp(n+':Object\\.freeze'));
- assert.match(release,/3:Object\.freeze/);
+ for(const n of [1,3,6,9])assert.match(release,new RegExp(n+':Object\\.freeze'));
+ assert.match(release,/9:Object\.freeze/);
  const routes=read('vercel.json');assert.match(routes,/program-paused\.html/);
 });
-test('Día 4 se abre desde Hoy también en la revisión general y el calendario',()=>{
+test('La sesión 4 se abre el día 9 desde Hoy y la revisión general',()=>{
  const central=read('premium-v2/program-review-v1.js');
  const html=read('premium-v2/revision-programas-28-dias.html');
  const old=read('premium-v2/erectile-function-route.js');
- assert.match(central,/erection-day4-touch-v1\.js\?v=20261117-approved3/);
- assert.match(central,/erection-day4-bridge-v1\.js\?v=20261117-approved3/);
+ assert.match(central,/erection-day4-touch-v1\.js\?v=20261117-erection10x28-v1/);
+ assert.match(central,/erection-day4-bridge-v1\.js\?v=20261117-erection10x28-v1/);
  assert.match(html,/erection-day4-touch-v1\.css\?v=20261117-approved3/);
- assert.match(old,/\[1,2,3,4\]\.includes\(target\)/);
- assert.match(old,/\[1,2,3,4\]\.includes\(d\)/);
+ assert.ok(old.includes("if(c?.primary==='erection'&&window.SPM_DAILY_PRACTICE?.open)"));
+ assert.ok(old.includes('const slot=window.SPM_ERECTION_10_SCHEDULE?.slot(d)'));
 });

@@ -19,10 +19,10 @@ test('Día 2 retorna sin comprobar m.valid después de guardar',()=>{
  assert.match(day2,/saved===false\|\|saved\?\.ok===false/);
  assert.doesNotMatch(day2,/await m\.save\(record\);if\(!m\.valid\(\)\)return/);
  assert.match(day2,/try\{m\.onBack\(\)\}/);
- assert.match(day2,/Number\(c\.day\)!==2/);
+ assert.match(day2,/Number\(c\.day\)!==m\.calendarDay/);
 });
 test('Las revisiones simulan Hoy, en lugar de reiniciar automáticamente',()=>{
- for(const [text,day] of [[review1,1],[review2,2]]){
+ for(const [text,day] of [[review1,1],[review2,3]]){
   assert.match(text,/onBack:showToday/);
   assert.match(text,new RegExp('HOY · DÍA '+day));
   assert.match(text,/Revisar las pantallas otra vez/);
@@ -31,14 +31,14 @@ test('Las revisiones simulan Hoy, en lugar de reiniciar automáticamente',()=>{
 test('Día 1 usa EHS-4 propio y el acceso público sigue pausado',()=>{
  assert.match(routes,/program-paused\.html/);
  assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-d1-cierre-manual1/);
- assert.match(live,/erection-day2-touch-v1\.js\?v=20261116-auto-hoy-1/);
+ assert.match(live,/erection-day2-touch-v1\.js\?v=20261117-erection10x28-v1/);
  assert.match(live,/erection-day1-bridge-v1\.js/);
  assert.match(live,/erection-day2-bridge-v1\.js/);
 });
 test('Guardar días 1 a 4 no desmonta la pantalla antes del retorno propio del módulo',()=>{
  const central=read('premium-v2/daily-practice-v1.js');
  assert.match(central,/function touchOwnsExit\(c,a\)/);
- assert.match(central,/\[1,2,3,4\]\.includes\(Number\(c\.day\)\)/);
+ assert.ok(central.includes('SPM_ERECTION_10_SCHEDULE?.isReady(c.day)===true'));
  assert.match(central,/if\(!keepTouchOpen\)render\(\)/);
  assert.match(central,/active\?\.id===id&&!keepTouchOpen/);
 });
