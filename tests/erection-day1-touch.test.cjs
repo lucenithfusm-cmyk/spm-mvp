@@ -76,9 +76,9 @@ test('EHS-4 de la pantalla 2 está copiada como recurso propio e independiente',
  assert.ok(image.length>100000);
  assert.equal(image.compare(original),0);
  assert.ok(moduleSource.includes("const GUIDE_IMAGE='/premium-v2/assets/erection-day1/spm-de-day1-ehs4-guide.jpg'"));
- assert.doesNotMatch(moduleSource,/SPM_FIRMNESS_GUIDE|assets\\/images\\/erection/);
+ assert.ok(!moduleSource.includes('SPM_FIRMNESS_GUIDE')); assert.ok(!moduleSource.includes('assets/images/erection'));
  assert.match(moduleSource,/data-ed1-ehs-dialog/);
  assert.match(moduleSource,/action==='open-ehs'/);
  assert.match(moduleSource,/action==='close-ehs'/);
- assert.match(moduleSource,/ehsEvaluable:m\\.ehs!=='na'/);
+ assert.ok(moduleSource.includes("ehsEvaluable:m.ehs!=='na'"));
 });
