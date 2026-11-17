@@ -62,9 +62,9 @@ function gather(){const q=s=>[...document.querySelectorAll(s)].filter(x=>x.check
 let dailyContext=null;
 function open(d,opts={}){
  // El calendario y la biblioteca anteriores jamás deben abrir formularios
- // obsoletos para las dos sesiones de Erección y firmeza ya sustituidas.
+ // obsoletos para las cuatro sesiones de Erección y firmeza ya sustituidas.
  const c=window.SPM_RESOURCE_CONTEXT?.(),target=Number(d);
- if(c?.primary==='erection'&&[1,2].includes(target)&&window.SPM_DAILY_PRACTICE?.open){
+ if(c?.primary==='erection'&&[1,2,3,4].includes(target)&&window.SPM_DAILY_PRACTICE?.open){
   const prior=document.getElementById('spmDeModal');
   if(prior?.classList.contains('on')){
    window.SPM_FIRMNESS_GUIDE?.close();window.SPM_PROGRAM_VIDEOS?.pause(prior);
@@ -86,7 +86,7 @@ function enhance(){
   if(!DAYS[d]||card.dataset.deRoute)return;
   const area=card.querySelector('.interactive');if(!area)return;
   card.dataset.deRoute='1';
-  if([1,2].includes(d)){
+  if([1,2,3,4].includes(d)){
    const current=window.SPM_ACTIVE_MODULE_RELEASE?.erection?.[d];
    const title=card.querySelector('.dayTop h4');
    if(title&&current)title.textContent=current.title;
