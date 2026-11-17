@@ -30,7 +30,7 @@ const inhibitors=['pressure','rush','fatigue','stress','privacy','unknown'];
 const adjustments=['privacy','time','rhythm','communicate','observe'];
 // En la ruta nueva, la sesión aprobada depende del día del calendario y no de
 // la numeración antigua del archivo visual.
-const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4]]);
+const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5]]);
 const practiceDays=new Set(approvedDays.keys());
 const lessonOf=day=>approvedDays.get(Number(day))||null;
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -60,6 +60,7 @@ function valid(record,day){
  if(lesson===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);
  if(lesson===3)return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&reflection(record);
  if(lesson===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);
+  if(lesson===5)return selection(record.erectionFacilitators,facilitators,3)&&selection(record.erectionInhibitors,inhibitors,2)&&adjustments.includes(record.microAdjustment);
  return false;
 }
 function assignment(c){try{return window.SPM_DAILY_PRACTICE?.assignments(c)?.find(a=>a.id==='main');}catch{return null;}}
