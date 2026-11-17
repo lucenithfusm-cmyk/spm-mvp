@@ -48,6 +48,7 @@ function cleanup(m){if(!m)return;stopAudio(m);stopTimer(m);m.events?.abort?.();m
 function stop(){const m=active;active=null;cleanup(m)}
 function pause(){if(active){stopAudio(active);stopTimer(active)}}
 function status(m,text){m.message=text;const el=m.host.querySelector('[data-ed3-status]');if(el)el.textContent=text;}
+function required(m,text){status(m,text);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
 function speak(m,key,text,preferOriginal=false){
  if(!m||!m.valid()||m.busy)return;
  if(m.voiceKey===key){stopAudio(m);return}
@@ -111,13 +112,13 @@ function render(m){
   hits+=hotspot([27,1402,831,1507],'save','Guardar y volver a Hoy',{disabled:m.busy});
  }
  const toolbar=`<nav class="spm-ed3-toolbar" aria-label="Navegación Erección y firmeza, día 3"><button type="button" data-ed3-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día 3</span><button type="button" data-ed3-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed3-session" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día 3, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed3-session spm-er-fullscreen" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día 3, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(m.page===2)timerUI(m);
 }
 function move(m,target){if(!m||!m.valid()||m.busy)return;
- if(m.page===1&&!m.area){status(m,'Selecciona la zona que sientes más tensa o «No identifico tensión».');return}
+ if(m.page===1&&!m.area){required(m,'Selecciona la zona que sientes más tensa o «No identifico tensión».');return}
  stopAudio(m);stopTimer(m);m.page=Math.max(1,Math.min(3,target));m.message='';render(m);
- m.host.querySelector('[data-ed3-session]')?.scrollIntoView?.({block:'start',behavior:'instant'});
+ window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);
 }
 function toggleTimer(m){
  if(m.busy||m.page!==2)return;
@@ -130,8 +131,8 @@ function toggleTimer(m){
 function tryBack(m){if(m.page===1){stopAudio(m);stopTimer(m);m.onBack();return}move(m,m.page-1)}
 async function save(m){
  if(m.busy||!m.valid())return;
- if(!m.area){status(m,'Regresa a la pantalla 1 y elige una zona o «No identifico tensión».');return}
- if(!m.anchor){status(m,'Elige un ancla sensorial o «No lo identifiqué».');return}
+ if(!m.area){required(m,'Regresa a la pantalla 1 y elige una zona o «No identifico tensión».');return}
+ if(!m.anchor){required(m,'Elige un ancla sensorial o «No lo identifiqué».');return}
  stopAudio(m);stopTimer(m);
  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:3,activity:'Reconoce y suelta la tensión',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),
   tensionAreas:[m.area],sensoryAnchor:m.anchor,finalFeeling:typeof m.prior.finalFeeling==='string'&&m.prior.finalFeeling.length<=1000?m.prior.finalFeeling:'',

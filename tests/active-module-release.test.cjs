@@ -74,3 +74,29 @@ test('No se borra el botón de sincronización del calendario; se oculta solo pa
  assert.match(route,/obsolete\.style\.display='none'/);
  assert.doesNotMatch(route,/area\.replaceChildren\(button,note\)/);
 });
+
+test('Erección días 1–4: los cuatro recursos funcionan en pantalla completa con alerta accesible en todos los recorridos',()=>{
+ const fs=require('node:fs'),path=require('node:path');
+ const readCurrent=p=>fs.readFileSync(path.join(root,p),'utf8');
+ const ux=readCurrent('premium-v2/erection-fullscreen-v1.js');
+ const css=readCurrent('premium-v2/erection-fullscreen-v1.css');
+ assert.ok(css.includes('position:fixed!important'));
+ assert.ok(css.includes('height:100dvh!important'));
+ assert.ok(css.includes('.spm-er-alert-layer'));
+ assert.ok(ux.includes('role="alertdialog"'));
+ assert.ok(ux.includes('aria-modal="true"'));
+ for(const n of [1,2,3,4]){
+  const c=readCurrent('premium-v2/erection-day'+n+'-touch-v1.js');
+  const direct=readCurrent('premium-v2/revision-ereccion-dia'+n+'.html');
+  assert.ok(c.includes('spm-er-fullscreen'));
+  assert.ok(c.includes('SPM_ERECTION_TOUCH_VIEW?.warn'));
+  assert.ok(c.includes('SPM_ERECTION_TOUCH_VIEW?.resetScroll'));
+  assert.ok(direct.includes('erection-fullscreen-v1.js'));
+  assert.ok(direct.includes('erection-fullscreen-v1.css'));
+ }
+ assert.ok(live.includes('erection-fullscreen-v1.js'));
+ assert.ok(live.includes('erection-fullscreen-v1.css'));
+ assert.ok(review.includes('erection-fullscreen-v1.js'));
+ assert.ok(reviewHtml.includes('erection-fullscreen-v1.css'));
+ assert.ok(routes.includes('erection-fullscreen-v1'));
+});

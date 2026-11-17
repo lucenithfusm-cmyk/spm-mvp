@@ -1,0 +1,53 @@
+/* SPM: pantalla completa para las láminas táctiles originales de erección (días 1–4). */
+html:has(.spm-er-fullscreen),body:has(.spm-er-fullscreen){overflow:hidden!important}
+.spm-er-fullscreen{
+ position:fixed!important;inset:0!important;z-index:2147482000!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+ box-sizing:border-box!important;width:100vw!important;max-width:none!important;
+ height:100vh!important;height:100dvh!important;min-height:0!important;
+ margin:0!important;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;
+ -webkit-overflow-scrolling:touch;isolation:isolate;
+ background:linear-gradient(165deg,#061c32 0%,#0b3a5b 50%,#051827 100%)!important;
+}
+.spm-er-fullscreen>.spm-ed1-canvas,.spm-er-fullscreen>.spm-ed2-artwork,
+.spm-er-fullscreen>.spm-ed3-artwork,.spm-er-fullscreen>.spm-ed4-artwork{
+ flex:0 0 auto!important;box-sizing:border-box!important;width:min(100vw,540px)!important;
+ max-width:calc(56.25dvh - 52px)!important;min-width:0!important;
+ height:auto!important;margin:0 auto!important;border:0!important;background-size:100% 100%!important;
+}
+.spm-er-fullscreen>.spm-ed1-toolbar,.spm-er-fullscreen>.spm-ed2-toolbar,
+.spm-er-fullscreen>.spm-ed3-toolbar,.spm-er-fullscreen>.spm-ed4-toolbar,
+.spm-er-fullscreen>.spm-ed1-status,.spm-er-fullscreen>.spm-ed2-status,
+.spm-er-fullscreen>.spm-ed3-status,.spm-er-fullscreen>.spm-ed4-status{
+ box-sizing:border-box!important;flex:0 0 auto!important;
+ width:min(100vw,540px)!important;max-width:calc(56.25dvh - 52px)!important;
+ margin:0 auto!important;
+}
+.spm-er-fullscreen>.spm-ed1-toolbar,.spm-er-fullscreen>.spm-ed2-toolbar,
+.spm-er-fullscreen>.spm-ed3-toolbar,.spm-er-fullscreen>.spm-ed4-toolbar{min-height:56px!important}
+.spm-er-fullscreen>.spm-ed1-status:empty,.spm-er-fullscreen>.spm-ed2-status:empty,
+.spm-er-fullscreen>.spm-ed3-status:empty,.spm-er-fullscreen>.spm-ed4-status:empty{display:none!important}
+.spm-er-alert-layer{
+ position:fixed;inset:0;z-index:40;display:grid;place-items:center;
+ padding:20px;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(20px,env(safe-area-inset-bottom));
+ background:rgba(2,19,35,.55);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+}
+.spm-er-alert-card{
+ width:min(100%,420px);max-height:88dvh;overflow:auto;box-sizing:border-box;
+ padding:26px 23px 22px;border:2px solid #ead09c;border-radius:24px;
+ background:linear-gradient(145deg,rgba(10,46,75,.97),rgba(27,75,97,.94));
+ box-shadow:0 22px 55px rgba(0,9,22,.53),0 0 0 2px rgba(255,238,195,.08);
+ color:#fff;text-align:center;font-family:system-ui,-apple-system,Arial,sans-serif;
+}
+.spm-er-alert-symbol{width:48px;height:48px;display:grid;place-items:center;margin:0 auto 13px;
+ background:rgba(239,202,131,.15);border:1px solid #f0ca78;border-radius:50%;
+ color:#f4d38f;font-size:27px;font-weight:900;line-height:1}
+.spm-er-alert-card strong{display:block;font-size:clamp(19px,5vw,23px);line-height:1.25;color:#ffe2a2}
+.spm-er-alert-card p{margin:13px 0 22px;font-size:clamp(16px,4.3vw,19px);line-height:1.5;color:#f1f7fa}
+.spm-er-alert-card button{min-height:49px;width:100%;border:0;border-radius:13px;
+ background:#f1ce81;color:#14314a;font-size:17px;font-weight:900;cursor:pointer}
+.spm-er-alert-card button:focus-visible{outline:3px solid white;outline-offset:3px}
+@media(max-width:360px){.spm-er-alert-card{padding:21px 17px}}
+@media(prefers-reduced-motion:reduce){.spm-er-alert-layer{-webkit-backdrop-filter:none;backdrop-filter:none}}

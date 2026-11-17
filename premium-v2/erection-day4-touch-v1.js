@@ -49,6 +49,7 @@ function cleanup(m){if(!m)return;stopAudio(m);pauseTimer(m);m.events?.abort?.();
 function stop(){const m=active;active=null;cleanup(m)}
 function pause(){if(active){stopAudio(active);pauseTimer(active)}}
 function status(m,txt){m.message=txt;const el=m.host?.querySelector('[data-ed4-status]');if(el)el.textContent=txt||''}
+function required(m,txt){status(m,txt);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,txt)}
 function talk(m,key,script){
  if(!m||!m.valid()||m.busy)return;
  if(m.voiceKey===key){stopAudio(m);return}
@@ -94,14 +95,14 @@ function render(m){
   hits+=button([39,1743,1041,1881],'save','Guardar y regresar a Hoy',{disabled:m.busy});
  }
  const toolbar=`<nav class="spm-ed4-toolbar" aria-label="Navegación Erección y firmeza día 4"><button type="button" data-ed4-action="back">${p===1?'← Volver a Hoy':'← Anterior'}</button><span>${p} de 3 · Día 4</span><button type="button" data-ed4-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed4-session" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día 4, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed4-session spm-er-fullscreen" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día 4, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(p===2)clockUI(m);
 }
 function move(m,target){
  if(!m.valid()||m.busy)return;
- if(m.page===1&&!m.sense){status(m,'Elige temperatura, contacto o ritmo para continuar.');return}
+ if(m.page===1&&!m.sense){required(m,'Elige temperatura, contacto o ritmo para continuar.');return}
  stopAudio(m);pauseTimer(m);m.page=Math.max(1,Math.min(3,target));m.message='';render(m);
- m.host.querySelector('[data-ed4-session]')?.scrollIntoView?.({block:'start',behavior:'instant'});
+ window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);
 }
 function timer(m){
  if(m.page!==2||m.busy)return;
@@ -113,8 +114,8 @@ function timer(m){
 }
 async function save(m){
  if(m.busy||!m.valid())return;
- if(!m.sense){status(m,'Regresa a la primera pantalla y elige una señal de atención.');return}
- if(!m.result){status(m,'Elige cómo fue tu experiencia antes de guardar.');return}
+ if(!m.sense){required(m,'Regresa a la primera pantalla y elige una señal de atención.');return}
+ if(!m.result){required(m,'Elige cómo fue tu experiencia antes de guardar.');return}
  stopAudio(m);pauseTimer(m);
  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:4,activity:'Vuelve a las sensaciones',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),attentionSense:m.sense,practiceExperience:m.result,finalFeeling:typeof m.prior.finalFeeling==='string'&&m.prior.finalFeeling.length<=1000?m.prior.finalFeeling:'',seconds:m.timerUsed?Math.min(300,Math.max(0,Math.floor(m.timerTotal/1000))):null,lessonFormat:'three-approved-touch-screens'};
  m.busy=true;status(m,'Guardando tu registro de hoy…');const b=m.host.querySelector('[data-ed4-action="save"]');if(b)b.disabled=true;
