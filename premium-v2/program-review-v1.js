@@ -148,7 +148,7 @@ const scripts=[
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
   'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
   'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261114-pelvic-adaptive6','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261116-focusii-direct-today-v2',
-  'erection-day1-touch-v1.js?v=20261117-ehs4-propio1','erection-day1-bridge-v1.js?v=20261116-approved6-v2',
+  'erection-day1-touch-v1.js?v=20261117-d1-directo5-v1','erection-day1-bridge-v1.js?v=20261116-approved6-v2',
   'erection-day2-touch-v1.js?v=20261116-auto-hoy-1','erection-day2-bridge-v1.js?v=20261116-d2-tactil-v1',
   'erection-day3-touch-v1.js?v=20261117-approved3','erection-day3-bridge-v1.js?v=20261117-approved3',
   'erection-day4-touch-v1.js?v=20261117-approved3','erection-day4-bridge-v1.js?v=20261117-approved3',
