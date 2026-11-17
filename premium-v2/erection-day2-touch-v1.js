@@ -111,8 +111,9 @@
   if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==2))return;
   m.message='Registro guardado correctamente ✓';
   if(m.host.isConnected)status(m);
-  // Navega a Hoy únicamente después del éxito, sin un toque adicional.
-  try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}
+  // El guardado de SPM también puede regresar a Hoy y desmontar este host.
+  // No duplicar navegación si ese retorno automático ya ocurrió.
+  if(m.host.isConnected){try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}}
 
  }
  function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}){
