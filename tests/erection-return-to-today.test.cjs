@@ -29,7 +29,7 @@ test('Las revisiones simulan Hoy, en lugar de reiniciar automáticamente',()=>{
 });
 test('Día 1 usa EHS-4 propio y el acceso público sigue pausado',()=>{
  assert.match(routes,/program-paused\.html/);
- assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-ehs4-propio1/);
+ assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-d1-directo5-v1/);
  assert.match(live,/erection-day2-touch-v1\.js\?v=20261116-auto-hoy-1/);
  assert.match(live,/erection-day1-bridge-v1\.js/);
  assert.match(live,/erection-day2-bridge-v1\.js/);

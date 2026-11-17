@@ -82,3 +82,21 @@ test('EHS-4 de la pantalla 2 está copiada como recurso propio e independiente',
  assert.match(moduleSource,/action==='close-ehs'/);
  assert.ok(moduleSource.includes("ehsEvaluable:m.ehs!=='na'"));
 });
+
+test('Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómetro',()=>{
+ assert.ok(moduleSource.includes('class="spm-ed1-continue"'));
+ assert.ok(moduleSource.includes('data-ed1-act="next"'));
+ assert.ok(moduleSource.includes('Continuar al registro'));
+ assert.ok(moduleSource.includes("audio:'step'+i"));
+ for(const old of ['data-ed1-guide','data-ed1-time','openGuide(', 'nextGuide(', 'setInterval(', 'pause-clock','skip-guide','repeat-step'])assert.ok(!moduleSource.includes(old),old+' no debe seguir activo');
+ for(const old of ['.spm-ed1-dialog-actions','.spm-ed1-clock','.spm-ed1-time-note'])assert.ok(!style.includes(old));
+ assert.ok(style.includes('.spm-ed1-continue{'));
+ assert.ok(moduleSource.includes('data-ed1-ehs-dialog'));
+ assert.ok(moduleSource.includes('attentionPracticeSeconds:null'));
+ assert.ok(moduleSource.includes("attentionPracticeCompleted:m.outcome!=='omitted'"));
+ const viewer=fs.readFileSync(path.join(root,'premium-v2/program-review-v1.js'),'utf8');
+ const viewerHtml=fs.readFileSync(path.join(root,'premium-v2/revision-programas-28-dias.html'),'utf8');
+ assert.ok(live.includes('erection-day1-touch-v1.js?v=20261117-d1-directo5-v1'));
+ assert.ok(viewer.includes('erection-day1-touch-v1.js?v=20261117-d1-directo5-v1'));
+ assert.ok(viewerHtml.includes('erection-day1-touch-v1.css?v=20261117-d1-directo5-v1'));
+});
