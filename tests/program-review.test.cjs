@@ -146,9 +146,10 @@ test('a failed lab close prevents navigation; successful navigation closes actua
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('erection',8),false);w.SPM_DESIRE_LAB.close=original;
     assert.equal(w.SPM_RESOURCE_CONTEXT().primary,'desire');assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
     assert.equal(w.document.querySelector('#reviewProgram').value,'desire');assert.equal(w.document.querySelector('#reviewDay').value,'1');
-    await w.SPM_PROGRAM_REVIEW.select('erection',7);await wait();
-    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDeModal.on'));
-    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('#spmDeModal.on'),null);
+    await w.SPM_PROGRAM_REVIEW.select('erection',9);await wait();
+    await w.SPM_DAILY_PRACTICE.launch('main');await wait();assert.ok(w.document.querySelector('[data-ed4-session]'));
+    assert.equal(w.document.querySelector('#spmDeModal.on'),null,'no se utiliza el modal DE obsoleto');
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('[data-ed4-session]'),null);
     await w.SPM_DAILY_PRACTICE.launch('main');const premium=w.document.querySelector('#spmSqueezeV1');assert.ok(premium&&!premium.hidden);assert.ok(premium.shadowRoot.querySelector('#stage img'));assert.equal(w.document.querySelector('#spmEcModal.on'),null);
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',8),true);await wait();
      assert.equal(w.document.querySelector('#spmSqueezeV1').hidden,true);
