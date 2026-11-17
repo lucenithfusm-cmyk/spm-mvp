@@ -14,6 +14,10 @@ header p{font-size:13px;line-height:1.4;margin:4px 0 8px;color:#c9e1eb}
 header button{padding:10px 14px;border:1px solid #e6c47d;border-radius:12px;background:#143953;color:#fff;min-height:44px;cursor:pointer;font:inherit;font-size:13px}
 main{padding:0 8px 25px;max-width:580px;margin:auto}
 .spm-ed1-session{border:1px solid rgba(230,196,124,.5)}
+.spm-ed-review-today{margin:30px 0;padding:26px 22px;background:#112f46;border:1px solid #d4b77d;border-radius:20px;color:#fff}
+.spm-ed-review-today h2{font-size:clamp(23px,5vw,30px);margin:9px 0}
+.spm-ed-review-today p{font-size:16px;line-height:1.6;color:#f4ecd9}
+.spm-ed-review-today button{min-height:48px;padding:10px 18px;border-radius:12px;background:#e2bf76;color:#0d293f;font-weight:800;border:0}
 </style>
 </head>
 <body>
@@ -24,18 +28,24 @@ main{padding:0 8px 25px;max-width:580px;margin:auto}
  <button id="restart">↻ Reiniciar recorrido</button>
 </header>
 <main id="spmDailyWorkspace" aria-label="Vista de revisión de las seis pantallas"></main>
-<script src="erection-day1-touch-v1.js?v=ed1-review-20261116"></script>
+<script src="erection-day1-touch-v1.js?v=ed1-review-auto-hoy-1"></script>
 <script>
 (()=>{'use strict';
 let record=null;
+const showToday=()=>{
+ const host=document.getElementById('spmDailyWorkspace');
+ host.innerHTML='<section class="spm-ed-review-today" role="status"><p>SPM · HOY · DÍA 1</p><h2>Lo que vas a hacer hoy</h2><p>'+(record?'Reconoce tu punto de partida · Registrada ✓':'Práctica no registrada. Puedes volver cuando quieras.')+'</p><button type="button" id="review-again">Revisar las pantallas otra vez</button></section>';
+ host.querySelector('#review-again').onclick=()=>{record=null;mount()};
+ document.getElementById('restart')?.focus();
+};
 const mount=()=>window.SPM_ED_DAY1_TOUCH.mount({
  host:document.getElementById('spmDailyWorkspace'),prior:{},scope:'spm-review:day1',valid:()=>true,
  save:async data=>{
   if(data.erectionPracticeVersion!==1||data.day!==1||!data.confirmed||!['maintained','returned','difficult','omitted'].includes(data.attentionPracticeOutcome)||!(data.ehsEvaluable===false&&data.ehs===null||data.ehsEvaluable===true&&Number.isInteger(data.ehs)&&data.ehs>=0&&data.ehs<=4))throw Error('Registro de muestra inválido');
   record=data;return {ok:true};
- },onBack:()=>{document.getElementById('restart').focus();mount()}
+ },onBack:showToday
 });
-document.addEventListener('DOMContentLoaded',()=>{mount();document.getElementById('restart').onclick=mount});
+document.addEventListener('DOMContentLoaded',()=>{mount();document.getElementById('restart').onclick=()=>{record=null;mount()}});
 window.SPM_ED1_REVIEW={getRecord:()=>record,reset:mount};
 })();
 </script>
