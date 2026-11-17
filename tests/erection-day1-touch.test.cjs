@@ -96,7 +96,14 @@ test('Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómet
  assert.ok(moduleSource.includes("attentionPracticeCompleted:m.outcome!=='omitted'"));
  const viewer=fs.readFileSync(path.join(root,'premium-v2/program-review-v1.js'),'utf8');
  const viewerHtml=fs.readFileSync(path.join(root,'premium-v2/revision-programas-28-dias.html'),'utf8');
- assert.ok(live.includes('erection-day1-touch-v1.js?v=20261117-d1-directo5-v1'));
- assert.ok(viewer.includes('erection-day1-touch-v1.js?v=20261117-d1-directo5-v1'));
+ assert.ok(live.includes('erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1'));
+ assert.ok(viewer.includes('erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1'));
  assert.ok(viewerHtml.includes('erection-day1-touch-v1.css?v=20261117-d1-directo5-v1'));
+});
+
+test('La pantalla 6 solo cierra al tocar el CTA o pulsar Escape, nunca por tiempo',()=>{
+ assert.match(moduleSource,/data-ed1-success-close/);
+ assert.match(moduleSource,/addEventListener\('click',exit\)/);
+ assert.doesNotMatch(moduleSource,/autoTimer|setTimeout\(exit,/);
+ assert.match(moduleSource,/if\(successOverlay\)\{successOverlay\.remove\(\);successOverlay=null\}/);
 });

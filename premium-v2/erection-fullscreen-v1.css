@@ -14,7 +14,7 @@ html:has(.spm-er-fullscreen),body:has(.spm-er-fullscreen){overflow:hidden!import
 .spm-er-fullscreen>.spm-ed1-canvas,.spm-er-fullscreen>.spm-ed2-artwork,
 .spm-er-fullscreen>.spm-ed3-artwork,.spm-er-fullscreen>.spm-ed4-artwork{
  flex:0 0 auto!important;box-sizing:border-box!important;width:min(100vw,540px)!important;
- max-width:calc(56.25dvh - 52px)!important;min-width:0!important;
+ max-width:540px!important;min-width:0!important;
  height:auto!important;margin:0 auto!important;border:0!important;background-size:100% 100%!important;
 }
 .spm-er-fullscreen>.spm-ed1-toolbar,.spm-er-fullscreen>.spm-ed2-toolbar,
@@ -22,7 +22,7 @@ html:has(.spm-er-fullscreen),body:has(.spm-er-fullscreen){overflow:hidden!import
 .spm-er-fullscreen>.spm-ed1-status,.spm-er-fullscreen>.spm-ed2-status,
 .spm-er-fullscreen>.spm-ed3-status,.spm-er-fullscreen>.spm-ed4-status{
  box-sizing:border-box!important;flex:0 0 auto!important;
- width:min(100vw,540px)!important;max-width:calc(56.25dvh - 52px)!important;
+ width:min(100vw,540px)!important;max-width:540px!important;
  margin:0 auto!important;
 }
 .spm-er-fullscreen>.spm-ed1-toolbar,.spm-er-fullscreen>.spm-ed2-toolbar,
