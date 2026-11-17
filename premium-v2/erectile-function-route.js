@@ -64,17 +64,19 @@ function open(d,opts={}){
  // El calendario y la biblioteca anteriores jamás deben abrir formularios
  // obsoletos para las cuatro sesiones de Erección y firmeza ya sustituidas.
  const c=window.SPM_RESOURCE_CONTEXT?.(),target=Number(d);
- if(c?.primary==='erection'&&[1,2,3,4].includes(target)&&window.SPM_DAILY_PRACTICE?.open){
+ if(c?.primary==='erection'&&window.SPM_DAILY_PRACTICE?.open){
+  const currentDay=Number(c.day),ready=window.SPM_ERECTION_10_SCHEDULE?.isReady(target);
+  const onToday=ready&&currentDay===target&&window.SPM_DAILY_PRACTICE.assignments?.(c)?.find(a=>a.id==='main'&&a.kind==='erection');
   const prior=document.getElementById('spmDeModal');
   if(prior?.classList.contains('on')){
    window.SPM_FIRMNESS_GUIDE?.close();window.SPM_PROGRAM_VIDEOS?.pause(prior);
    resetTimer();prior.classList.remove('on');document.body.style.overflow='';
   }
+  // Nunca cargar formularios ni videos propios de la rama DE anterior.
+  if(onToday)return window.SPM_DAILY_PRACTICE.launch('main');
   window.SPM_DAILY_PRACTICE.open();
   const status=document.getElementById('spmDailyStatus');
-  if(status)status.textContent=Number(c.day)===target
-   ?'La versión aprobada de tu práctica está en la tarjeta principal de Hoy.'
-   :'La versión aprobada del día '+target+' se abre desde Hoy cuando corresponda en tu ruta.';
+  if(status)status.textContent=ready?'Esta sesión se abre desde Hoy cuando corresponda a tu día actual.':'Hoy continúas con las prácticas y recursos transversales de tu ruta integral.';
   return false;
  }
  window.SPM_FIRMNESS_GUIDE?.close();mount();dailyContext=opts.origin==='dailyPlan'?window.SPM_RESOURCE_CONTEXT?.():null;$('spmDeModal').dataset.dailySession=String(opts.origin==='dailyPlan');window.SPM_PROGRAM_VIDEOS?.pause($('spmDeModal'));window.SPM_PROGRAM_VIDEOS?.mount($('spmDeModal').querySelector('.deBody'),'erection');resetTimer();day=Math.max(1,Math.min(28,Number(d)));origin=['dailyPlan','library','lab'].includes(opts.origin)?opts.origin:'lab';selectedEhs='unset';const x=DAYS[day];$('deTitle').textContent=`Semana ${Math.ceil(day/7)} · ${x[0]}`;$('deKicker').textContent=`Día ${day} de 28`;$('deActivity').textContent=x[1];$('deRoad').innerHTML=road();$('deContent').innerHTML=content(day);$('deTrend').innerHTML=trend();$('deMiniSummary').innerHTML=(day===27||day===28)?summaryHtml():'';$('deSave').textContent=origin==='dailyPlan'?'Guardar práctica':'Guardar y completar';$('dePrev').disabled=day===1;$('deNext').disabled=day===28;const back=$('deReturn');if(back){back.hidden=origin==='lab';back.textContent=origin==='dailyPlan'?'← Volver a Hoy':'← Volver a Biblioteca'}$('spmDeModal').classList.add('on');document.body.style.overflow='hidden';bindDynamic();restoreDay();window.dispatchEvent(new CustomEvent('spm:de-open',{detail:{day,origin}}))}
@@ -86,28 +88,21 @@ function enhance(){
   if(!DAYS[d]||card.dataset.deRoute)return;
   const area=card.querySelector('.interactive');if(!area)return;
   card.dataset.deRoute='1';
-  if([1,2,3,4].includes(d)){
-   const current=window.SPM_ACTIVE_MODULE_RELEASE?.erection?.[d];
-   const title=card.querySelector('.dayTop h4');
-   if(title&&current)title.textContent=current.title;
-   const caption=card.querySelector('.dayTop p');
-   if(caption)caption.textContent='Sesión táctil aprobada con audio; abre tu actividad desde Hoy.';
-   // Los formularios anteriores no se muestran ni se registran dos veces.
-   const obsolete=card.querySelector('.lessonFlow');
-   if(obsolete){obsolete.hidden=true;obsolete.style.display='none';}
-   const legacySave=area.querySelector('.doneBtn');
-   if(legacySave){legacySave.hidden=true;legacySave.style.display='none';}
-   const note=document.createElement('p');note.className='spm-approved-legacy-note';
-   note.textContent='Este día utiliza las nuevas pantallas táctiles desde Hoy.';
-   const button=document.createElement('button');button.type='button';button.className='btn pri deLaunch';
-   button.textContent='Abrir práctica actual · Día '+d;
-   button.onclick=e=>{e.stopPropagation();open(d,{origin:'dailyPlan'});};
-   area.prepend(note);area.prepend(button);
-   return;
-  }
-  const b=document.createElement('button');b.type='button';b.className='btn pri deLaunch';
-  b.textContent=`▶ DE · ${DAYS[d][0]} · ${DAYS[d][1]}`;
-  b.onclick=e=>{e.stopPropagation();open(d,{origin:'dailyPlan'});};area.prepend(b);
+  // Todos los formularios de 28 días de la rama antigua quedan fuera de uso.
+  const obsolete=card.querySelector('.lessonFlow');if(obsolete){obsolete.hidden=true;obsolete.style.display='none';}
+  const legacySave=area.querySelector('.doneBtn');if(legacySave){legacySave.hidden=true;legacySave.style.display='none';}
+  [...area.children].forEach(el=>{el.hidden=true;el.style.display='none';});
+  const slot=window.SPM_ERECTION_10_SCHEDULE?.slot(d);
+  const title=card.querySelector('.dayTop h4');
+  if(title)title.textContent=slot?.ready?slot.title:'Tu ruta integral de bienestar';
+  const caption=card.querySelector('.dayTop p');
+  if(caption)caption.textContent=slot?.ready?'Sesión táctil aprobada: abre la práctica desde Hoy.':'Hoy continúan las actividades complementarias indicadas.';
+  const note=document.createElement('p');note.className='spm-approved-legacy-note';
+  note.textContent=slot?.ready?'Esta actividad usa las pantallas táctiles vigentes.':'No hay una práctica independiente de Erección y firmeza para este día.';
+  const button=document.createElement('button');button.type='button';button.className='btn pri deLaunch';
+  button.textContent=slot?.ready?'Abrir práctica actual · Día '+d:'Abrir mi ruta integral de Hoy';
+  button.onclick=e=>{e.stopPropagation();open(d,{origin:'dailyPlan'});};
+  area.prepend(note);area.prepend(button);
  });
 }
 mount();enhance();new MutationObserver(enhance).observe(document.body,{childList:true,subtree:true});window.SPM_ERECTILE_FUNCTION={open,days:DAYS,records,assessments,getOrigin:()=>origin};

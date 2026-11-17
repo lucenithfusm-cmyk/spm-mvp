@@ -12,15 +12,15 @@ const reviewScripts=[...review.matchAll(/'([^']+\.js(?:\?v=[^']+)?)'/g)].map(m=>
 test('Programa real y visor de 28 días usan exactamente los mismos once controladores aprobados',()=>{
  assert.equal(appScripts.length,11);
  assert.deepEqual(reviewScripts,appScripts);
- assert.ok(appScripts.indexOf('spm-active-module-release-v1.js?v=20261117-de34-canonical2')>appScripts.indexOf('erection-day4-bridge-v1.js?v=20261117-approved3'));
- assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-de34-cierre1');
+ assert.ok(appScripts.indexOf('spm-active-module-release-v1.js?v=20261117-erection10x28-v1')>appScripts.indexOf('erection-day4-bridge-v1.js?v=20261117-erection10x28-v1'));
+ assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-erection10x28-v1');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
  for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','spm-approved-entry-v1.css']){
   assert.ok(live.includes(css),css+' no está en Live');
   assert.ok(reviewHtml.includes(css),css+' no está en revisión');
  }
- for(const day of [1,2,3,4])assert.ok(release.includes('spm-de-day'+day+'-screen-01.webp'));
+ for(const lesson of [1,2,3,4])assert.ok(release.includes('spm-de-day'+lesson+'-screen-01.webp'));
  assert.match(release,/screens:6/);assert.match(release,/screens:4/);assert.match(release,/screens:3/);
 });
 test('Hoy muestra miniatura real y una sola actividad vigente',()=>{
@@ -31,12 +31,12 @@ test('Hoy muestra miniatura real y una sola actividad vigente',()=>{
  assert.match(today,/sesión interactiva actual no se pudo cargar/);
  assert.match(release,/activity\?\.id!=='main'/);
 });
-test('Los días 1 a 4 no pueden abrir formularios antiguos del calendario',()=>{
- assert.match(legacy,/if\(c\?\.primary==='erection'&&\[1,2,3,4\]\.includes\(target\)/);
+test('La ruta antigua de 28 ejercicios no se abre en ningún día',()=>{
+ assert.ok(legacy.includes("if(c?.primary==='erection'&&window.SPM_DAILY_PRACTICE?.open)"));
  assert.match(legacy,/window\.SPM_DAILY_PRACTICE\.open\(\)/);
  assert.match(legacy,/obsolete\.style\.display='none'/);
  assert.match(legacy,/legacySave\.style\.display='none'/);
- assert.match(deReview,/location\.assign\('revision-programas-28-dias\.html\?programa=erection&dia='\+d\)/);
+ assert.ok(deReview.includes("location.replace('revision-programas-28-dias.html?programa=erection&dia=1'"));
 });
 test('Focalización y demás módulos conservan sus rutas y pausas',()=>{
  const sensate=read('premium-v2/daily-support-plan-v1.js');
@@ -69,7 +69,7 @@ test('No se borra el botón de sincronización del calendario; se oculta solo pa
  const route=read('premium-v2/erectile-function-route.js');
  assert.match(app,/class="btn pri doneBtn"/);
  assert.match(app,/card\.querySelector\('\.doneBtn'\)\.textContent='Completado ✓'/);
- assert.match(route,/if\(\[1,2,3,4\]\.includes\(d\)\)/);
+ assert.ok(route.includes('const slot=window.SPM_ERECTION_10_SCHEDULE?.slot(d)'));
  assert.match(route,/legacySave\.style\.display='none'/);
  assert.match(route,/obsolete\.style\.display='none'/);
  assert.doesNotMatch(route,/area\.replaceChildren\(button,note\)/);

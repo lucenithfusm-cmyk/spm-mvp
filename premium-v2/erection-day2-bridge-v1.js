@@ -8,29 +8,29 @@ const ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scope=c=>c&&typeof c.userId==='string'&&c.userId&&typeof c.planId==='string'&&c.planId?c.userId+':'+c.planId:'';
 const assignment=c=>{try{return window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a.id==='main')}catch{return null}};
 function permitted(c,s){
- if(!c||c.primary!=='erection'||Number(c.day)!==2||scope(c)!==s)return false;
+ if(!c||c.primary!=='erection'||Number(c.day)!==3||scope(c)!==s)return false;
  const a=assignment(c);if(a?.id!=='main'||a?.kind!=='erection')return false;
  if(window.SPM_DAILY_PRACTICE?.restricted?.(c,a))return false;
  const active=window.SPM_DAILY_PRACTICE?.active?.();
- if(active&&(active.id!=='main'||Number(active.day)!==2||active.scope!==s))return false;
+ if(active&&(active.id!=='main'||Number(active.day)!==3||active.scope!==s))return false;
  return true;
 }
 async function open(a){
- const c=ctx();if(c?.primary!=='erection'||Number(c.day)!==2||a?.id!=='main'||a.kind!=='erection')return oldOpen(a);
+ const c=ctx();if(c?.primary!=='erection'||Number(c.day)!==3||a?.id!=='main'||a.kind!=='erection')return oldOpen(a);
  const s=scope(c),host=document.getElementById('spmDailyWorkspace');
  if(!s||!host?.isConnected||!permitted(c,s))return false;
  oldStop();ui.stop();host.innerHTML='<p class="spm-erection-status" role="status">Recuperando tus respuestas…</p>';
  let prior={};try{
-  const rows=await window.SPM_DAILY_RECORDS.read(s,2);
+  const rows=await window.SPM_DAILY_RECORDS.read(s,3);
   if(!permitted(ctx(),s)||!host.isConnected)return false;
-  const saved=rows?.main;if(saved&&typeof saved==='object'&&!Array.isArray(saved))prior={...saved};
+  const saved=rows?.main;if(saved&&typeof saved==='object'&&!Array.isArray(saved)&&saved.erectionLesson===2&&Number(saved.day)===3)prior={...saved};
  }catch{
   if(permitted(ctx(),s)&&host.isConnected)host.innerHTML='<p role="alert">No pudimos recuperar tu registro. Vuelve a Hoy y reintenta; tus datos permanecen intactos.</p>';
   return false;
  }
- return ui.mount({host,prior,scope:s,
+ return ui.mount({host,prior,scope:s,calendarDay:3,
   valid:()=>permitted(ctx(),s)&&host.isConnected,
-  save:record=>window.SPM_DAILY_PRACTICE.saveActivity('main',record,s,2),
+  save:record=>window.SPM_DAILY_PRACTICE.saveActivity('main',{...record,day:3,erectionLesson:2},s,3),
   onBack:()=>window.SPM_DAILY_PRACTICE?.open?.()});
 }
 function pause(){ui.pause();oldPause()}

@@ -28,27 +28,39 @@ const experiences=['returned','difficult','no_checking'];
 const facilitators=['contact','imagination','anticipation','novelty','rhythm','privacy','connection','solo','unknown'];
 const inhibitors=['pressure','rush','fatigue','stress','privacy','unknown'];
 const adjustments=['privacy','time','rhythm','communicate','observe'];
-const practiceDays=new Set([1,2,3,4,5]);
+// En la ruta nueva, la sesión aprobada depende del día del calendario y no de
+// la numeración antigua del archivo visual.
+const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4]]);
+const practiceDays=new Set(approvedDays.keys());
+const lessonOf=day=>approvedDays.get(Number(day))||null;
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const scope=c=>typeof c?.userId==='string'&&c.userId&&typeof c.planId==='string'&&c.planId?c.userId+':'+c.planId:'';
 const context=()=>window.SPM_RESOURCE_CONTEXT?.();
 let current=null,sequence=0;
 
 function definition(day){
- const item=definitions[Number(day)];
- return item?{...item,script:scripts[Number(day)],audioSrc:Number(day)===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':'/premium-v2/assets/audio/erection/erection-day-'+Number(day)+'-20261113.mp3'}:null;
+ const lesson=lessonOf(day),item=lesson?definitions[lesson]:null;
+ return item?{...item,erectionLesson:lesson,calendarDay:Number(day),
+  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
 }
-function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day));}
+function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day))&&(!a.erectionLesson||a.erectionLesson===lessonOf(c.day));}
 function score(value){return value===null||Number.isInteger(value)&&value>=0&&value<=10;}
 function selection(value,options,max){return Array.isArray(value)&&value.length>0&&value.length<=max&&new Set(value).size===value.length&&value.every(item=>options.includes(item))&&(!value.includes('unknown')||value.length===1);}
 function reflection(record){return typeof record.finalFeeling==='string'&&record.finalFeeling.length<=1000&&(record.seconds===null||Number.isSafeInteger(record.seconds)&&record.seconds>=0);}
 function valid(record,day){
- if(!record||Array.isArray(record)||record.erectionPracticeVersion!==1||record.day!==Number(day)||!practiceDays.has(Number(day))||record.confirmed!==true||!score(record.anxiety)||!score(record.confidence))return false;
- if(Number(day)===1)return record.ehs===null?record.ehsEvaluable===false:Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true;
- if(Number(day)===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);
- if(Number(day)===3)return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&reflection(record);
- if(Number(day)===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);
- return selection(record.erectionFacilitators,facilitators,3)&&selection(record.erectionInhibitors,inhibitors,2)&&adjustments.includes(record.microAdjustment);
+ const lesson=lessonOf(day);
+ if(!record||Array.isArray(record)||!lesson||record.erectionPracticeVersion!==1||record.day!==Number(day)||record.confirmed!==true||!score(record.anxiety)||!score(record.confidence))return false;
+ // Día 1 conserva el registro histórico EHS. Los días reubicados exigen el
+ // identificador de sesión para no atribuirles resultados de otras prácticas.
+ if(lesson===1){
+  if(record.erectionLesson!=null&&record.erectionLesson!==1)return false;
+  return record.ehs===null?record.ehsEvaluable===false:Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true;
+ }
+ if(record.erectionLesson!==lesson)return false;
+ if(lesson===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);
+ if(lesson===3)return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&reflection(record);
+ if(lesson===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);
+ return false;
 }
 function assignment(c){try{return window.SPM_DAILY_PRACTICE?.assignments(c)?.find(a=>a.id==='main');}catch{return null;}}
 function allowed(c,a){try{return typeof window.SPM_DAILY_PRACTICE?.restricted==='function'&&!window.SPM_DAILY_PRACTICE.restricted(c,a);}catch{return false;}}

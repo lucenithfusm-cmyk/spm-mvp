@@ -22,10 +22,10 @@ test('seis imágenes originales aprobadas, íntegras en formato WebP',()=>{
 test('reemplazo sólo en día 1 sin alterar el resto de Erección y firmeza',()=>{
  assert.match(bridge,/Number\(c\.day\)!==1/);
  assert.match(bridge,/saveActivity\('main',record,scope,1\)/);
- assert.match(daily,/const practiceDays=new Set\(\[1,2,3,4,5\]\)/);
- assert.match(daily,/if\(Number\(day\)===2\)return/);
- assert.match(daily,/if\(Number\(day\)===3\)return/);
- assert.match(daily,/if\(Number\(day\)===4\)return/);
+ assert.match(daily,/const practiceDays=new Set\(approvedDays.keys\(\)\)/);
+ assert.match(daily,/if\(lesson===2\)return/);
+ assert.match(daily,/if\(lesson===3\)return/);
+ assert.match(daily,/if\(lesson===4\)return/);
  assert.match(live,/erection-day1-touch-v1\.css/);
  assert.match(live,/erection-day1-touch-v1\.js/);
  assert.match(live,/erection-day1-bridge-v1\.js/);

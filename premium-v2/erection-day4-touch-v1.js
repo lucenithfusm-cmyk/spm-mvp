@@ -94,8 +94,8 @@ function render(m){
   RESULTS.forEach(([v,label,coords,center])=>{hits+=button(coords,'result','Elegir '+label,{value:v,selected:m.result===v});if(m.result===v)over+=marker(...center,v)});
   hits+=button([39,1743,1041,1881],'save','Guardar y regresar a Hoy',{disabled:m.busy});
  }
- const toolbar=`<nav class="spm-ed4-toolbar" aria-label="Navegación Erección y firmeza día 4"><button type="button" data-ed4-action="back">${p===1?'← Volver a Hoy':'← Anterior'}</button><span>${p} de 3 · Día 4</span><button type="button" data-ed4-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed4-session spm-er-fullscreen" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día 4, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ const toolbar=`<nav class="spm-ed4-toolbar" aria-label="Navegación Erección y firmeza día 4"><button type="button" data-ed4-action="back">${p===1?'← Volver a Hoy':'← Anterior'}</button><span>${p} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed4-action="exit">Salir a Hoy</button></nav>`;
+ m.host.innerHTML=`<section class="spm-ed4-session spm-er-fullscreen" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(p===2)clockUI(m);
 }
 function move(m,target){
@@ -117,20 +117,20 @@ async function save(m){
  if(!m.sense){required(m,'Regresa a la primera pantalla y elige una señal de atención.');return}
  if(!m.result){required(m,'Elige cómo fue tu experiencia antes de guardar.');return}
  stopAudio(m);pauseTimer(m);
- const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:4,activity:'Vuelve a las sensaciones',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),attentionSense:m.sense,practiceExperience:m.result,finalFeeling:typeof m.prior.finalFeeling==='string'&&m.prior.finalFeeling.length<=1000?m.prior.finalFeeling:'',seconds:m.timerUsed?Math.min(300,Math.max(0,Math.floor(m.timerTotal/1000))):null,lessonFormat:'three-approved-touch-screens'};
+ const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:m.calendarDay,erectionLesson:4,activity:'Vuelve a las sensaciones',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),attentionSense:m.sense,practiceExperience:m.result,finalFeeling:typeof m.prior.finalFeeling==='string'&&m.prior.finalFeeling.length<=1000?m.prior.finalFeeling:'',seconds:m.timerUsed?Math.min(300,Math.max(0,Math.floor(m.timerTotal/1000))):null,lessonFormat:'three-approved-touch-screens'};
  m.busy=true;status(m,'Guardando tu registro de hoy…');const b=m.host.querySelector('[data-ed4-action="save"]');if(b)b.disabled=true;
  let saved;
  try{saved=await m.save(record);if(saved===false||saved?.ok===false)throw Error('save-failed')}
  catch{m.busy=false;if(m.host.isConnected)status(m,'No se pudo guardar. Tus respuestas siguen en pantalla; puedes intentarlo otra vez.');if(b?.isConnected)b.disabled=false;return}
  const c=window.SPM_RESOURCE_CONTEXT?.();
- if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==4))return;
+ if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==m.calendarDay))return;
  // Guardar en el motor central puede reconstruir Hoy y desmontar este visor.
  if(m.host.isConnected){try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}}
 }
-function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}){
+function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',calendarDay=4}){
  if(!host||typeof onSave!=='function')return false;
  stop();const p=prior&&typeof prior==='object'&&!Array.isArray(prior)?prior:{};
- const m={host,prior:{...p},valid,save:onSave,onBack,scope,page:1,sense:SENSES.some(([v])=>v===p.attentionSense)?p.attentionSense:null,result:RESULTS.some(([v])=>v===p.practiceExperience)?p.practiceExperience:null,timerTotal:0,timerStart:null,timerUsed:false,timer:null,voiceKey:null,busy:false,message:'',events:new AbortController()};
+ const m={calendarDay:Number(calendarDay),host,prior:{...p},valid,save:onSave,onBack,scope,page:1,sense:SENSES.some(([v])=>v===p.attentionSense)?p.attentionSense:null,result:RESULTS.some(([v])=>v===p.practiceExperience)?p.practiceExperience:null,timerTotal:0,timerStart:null,timerUsed:false,timer:null,voiceKey:null,busy:false,message:'',events:new AbortController()};
  active=m;render(m);
  host.addEventListener('click',ev=>{
   if(active!==m||!m.valid()||m.busy)return;

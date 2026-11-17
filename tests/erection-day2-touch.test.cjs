@@ -27,10 +27,10 @@ test('audio día 2 intacto, otros audios no recortados y sin superposiciones',()
  assert.match(js,/erection-day-2-20261113\.mp3/);assert.match(js,/SpeechSynthesisUtterance/);assert.match(js,/speechSynthesis\?\.cancel/);
  assert.match(js,/1:'Reconoce tus contextos/);assert.match(js,/2:'Ahora identifica/);assert.match(js,/3:'Identifica tu dificultad/);assert.match(js,/4:'Ponlo en práctica/);
 });
-test('guardado real de día 2, sin afectar el día 1 ni los demás módulos',()=>{
- assert.match(bridge,/Number\(c\.day\)!==2/);assert.match(bridge,/c\.primary!=='erection'/);
- assert.match(bridge,/SPM_DAILY_PRACTICE\.saveActivity\('main',record,s,2\)/);
- assert.match(js,/erectionPracticeVersion:1,day:2/);assert.match(js,/responseAspect:m\.aspect/);assert.match(js,/contextPlan:m\.plan/);
+test('la segunda sesión se guarda el día 3 sin afectar otros módulos',()=>{
+ assert.match(bridge,/Number\(c\.day\)!==3/);assert.match(bridge,/c\.primary!=='erection'/);
+ assert.ok(bridge.includes("saveActivity('main',{...record,day:3,erectionLesson:2},s,3)"));
+ assert.match(js,/erectionPracticeVersion:1,day:m\.calendarDay,erectionLesson:2/);assert.match(js,/responseAspect:m\.aspect/);assert.match(js,/contextPlan:m\.plan/);
  assert.match(live,/erection-day2-touch-v1\.js/);assert.match(live,/erection-day2-bridge-v1\.js/);
  assert.ok(live.indexOf('erection-day2-bridge-v1.js')>live.indexOf('erection-day1-bridge-v1.js'));
  assert.ok(live.indexOf('erection-day2-bridge-v1.js')<live.indexOf('daily-practice-v1.js'));

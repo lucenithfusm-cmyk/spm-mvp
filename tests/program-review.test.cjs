@@ -146,9 +146,10 @@ test('a failed lab close prevents navigation; successful navigation closes actua
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('erection',8),false);w.SPM_DESIRE_LAB.close=original;
     assert.equal(w.SPM_RESOURCE_CONTEXT().primary,'desire');assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
     assert.equal(w.document.querySelector('#reviewProgram').value,'desire');assert.equal(w.document.querySelector('#reviewDay').value,'1');
-    await w.SPM_PROGRAM_REVIEW.select('erection',7);await wait();
-    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDeModal.on'));
-    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('#spmDeModal.on'),null);
+    await w.SPM_PROGRAM_REVIEW.select('erection',9);await wait();
+    await w.SPM_DAILY_PRACTICE.launch('main');await wait();assert.ok(w.document.querySelector('[data-ed4-session]'));
+    assert.equal(w.document.querySelector('#spmDeModal.on'),null,'no se utiliza el modal DE obsoleto');
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',1),true);await wait();assert.equal(w.document.querySelector('[data-ed4-session]'),null);
     await w.SPM_DAILY_PRACTICE.launch('main');const premium=w.document.querySelector('#spmSqueezeV1');assert.ok(premium&&!premium.hidden);assert.ok(premium.shadowRoot.querySelector('#stage img'));assert.equal(w.document.querySelector('#spmEcModal.on'),null);
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',8),true);await wait();
      assert.equal(w.document.querySelector('#spmSqueezeV1').hidden,true);
@@ -225,141 +226,85 @@ test('day 28 closing audio stays separate from navigation and opens the final re
   }finally{h.close();}
 });
 
-test('erection days 1–5 open the recorded inline practice and save only its explicit responses',async()=>{
-  const h=await harness('?programa=erection&dia=1');try{
-    const {w}=h,api=w.SPM_DAILY_PRACTICE;
-    for(const day of [1,2,3,4,5]){
-      if(day!==1){await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();}
-      const c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId,card=w.document.querySelector('[data-activity="main"]');
-      assert.equal(card.dataset.directPractice,'erection');
-      assert.equal(card.querySelector('[data-daily-confirm]'),null,'no unchecked shortcut to completion');
-      assert.equal(card.querySelector('[data-spm-speak]'),null,'no competing outer narration');
-      await assert.rejects(api.saveActivity('main',{confirmed:true}),/Completa las acciones/);
-      await api.launch('main');
-      const panel=w.document.querySelector('[data-erection-practice]'),form=panel.querySelector('form');
-      assert.equal(w.document.querySelector('#spmDeModal.on'),null);
-      assert.equal(w.document.querySelector('#spmDailySession').dataset.focusedPractice,'erection');
-      assert.equal(panel.querySelector('audio').getAttribute('src'),day===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':'/premium-v2/assets/audio/erection/erection-day-'+day+'-20261113.mp3');
-      assert.equal(panel.querySelector('[data-checkpoint-audio-transcript]').open,false);
-      assert.equal(form.elements.namedItem('anxiety').value,'');assert.equal(form.elements.namedItem('confidence').value,'');
-      if(day===1)form.querySelector('[name="ehs"][value="na"]').checked=true;
-      if(day===2){
-        form.elements.namedItem('context-spontaneous').value='not_evaluable';
-        form.elements.namedItem('context-solo').value='variable';
-        form.elements.namedItem('context-partner').value='difficult';
-        form.querySelector('[name="responseAspect"][value="maintain"]').checked=true;
-      }
-      if(day===3){
-        form.querySelector('[name="tensionArea"][value="none"]').checked=true;
-        form.querySelector('[name="sensoryAnchor"][value="hands"]').checked=true;
-        assert.equal(panel.querySelector('[data-erection-time]').textContent,'00:00');
-      }
-      if(day===4){
-        form.querySelector('[name="attentionSense"][value="temperature"]').checked=true;
-        form.querySelector('[name="practiceExperience"][value="no_checking"]').checked=true;
-        assert.equal(panel.querySelector('[data-erection-time]').textContent,'00:00');
-      }
-      if(day===5){
-        form.querySelector('[name="erectionFacilitators"][value="privacy"]').checked=true;
-        form.querySelector('[name="erectionInhibitors"][value="pressure"]').checked=true;
-        form.querySelector('[name="microAdjustment"][value="time"]').checked=true;
-      }
-      form.elements.namedItem('confirmed').checked=true;
-      form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));await wait();
-      const records=await w.SPM_DAILY_RECORDS.read(scope,day);
-      assert.equal(Object.keys(records).join(','),'main');
-      assert.equal(records.main.completed,true);assert.equal(records.main.anxiety,null);assert.equal(records.main.confidence,null);
-      assert.equal(w.SPM_RESOURCE_CONTEXT().day,day);assert.equal(w.SPM_RESOURCE_CONTEXT().completed.length,0);
-      assert.equal(w.document.querySelector('[data-erection-practice]'),null);
-      assert.equal(w.document.querySelector('#spmDailySession').dataset.focusedPractice,undefined);
-      assert.equal(w.document.querySelector('#spmDailyWorkspace [data-spm-next]'),null,'no intermediate continuation');
-      assert.equal(w.document.querySelector('#plan').dataset.spmDailyView,'today','save returns directly to Hoy');
-      assert.ok(w.document.querySelector('[data-activity="main"] .spm-daily-saved'),'record is reflected in Hoy');
-      assert.equal(w.document.querySelector('#spmDailyComplete').disabled,true,'other required activities remain pending');
-      if(day===1){assert.equal(records.main.ehs,null);assert.equal(records.main.ehsEvaluable,false);}
-      if(day===2)assert.equal(records.main.contexts.solo,'variable');
-      if(day===3){assert.equal(records.main.seconds,null);assert.equal(records['breath-learn'],undefined);assert.ok(api.nextActivities().some(a=>a.id==='breath-learn'));}
-      if(day===4){assert.equal(records.main.seconds,null);assert.equal(records.main.practiceExperience,'no_checking');assert.ok(api.nextActivities().some(a=>a.id==='sensate-prepare'));assert.ok(api.nextActivities().some(a=>a.id==='recovery-condom'));}
-      if(day===5){assert.equal(records.main.microAdjustment,'time');assert.equal(records.main.erectionFacilitators.join(','),'privacy');assert.ok(api.nextActivities().some(a=>a.id==='de-desire-5'));}
-      api.open();await api.launch('main');
-      const reopened=w.document.querySelector('[data-erection-form]');
-      assert.equal(reopened.elements.namedItem('confirmed').checked,false,'reopening does not manufacture a new confirmation');
-      if(day===1)assert.equal(reopened.querySelector('[name="ehs"][value="na"]').checked,true);
-    }
-    assert.deepEqual(h.errors,[]);
-  }finally{h.close();}
+test('Erección distribuye cuatro sesiones aprobadas, no abre el formulario antiguo y reserva el día 12',async()=>{
+ const h=await harness('?programa=erection&dia=1');
+ try{
+  const {w}=h,api=w.SPM_DAILY_PRACTICE;
+  for(const [day,lesson,count] of [[1,1,6],[3,2,4],[6,3,3],[9,4,3]]){
+   await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
+   const c=w.SPM_RESOURCE_CONTEXT(),main=api.assignments()[0];
+   assert.equal(main.kind,'erection');assert.equal(main.erectionLesson,lesson);
+   const release=w.SPM_ACTIVE_MODULE_RELEASE.resolve(c,main);
+   assert.ok(release);assert.equal(release.screens,count);
+   const activity=w.document.querySelector('[data-activity="main"]');
+   assert.ok(activity.querySelector('[data-daily-open]'));
+   await api.launch('main');await wait();
+   assert.ok(w.document.querySelector('.spm-ed'+lesson+'-session.spm-er-fullscreen[data-screen="1"]'),'la actividad '+lesson+' se abre desde Hoy el día '+day);
+   assert.equal(w.document.querySelector('[data-erection-form]'),null,'sin formularios de la rama antigua');
+  }
+  for(const day of [2,4,5,7,8,10,11,12,14,15,18,21,24,27,28]){
+   await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
+   const main=api.assignments()[0],card=w.document.querySelector('[data-activity="main"]');
+   assert.equal(main.kind,'erection-support-day');
+   assert.equal(card.dataset.erectionTransversal,'true');
+   assert.equal(card.querySelector('[data-daily-open]'),null);
+   assert.equal(w.document.querySelector('[data-erection-form]'),null);
+   if(day===12)assert.equal(main.erectionScheduledLesson,5);
+   if([14,28].includes(day))assert.ok(api.assignments().some(a=>a.kind==='program-checkpoint'));
+  }
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });
-
-test('a same-day safety refresh restores the overview and cannot save a detached erection practice',async()=>{
-  const h=await harness('?programa=erection&dia=3');try{
-    const {w}=h,originalContext=w.SPM_RESOURCE_CONTEXT,c=originalContext(),scope=c.userId+':'+c.planId;
-    await w.SPM_DAILY_PRACTICE.launch('main');
-    const form=w.document.querySelector('[data-erection-form]');
-    form.querySelector('[name="tensionArea"][value="none"]').checked=true;
-    form.querySelector('[name="sensoryAnchor"][value="hands"]').checked=true;
-    form.elements.namedItem('confirmed').checked=true;
-    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),safety:'urgent'});
-    w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
-    assert.equal(form.isConnected,false);
-    assert.equal(w.document.querySelector('#spmDailySession').dataset.focusedPractice,undefined);
-    assert.ok(w.document.querySelector('[data-daily-safety]'));
-    assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').textContent,'Ver indicación y opciones');
-    form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));await wait();
-    assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,3)).length,0);
-    assert.equal(w.SPM_RESOURCE_CONTEXT().day,3);assert.deepEqual(h.errors,[]);
-  }finally{h.close();}
+test('Una restricción posterior cierra la sesión táctil del día 6 e impide un guardado vencido',async()=>{
+ const h=await harness('?programa=erection&dia=6');
+ try{
+  const {w}=h,originalContext=w.SPM_RESOURCE_CONTEXT,c=originalContext(),scope=c.userId+':'+c.planId;
+  await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+  assert.ok(w.document.querySelector('[data-ed3-session]'));
+  w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),safety:'urgent'});
+  w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
+  assert.equal(w.document.querySelector('[data-ed3-session]'),null);
+  assert.ok(w.document.querySelector('[data-daily-safety]'));
+  assert.equal(w.SPM_DAILY_PRACTICE.restricted(w.SPM_RESOURCE_CONTEXT(),'main'),true);
+  await assert.rejects(w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true},scope,6));
+  assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });
-
-test('a slow daily-record load cannot open and then discard an erection response form',async()=>{
-  const h=await harness('?programa=erection&dia=1');try{
-    const {w}=h,read=w.SPM_DAILY_RECORDS.read;let resolveRead;
-    w.SPM_DAILY_RECORDS.read=()=>new Promise(resolve=>{resolveRead=resolve;});
-    await w.SPM_PROGRAM_REVIEW.select('erection',2);await wait();
-    assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').disabled,true);
-    await w.SPM_DAILY_PRACTICE.launch('main');
-    assert.equal(w.document.querySelector('[data-erection-form]'),null);
-    assert.match(w.document.querySelector('#spmDailyStatus').textContent,/recuperando tus registros/);
-    w.SPM_DAILY_RECORDS.read=read;resolveRead({});await wait();
-    assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').disabled,false);
-    await w.SPM_DAILY_PRACTICE.launch('main');
-    assert.ok(w.document.querySelector('[data-erection-form]'));
-    assert.deepEqual(h.errors,[]);
-  }finally{h.close();}
+test('Una carga lenta no abre ni descarta la sesión táctil actual de día 3',async()=>{
+ const h=await harness('?programa=erection&dia=1');
+ try{
+  const {w}=h,read=w.SPM_DAILY_RECORDS.read;let resolveRead;
+  w.SPM_DAILY_RECORDS.read=()=>new Promise(resolve=>{resolveRead=resolve});
+  await w.SPM_PROGRAM_REVIEW.select('erection',3);await wait();
+  assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').disabled,true);
+  await w.SPM_DAILY_PRACTICE.launch('main');
+  assert.equal(w.document.querySelector('[data-ed2-session]'),null);
+  w.SPM_DAILY_RECORDS.read=read;resolveRead({});await wait();
+  assert.equal(w.document.querySelector('[data-activity="main"] [data-daily-open]').disabled,false);
+  await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+  assert.ok(w.document.querySelector('[data-ed2-session]'));
+  assert.equal(w.document.querySelector('[data-erection-form]'),null);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });
-
-test('day six keeps strength separate while day three hosts the one weekly awareness Lab',async()=>{
- const h=await harness('?programa=erection&dia=6');try{
+test('Día 6 mantiene su sesión propia y la fuerza pélvica como apoyo independiente',async()=>{
+ const h=await harness('?programa=erection&dia=6');
+ try{
   const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
   const main=api.assignments().find(a=>a.id==='main');
-  assert.equal(main.kind,'pelvic');assert.equal(main.pelvicPreference,'classic');assert.equal(main.pelvicIntent,'scheduled');assert.equal(main.optional,true);
+  assert.equal(main.kind,'erection');assert.equal(main.erectionLesson,3);
+  const strength=api.assignments().find(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
+  assert.ok(strength);assert.equal(strength.optional,true);assert.notEqual(strength.id,'main');
   assert.equal(api.assignments().some(a=>a.id==='pelvic-daily-lab'),false);
-  assert.match(w.document.querySelector('[data-activity="main"] audio').getAttribute('src'),/resource2\.heygen\.ai\/text_to_speech/);assert.match(w.document.querySelector('[data-activity="main"] [data-checkpoint-audio-transcript]').textContent,/En cada paso encontrarás una bocina/);
-  await api.launch('main');assert.match(w.document.querySelector('#spmPelvicV2:not([hidden]) .pv2-cover-crop img').getAttribute('alt'),/Conoce tu piso pélvico/);assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
-  w.SPM_PELVIC_V2.close();
-  const originalContext=w.SPM_RESOURCE_CONTEXT,originalClassic=w.SPM_PELVIC_V2.open,calls=[];
-  w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),answers:{pf_awareness:'good_control',pf_tension:1,e_maint:1}});
-  w.SPM_PELVIC_V2.open=opts=>{calls.push(opts);return true;};
-  w.dispatchEvent(new w.Event('spm:resourcecontext'));await wait();
-  await api.launch('main');assert.equal(calls.length,1);assert.equal(calls[0].readiness(),'ready');assert.equal(calls[0].intent,'scheduled');
-  const originalRead=w.SPM_PELVIC_RECORDS.read;w.SPM_PELVIC_RECORDS.read=async()=>({'pf-overload':[0]});
-  await api.launch('main');assert.equal(calls.length,1,'overload keeps strength paused');
-  assert.equal(w.document.querySelector('.spm-pf-modal[open] iframe'),null);
-  await w.SPM_PELVIC_LAB.close();w.SPM_PELVIC_RECORDS.read=originalRead;w.SPM_PELVIC_V2.open=originalClassic;w.SPM_RESOURCE_CONTEXT=originalContext;
-  assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);
+  await api.launch('main');await wait();
+  assert.ok(w.document.querySelector('[data-ed3-session]'));
   await w.SPM_PROGRAM_REVIEW.select('erection',3);await wait();
-  const lab=api.assignments().find(a=>a.id==='pelvic-daily-lab');assert.ok(lab);assert.equal(lab.pelvicIntent,'daily-relax');assert.equal(lab.optional,true);
-  const card=w.document.querySelector('[data-activity="pelvic-daily-lab"]');
-  assert.equal(card.querySelector('[data-daily-recorded-guide]'),null);assert.equal(card.querySelector('audio'),null);
-  assert.equal(card.querySelector('[data-daily-confirm]'),null);
-  await api.launch('pelvic-daily-lab');assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
-  assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().intent,'daily-relax');
-  assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().day,3);
-  assert.equal(w.SPM_PELVIC_LAB_HOST.getContext().activityId,'pelvic-daily-lab');
-  await w.SPM_PELVIC_LAB.close();
-  assert.deepEqual(h.errors.filter(e=>!e.includes('Not implemented: HTMLMediaElement.prototype.pause')),[],'iframe audio stubs are unavailable in JSDOM, not in the real player');
- }finally{h.close();}
+  assert.ok(api.assignments().some(a=>a.id==='pelvic-daily-lab'));
+  assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(scope,6)).length,0);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });
-
 test('DE day one includes an actionable body-release and no-hold breathing practice with Lenny guidance',async()=>{
   const h=await harness('?programa=erection&dia=1');try{
     const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
@@ -374,25 +319,26 @@ test('DE day one includes an actionable body-release and no-hold breathing pract
   }finally{h.close();}
 });
 
-test('days four and six remain paused under review and day five retains its educational alternative',async()=>{
-  const h=await harness('?programa=erection&dia=4');try{
-    const {w}=h,originalContext=w.SPM_RESOURCE_CONTEXT;
-    w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),safety:'review'});
-    for(const day of [4,5,6]){
-      await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
-      const main=w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='main');
-      assert.equal(w.SPM_DAILY_PRACTICE.restricted(w.SPM_RESOURCE_CONTEXT(),main),day!==5);
-      await w.SPM_DAILY_PRACTICE.launch('main');
-      assert.equal(w.document.querySelector('[data-erection-practice]'),null);
-      assert.equal(w.document.querySelector('.spm-pf-modal[open]'),null);
-      assert.equal(w.document.querySelector('[data-daily-pelvic-guide]'),null);
-      if(day===5){assert.equal(main.kind,'worksheet');assert.ok(w.document.querySelector('#spmDailyWorkspace [name="reflection"]'));}
-      const c=w.SPM_RESOURCE_CONTEXT();assert.equal(c.safety,'review');assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,day)).length,0);
-    }
-    assert.deepEqual(h.errors,[]);
-  }finally{h.close();}
+test('Con alerta de revisión los días transversales siguen disponibles sin activar el módulo antiguo',async()=>{
+ const h=await harness('?programa=erection&dia=4');
+ try{
+  const {w}=h,originalContext=w.SPM_RESOURCE_CONTEXT;
+  w.SPM_RESOURCE_CONTEXT=()=>({...originalContext(),safety:'review'});
+  for(const day of [4,5,6]){
+   await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
+   const main=w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='main');
+   assert.equal(main.kind,day===6?'erection':'erection-support-day');
+   assert.equal(w.SPM_DAILY_PRACTICE.restricted(w.SPM_RESOURCE_CONTEXT(),main),day===6);
+   await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+   assert.equal(w.document.querySelector('[data-erection-form]'),null);
+   assert.equal(w.document.querySelector('[data-ed3-session]'),null);
+   const c=w.SPM_RESOURCE_CONTEXT();
+   assert.equal(c.safety,'review');
+   assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,day)).length,0);
+  }
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
 });
-
 test('DE day two opens the real seven-step strength interface with the unmodified review profile',async()=>{
  const h=await harness('?programa=erection&dia=2');try{
   const {w}=h,api=w.SPM_DAILY_PRACTICE;
@@ -470,21 +416,20 @@ test('days 15/17/19 open pelvic-floor combined rather than obsolete EP modal; we
   assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });
-test('los Días 3 y 4 de Erección abren sus pantallas táctiles desde Hoy sin formularios antiguos',async()=>{
- for(const day of [3,4]){
+test('las actividades reprogramadas 2, 3 y 4 se abren en días 3, 6 y 9 sin formularios antiguos',async()=>{
+ for(const [day,lesson,count] of [[3,2,4],[6,3,3],[9,4,3]]){
   const h=await harness('?programa=erection&dia='+day);
   try{
    const {w}=h,main=w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='main');
-   assert.equal(main.kind,'erection');
-   assert.equal(w.SPM_ACTIVE_MODULE_RELEASE.resolve(w.SPM_RESOURCE_CONTEXT(),main).screens,3);
+   assert.equal(main.kind,'erection');assert.equal(main.erectionLesson,lesson);
+   assert.equal(w.SPM_ACTIVE_MODULE_RELEASE.resolve(w.SPM_RESOURCE_CONTEXT(),main).screens,count);
    await w.SPM_DAILY_PRACTICE.launch('main');await wait();
-   assert.ok(w.document.querySelector('.spm-ed'+day+'-session[data-screen="1"]'),'pantalla táctil real del día '+day);
+   assert.ok(w.document.querySelector('.spm-ed'+lesson+'-session[data-screen="1"]'));
    assert.equal(w.document.querySelector('[data-erection-form]'),null);
    assert.deepEqual(h.errors,[]);
   }finally{h.close()}
  }
 });
-
 test('El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el CTA',async()=>{
  const h=await harness('?programa=erection&dia=1');
  try{

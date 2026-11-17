@@ -111,8 +111,8 @@ function render(m){
   ANCHORS.forEach(([value,label,box,center])=>{hits+=hotspot(box,'anchor','Seleccionar '+label,{value,selected:m.anchor===value});if(m.anchor===value)over+=marker(center[0],center[1],value)});
   hits+=hotspot([27,1402,831,1507],'save','Guardar y volver a Hoy',{disabled:m.busy});
  }
- const toolbar=`<nav class="spm-ed3-toolbar" aria-label="Navegación Erección y firmeza, día 3"><button type="button" data-ed3-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día 3</span><button type="button" data-ed3-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed3-session spm-er-fullscreen" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día 3, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ const toolbar=`<nav class="spm-ed3-toolbar" aria-label="Navegación Erección y firmeza, día 3"><button type="button" data-ed3-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed3-action="exit">Salir a Hoy</button></nav>`;
+ m.host.innerHTML=`<section class="spm-ed3-session spm-er-fullscreen" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(m.page===2)timerUI(m);
 }
 function move(m,target){if(!m||!m.valid()||m.busy)return;
@@ -134,7 +134,7 @@ async function save(m){
  if(!m.area){required(m,'Regresa a la pantalla 1 y elige una zona o «No identifico tensión».');return}
  if(!m.anchor){required(m,'Elige un ancla sensorial o «No lo identifiqué».');return}
  stopAudio(m);stopTimer(m);
- const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:3,activity:'Reconoce y suelta la tensión',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),
+ const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:m.calendarDay,erectionLesson:3,activity:'Reconoce y suelta la tensión',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),
   tensionAreas:[m.area],sensoryAnchor:m.anchor,finalFeeling:typeof m.prior.finalFeeling==='string'&&m.prior.finalFeeling.length<=1000?m.prior.finalFeeling:'',
   seconds:m.timerUsed?Math.min(60,Math.max(0,Math.round(m.usedMs/1000))):null,lessonFormat:'three-approved-touch-screens'};
  m.busy=true;status(m,'Guardando tu práctica de hoy…');
@@ -143,17 +143,17 @@ async function save(m){
  try{saved=await m.save(record);if(saved===false||saved?.ok===false)throw Error('save-failed')}
  catch{m.busy=false;if(m.host.isConnected)status(m,'No se pudo guardar. Tus respuestas permanecen aquí; vuelve a intentarlo.');if(button?.isConnected)button.disabled=false;return}
  const c=window.SPM_RESOURCE_CONTEXT?.();
- if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==3))return;
+ if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==m.calendarDay))return;
  // El propio motor de SPM puede cerrar el ejercicio al guardar. No duplicar el retorno.
  if(m.host.isConnected){try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}}
 }
-function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}){
+function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',calendarDay=3}){
  if(!host||typeof onSave!=='function')return false;
  stop();
  const p=prior&&typeof prior==='object'&&!Array.isArray(prior)?prior:{};
  const first=Array.isArray(p.tensionAreas)?p.tensionAreas.find(x=>AREAS.some(([key])=>key===x)):null;
  const priorAnchor=ANCHORS.some(([key])=>key===p.sensoryAnchor)?p.sensoryAnchor:null;
- const m={host,prior:{...p},valid,save:onSave,onBack,scope,page:1,area:first||null,anchor:priorAnchor,player:null,voiceKey:null,lastStep:-1,
+ const m={calendarDay:Number(calendarDay),host,prior:{...p},valid,save:onSave,onBack,scope,page:1,area:first||null,anchor:priorAnchor,player:null,voiceKey:null,lastStep:-1,
   startedAt:null,usedMs:0,timer:null,timerUsed:false,events:new AbortController(),busy:false,message:''};
  active=m;render(m);
  host.addEventListener('click',ev=>{
