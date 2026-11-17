@@ -19,6 +19,8 @@ let day=validDay(params.get('dia'))?Number(params.get('dia')):1;
 // Open Focus II directly on day 19, and Focus I when a session-specific review link requests it.
 const focalDays=new Set([4,8,12,19,23,26]);
 const initialFocusII=params.has('programa')&&focalDays.has(day)&&(day===19||params.get('abrir')==='focalizacion');
+// Enlace de revisión aislado: no usa cuentas reales ni altera el calendario.
+const directErectionDay1=program==='erection'&&day===1&&params.get('abrir')==='ereccion';
 let focusing=false;
 let busy=true,ready=false;
 const states=new Map();
@@ -147,7 +149,7 @@ const scripts=[
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261116-focusii-direct-today-v2','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
   'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
-  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261114-pelvic-adaptive6','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261116-focusii-direct-today-v2','daily-practice-v1.js?v=20261116-focusii-direct-today-v2'
+  'erection-daily-plan-v1.js','daily-resource-plan-v1.js?v=20261114-pelvic-adaptive6','checkpoint-audio-v1.js?v=20261113-checkpoint2','program-checkpoint-v1.js?v=20261113-closing1','erection-practice-v1.js?v=20261116-focusii-direct-today-v2','erection-day1-touch-v1.js?v=20261116-review-direct1','daily-practice-v1.js?v=20261116-focusii-direct-today-v2'
 ];
 async function boot(){
   try{
@@ -162,6 +164,18 @@ async function boot(){
     ready=true;busy=false;render();
     $('reviewOpenFocusII').onclick=()=>void openFocusII();
     if(initialFocusII)setTimeout(()=>{void openFocusII();},120);
+    if(directErectionDay1){
+      // Esperar a que Hoy haya recuperado los datos simulados antes de abrir.
+      let attempts=0;
+      const openTouch=()=>{
+        if(!ready||busy||program!=='erection'||day!==1||window.SPM_ERECTION_DAY1_TOUCH?.active)return;
+        if(attempts++>=30){status('Abre la actividad principal para recorrer las seis pantallas.',true);return;}
+        const activity=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.id==='main');
+        if(activity?.kind==='erection')void Promise.resolve(window.SPM_DAILY_PRACTICE.launch('main')).catch(()=>{});
+        if(!window.SPM_ERECTION_DAY1_TOUCH?.active)setTimeout(openTouch,260);
+      };
+      setTimeout(openTouch,350);
+    }
     $('reviewProgram').onchange=e=>select(e.target.value,day);
     $('reviewDay').onchange=e=>select(program,e.target.value);
     $('reviewPrevious').onclick=()=>select(program,day-1);$('reviewNext').onclick=()=>select(program,day+1);
