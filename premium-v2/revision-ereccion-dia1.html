@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#102e49">
+<title>SPM · Revisión · Erección y firmeza · Día 1</title>
+<link rel="stylesheet" href="erection-day1-touch-v1.css?v=ed1-review-20261116">
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#091d33;color:#f7f4eb;font-family:system-ui,-apple-system,sans-serif}
+header{max-width:580px;margin:0 auto;padding:12px 14px}
+header strong{display:block;letter-spacing:.11em;color:#f1cc79;font-size:11px}
+header h1{font-size:clamp(19px,5vw,25px);line-height:1.2;margin:5px 0}
+header p{font-size:13px;line-height:1.4;margin:4px 0 8px;color:#c9e1eb}
+header button{padding:10px 14px;border:1px solid #e6c47d;border-radius:12px;background:#143953;color:#fff;min-height:44px;cursor:pointer;font:inherit;font-size:13px}
+main{padding:0 8px 25px;max-width:580px;margin:auto}
+.spm-ed1-session{border:1px solid rgba(230,196,124,.5)}
+</style>
+</head>
+<body>
+<header>
+ <strong>SPM · VISTA DE REVISIÓN</strong>
+ <h1>Sesión 1 · Erección y firmeza</h1>
+ <p>Seis láminas interactivas y audios, con datos simulados. Esta revisión no guarda información real ni habilita compras.</p>
+ <button id="restart">↻ Reiniciar recorrido</button>
+</header>
+<main id="spmDailyWorkspace" aria-label="Vista de revisión de las seis pantallas"></main>
+<script src="erection-day1-touch-v1.js?v=ed1-review-20261116"></script>
+<script>
+(()=>{'use strict';
+let record=null;
+const mount=()=>window.SPM_ED_DAY1_TOUCH.mount({
+ host:document.getElementById('spmDailyWorkspace'),prior:{},scope:'spm-review:day1',valid:()=>true,
+ save:async data=>{
+  if(data.erectionPracticeVersion!==1||data.day!==1||!data.confirmed||!['maintained','returned','difficult','omitted'].includes(data.attentionPracticeOutcome)||!(data.ehsEvaluable===false&&data.ehs===null||data.ehsEvaluable===true&&Number.isInteger(data.ehs)&&data.ehs>=0&&data.ehs<=4))throw Error('Registro de muestra inválido');
+  record=data;return {ok:true};
+ },onBack:()=>{document.getElementById('restart').focus();mount()}
+});
+document.addEventListener('DOMContentLoaded',()=>{mount();document.getElementById('restart').onclick=mount});
+window.SPM_ED1_REVIEW={getRecord:()=>record,reset:mount};
+})();
+</script>
+</body></html>
