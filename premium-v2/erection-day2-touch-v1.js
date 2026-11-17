@@ -82,8 +82,8 @@
    PLANS.forEach(([key,label],i)=>{hits+=button(cells[i],'plan','Seleccionar '+label,{value:key,selected:m.plan===key});if(m.plan===key)over+=checkCircle(cells[i][0]+43,Math.round((cells[i][1]+cells[i][3])/2),key)});
    hits+=button([49,1701,1032,1833],'save','Guardar y continuar mi ruta de hoy',{disabled:m.busy});
   }
-  const toolbar=`<nav class="spm-ed2-toolbar" aria-label="Navegación de Erección y firmeza día 2"><button type="button" data-ed2-act="back">${page===1?'← Volver a Hoy':'← Anterior'}</button><span>${page} de 4 · Día 2</span>${page===2?'<button type="button" data-ed2-act="audio" data-ed2-audio="guide" aria-label="Escuchar guía de condiciones">🔊 Guía</button>':'<button type="button" data-ed2-act="exit">Salir a Hoy</button>'}</nav>`;
-  m.host.innerHTML=`<section class="spm-ed2-session spm-er-fullscreen" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día 2, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+  const toolbar=`<nav class="spm-ed2-toolbar" aria-label="Navegación de Erección y firmeza día 2"><button type="button" data-ed2-act="back">${page===1?'← Volver a Hoy':'← Anterior'}</button><span>${page} de 4 · Día ${m.calendarDay}</span>${page===2?'<button type="button" data-ed2-act="audio" data-ed2-audio="guide" aria-label="Escuchar guía de condiciones">🔊 Guía</button>':'<button type="button" data-ed2-act="exit">Salir a Hoy</button>'}</nav>`;
+  m.host.innerHTML=`<section class="spm-ed2-session spm-er-fullscreen" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  }
  function status(m){const p=m?.host?.querySelector('[data-ed2-status]');if(p)p.textContent=m.message||'';}
  function required(m,text){m.message=text;status(m);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
@@ -98,7 +98,7 @@
   if(CONTEXTS.some(([k])=>!m.contexts[k])){required(m,'Faltan respuestas de la primera pantalla. Vuelve y completa los tres contextos.');return;}
   if(!m.aspect){required(m,'Antes de guardar, elige tu dificultad principal en la pantalla 3.');return;}
   if(!m.plan){required(m,'Elige una condición para preparar, o No fue posible hoy.');return;}
-  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:2,activity:'Reconoce tus contextos',confirmed:true,anxiety:null,confidence:null,
+  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:m.calendarDay,erectionLesson:2,activity:'Reconoce tus contextos',confirmed:true,anxiety:null,confidence:null,
    date:new Date().toISOString(),contexts:{...m.contexts},responseAspect:m.aspect,
    favourableConditions:m.conditions.slice(),contextPlan:m.plan,contextActionPrepared:m.plan!=='not_possible',lessonFormat:'four-approved-touch-screens'};
   m.busy=true;m.message='Guardando la actividad de hoy…';status(m);const b=m.host.querySelector('[data-ed2-act="save"]');if(b)b.disabled=true;
@@ -109,7 +109,7 @@
   try{saved=await m.save(record);if(saved===false||saved?.ok===false)throw Error('save-failed');}
   catch{m.busy=false;m.message='No se pudo guardar. Tus respuestas continúan en pantalla; puedes reintentar.';if(m.host.isConnected)status(m);if(b?.isConnected)b.disabled=false;return}
   const c=window.SPM_RESOURCE_CONTEXT?.();
-  if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==2))return;
+  if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==m.calendarDay))return;
   m.message='Registro guardado correctamente ✓';
   if(m.host.isConnected)status(m);
   // El guardado de SPM también puede regresar a Hoy y desmontar este host.
@@ -117,11 +117,11 @@
   if(m.host.isConnected){try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}}
 
  }
- function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}){
+ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',calendarDay=2}){
   if(!host||typeof onSave!=='function')return false;
   stop();
   const old=prior&&typeof prior==='object'&&!Array.isArray(prior)?prior:{};
-  const m={host,scope,valid,save:onSave,onBack,prior:{...old},page:1,contexts:contextMap(old.contexts),
+  const m={calendarDay:Number(calendarDay),host,scope,valid,save:onSave,onBack,prior:{...old},page:1,contexts:contextMap(old.contexts),
    conditions:Array.isArray(old.favourableConditions)?old.favourableConditions.filter(x=>CONDITIONS.some(([k])=>k===x)):[],
    aspect:ASPECTS.some(([k])=>k===old.responseAspect)?old.responseAspect:null,
    plan:PLANS.some(([k])=>k===old.contextPlan)?old.contextPlan:null,
