@@ -253,7 +253,7 @@ async function launch(id){
  window.SPM_PRACTICE_AUDIO?.stop();pauseDailyVideo();
  const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a)return;
  // Si faltan los controladores aprobados, nunca mostrar el formulario viejo.
- if(c?.primary==='erection'&&[1,2].includes(Number(c.day))&&a.id==='main'&&a.kind==='erection'&&!window.SPM_ACTIVE_MODULE_RELEASE?.ready?.(c,a)){
+ if(c?.primary==='erection'&&[1,2,3].includes(Number(c.day))&&a.id==='main'&&a.kind==='erection'&&!window.SPM_ACTIVE_MODULE_RELEASE?.ready?.(c,a)){
   status('La sesión interactiva actual no se pudo cargar. Actualiza la página y vuelve a intentarlo; tu progreso se conserva.',true);
   return;
  }

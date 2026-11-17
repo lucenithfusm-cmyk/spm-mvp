@@ -1,0 +1,24 @@
+/* SPM Erección y firmeza · Día 3: tres pantallas médicas aprobadas. */
+.spm-ed3-session{width:min(100%,540px);max-width:540px;margin:0 auto;background:#0e4770;color:#fff;box-sizing:border-box;font:inherit}
+.spm-ed3-session *{box-sizing:border-box}
+.spm-ed3-artwork{position:relative;width:100%;aspect-ratio:864/1536;background-size:100% 100%;background-position:center top;background-repeat:no-repeat;background-color:#0b4970;overflow:hidden;isolation:isolate}
+.spm-ed3-hit{position:absolute;z-index:3;border:2px solid transparent;border-radius:19px;background:transparent;padding:0;margin:0;min-width:0;min-height:0;color:transparent;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;appearance:none}
+.spm-ed3-hit:focus-visible{outline:3px solid #fff1b9;outline-offset:0}
+.spm-ed3-hit:active{background:rgba(255,219,129,.13);border-color:#ffdf8b}
+.spm-ed3-hit.selected{border:3px solid rgba(77,149,199,.85);border-radius:27px;background:rgba(48,126,178,.08);box-shadow:0 0 8px rgba(199,234,250,.5)}
+.spm-ed3-hit.audio{border-radius:999px;box-shadow:0 0 9px rgba(255,208,110,.35);animation:spmEd3Sound 2.5s ease-in-out infinite alternate}
+.spm-ed3-hit.audio.playing{background:rgba(255,212,111,.19);border-color:#f5e4b9;box-shadow:0 0 18px 5px rgba(252,196,101,.7)}
+.spm-ed3-check{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#1485c8,#0a376c);border:3px solid #c8eafb;color:#fff;font-weight:950;font-size:clamp(16px,4vw,23px);line-height:1;box-shadow:0 0 0 1px #1675aa,0 0 8px rgba(81,166,219,.5);animation:spmEd3Check .16s ease-out both}
+.spm-ed3-timer-output{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;border-radius:999px;background:linear-gradient(125deg,#cdeafc,#ddf2ff);color:#072d60;font-size:clamp(20px,5.4vw,36px);font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.spm-ed3-timer-label{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;border-radius:999px;background:linear-gradient(135deg,#ffe9aa,#ecb63d);color:#092f5b;font-size:clamp(17px,4.5vw,26px);font-weight:900;line-height:1.1}
+.spm-ed3-timer-label[hidden]{display:none!important}
+.spm-ed3-toolbar{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:9px 10px;background:#112d47;border-top:1px solid #d4b57877;font-size:12px;min-height:61px}
+.spm-ed3-toolbar button{min-height:44px;background:#1e4766;border:1px solid #d5b373;border-radius:12px;color:#f6f8fc;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer}
+.spm-ed3-toolbar button:focus-visible{outline:3px solid #ffebad;outline-offset:2px}
+.spm-ed3-toolbar span{white-space:nowrap;color:#f0daa8;font-weight:800;font-size:12px}
+.spm-ed3-status{margin:0;padding:0 12px;color:#f3dfa9;background:#123852;font-size:13px;font-weight:750;text-align:center;line-height:1.5}
+.spm-ed3-status:not(:empty){padding:12px;border:1px solid #d7b57e70}
+@keyframes spmEd3Sound{to{box-shadow:0 0 14px 3px rgba(254,217,141,.65)}}
+@keyframes spmEd3Check{from{opacity:.4;transform:scale(.78)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.spm-ed3-hit.audio,.spm-ed3-check{animation:none}}
+@media(max-width:360px){.spm-ed3-toolbar{padding:7px 5px}.spm-ed3-toolbar button{font-size:10px;padding:8px 7px}.spm-ed3-toolbar span{font-size:10px}}
