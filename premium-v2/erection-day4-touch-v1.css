@@ -1,0 +1,23 @@
+/* SPM Erección y firmeza · Día 4: tres imágenes originales, superficies táctiles. */
+.spm-ed4-session{width:min(100%,540px);max-width:540px;margin:0 auto;background:#0d4569;color:#fff;box-sizing:border-box;font:inherit}
+.spm-ed4-session *{box-sizing:border-box}
+.spm-ed4-artwork{position:relative;width:100%;aspect-ratio:1080/1920;background-size:100% 100%;background-position:center top;background-repeat:no-repeat;background-color:#0a4871;overflow:hidden;isolation:isolate}
+.spm-ed4-hit{position:absolute;z-index:3;border:2px solid transparent;border-radius:19px;background:transparent;padding:0;margin:0;min-width:0;min-height:0;color:transparent;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;appearance:none}
+.spm-ed4-hit:focus-visible{outline:3px solid #fff1bd;outline-offset:1px}
+.spm-ed4-hit:active{background:rgba(254,219,137,.15);border-color:#ffe6a4}
+.spm-ed4-hit.selected{border:3px solid rgba(46,144,213,.95);border-radius:24px;background:rgba(38,130,180,.09);box-shadow:0 0 9px rgba(172,227,249,.5)}
+.spm-ed4-hit.audio{border-radius:999px;box-shadow:0 0 10px rgba(254,209,114,.35);animation:spmEd4Sound 2.3s ease-in-out infinite alternate}
+.spm-ed4-hit.audio.playing{background:rgba(252,212,114,.17);border-color:#fff1ce;box-shadow:0 0 18px 5px rgba(255,205,105,.68)}
+.spm-ed4-check{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;border-radius:50%;background:linear-gradient(130deg,#1384cb,#0d396b);border:3px solid #d9f2ff;color:#fff;font-weight:950;font-size:clamp(16px,4vw,23px);line-height:1;box-shadow:0 0 8px rgba(82,175,230,.5);animation:spmEd4Check .2s ease-out both}
+.spm-ed4-timer-output{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;color:#092e4b;font-size:clamp(17px,4.7vw,28px);font-weight:950;font-variant-numeric:tabular-nums;line-height:1;background:#d8edf4;border-radius:6px}
+.spm-ed4-timer-state{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;font-size:clamp(14px,3.6vw,19px);color:#113b61;font-weight:950}
+.spm-ed4-toolbar{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:9px 10px;background:#112d47;border-top:1px solid #d4b57877;font-size:12px;min-height:62px}
+.spm-ed4-toolbar button{min-height:44px;background:#1e4766;border:1px solid #d5b373;border-radius:12px;color:#f6f8fc;padding:8px 11px;font-size:12px;font-weight:800;cursor:pointer}
+.spm-ed4-toolbar button:focus-visible{outline:3px solid #ffebad;outline-offset:2px}
+.spm-ed4-toolbar span{white-space:nowrap;color:#f0daa8;font-weight:800;font-size:12px}
+.spm-ed4-status{margin:0;padding:0 12px;color:#f3dfa9;background:#123852;font-size:13px;font-weight:750;text-align:center;line-height:1.5}
+.spm-ed4-status:not(:empty){padding:12px;border:1px solid #d7b57e70}
+@keyframes spmEd4Sound{to{box-shadow:0 0 14px 4px rgba(254,216,142,.64)}}
+@keyframes spmEd4Check{from{opacity:.4;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.spm-ed4-hit.audio,.spm-ed4-check{animation:none}}
+@media(max-width:360px){.spm-ed4-toolbar{padding:7px 5px}.spm-ed4-toolbar button{font-size:10px;padding:8px 7px}.spm-ed4-toolbar span{font-size:10px}}
