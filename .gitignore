@@ -1,4 +1,6 @@
 **/node_modules/
+labs/sensate/dist/
+labs/pelvic-floor/dist/
 .env
 .env.*
 !.env.example

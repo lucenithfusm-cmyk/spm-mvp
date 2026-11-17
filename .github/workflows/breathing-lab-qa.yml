@@ -1,7 +1,7 @@
 name: Daily practice and media QA
 on:
   pull_request:
-    paths: ["labs/breathing/**", "labs/sensate/**", "premium-v2/breathing-lab/**", "premium-v2/sensate-lab/**", "premium-v2/*lab-bridge-v1.js", "premium-v2/*daily*", "premium-v2/spm-video-library.js", "premium-v2/program-videos-v1.js", "premium-v2/app-live.js", "premium-v2/live.html", "tests/breathing-lab-*", "tests/sensate-lab-*", "tests/desire-lab-*", "tests/daily-*", "tests/erection-daily-*", "tests/program-videos-*", ".github/workflows/breathing-lab-qa.yml"]
+    paths: ["tests/active-lab-entry.test.cjs", "labs/breathing/**", "labs/sensate/**", "premium-v2/breathing-lab/**", "premium-v2/sensate-lab/**", "premium-v2/*lab-bridge-v1.js", "premium-v2/*daily*", "premium-v2/spm-video-library.js", "premium-v2/program-videos-v1.js", "premium-v2/app-live.js", "premium-v2/live.html", "tests/breathing-lab-*", "tests/sensate-lab-*", "tests/desire-lab-*", "tests/daily-*", "tests/erection-daily-*", "tests/program-videos-*", ".github/workflows/breathing-lab-qa.yml"]
   workflow_dispatch:
 jobs:
   breathing:
@@ -13,10 +13,13 @@ jobs:
           node-version: 22
       - run: npm ci --prefix labs/breathing --no-audit --no-fund
       - run: npm ci --prefix labs/sensate --no-audit --no-fund
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
       - run: cd labs/breathing && sha256sum --check media-sha256.txt
       - run: npm run typecheck --prefix labs/breathing && npm run build --prefix labs/breathing
       - run: npm run typecheck --prefix labs/sensate && npm run build --prefix labs/sensate
       - run: git diff --exit-code -- premium-v2/breathing-lab premium-v2/sensate-lab
+      - name: Verify the active approved entry, independently of the retained React build
+        run: node --test tests/active-lab-entry.test.cjs tests/sensate-premium.test.cjs
       - run: npx --prefix labs/breathing vitest run --root labs/breathing
       - run: node --test tests/breathing-lab-bridge.test.cjs tests/sensate-lab-bridge.test.cjs tests/desire-lab-bridge.test.cjs tests/daily-support-plan.test.cjs tests/daily-entry.test.cjs tests/daily-practice.test.cjs tests/program-videos.test.cjs tests/program-checkpoint.test.cjs
       - run: npm install --prefix /tmp/spm-browser-qa playwright@1.62.1 --no-audit --no-fund

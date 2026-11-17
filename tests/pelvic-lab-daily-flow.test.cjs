@@ -8,7 +8,7 @@ let bundle;
 
 before(async()=>{
   // Actual React, host adapter and Lab. The test bundle stays in memory.
-  const output=await build({stdin:{contents:"import React from 'react'; import {createRoot} from 'react-dom/client'; import {PelvicLab} from './src/components/PelvicLab'; window.__act=React.act;window.IS_REACT_ACT_ENVIRONMENT=true;window.__root=createRoot(document.getElementById('root'));window.__mount=()=>window.__root.render(React.createElement(PelvicLab));",resolveDir:root,loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',alias:{'@':path.join(root,'src')},loader:{'.jpg':'dataurl'},define:{'process.env.NODE_ENV':'"test"'}});
+  const output=await build({stdin:{contents:"import React from 'react'; import {createRoot} from 'react-dom/client'; import {PelvicLab} from './src/components/PelvicLab'; window.__act=React.act;window.IS_REACT_ACT_ENVIRONMENT=true;window.__root=createRoot(document.getElementById('root'));window.__mount=()=>window.__root.render(React.createElement(PelvicLab));",resolveDir:root,loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',alias:{'@':path.join(root,'src')},loader:{'.jpg':'dataurl','.webp':'dataurl'},define:{'process.env.NODE_ENV':'"test"'}});
   bundle=output.outputFiles[0].text;
 });
 

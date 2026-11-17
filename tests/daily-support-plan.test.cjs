@@ -37,7 +37,11 @@ test('daily buttons match schedule and only the authoritative current day is act
   assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'daily');assert.deepEqual([...w.SPM_BREATHING_LAB_HOST.getContext().activity.steps],[11]);
   await w.SPM_BREATHING_LAB_HOST.openLibrary();assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'library');assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().activity,null);await w.SPM_BREATHING_LAB.close();
   h.setContext({...h.c,day:12});await wait();assert.equal(w.document.querySelectorAll('[data-breathing-daily]:enabled').length,0);assert.equal(w.document.querySelectorAll('[data-sensate-daily]:enabled').length,1);
-  await w.SPM_SENSATE_LAB.open({origin:'dailyPlan'});assert.deepEqual([...w.SPM_SENSATE_LAB_HOST.getContext().activity.steps],[0,1,2,3,4]);await w.SPM_SENSATE_LAB.close();
+  await w.SPM_SENSATE_LAB.open({origin:'dailyPlan'});
+  const activity=w.SPM_SENSATE_LAB_HOST.getContext().activity;
+  assert.equal(activity.practiceId,'sf-i-3');
+  assert.deepEqual([...activity.steps],[0,1,2,4],'sesión 3 conserva las cuatro pantallas aprobadas');
+  await w.SPM_SENSATE_LAB.close();
   assert.equal(h.writes.length,0);
  }finally{h.close()}
 });
