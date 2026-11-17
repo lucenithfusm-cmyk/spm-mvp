@@ -10,10 +10,10 @@ function desireActivity(day,prefix='de'){return desireCurriculum[day]?{id:prefix
 function compose(main,support,c,level){
  if(c.primary!=='erection')return {main,support};
  const day=Number(c.day),spec=window.SPM_DE_LIBRARY?.days?.()[day]||window.SPM_DE_LIBRARY_V3?.days?.[day];
- main={...main,label:'ERECCIÓN Y FIRMEZA · PRÁCTICA PRINCIPAL'};
+ main={...main,label:main.kind==='erection'?'ERECCIÓN Y FIRMEZA · SESIÓN PROGRAMADA':'RUTA INTEGRAL · ACTIVIDADES DE HOY'};
  // Only retrospective/educational work is accessible under non-urgent review.
  // Do not open the full exercise modal or erase the clinical flag in this mode.
- if(level==='review'&&spec&&reflective.has(spec.tool))main={...main,kind:'worksheet',title:spec.title,summary:'Revisa el contenido educativo y registra lo que has observado. Las prácticas físicas mantienen su indicación de seguridad.',lesson:{title_es:spec.title,learn_es:spec.learn,practice_es:'A partir de lo que ya has vivido y del contenido anterior, escribe qué reconoces en ti y qué te gustaría aclarar. No realices una prueba física para completar este registro.',measure_es:spec.measure,apply_es:'Conserva tu reflexión para el seguimiento. Esta actividad educativa no sustituye la revisión profesional ni autoriza las prácticas que siguen en pausa.',interaction:'review'}};
+ if(level==='review'&&main.kind==='erection'&&spec&&reflective.has(spec.tool))main={...main,kind:'worksheet',title:spec.title,summary:'Revisa el contenido educativo y registra lo que has observado. Las prácticas físicas mantienen su indicación de seguridad.',lesson:{title_es:spec.title,learn_es:spec.learn,practice_es:'A partir de lo que ya has vivido y del contenido anterior, escribe qué reconoces en ti y qué te gustaría aclarar. No realices una prueba física para completar este registro.',measure_es:spec.measure,apply_es:'Conserva tu reflexión para el seguimiento. Esta actividad educativa no sustituye la revisión profesional ni autoriza las prácticas que siguen en pausa.',interaction:'review'}};
  const extra=[];
  if([7,14,21,28].includes(day))extra.push({id:'de-confidence-'+day,kind:'confidence',title:'Confianza · revisión de la semana '+Math.ceil(day/7),summary:'Recuerda una experiencia o habilidad de esta semana y registra la evidencia que te ayuda a confiar. Deja sin evaluar lo que no aplique; no necesitas provocar una respuesta sexual.',label:'CONFIANZA · EVIDENCIA PERSONAL'});
  const scheduledDesire=erectionDesireActivity(day,c);

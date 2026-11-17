@@ -56,7 +56,7 @@ function cadence(main,support,c){
   const days=pelvicDays(c),slot=days.indexOf(day),weekly=days.length/4;
   if(slot>=0){
    const pelvic={kind:'pelvic',title:'Tu sesión de contracciones de piso pélvico',summary:'Sesión opcional de fuerza con preparación y relajación completas. Tu evaluación y los registros recientes determinan si es adecuada hoy.',pelvicIntent:'scheduled',pelvicPreference:'classic',optional:true,optionalLabel:`SEGÚN TU PREPARACIÓN · SESIÓN ${slot%weekly+1}/${weekly} DE LA SEMANA ${Math.ceil(day/7)}`};
-   if(main.kind==='pelvic'||(c.primary==='erection'&&day===6))main={...main,...pelvic};
+   if(main.kind==='pelvic')main={...main,...pelvic};
    else support.push({...pelvic,id:'support-pelvic'});
   }
  }
