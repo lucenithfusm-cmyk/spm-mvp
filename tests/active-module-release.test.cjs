@@ -6,22 +6,22 @@ const reviewHtml=read('premium-v2/revision-programas-28-dias.html');
 const today=read('premium-v2/daily-practice-v1.js'),legacy=read('premium-v2/erectile-function-route.js');
 const release=read('premium-v2/spm-active-module-release-v1.js');
 const deReview=read('premium-v2/de-review.html'),routes=read('vercel.json');
-const active=/^(?:erection-practice-v1|erection-day1-touch-v1|erection-day1-bridge-v1|erection-day2-touch-v1|erection-day2-bridge-v1|spm-active-module-release-v1|daily-practice-v1)\.js/;
+const active=/^(?:erection-practice-v1|erection-day1-touch-v1|erection-day1-bridge-v1|erection-day2-touch-v1|erection-day2-bridge-v1|erection-day3-touch-v1|erection-day3-bridge-v1|spm-active-module-release-v1|daily-practice-v1)\.js/;
 const appScripts=[...live.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]).filter(v=>active.test(v));
 const reviewScripts=[...review.matchAll(/'([^']+\.js(?:\?v=[^']+)?)'/g)].map(m=>m[1]).filter(v=>active.test(v));
-test('Programa real y visor de 28 días usan exactamente los mismos siete controladores aprobados',()=>{
- assert.equal(appScripts.length,7);
+test('Programa real y visor de 28 días usan exactamente los mismos nueve controladores aprobados',()=>{
+ assert.equal(appScripts.length,9);
  assert.deepEqual(reviewScripts,appScripts);
- assert.ok(appScripts.indexOf('spm-active-module-release-v1.js?v=20261116-central1')>appScripts.indexOf('erection-day2-bridge-v1.js?v=20261116-d2-tactil-v1'));
- assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261116-central1');
+ assert.ok(appScripts.indexOf('spm-active-module-release-v1.js?v=20261117-day3-approved3')>appScripts.indexOf('erection-day3-bridge-v1.js?v=20261117-day3-approved3'));
+ assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-day3-approved3');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
- for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','spm-approved-entry-v1.css']){
+ for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','spm-approved-entry-v1.css']){
   assert.ok(live.includes(css),css+' no está en Live');
   assert.ok(reviewHtml.includes(css),css+' no está en revisión');
  }
- for(const day of [1,2])assert.ok(release.includes('spm-de-day'+day+'-screen-01.webp'));
- assert.match(release,/screens:6/);assert.match(release,/screens:4/);
+ for(const day of [1,2,3])assert.ok(release.includes('spm-de-day'+day+'-screen-01.webp'));
+ assert.match(release,/screens:6/);assert.match(release,/screens:4/);assert.match(release,/screens:3/);
 });
 test('Hoy muestra miniatura real y una sola actividad vigente',()=>{
  assert.match(today,/SPM_ACTIVE_MODULE_RELEASE\?\.resolve\(c,a\)/);
@@ -31,8 +31,8 @@ test('Hoy muestra miniatura real y una sola actividad vigente',()=>{
  assert.match(today,/sesión interactiva actual no se pudo cargar/);
  assert.match(release,/activity\?\.id!=='main'/);
 });
-test('Día 1 y 2 no pueden abrir el formulario antiguo del calendario',()=>{
- assert.match(legacy,/if\(c\?\.primary==='erection'&&\[1,2\]\.includes\(target\)/);
+test('Días 1, 2 y 3 no pueden abrir el formulario antiguo del calendario',()=>{
+ assert.match(legacy,/if\(c\?\.primary==='erection'&&\[1,2,3\]\.includes\(target\)/);
  assert.match(legacy,/window\.SPM_DAILY_PRACTICE\.open\(\)/);
  assert.match(legacy,/obsolete\.style\.display='none'/);
  assert.match(legacy,/legacySave\.style\.display='none'/);
