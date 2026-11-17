@@ -42,9 +42,9 @@ test('cronómetro de un minuto opcional: no condición de guardado',()=>{
  assert.doesNotMatch(src,/if\(!m\.timerUsed\).*return/);
 });
 test('persistencia clínica existente con regreso a Hoy tras éxito',()=>{
- assert.match(bridge,/Number\(c\.day\)!==3/);
- assert.match(bridge,/SPM_DAILY_PRACTICE\.saveActivity\('main',record,scope,3\)/);
- assert.match(src,/erectionPracticeVersion:1,day:3/);
+ assert.match(bridge,/Number\(c\.day\)!==6/);
+ assert.ok(bridge.includes("saveActivity('main',{...record,day:6,erectionLesson:3},scope,6)"));
+ assert.match(src,/erectionPracticeVersion:1,day:m\.calendarDay,erectionLesson:3/);
  assert.match(src,/await m\.save\(record\)/);
  assert.match(src,/try\{m\.onBack\(\)\}/);
  assert.match(review,/onBack:showToday/);
