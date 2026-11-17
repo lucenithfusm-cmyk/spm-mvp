@@ -8,6 +8,13 @@ const pelvicIntent=a=>a?.pelvicIntent||(a?.pelvicPreference==='lab'?'daily-relax
 const recordedGuide=a=>a?.guide||(a?.kind==='pelvic'&&pelvicIntent(a)==='scheduled'?window.SPM_PELVIC_GUIDANCE?.definition('scheduled'):null);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let current='',view='entry',records={},loaded=false,loadError=false,generation=0,active=null;
+// Las sesiones táctiles aprobadas de Erección y firmeza deciden cuándo volver a Hoy.
+function touchOwnsExit(c,a){
+ return !!(c&&a?.id==='main'&&[1,2,3,4].includes(Number(c.day))
+  &&active?.id===a.id&&active.scope===scopeOf(c)&&Number(active.day)===Number(c.day)
+  &&directErection(c,a)&&!restricted(c,a)
+  &&$('#spmDailyWorkspace .spm-er-fullscreen')?.isConnected);
+}
 function receivePelvicResult(r,session,a){
  const at=Date.parse(r?.at),intent=pelvicIntent(a);
  if(active!==session||!validActive()||restricted(ctx(),a)||r?.completed!==true||r.day!==session.day||r.activityId!==a.id||r.intent!==intent||!Number.isFinite(at)||at<session.startedAt||at>Date.now()+1000)return false;
@@ -127,7 +134,9 @@ function render(){
  const items=assignments(c),required=items.filter(a=>!a.optional),done=required.filter(recordComplete).length;
  const pelvicPreview=Number(c.day)===1&&window.SPM_DAILY_RESOURCES?.strengthEligible?.(c)===true;
  const paused=restricted(c),pending=required.some(a=>restricted(c,a));
- const signature=JSON.stringify([current,c.primary,c.secondary,c.answers,c.safety,c.flags,c.checkins,pelvicPreview,items.map(a=>[a.id,restricted(c,a)]),loaded,loadError,records,c.completed]);
+ // Una sincronización posterior al guardado no debe desmontar el cierre visible.
+  if(records.main?.completed&&touchOwnsExit(c,items.find(a=>a.id==='main')))return;
+  const signature=JSON.stringify([current,c.primary,c.secondary,c.answers,c.safety,c.flags,c.checkins,pelvicPreview,items.map(a=>[a.id,restricted(c,a)]),loaded,loadError,records,c.completed]);
  if(host.dataset.signature===signature)return;host.dataset.signature=signature;
  window.SPM_ERECTION_PRACTICE?.stop();delete host.dataset.focusedPractice;
  pauseDailyVideo();
@@ -200,8 +209,11 @@ async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(c
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
  if(activity.kind==='pelvic'&&active?.id===id)delete active.pelvicResult;
  if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){
-  records[id]={...data,completed:true};render();status('Actividad guardada en tu programa ✓');
-  if(active?.id===id){
+  const keepTouchOpen=touchOwnsExit(c,activity);
+  records[id]={...data,completed:true};
+  if(!keepTouchOpen)render();
+  status('Actividad guardada en tu programa ✓');
+  if(active?.id===id&&!keepTouchOpen){
    // Los módulos en ventana deben cerrar su sesión después de guardar.
    // Los formularios integrados devuelven a Hoy cuando se guardan.
    const module=$(moduleSelectors[activity.kind]||'#no-spm-module');

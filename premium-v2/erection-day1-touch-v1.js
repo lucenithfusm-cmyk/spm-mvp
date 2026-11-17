@@ -46,7 +46,7 @@ function stopVoice(m){
  m.host.querySelectorAll('.spm-ed1-hit.playing').forEach(b=>b.classList.remove('playing'));
 }
 function pause(){if(!instance)return;stopVoice(instance)}
-function stop(){const m=instance;instance=null;pauseFor(m)}
+function stop(){const m=instance;instance=null;pauseFor(m);if(successOverlay){successOverlay.remove();successOverlay=null}}
 function pauseFor(m){if(!m)return;stopVoice(m);const dialog=m.host?.querySelector('[data-ed1-ehs-dialog]');if(dialog?.open)dialog.close?.()}
 function voice(m,key,text,preferRecording=false){
  if(!m||(key!=='end'&&(m.busy||!m.valid())))return;
@@ -131,12 +131,11 @@ function showSuccess(m){
  const layer=document.createElement('section');layer.className='spm-ed1-success-overlay';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');layer.setAttribute('aria-label','Práctica registrada, continuar ruta de hoy');
  layer.innerHTML=`<div class="spm-ed1-success-canvas" style="background-image:url(&quot;${IMAGES[5]}&quot;)">${m.outcome==='omitted'?'<div class="spm-ed1-omitted-message"><strong>Punto de partida registrado</strong><span>Omitiste la práctica de atención. No se registró como realizada.</span></div>':''}<button type="button" style="${rect(727,208,851,342)}" data-ed1-success-audio aria-label="Escuchar cierre de la práctica" class="spm-ed1-hit audio"></button><button type="button" style="${rect(22,1270,919,1451)}" data-ed1-success-close aria-label="Continuar mi ruta de hoy" class="spm-ed1-hit"></button></div>`;
  document.body.appendChild(layer);successOverlay=layer;
- // Cierre aprobado visible brevemente; al finalizar, retorno automático a Hoy.
- let returned=false,autoTimer=0;
+ // La pantalla 6 permanece hasta que la persona pulse Continuar o Escape.
+ let returned=false;
  const exit=()=>{
   if(returned)return;
   returned=true;
-  if(autoTimer)window.clearTimeout(autoTimer);
   stopVoice(m);layer.remove();
   if(successOverlay===layer)successOverlay=null;
   const c=window.SPM_RESOURCE_CONTEXT?.();
@@ -145,14 +144,11 @@ function showSuccess(m){
  };
  layer.querySelector('[data-ed1-success-close]').addEventListener('click',exit);
  layer.querySelector('[data-ed1-success-audio]').addEventListener('click',()=>{
-  if(autoTimer)window.clearTimeout(autoTimer);
-  autoTimer=window.setTimeout(exit,30000); // Escuchar cierre sin otro toque final.
   voice(m,'end',TEXT[6]);
   const el=layer.querySelector('[data-ed1-success-audio]');if(el)el.classList.add('playing');
  });
  layer.addEventListener('keydown',ev=>{if(ev.key==='Escape'){ev.preventDefault();exit()}});
  layer.querySelector('[data-ed1-success-close]').focus({preventScroll:true});
- autoTimer=window.setTimeout(exit,1700);
 }
 async function save(m){
  if(m.busy||!m.valid())return;
@@ -162,8 +158,7 @@ async function save(m){
  const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,activity:'Reconoce tu punto de partida',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),ehs,ehsEvaluable:m.ehs!=='na',attentionPracticeOutcome:m.outcome,attentionPracticeCompleted:m.outcome!=='omitted',attentionPracticeSeconds:null,lessonFormat:'six-approved-touch-screens',sensateModuleCompleted:null};
  m.busy=true;m.notice='Guardando tu sesión de hoy…';updateStatus(m);const b=m.host.querySelector('[data-ed1-act="save"]');if(b)b.disabled=true;stopVoice(m);
  try{await m.save(record);
-  // El módulo diario puede volver a «Hoy» al guardar. El cierre aprobado
-  // se muestra únicamente tras una respuesta positiva del guardado.
+  // La pantalla de cierre espera el toque explícito después de confirmar el guardado.
   const c=window.SPM_RESOURCE_CONTEXT?.();
   if(c&&String(c.userId)+':'+String(c.planId)!==m.scope)return;
   if(c&&Number(c.day)!==1)return;
