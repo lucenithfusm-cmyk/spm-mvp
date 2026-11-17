@@ -60,6 +60,16 @@ test('única ruta actual y versiones de días anteriores intactas',()=>{
  assert.ok(live.indexOf('erection-day4-bridge-v1.js')>live.indexOf('erection-day2-bridge-v1.js'));
  assert.ok(live.indexOf('erection-day4-bridge-v1.js')<live.indexOf('daily-practice-v1.js'));
  for(const n of [1,2,4])assert.match(release,new RegExp(n+':Object\\.freeze'));
- assert.doesNotMatch(release,/3:Object\.freeze/);
+ assert.match(release,/3:Object\.freeze/);
  const routes=read('vercel.json');assert.match(routes,/program-paused\.html/);
+});
+test('Día 4 se abre desde Hoy también en la revisión general y el calendario',()=>{
+ const central=read('premium-v2/program-review-v1.js');
+ const html=read('premium-v2/revision-programas-28-dias.html');
+ const old=read('premium-v2/erectile-function-route.js');
+ assert.match(central,/erection-day4-touch-v1\.js\?v=20261117-approved3/);
+ assert.match(central,/erection-day4-bridge-v1\.js\?v=20261117-approved3/);
+ assert.match(html,/erection-day4-touch-v1\.css\?v=20261117-approved3/);
+ assert.match(old,/\[1,2,3,4\]\.includes\(target\)/);
+ assert.match(old,/\[1,2,3,4\]\.includes\(d\)/);
 });

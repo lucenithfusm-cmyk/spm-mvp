@@ -470,3 +470,17 @@ test('days 15/17/19 open pelvic-floor combined rather than obsolete EP modal; we
   assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });
+test('los Días 3 y 4 de Erección abren sus pantallas táctiles desde Hoy sin formularios antiguos',async()=>{
+ for(const day of [3,4]){
+  const h=await harness('?programa=erection&dia='+day);
+  try{
+   const {w}=h,main=w.SPM_DAILY_PRACTICE.assignments().find(a=>a.id==='main');
+   assert.equal(main.kind,'erection');
+   assert.equal(w.SPM_ACTIVE_MODULE_RELEASE.resolve(w.SPM_RESOURCE_CONTEXT(),main).screens,3);
+   await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+   assert.ok(w.document.querySelector('.spm-ed'+day+'-session[data-screen="1"]'),'pantalla táctil real del día '+day);
+   assert.equal(w.document.querySelector('[data-erection-form]'),null);
+   assert.deepEqual(h.errors,[]);
+  }finally{h.close()}
+ }
+});

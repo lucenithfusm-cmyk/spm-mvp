@@ -30,7 +30,7 @@
       "continue": true
     },
     {
-      "src": "^/premium-v2/(?:(?:revision-programas-28-dias|revision-ereccion-dia[124]|de-review)\\.html|(?:program-review-v1|daily-practice-v1|erectile-function-route|spm-active-module-release-v1|erection-day[124]-(?:touch|bridge)-v1)\\.js|(?:erection-day[124]-touch-v1|spm-approved-entry-v1)\\.css|assets/erection-day[124]/[^/]+\\.webp)$",
+      "src": "^/premium-v2/(?:(?:revision-programas-28-dias|revision-ereccion-dia[1234]|de-review)\\.html|(?:program-review-v1|daily-practice-v1|erectile-function-route|spm-active-module-release-v1|erection-day[1234]-(?:touch|bridge)-v1)\\.js|(?:erection-day[1234]-touch-v1|spm-approved-entry-v1)\\.css|assets/erection-day[1234]/[^/]+\\.webp)$",
       "headers": {
         "Cache-Control": "no-cache, max-age=0, must-revalidate"
       },
