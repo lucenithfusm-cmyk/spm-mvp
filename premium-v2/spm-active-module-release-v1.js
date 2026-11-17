@@ -1,0 +1,30 @@
+/* SPM Digital Wellness · Registro de versiones activas de módulos.
+ * Una sola entrada aprobada desde Hoy; el respaldo histórico no se muestra al paciente.
+ * Sin acceso a historias clínicas, datos de usuarios ni pagos.
+ */
+(()=>{'use strict';
+if(window.SPM_ACTIVE_MODULE_RELEASE)return;
+const erection=Object.freeze({
+ 1:Object.freeze({key:'erection-day1',version:'2026-11-16-approved6',screens:6,title:'Reconoce tu punto de partida',preview:'/premium-v2/assets/erection-day1/spm-de-day1-screen-01.webp',module:'SPM_ED_DAY1_TOUCH',bridge:'SPM_ERECTION_DAY1_BRIDGE'}),
+ 2:Object.freeze({key:'erection-day2',version:'2026-11-16-approved4',screens:4,title:'Reconoce tus contextos',preview:'/premium-v2/assets/erection-day2/spm-de-day2-screen-01.webp',module:'SPM_ED_DAY2_TOUCH',bridge:'SPM_ERECTION_DAY2_BRIDGE'})
+});
+const connections=Object.freeze({
+ erection:'SPM_ERECTION_PRACTICE',sensate:'SPM_SENSATE_LAB',
+ breathing:'SPM_BREATHING_LAB',pelvicAwareness:'SPM_PELVIC_LAB',
+ pelvicStrength:'SPM_PELVIC_HUB',desire:'SPM_DESIRE_LAB',
+ ejaculation:'SPM_EJACULATORY_CONTROL',startStop:'SPM_STARTSTOP_V2',
+ stopSqueeze:'SPM_SQUEEZE_V1',combined:'SPM_COMBINED_V1',
+ nutrition:'SPM_NUTRITION_DAILY',sleep:'SPM_SLEEP_LIBRARY_V1'
+});
+function resolve(context,activity){
+ if(context?.primary!=='erection'||activity?.id!=='main'||activity?.kind!=='erection')return null;
+ return erection[Number(context.day)]||null;
+}
+function ready(context,activity){
+ const released=resolve(context,activity);
+ if(!released)return true;
+ return !!(window[released.module]&&window[released.bridge]&&window.SPM_ERECTION_PRACTICE?.open);
+}
+function status(){return Object.freeze(Object.fromEntries(Object.entries(connections).map(([name,api])=>[name,!!window[api]])));}
+window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-16-single-active-1',erection,connections,resolve,ready,status});
+})();

@@ -4,23 +4,40 @@
     {
       "src": "^/(?:index\\.html|Index\\.html|preview-v21\\.html)?$",
       "dest": "/premium-v2/program-paused.html",
-      "headers": { "Cache-Control": "no-store, max-age=0" }
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      }
     },
     {
       "src": "^/(?:28-dias|spm-central)(?:/index\\.html)?/?$",
       "dest": "/premium-v2/program-paused.html",
-      "headers": { "Cache-Control": "no-store, max-age=0" }
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      }
     },
     {
       "src": "^/premium-v2(?:/(?:index|live|live-v4|live-stable|free-assessment|evaluacion|commercial-pilot)(?:\\.html)?)?/?$",
       "dest": "/premium-v2/program-paused.html",
-      "headers": { "Cache-Control": "no-store, max-age=0" }
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      }
     },
     {
       "src": "^/premium-v2/program-paused\\.html$",
-      "headers": { "Cache-Control": "no-store, max-age=0" },
+      "headers": {
+        "Cache-Control": "no-store, max-age=0"
+      },
       "continue": true
     },
-    { "handle": "filesystem" }
+    {
+      "src": "^/premium-v2/(?:(?:revision-programas-28-dias|revision-ereccion-dia[12]|de-review)\\.html|(?:program-review-v1|daily-practice-v1|erectile-function-route|spm-active-module-release-v1|erection-day[12]-(?:touch|bridge)-v1)\\.js|(?:erection-day[12]-touch-v1|spm-approved-entry-v1)\\.css|assets/erection-day[12]/[^/]+\\.webp)$",
+      "headers": {
+        "Cache-Control": "no-cache, max-age=0, must-revalidate"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    }
   ]
 }
