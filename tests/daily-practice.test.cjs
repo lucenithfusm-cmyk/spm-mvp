@@ -13,7 +13,7 @@ function harness(primary='erection',day=12,initialRecords={}){
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
  w.SPM_ACTIVE_MODULE_RELEASE={ready:()=>true,resolve:()=>null};
  // Solo un registro EHS correspondiente puede completar la sesión 1, nunca un dato antiguo.
- w.SPM_ERECTION_PRACTICE={valid:(record,day)=>record?.day===day&&record?.erectionPracticeVersion===1&&record?.ehsEvaluable===true};
+ w.SPM_ERECTION_PRACTICE={stop(){},pause(){},valid:(record,day)=>record?.day===day&&record?.erectionPracticeVersion===1&&record?.ehsEvaluable===true};
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_PELVIC_LAB={openScheduled:async o=>opens.push(['PELVIC',o]),close:async()=>true,validState:s=>!!s&&typeof s==='object'&&!Array.isArray(s)};
