@@ -14,21 +14,31 @@ header p{font-size:12px;line-height:1.4;color:#c6dde7;margin:0 0 9px}
 header button{padding:9px 13px;min-height:42px;border:1px solid #cda96c;border-radius:12px;background:#19435d;color:white;font:inherit;font-size:13px;cursor:pointer}
 main{max-width:560px;margin:auto;padding:0 8px 30px}
 .spm-ed2-session{border:1px solid #e4c18666}
+.spm-ed-review-today{margin:30px 0;padding:26px 22px;background:#112f46;border:1px solid #d4b77d;border-radius:20px;color:#fff}
+.spm-ed-review-today h2{font-size:clamp(23px,5vw,30px);margin:9px 0}
+.spm-ed-review-today p{font-size:16px;line-height:1.6;color:#f4ecd9}
+.spm-ed-review-today button{min-height:48px;padding:10px 18px;border-radius:12px;background:#e2bf76;color:#0d293f;font-weight:800;border:0}
 </style>
 </head>
 <body>
 <header><strong>SPM · ENTORNO DE REVISIÓN</strong><h1>Erección y firmeza · Día 2</h1><p>Cuatro imágenes interactivas con audios y selecciones. Datos simulados; no modifica pacientes, pagos ni el programa público.</p><button type="button" id="reset">↻ Reiniciar recorrido</button></header>
 <main id="spmDailyWorkspace"></main>
-<script src="erection-day2-touch-v1.js?v=20261116-day2-touch1"></script>
+<script src="erection-day2-touch-v1.js?v=20261116-auto-hoy-1"></script>
 <script>
 (()=>{'use strict';
 let record=null;
+function showToday(){
+ const host=document.getElementById('spmDailyWorkspace');
+ host.innerHTML='<section class="spm-ed-review-today" role="status"><p>SPM · HOY · DÍA 2</p><h2>Lo que vas a hacer hoy</h2><p>'+(record?'Reconoce tus contextos · Registrada ✓':'Práctica no registrada. Puedes volver cuando quieras.')+'</p><button type="button" id="review-again">Revisar las pantallas otra vez</button></section>';
+ host.querySelector('#review-again').onclick=()=>{record=null;restart()};
+ document.getElementById('reset')?.focus();
+}
 function restart(){window.SPM_ED_DAY2_TOUCH.mount({
  host:document.getElementById('spmDailyWorkspace'),scope:'spm-review:day2',prior:{},valid:()=>true,
  save:async r=>{if(r.day!==2||r.erectionPracticeVersion!==1||!r.confirmed||!['spontaneous','solo','partner'].every(k=>['easy','variable','difficult','not_evaluable'].includes(r.contexts?.[k]))||!['initiate','maintain','recover','none','not_evaluable'].includes(r.responseAspect)||!r.contextPlan)throw Error('Registro de prueba inválido');record=r;return {ok:true}},
- onBack:()=>{document.getElementById('reset')?.focus();restart()}
+ onBack:showToday
  });}
-document.addEventListener('DOMContentLoaded',()=>{restart();document.getElementById('reset').onclick=restart});
+document.addEventListener('DOMContentLoaded',()=>{restart();document.getElementById('reset').onclick=()=>{record=null;restart()}});
 window.SPM_ED2_REVIEW={getRecord:()=>record,reset:restart};
 })();
 </script>

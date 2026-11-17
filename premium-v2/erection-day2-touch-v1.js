@@ -102,8 +102,19 @@
    favourableConditions:m.conditions.slice(),contextPlan:m.plan,contextActionPrepared:m.plan!=='not_possible',lessonFormat:'four-approved-touch-screens'};
   m.busy=true;m.message='Guardando la actividad de hoy…';status(m);const b=m.host.querySelector('[data-ed2-act="save"]');if(b)b.disabled=true;
   stopVoice(m);
-  try{await m.save(record);if(!m.valid())return;m.message='Registro guardado correctamente ✓';status(m);m.onBack();}
-  catch{m.busy=false;m.message='No se pudo guardar. Tus respuestas continúan en pantalla; puedes reintentar.';status(m);if(b?.isConnected)b.disabled=false}
+  // El propio guardado puede reconstruir Hoy; m.valid() deja de ser cierto
+  // al desmontarse la actividad, aunque el registro ya se haya confirmado.
+  let saved;
+  try{saved=await m.save(record);if(saved===false||saved?.ok===false)throw Error('save-failed');}
+  catch{m.busy=false;m.message='No se pudo guardar. Tus respuestas continúan en pantalla; puedes reintentar.';if(m.host.isConnected)status(m);if(b?.isConnected)b.disabled=false;return}
+  const c=window.SPM_RESOURCE_CONTEXT?.();
+  if(c&&(String(c.userId)+':'+String(c.planId)!==m.scope||Number(c.day)!==2))return;
+  m.message='Registro guardado correctamente ✓';
+  if(m.host.isConnected)status(m);
+  // El guardado de SPM también puede regresar a Hoy y desmontar este host.
+  // No duplicar navegación si ese retorno automático ya ocurrió.
+  if(m.host.isConnected){try{m.onBack()}catch{window.SPM_DAILY_PRACTICE?.open?.()}}
+
  }
  function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}){
   if(!host||typeof onSave!=='function')return false;
