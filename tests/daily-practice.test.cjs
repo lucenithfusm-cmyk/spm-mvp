@@ -11,6 +11,9 @@ function harness(primary='erection',day=12,initialRecords={}){
  const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],answers:{pf_awareness:'good_control',pf_tension:1},safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_DAILY_RECORDS={read:async()=>JSON.parse(JSON.stringify(initialRecords)),save:async(...args)=>writes.push(args)};
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
+ w.SPM_ACTIVE_MODULE_RELEASE={ready:()=>true,resolve:()=>null};
+ // Solo un registro EHS correspondiente puede completar la sesión 1, nunca un dato antiguo.
+ w.SPM_ERECTION_PRACTICE={valid:(record,day)=>record?.day===day&&record?.erectionPracticeVersion===1&&record?.ehsEvaluable===true};
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
  for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
  w.SPM_PELVIC_LAB={openScheduled:async o=>opens.push(['PELVIC',o]),close:async()=>true,validState:s=>!!s&&typeof s==='object'&&!Array.isArray(s)};
@@ -58,7 +61,7 @@ test('other Desire days retain their audio and route registration through the ac
 });
 test('saving one activity does not complete or advance the day; stale and restricted writes fail',async()=>{
  const h=harness('confidence',12);try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,true);
- await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='review';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,primary==='erection'?0:1);
+ await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='urgent';h.c.day=8;await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,primary==='erection'?0:1);
  }finally{h.close()}
 });
 test('day 16 uses the approved sensory video as one independent voluntary practice, without Focus I duplication',async()=>{
@@ -239,7 +242,7 @@ test('all six routes return to Hoy without an intermediate continuation panel',a
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route,1);try{
    await wait();const api=h.w.SPM_DAILY_PRACTICE,d=h.w.document;
-   api.open();await api.launch('main');await api.saveActivity('main',{confirmed:true});
+   api.open();await api.launch('main');await api.saveActivity('main',route==='erection'?{confirmed:true,day:1,erectionPracticeVersion:1,erectionLesson:1,ehs:0,ehsEvaluable:true}:{confirmed:true});
    assert.equal(d.querySelector('#plan').dataset.spmDailyView,'today');
    assert.equal(d.querySelector('[data-spm-next]'),null,'no continuation panel');
    assert.equal(d.querySelector('[data-next-id]'),null,'no intermediate buttons');
@@ -440,11 +443,22 @@ test('historical day-six Lab records never appear as the newly separated strengt
  }finally{h.close();}}
 });
 
-test('a persisted matching classic result is recognized after reopening without rewriting history',async()=>{
- const prior={completed:true,activityKind:'pelvic',confirmed:true,pelvicResult:{source:'pelvic-classic-v2',completed:true,at:'2026-11-01T00:00:00Z',day:6,activityId:'main',intent:'scheduled'}},h=harness('erection',6,{main:prior});try{await wait();h.w.SPM_DAILY_PRACTICE.open();
-  assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='main'),false);assert.equal(h.w.SPM_DAILY_PRACTICE.nextActivities().some(a=>a.id==='pelvic-daily-lab'),false);assert.equal(h.writes.length,0);assert.deepEqual(h.c.completed,[]);
-  h.w.SPM_DAILY_PRACTICE.library();h.w.SPM_DAILY_PRACTICE.open();assert.ok(h.w.document.querySelector('[data-activity="main"] .spm-daily-saved'));assert.equal(h.writes.length,0);
- }finally{h.close();}
+test('El resultado previo de fuerza no completa Erección día 6, pero su apoyo independiente sí se reconoce',async()=>{
+ const old={completed:true,activityKind:'pelvic',confirmed:true,pelvicResult:{source:'pelvic-classic-v2',completed:true,at:'2026-11-01T00:00:00Z',day:6,activityId:'main',intent:'scheduled'}};
+ const support={...old,pelvicResult:{...old.pelvicResult,activityId:'support-pelvic'}};
+ const h=harness('erection',6,{main:old,'support-pelvic':support});
+ try{
+  await wait();const api=h.w.SPM_DAILY_PRACTICE,doc=h.w.document;api.open();
+  assert.equal(api.assignments()[0].kind,'erection');
+  assert.equal(doc.querySelector('[data-activity="main"] .spm-daily-saved'),null);
+  assert.ok(doc.querySelector('[data-activity="support-pelvic"] .spm-daily-saved'));
+  assert.equal(api.nextActivities().some(a=>a.id==='main'),true);
+  assert.equal(api.nextActivities().some(a=>a.id==='support-pelvic'),false);
+  assert.equal(h.writes.length,0);
+  api.library();api.open();
+  assert.ok(doc.querySelector('[data-activity="support-pelvic"] .spm-daily-saved'));
+  assert.equal(doc.querySelector('[data-activity="main"] .spm-daily-saved'),null);
+ }finally{h.close()}
 });
 
 test('ready patients in all six domains see the optional program on day 1 and two weekly sessions on days 2 and 6',async()=>{
