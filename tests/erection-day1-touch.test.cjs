@@ -69,3 +69,16 @@ test('pantalla 5: ningún chulito fijo, solo círculo azul en la opción marcada
  assert.match(style,/\.spm-ed1-radio-check/);
  assert.match(style,/pointer-events:none/);
 });
+
+test('EHS-4 de la pantalla 2 está copiada como recurso propio e independiente',()=>{
+ const image=fs.readFileSync(path.join(artDir,'spm-de-day1-ehs4-guide.jpg'));
+ const original=fs.readFileSync(path.join(root,'premium-v2/assets/images/erection/response-firmness-spm-20261113.jpg'));
+ assert.ok(image.length>100000);
+ assert.equal(image.compare(original),0);
+ assert.ok(moduleSource.includes("const GUIDE_IMAGE='/premium-v2/assets/erection-day1/spm-de-day1-ehs4-guide.jpg'"));
+ assert.ok(!moduleSource.includes('SPM_FIRMNESS_GUIDE')); assert.ok(!moduleSource.includes('assets/images/erection'));
+ assert.match(moduleSource,/data-ed1-ehs-dialog/);
+ assert.match(moduleSource,/action==='open-ehs'/);
+ assert.match(moduleSource,/action==='close-ehs'/);
+ assert.ok(moduleSource.includes("ehsEvaluable:m.ehs!=='na'"));
+});
