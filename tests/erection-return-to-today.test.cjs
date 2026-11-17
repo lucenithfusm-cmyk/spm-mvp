@@ -5,11 +5,12 @@ const root=path.resolve(__dirname,'..'),read=name=>fs.readFileSync(path.join(roo
 const day1=read('premium-v2/erection-day1-touch-v1.js'),day2=read('premium-v2/erection-day2-touch-v1.js');
 const review1=read('premium-v2/revision-ereccion-dia1.html'),review2=read('premium-v2/revision-ereccion-dia2.html');
 const live=read('premium-v2/live.html'),routes=read('vercel.json');
-test('Día 1 regresa automáticamente a Hoy tras confirmar guardado y pantalla final',()=>{
+test('Día 1 conserva la pantalla 6 hasta el toque final',()=>{
  assert.match(day1,/await m\.save\(record\)/);
  assert.match(day1,/showSuccess\(m\)/);
- assert.match(day1,/autoTimer=window\.setTimeout\(exit,1700\)/);
- assert.match(day1,/window\.clearTimeout\(autoTimer\)/);
+ assert.doesNotMatch(day1,/autoTimer|setTimeout\(exit,/);
+ assert.match(day1,/data-ed1-success-close/);
+ assert.match(day1,/addEventListener\('click',exit\)/);
  assert.match(day1,/if\(returned\)return/);
  assert.match(day1,/try\{m\.onBack\(\)\}/);
 });
@@ -29,8 +30,15 @@ test('Las revisiones simulan Hoy, en lugar de reiniciar automáticamente',()=>{
 });
 test('Día 1 usa EHS-4 propio y el acceso público sigue pausado',()=>{
  assert.match(routes,/program-paused\.html/);
- assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-d1-directo5-v1/);
+ assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-d1-cierre-manual1/);
  assert.match(live,/erection-day2-touch-v1\.js\?v=20261116-auto-hoy-1/);
  assert.match(live,/erection-day1-bridge-v1\.js/);
  assert.match(live,/erection-day2-bridge-v1\.js/);
+});
+test('Guardar días 1 a 4 no desmonta la pantalla antes del retorno propio del módulo',()=>{
+ const central=read('premium-v2/daily-practice-v1.js');
+ assert.match(central,/function touchOwnsExit\(c,a\)/);
+ assert.match(central,/\[1,2,3,4\]\.includes\(Number\(c\.day\)\)/);
+ assert.match(central,/if\(!keepTouchOpen\)render\(\)/);
+ assert.match(central,/active\?\.id===id&&!keepTouchOpen/);
 });

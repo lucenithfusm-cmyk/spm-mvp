@@ -13,7 +13,7 @@ test('Programa real y visor de 28 días usan exactamente los mismos once control
  assert.equal(appScripts.length,11);
  assert.deepEqual(reviewScripts,appScripts);
  assert.ok(appScripts.indexOf('spm-active-module-release-v1.js?v=20261117-de34-canonical2')>appScripts.indexOf('erection-day4-bridge-v1.js?v=20261117-approved3'));
- assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-de34-canonical2');
+ assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-de34-cierre1');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
  for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','spm-approved-entry-v1.css']){
@@ -99,4 +99,13 @@ test('Erección días 1–4: los cuatro recursos funcionan en pantalla completa 
  assert.ok(review.includes('erection-fullscreen-v1.js'));
  assert.ok(reviewHtml.includes('erection-fullscreen-v1.css'));
  assert.ok(routes.includes('erection-fullscreen-v1'));
+});
+
+test('Fullscreen móvil conserva ancho completo y desplazamiento vertical',()=>{
+ const css=read('premium-v2/erection-fullscreen-v1.css');
+ assert.match(css,/position:fixed!important/);
+ assert.match(css,/height:100dvh!important/);
+ assert.match(css,/overflow-y:auto!important/);
+ assert.match(css,/max-width:540px!important/);
+ assert.doesNotMatch(css,/56\.25dvh/);
 });

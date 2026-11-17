@@ -484,3 +484,33 @@ test('los Días 3 y 4 de Erección abren sus pantallas táctiles desde Hoy sin f
   }finally{h.close()}
  }
 });
+
+test('El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el CTA',async()=>{
+ const h=await harness('?programa=erection&dia=1');
+ try{
+  const {w}=h,doc=w.document;
+  await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+  const touch=selector=>{const el=doc.querySelector(selector);assert.ok(el,'Falta control '+selector);el.click();};
+  assert.ok(doc.querySelector('.spm-ed1-session.spm-er-fullscreen[data-screen="1"]'));
+  touch('[data-ed1-act="next"]');
+  touch('[data-ed1-act="ehs"][data-value="3"]');
+  touch('[data-ed1-act="next"]');
+  touch('[data-ed1-act="next"]');
+  touch('[data-ed1-act="next"]');
+  touch('[data-ed1-act="outcome"][data-value="returned"]');
+  touch('[data-ed1-act="save"]');
+  await wait();await wait();
+  const overlay=doc.querySelector('.spm-ed1-success-overlay');
+  assert.ok(overlay,'La pantalla 6 debe aparecer después del guardado');
+  const c=w.SPM_RESOURCE_CONTEXT(),saved=await w.SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,1);
+  assert.equal(saved.main.completed,true);
+  assert.equal(saved.main.ehs,3);
+  await new Promise(resolve=>setTimeout(resolve,1850));
+  assert.equal(doc.querySelector('.spm-ed1-success-overlay'),overlay,'La pantalla 6 no debe cerrarse sola');
+  touch('[data-ed1-success-close]');await wait();
+  assert.equal(doc.querySelector('.spm-ed1-success-overlay'),null);
+  assert.match(doc.querySelector('#spmDailySession').textContent,/Registrada|registrada|Volver a abrir/);
+  assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
+});
