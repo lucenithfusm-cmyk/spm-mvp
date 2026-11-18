@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><meta name="robots" content="noindex,nofollow"><title>SPM · Día 15 · Erección y firmeza · Revisión táctil</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#071d30;color:white}
+body{display:flex;flex-direction:column;align-items:center;gap:0}
+.top{width:100%;background:#072b43;color:#f4d28d;padding:10px 12px;text-align:center;font-size:13px;font-weight:700;letter-spacing:.01em}
+.top span{color:#dceaf3;font-weight:450}
+.container{width:min(100%,530px);margin:0 auto;box-shadow:0 0 34px rgba(0,0,0,.16)}
+.art{position:relative;width:100%;aspect-ratio:864/1536;overflow:hidden;background-color:#0b4c71;isolation:isolate}
+.art img{position:absolute;width:100%;height:100%;inset:0;display:block;object-fit:fill;pointer-events:none}
+.tap{position:absolute;appearance:none;margin:0;border:2px solid transparent;background:transparent;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border-radius:15px;color:transparent;z-index:5}
+.tap:focus-visible{outline:3px solid #ffebac;outline-offset:-1px}
+.tap:active{background:rgba(255,219,122,.14)}
+.tap.guide{z-index:12;border-radius:999px;box-shadow:0 0 7px rgba(255,228,133,.35);animation:halo 1.8s ease-in-out infinite alternate}
+.tap.guide.is-playing{background:rgba(255,218,128,.16);border-color:#fff0bb;box-shadow:0 0 15px 4px rgba(255,204,94,.65)}
+.tap.chosen{border:3px solid rgba(26,153,204,.78);background:rgba(26,145,201,.08);box-shadow:inset 0 0 0 1px #c4edff}
+.tap.art-card.chosen{border-color:rgba(249,210,126,.9);background:rgba(247,199,100,.08)}
+.mark{position:absolute;border-radius:7px;background:#1581b2;border:2px solid #fff;color:white;display:grid;place-items:center;font-size:12px;font-weight:900;z-index:9;pointer-events:none;line-height:1}
+.mark[hidden]{display:none}
+.screenfix{position:absolute;z-index:4;display:grid;place-items:center;color:#fff;font-weight:800;pointer-events:none}
+.screenfix.day{left:74.0%;top:2.0%;width:23.5%;height:5.3%;font-size:clamp(12px,2.9vw,22px);background:linear-gradient(100deg,#154a74,#11375c);border-radius:14px;line-height:1.1;padding:0 5px 0 10px;white-space:nowrap}
+.screenfix.day small{font-size:.55em;display:block;margin-top:4px;font-weight:500}
+.screenfix.step{left:3.2%;top:2%;width:13%;height:4.6%;font-size:clamp(12px,3.5vw,21px);background:#19a1d6;border-radius:999px;border:2px solid #d7f2ff}
+.tip{background:#0a3049;border-top:1px solid #bfaa7c;min-height:44px;padding:11px 16px;text-align:center;font-size:13px;line-height:1.45;color:#f7dfa6}
+.tip.is-error{color:#fff2ca}
+.tip.is-success{color:#b8f2de}
+.follow{max-width:530px;padding:12px 16px 18px;color:#c9dfed;text-align:center;font-size:12px;line-height:1.5}
+@keyframes halo{to{box-shadow:0 0 15px 5px rgba(255,222,124,.54)}}
+@media(prefers-reduced-motion:reduce){.tap.guide{animation:none}}
+</style></head>
+<body>
+<header class="top">SPM Digital Wellness · Día 15 <span>· versión de revisión</span></header>
+<main class="container">
+<div class="art" id="art" role="group" aria-label="Erección y firmeza, día 15, actividad de estímulos">
+<img src="assets/erection-day6/spm-de-day6-screen-01.webp" alt="Pantalla premium aprobada: Activa tu respuesta con estímulos que funcionan. Seis opciones de selección múltiple y guía de audio." fetchpriority="high" draggable="false" id="approvedImage" />
+<div class="screenfix step" aria-hidden="true">1/1</div><div class="screenfix day" aria-hidden="true"><span>Día 15<small>Erección y firmeza</small></span></div>
+</div>
+<div id="status" class="tip" role="status" aria-live="polite">Toca «Escuchar guía» o selecciona los estímulos que te ayudan.</div>
+</main>
+<p class="follow">Revisión interactiva. Tus selecciones se conservan solo en este dispositivo y no modifican el expediente ni el programa publicado.</p>
+<script>
+(()=>{'use strict';
+const art=document.getElementById('art'),out=document.getElementById('status'),img=document.getElementById('approvedImage');
+const key='SPM_DAY15_PREVIEW_SELECTIONS_V2',labels={contacto:'Contacto físico',audio:'Estímulos auditivos',visual:'Estímulos visuales',ambiente:'Ambiente',fantasias:'Fantasías sexuales',otros:'Otros'};
+const approved=Object.keys(labels);let choices=[];try{const raw=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(raw))choices=raw.filter(s=>approved.includes(s))}catch{}
+const selected=new Set(choices);const views=new Map();const status=(s,kind='')=>{out.textContent=s;out.classList.toggle('is-error',kind==='error');out.classList.toggle('is-success',kind==='success')};
+const coord=(v,dimension)=>(v/dimension*100).toFixed(4)+'%';
+function hotspot([x1,y1,x2,y2],opts={}){const b=document.createElement('button');b.type='button';b.className='tap '+(opts.className||'');b.style.left=coord(x1,864);b.style.top=coord(y1,1536);b.style.width=coord(x2-x1,864);b.style.height=coord(y2-y1,1536);b.setAttribute('aria-label',opts.label||'Seleccionar');if(opts.value)b.setAttribute('aria-pressed',selected.has(opts.value)?'true':'false');b.addEventListener('click',opts.onClick);art.append(b);return b;}
+function marker([x,y]){const m=document.createElement('span');m.className='mark';m.textContent='✓';m.style.left=coord(x-11,864);m.style.top=coord(y-11,1536);m.style.width=coord(22,864);m.style.height=coord(22,1536);art.append(m);return m;}
+const cards=[
+{key:'contacto',box:[32,753,230,980]},
+{key:'audio',box:[242,753,432,980]},
+{key:'visual',box:[442,753,630,980]},
+{key:'fantasias',box:[640,753,832,980]},
+];
+const rows=[
+{key:'contacto',box:[30,1086,421,1144],check:[72,1112]},
+{key:'audio',box:[442,1086,832,1144],check:[488,1112]},
+{key:'visual',box:[30,1149,421,1203],check:[72,1174]},
+{key:'ambiente',box:[442,1149,832,1203],check:[488,1174]},
+{key:'fantasias',box:[30,1207,421,1266],check:[72,1234]},
+{key:'otros',box:[442,1207,832,1266],check:[488,1234]},
+];
+function persist(){try{localStorage.setItem(key,JSON.stringify([...selected]))}catch{}}
+function update(){for(const [k,v]of views){for(const b of v.buttons){b.classList.toggle('chosen',selected.has(k));b.setAttribute('aria-pressed',String(selected.has(k)))}v.mark.hidden=!selected.has(k)}const n=selected.size;return n}
+function toggle(k){if(selected.has(k))selected.delete(k);else selected.add(k);persist();const n=update();status((selected.has(k)?'Seleccionaste ':'Retiraste ')+labels[k]+'. '+(n?`${n} opción${n===1?'':'es'} elegida${n===1?'':'s'}.`:'Puedes elegir varias.'))}
+for(const r of rows){const m=marker(r.check);const btn=hotspot(r.box,{value:r.key,label:'Elegir '+labels[r.key],onClick:()=>toggle(r.key)});views.set(r.key,{mark:m,buttons:[btn]})}
+for(const c of cards){const btn=hotspot(c.box,{className:'art-card',value:c.key,label:'Seleccionar ejemplo: '+labels[c.key],onClick:()=>toggle(c.key)});views.get(c.key).buttons.push(btn)}
+let speaking=false, utterance=null, player=null;
+const guide="Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.";
+const AUDIO='assets/audio/erection/erection-day15-stimuli-20261117.mp3';
+function stopAudio(){try{player?.pause();if(player)player.currentTime=0}catch{}player=null;try{window.speechSynthesis?.cancel()}catch{}speaking=false;utterance=null;listen?.classList.remove('is-playing');listen?.setAttribute('aria-pressed','false')}
+function fallback(){
+ if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance'in window)){stopAudio();status('La narración no está disponible. Puedes leer las indicaciones de la lámina.','error');return}
+ const u=new SpeechSynthesisUtterance(guide);u.lang='es-CO';u.rate=.96;u.pitch=1;u.volume=1;
+ const voices=speechSynthesis.getVoices?.()||[];u.voice=voices.find(v=>/^es-CO$/i.test(v.lang)&&/female|mujer|sofia|paulina|maria|helena/i.test(v.name))||voices.find(v=>/^es-CO$/i.test(v.lang))||voices.find(v=>v.lang?.startsWith('es'))||null;
+ u.onend=()=>{if(utterance===u){speaking=false;utterance=null;listen.classList.remove('is-playing');listen.setAttribute('aria-pressed','false');status('Guía finalizada. Elige los estímulos que reconozcas.')}};
+ u.onerror=()=>{if(utterance===u){stopAudio();status('No se pudo escuchar la guía.','error')}};
+ utterance=u;try{speechSynthesis.speak(u)}catch{stopAudio();status('No se pudo reproducir la narración.','error')}
+}
+const listen=hotspot([214,298,650,389],{className:'guide',label:'Escuchar guía completa del Día 15',onClick:()=>{
+ if(speaking){stopAudio();status('Guía detenida. Pulsa nuevamente para escucharla.');return}
+ stopAudio();speaking=true;listen.classList.add('is-playing');listen.setAttribute('aria-pressed','true');status('Reproduciendo la guía profesional de la actividad…');
+ try{const a=new Audio(AUDIO);player=a;a.onended=()=>{if(player===a){stopAudio();status('Guía finalizada. Elige los estímulos que reconozcas.')}};a.onerror=()=>{if(player===a){player=null;fallback()}};a.play()?.catch?.(()=>{if(player===a){player=null;fallback()}})}
+ catch{fallback()}
+}});
+listen.setAttribute('aria-pressed','false');
+hotspot([30,1413,830,1524],{label:'Continuar y guardar mi selección',onClick:()=>{stopAudio();persist();const v=[...selected];if(v.length){status('Selección guardada para revisión: '+v.map(x=>labels[x]).join(', ')+'. Puedes continuar tu ruta.','success')}else{status('Selecciona al menos uno de los estímulos que más te ayudan y luego continúa.','error')}}});
+img.addEventListener('error',()=>status('La imagen no cargó. Actualiza la página o inténtalo con Safari.','error'));
+update();window.addEventListener('pagehide',stopAudio);
+})();
+</script></body></html>

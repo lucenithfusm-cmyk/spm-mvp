@@ -63,12 +63,12 @@ test('registro central y regreso manual a Hoy en día 12, sin alterar otros mód
  assert.equal(ctx.window.SPM_ED_DAY5_TOUCH.images.length,3);
  assert.deepEqual([...ctx.window.SPM_ED_DAY5_TOUCH.fields],['erectionFacilitators','erectionInhibitors','microAdjustment']);
 });
-test('solo se activa la sesión 5, calendario y pausa comercial conservados',()=>{
+test('la sesión 5 permanece activa junto a la sesión 6, calendario y pausa comercial conservados',()=>{
  const schedule=read('premium-v2/erection-ten-schedule-v1.js');
  const clinical=read('premium-v2/erection-practice-v1.js');
  const release=read('premium-v2/spm-active-module-release-v1.js');
  const live=read('premium-v2/live.html'),review=read('premium-v2/program-review-v1.js');
- assert.match(schedule,/const integrated=5;/);
+ assert.match(schedule,/const integrated=6;/);
  assert.match(clinical,/if\(lesson===5\)return selection\(record\.erectionFacilitators/);
  assert.match(release,/12:Object\.freeze/);
  for(const file of ['erection-day5-touch-v1.js','erection-day5-bridge-v1.js']){

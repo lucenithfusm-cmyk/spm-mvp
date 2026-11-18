@@ -6,21 +6,21 @@ const reviewHtml=read('premium-v2/revision-programas-28-dias.html');
 const today=read('premium-v2/daily-practice-v1.js'),legacy=read('premium-v2/erectile-function-route.js');
 const release=read('premium-v2/spm-active-module-release-v1.js');
 const deReview=read('premium-v2/de-review.html'),routes=read('vercel.json');
-const active=/^(?:erection-practice-v1|erection-day1-touch-v1|erection-day1-bridge-v1|erection-day2-touch-v1|erection-day2-bridge-v1|erection-day3-touch-v1|erection-day3-bridge-v1|erection-day4-touch-v1|erection-day4-bridge-v1|erection-day5-touch-v1|erection-day5-bridge-v1|spm-active-module-release-v1|daily-practice-v1)\.js/;
+const active=/^(?:erection-practice-v1|erection-day1-touch-v1|erection-day1-bridge-v1|erection-day2-touch-v1|erection-day2-bridge-v1|erection-day3-touch-v1|erection-day3-bridge-v1|erection-day4-touch-v1|erection-day4-bridge-v1|erection-day5-touch-v1|erection-day5-bridge-v1|erection-day6-touch-v1|erection-day6-bridge-v1|spm-active-module-release-v1|daily-practice-v1)\.js/;
 const appScripts=[...live.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]).filter(v=>active.test(v));
 const reviewScripts=[...review.matchAll(/'([^']+\.js(?:\?v=[^']+)?)'/g)].map(m=>m[1]).filter(v=>active.test(v));
-test('Programa real y visor de 28 días usan exactamente los mismos trece controladores aprobados',()=>{
- assert.equal(appScripts.length,13);
+test('Programa real y visor de 28 días usan exactamente los mismos quince controladores aprobados',()=>{
+ assert.equal(appScripts.length,15);
  assert.deepEqual(reviewScripts,appScripts);
- assert.ok(appScripts.findIndex(v=>v.startsWith('spm-active-module-release-v1.js?'))>appScripts.findIndex(v=>v.startsWith('erection-day5-bridge-v1.js?')));
+ assert.ok(appScripts.findIndex(v=>v.startsWith('spm-active-module-release-v1.js?'))>appScripts.findIndex(v=>v.startsWith('erection-day6-bridge-v1.js?')));
  assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-erection10x28-v1');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
- for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','erection-day5-touch-v1.css','spm-approved-entry-v1.css']){
+ for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','erection-day5-touch-v1.css','erection-day6-touch-v1.css','spm-approved-entry-v1.css']){
   assert.ok(live.includes(css),css+' no está en Live');
   assert.ok(reviewHtml.includes(css),css+' no está en revisión');
  }
- for(const lesson of [1,2,3,4,5])assert.ok(release.includes('spm-de-day'+lesson+'-screen-01.webp'));
+ for(const lesson of [1,2,3,4,5,6])assert.ok(release.includes('spm-de-day'+lesson+'-screen-01.webp'));
  assert.match(release,/screens:6/);assert.match(release,/screens:4/);assert.match(release,/screens:3/);
 });
 test('Hoy muestra miniatura real y una sola actividad vigente',()=>{
