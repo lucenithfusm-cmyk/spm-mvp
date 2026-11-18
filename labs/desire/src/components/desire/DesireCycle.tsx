@@ -91,7 +91,7 @@ function DesireForms({ selected, onChoose, disabled = false }: { selected: strin
     <div className="dz-grid2">{desireForms.map(form => <Card key={form.id} className={selected === form.id ? 'accent' : ''}>
       <h3>{form.title}</h3><p>{form.description} <strong className="dz-concept-name">Se llama {form.name}.</strong></p>
       <SpokenSteps label={'Escuchar: ' + form.title} text={form.audio} />
-      <button type="button" className="dz-btn gold" disabled={disabled} aria-pressed={selected === form.id} aria-label={'Se parece a mí hoy: ' + form.title} onClick={() => onChoose(form.id)}>{selected === form.id && <Check size={18} />} Se parece a mí hoy</button>
+      <button type="button" className="dz-btn gold" disabled={disabled} aria-pressed={selected === form.id} aria-label={'Elegir: ' + form.title} onClick={() => onChoose(form.id)}>{selected === form.id && <Check size={18} />} Elegir: {form.title}</button>
     </Card>)}</div>
   </section>;
 }

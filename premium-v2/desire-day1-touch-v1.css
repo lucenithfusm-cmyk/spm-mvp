@@ -41,7 +41,7 @@
 .spm-ds1-hit:is([data-ds1-act="step"],[data-ds1-act="stimulus"])[data-ds1-val="1"]::before{animation-delay:.7s}
 .spm-ds1-hit:is([data-ds1-act="step"],[data-ds1-act="stimulus"])[data-ds1-val="2"]::before{animation-delay:1.4s}
 .spm-ds1-hit:focus-visible::before{opacity:1!important;border-color:#0a6555!important}
-.spm-ds1-clock-actions .spm-ds1-complete,
+.spm-ds1-clock-actions button,
 .spm-ds1-nav button[data-ds1-act="forward"],
 .spm-ds1-bottom button[data-ds1-act="audio"]{box-shadow:0 0 0 2px rgba(210,160,69,.3);animation:spm-ds1-nav-invite 2.8s ease-in-out infinite}
 @keyframes spm-ds1-invite{0%,100%{opacity:.42;box-shadow:0 0 5px rgba(228,191,114,.2),inset 0 0 7px rgba(251,225,156,.12)}50%{opacity:.95;box-shadow:0 0 18px 3px rgba(228,191,114,.53),inset 0 0 11px rgba(251,225,156,.26)}}
