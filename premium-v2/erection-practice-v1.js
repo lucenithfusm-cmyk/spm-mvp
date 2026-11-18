@@ -8,7 +8,8 @@ const scripts={
  3:'Vamos a notar la tensión y volver a una sensación cómoda. Primero, siéntate o recuéstate con apoyo y deja que tu respiración siga su ritmo natural. Observa si estás apretando la mandíbula, elevando los hombros o tensando el abdomen. Marca lo que notes; también puedes indicar que no identificas tensión. Después, afloja con suavidad donde te resulte cómodo, sin empujar ni hacer fuerza. Elige un apoyo para tu atención: el contacto de tus manos, el peso del cuerpo sobre la superficie o un sonido del ambiente. Quédate con esa sensación y vuelve a ella cuando aparezca una preocupación por tu respuesta. No busques provocar una erección. El cronómetro es opcional y no hay un tiempo mínimo para guardar. Si aparece dolor, mareo o malestar, detén la práctica. Al terminar, confirma que practicaste a tu ritmo y pulsa «Guardar práctica y continuar».',
  4:"Hoy vas a practicar cómo volver a las sensaciones cuando aparezca la necesidad de comprobar tu respuesta. Busca un momento tranquilo. Elige un contacto cómodo, por ejemplo una mano sobre el antebrazo; si participas con pareja, acuerden juntos lo que resulta agradable. Después, elige en pantalla dónde pondrás la atención: temperatura, contacto o ritmo. Explora esa sensación a tu ritmo. Si aparece «¿cómo estoy respondiendo?», reconoce el pensamiento y vuelve suavemente a lo que sientes. No necesitas provocar una erección ni conseguir una firmeza determinada. Al terminar, indica si pudiste volver a la sensación, si te costó o si no apareció una comprobación. El cronómetro es opcional. Si algo incomoda, puedes detenerte. Confirma que realizaste la práctica y pulsa «Guardar práctica y continuar».",
  5:"Hoy vas a reconocer qué facilita tu respuesta y qué suele frenarla. Usa experiencias que ya hayas vivido; no necesitas hacer una prueba. Primero, elige hasta tres facilitadores que reconozcas, como un contacto agradable, un ritmo cómodo, privacidad o conexión. Después, marca hasta dos factores que suelen dificultarte la experiencia, como prisa, cansancio, estrés o presión por responder. Si todavía no identificas alguno de estos grupos, elige «Aún no lo identifico». No tienes que llenar todas las opciones. Por último, escoge un solo ajuste pequeño para una próxima ocasión. Puede ser disponer de privacidad, dar más tiempo o expresar una preferencia. Si aún no lo sabes, elige seguir observando sin forzar. Confirma que revisaste tu mapa y pulsa «Guardar práctica y continuar».",
- 6:"Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy."
+ 6:"Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.",
+ 7:"Reconoce qué has aprendido esta semana sin evaluar tu firmeza. Marca los avances que identificas o indica que aún estás empezando. Después elige una idea para fortalecer tu confianza y un siguiente paso concreto para tus próximas experiencias. Puedes observar tu progreso sin compararte ni buscar perfección. Guarda tus tres respuestas y regresa a Hoy."
 };
 const definitions={
  1:{title:'Reconoce tu punto de partida',summary:'Observa una experiencia reciente y elige la firmeza que recuerdas, o «No evaluable».'},
@@ -16,7 +17,8 @@ const definitions={
  3:{title:'Reconoce y suelta la tensión',summary:'Observa la tensión, suelta con suavidad y elige una sensación para tu atención.'},
  4:{title:'Vuelve a las sensaciones',summary:'Elige una sensación y vuelve a ella cuando notes que estás comprobando tu respuesta.'},
  5:{title:'Reconoce lo que te ayuda',summary:'Reconoce facilitadores e inhibidores y elige un ajuste pequeño para una próxima ocasión.'},
- 6:{title:'Activa tu respuesta con estímulos que funcionan',summary:'Identifica estímulos agradables que favorecen tu respuesta y elige cuáles incorporar a tu próxima experiencia.'}
+ 6:{title:'Activa tu respuesta con estímulos que funcionan',summary:'Identifica estímulos agradables que favorecen tu respuesta y elige cuáles incorporar a tu próxima experiencia.'},
+ 7:{title:'Reconoce tu progreso',summary:'Identifica avances, fortalece una idea de confianza y define tu siguiente paso sin medir la firmeza.'}
 };
 const contexts=['spontaneous','solo','partner'];
 const contextValues=['easy','variable','difficult','not_evaluable'];
@@ -29,9 +31,12 @@ const facilitators=['contact','imagination','anticipation','novelty','rhythm','p
 const inhibitors=['pressure','rush','fatigue','stress','privacy','unknown'];
 const adjustments=['privacy','time','rhythm','communicate','observe'];
 const stimuli=['contacto','audio','visual','ambiente','fantasias','otros'];
+const progressMarkers=['contextos','tension','ayuda','estimulos','empezando'];
+const confidenceIdeas=['sin_perfeccion','calma','entrenarse','condiciones','presion'];
+const nextSteps=['repetir_contexto','mas_tiempo','menos_estres','mantener_estimulo','observar_patron'];
 // En la ruta nueva, la sesión aprobada depende del día del calendario y no de
 // la numeración antigua del archivo visual.
-const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5],[15,6]]);
+const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5],[15,6],[18,7]]);
 const practiceDays=new Set(approvedDays.keys());
 const lessonOf=day=>approvedDays.get(Number(day))||null;
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -42,7 +47,7 @@ let current=null,sequence=0;
 function definition(day){
  const lesson=lessonOf(day),item=lesson?definitions[lesson]:null;
  return item?{...item,erectionLesson:lesson,calendarDay:Number(day),
-  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':lesson===6?null:'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
+  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':[6,7].includes(lesson)?null:'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
 }
 function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day))&&(!a.erectionLesson||a.erectionLesson===lessonOf(c.day));}
 function score(value){return value===null||Number.isInteger(value)&&value>=0&&value<=10;}
@@ -63,6 +68,7 @@ function valid(record,day){
  if(lesson===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);
   if(lesson===5)return selection(record.erectionFacilitators,facilitators,3)&&selection(record.erectionInhibitors,inhibitors,2)&&adjustments.includes(record.microAdjustment);
  if(lesson===6)return Array.isArray(record.erectionStimuli)&&record.erectionStimuli.length>=1&&record.erectionStimuli.length<=6&&new Set(record.erectionStimuli).size===record.erectionStimuli.length&&record.erectionStimuli.every(value=>stimuli.includes(value));
+ if(lesson===7)return Array.isArray(record.erectionProgress)&&record.erectionProgress.length>=1&&record.erectionProgress.length<=4&&new Set(record.erectionProgress).size===record.erectionProgress.length&&record.erectionProgress.every(value=>progressMarkers.includes(value))&&(!record.erectionProgress.includes('empezando')||record.erectionProgress.length===1)&&confidenceIdeas.includes(record.erectionConfidenceStatement)&&nextSteps.includes(record.erectionNextStep);
  return false;
 }
 function assignment(c){try{return window.SPM_DAILY_PRACTICE?.assignments(c)?.find(a=>a.id==='main');}catch{return null;}}
