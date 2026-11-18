@@ -9,7 +9,7 @@ const erection=Object.freeze({
  3:Object.freeze({key:'erection-lesson2',version:'2026-11-16-approved4',screens:4,title:'Reconoce tus contextos',preview:'/premium-v2/assets/erection-day2/spm-de-day2-screen-01.webp',module:'SPM_ED_DAY2_TOUCH',bridge:'SPM_ERECTION_DAY2_BRIDGE'}),
  6:Object.freeze({key:'erection-lesson3',version:'2026-11-17-approved3',screens:3,title:'Reconoce y suelta la tensión',preview:'/premium-v2/assets/erection-day3/spm-de-day3-screen-01.webp',module:'SPM_ED_DAY3_TOUCH',bridge:'SPM_ERECTION_DAY3_BRIDGE'}),
  9:Object.freeze({key:'erection-lesson4',version:'2026-11-17-approved3',screens:3,title:'Vuelve a las sensaciones',preview:'/premium-v2/assets/erection-day4/spm-de-day4-screen-01.webp',module:'SPM_ED_DAY4_TOUCH',bridge:'SPM_ERECTION_DAY4_BRIDGE'}),
- 12:Object.freeze({key:'erection-lesson5',version:'2026-11-17-approved3',screens:3,title:'Reconoce lo que te ayuda',preview:'/premium-v2/assets/erection-day5/spm-de-day5-screen-01.webp',module:'SPM_ED_DAY5_TOUCH',bridge:'SPM_ERECTION_DAY5_BRIDGE'})
+ 12:Object.freeze({key:'erection-lesson5',version:'2026-11-17-audio3-tactil-v2',screens:3,title:'Reconoce lo que te ayuda',preview:'/premium-v2/assets/erection-day5/spm-de-day5-screen-01.webp',module:'SPM_ED_DAY5_TOUCH',bridge:'SPM_ERECTION_DAY5_BRIDGE'})
 });
 const connections=Object.freeze({
  erection:'SPM_ERECTION_PRACTICE',sensate:'SPM_SENSATE_LAB',
