@@ -46,7 +46,7 @@ test('Advertencias de selección faltante son modales centrados y accesibles, no
  assert.match(fullscreenCSS,/place-items:center/);
  assert.match(fullscreenCSS,/background:rgba\(2,19,35,.55\)/);
  assert.match(preview,/role="alertdialog"/);
- assert.match(preview,/class="spm-ed18-alert-layer"/);
+ assert.match(preview,/overlay\.className='spm-ed18-alert-layer'/);
  assert.match(preview,/background:rgba\(2,19,35,.60\)/);
  assert.match(preview,/overlay\.querySelector\('#spm-ed18-alert-message'\)\.textContent/);
  assert.match(preview,/data-ed18-alert-close/);
