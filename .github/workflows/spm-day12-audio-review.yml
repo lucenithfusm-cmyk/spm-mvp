@@ -19,6 +19,8 @@ jobs:
           audio=/tmp/erection-day-5.mp3
           curl --fail --location --retry 3 --silent --show-error --output "$audio" "https://raw.githubusercontent.com/lucenithfusm-cmyk/spm-mvp/main/premium-v2/assets/audio/erection/erection-day-5-20261113.mp3"
           test -s "$audio"
+          sudo apt-get update -qq >/dev/null
+          sudo apt-get install -y -qq ffmpeg >/dev/null
           ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "$audio"
           ffmpeg -hide_banner -loglevel info -i "$audio" -af silencedetect=noise=-34dB:d=0.10 -f null - 2> /tmp/spm-pauses.log
           python3 - <<'PYCODE'
@@ -27,7 +29,7 @@ jobs:
           starts=[];gaps=[]
           for line in lines:
               a=re.search(r'silence_start: ([0-9.]+)',line)
-              b=re.search(r'silence_end: ([0-9.]+) \\| silence_duration: ([0-9.]+)',line)
+              b=re.search(r'silence_end: ([0-9.]+) [|] silence_duration: ([0-9.]+)',line)
               if a: starts.append(float(a.group(1)))
               if b and starts:
                   end=float(b.group(1));gaps.append((starts.pop(0),end,float(b.group(2))))
