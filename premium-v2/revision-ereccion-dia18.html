@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>SPM · Día 18 · Reconoce tu progreso</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#06243c;color:#fff}body{display:flex;align-items:center;flex-direction:column}
+.top{width:100%;padding:9px 12px;background:#092b45;border-bottom:1px solid #d4ae72;color:#efca7b;text-align:center;font-size:13px;font-weight:800}
+.top span{color:#d7e7f1;font-weight:400}
+.viewer{width:min(100%,540px);margin:0 auto;box-shadow:0 7px 32px #04121da6}
+.art{position:relative;aspect-ratio:864/1536;width:100%;isolation:isolate;overflow:hidden;background:#0c446b}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;display:block}
+.hit{position:absolute;z-index:5;appearance:none;border:2px solid transparent;background:transparent;color:transparent;border-radius:14px;margin:0;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.hit:focus-visible{outline:3px solid #fff2b1;outline-offset:-2px}.hit:active{background:rgba(255,219,129,.12);border-color:#ffdd83}
+.hit.audio{z-index:12;border-radius:999px;box-shadow:0 0 9px #ffdc7999;animation:spmHalo 1.9s ease-in-out infinite alternate}
+.hit.audio.playing{border-color:#fff4bc;background:rgba(255,232,144,.16);box-shadow:0 0 18px 4px #eebf6099}
+.hit.chosen{background:rgba(17,137,184,.07);border-color:rgba(20,144,188,.72)}
+.mark{position:absolute;z-index:7;display:grid;place-items:center;border-radius:7px;color:white;background:#1288bb;border:2px solid #fff;box-shadow:0 0 9px #1c9dca66;font-size:clamp(11px,3.3vw,16px);font-weight:900;line-height:1;pointer-events:none}
+.day-fix{position:absolute;z-index:4;pointer-events:none;display:flex;align-items:center;justify-content:center;gap:7px;top:2.0%;left:67.5%;width:29.4%;height:5.3%;border:2px solid #b7cede;border-radius:14px;background:linear-gradient(110deg,#174a72,#123454);color:#fff;font-weight:900;font-size:clamp(12px,3.2vw,21px)}
+.day-fix small{font-weight:500;font-size:.56em;display:block;margin-top:2px;white-space:nowrap}
+.day-fix svg{width:18px;height:18px;flex:none}
+.status{background:#103954;color:#ffe6ac;padding:0 12px;margin:0;min-height:0;text-align:center;font-size:13px;line-height:1.5}
+.status:not(:empty){padding:12px;border-top:1px solid #cbab7655}
+.review-footer{padding:12px;background:#0b2f49;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:60px}
+.review-footer button{appearance:none;border:1px solid #d0ae70;border-radius:12px;min-height:44px;color:#fff;background:#204c67;cursor:pointer;font-weight:750;padding:9px 12px;font-size:13px}
+.review-footer span{color:#efd3a2;font-size:12px;font-weight:700;text-align:center}
+.notice{max-width:530px;padding:11px 13px 23px;color:#bfd3e1;font-size:12px;text-align:center;line-height:1.5}
+@keyframes spmHalo{to{box-shadow:0 0 15px 5px #ffdc79ad}}
+@media(prefers-reduced-motion:reduce){.hit.audio{animation:none}}
+@media(max-width:370px){.review-footer{padding:7px 5px}.review-footer button{font-size:11px;padding:7px 8px}}
+</style></head>
+<body><header class="top">SPM DIGITAL WELLNESS · Día 18 <span>· Revisión interactiva</span></header>
+<main class="viewer">
+<section id="art" class="art" role="group" aria-label="Pantalla 1 de 3: Reconoce tu progreso"><img id="approvedImage" src="assets/erection-day7/spm-de-day7-screen-01.jpg" alt="Pantalla premium: Reconoce tu progreso" loading="eager"></section>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<nav class="review-footer" aria-label="Navegación del Día 18"><button type="button" id="goBack">← Anterior</button><span id="pageCount">Pantalla 1 de 3</span><button type="button" id="goNext">Continuar →</button></nav>
+</main><p class="notice">Vista privada de revisión. Las respuestas se guardan solo en este dispositivo; no se modifican registros clínicos ni la programación publicada.</p>
+<script>
+(()=>{'use strict';
+const art=document.getElementById('art'),img=document.getElementById('approvedImage'),statusEl=document.getElementById('status'),back=document.getElementById('goBack'),next=document.getElementById('goNext'),counter=document.getElementById('pageCount');
+const storageKey='SPM_ED_DAY18_PREVIEW_V1';
+const p1=[['contextos','Reconozco mejor mis contextos'],['tension','Suelto tensión con más facilidad'],['ayuda','Identifico lo que me ayuda'],['estimulos','Uso mejor los estímulos que me funcionan'],['empezando','Aún estoy empezando']];
+const p2=[['sin_perfeccion','No necesito perfección para responder'],['calma','Puedo volver al estímulo con calma'],['entrenarse','Mi respuesta puede entrenarse'],['condiciones','Puedo preparar mejores condiciones'],['presion','La presión no me ayuda']];
+const p3=[['repetir_contexto','Repetir un contexto favorable'],['mas_tiempo','Dar más tiempo a la estimulación'],['menos_estres','Elegir un momento con menos estrés'],['mantener_estimulo','Mantener un estímulo que me ayude'],['observar_patron','Seguir observando mi patrón']];
+const guides=[
+ 'Hoy vas a reconocer tu progreso. Recuerda lo que has aprendido, sin exigirte una erección determinada. Selecciona uno o varios cambios que notes: comprender mejor tus contextos, soltar tensión, identificar lo que te ayuda o reconocer qué estímulos funcionan mejor. Si todavía estás empezando, también puedes indicarlo. Lo importante es observar con claridad tu punto actual, no evaluarte ni compararte.',
+ 'Ahora fortalece tu confianza. Elige una sola idea que te gustaría tener presente en tus próximas experiencias. No necesitas perfección para responder. Puedes volver al estímulo con calma, reconocer que tu respuesta puede entrenarse, preparar mejores condiciones o recordar que la presión no ayuda. Selecciona lo que más te sirva hoy.',
+ 'Para finalizar, define tu siguiente paso. Elige una acción concreta: repetir un contexto favorable, dedicar más tiempo a la estimulación, buscar un momento con menos estrés, mantener un estímulo útil o seguir observando tu patrón. No necesitas medir la firmeza hoy. Guarda tu elección y continúa con las otras actividades que tengas en tu ruta.'
+];
+const options=[p1,p2,p3];const labels=['Reconoce tu progreso','Fortalece tu confianza','Define tu siguiente paso'];
+const keys=[p1,p2,p3].map(list=>list.map(([k])=>k));
+let data={advances:[],confidence:null,nextStep:null};
+try{const raw=JSON.parse(localStorage.getItem(storageKey)||'{}');if(raw&&typeof raw==='object'){if(Array.isArray(raw.advances))data.advances=[...new Set(raw.advances.filter(v=>keys[0].includes(v)))];if(keys[1].includes(raw.confidence))data.confidence=raw.confidence;if(keys[2].includes(raw.nextStep))data.nextStep=raw.nextStep}}catch{}
+let page=0,utterance=null,voiceKey=null;const pct=(v,dim)=>(v/dim*100).toFixed(4)+'%';
+const bounds=[
+ [[29,878,834,974],[29,976,834,1074],[29,1076,834,1175],[29,1175,834,1274],[29,1275,834,1375]],
+ [[29,878,834,974],[29,976,834,1074],[29,1076,834,1175],[29,1175,834,1274],[29,1275,834,1375]],
+ [[29,877,834,963],[29,965,834,1051],[29,1052,834,1138],[29,1140,834,1225],[29,1227,834,1313]]
+];
+function saveLocal(){try{localStorage.setItem(storageKey,JSON.stringify(data))}catch{}}
+function status(s){statusEl.textContent=s||''}
+function stopVoice(){try{window.speechSynthesis?.cancel?.()}catch{}utterance=null;voiceKey=null;art.querySelector('.hit.audio')?.classList.remove('playing')}
+function talk(){if(voiceKey===page){stopVoice();status('Guía detenida. Pulsa nuevamente para escucharla.');return}stopVoice();if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){status('La voz estándar del dispositivo no está disponible. Puedes leer las indicaciones de la pantalla.');return}try{const u=new window.SpeechSynthesisUtterance(guides[page]);u.lang='es-CO';u.rate=1;u.pitch=1;u.volume=1;utterance=u;voiceKey=page;const b=art.querySelector('.hit.audio');b?.classList.add('playing');u.onend=()=>{if(utterance===u){stopVoice();status('Guía finalizada. Puedes continuar.')}};u.onerror=()=>{if(utterance===u){stopVoice();status('No se pudo reproducir la guía. Inténtalo de nuevo.')}};window.speechSynthesis.speak(u);status('Reproduciendo la guía con la voz del dispositivo…')}catch{stopVoice();status('No se pudo reproducir la guía.') }}
+function makeHit(coords,label,action,cls=''){const b=document.createElement('button');b.type='button';b.className='hit'+(cls?' '+cls:'');b.style.left=pct(coords[0],864);b.style.top=pct(coords[1],1536);b.style.width=pct(coords[2]-coords[0],864);b.style.height=pct(coords[3]-coords[1],1536);b.setAttribute('aria-label',label);b.addEventListener('click',action);art.append(b);return b}
+function marker(x,y){const el=document.createElement('span');el.className='mark';el.textContent='✓';el.style.left=pct(x-14,864);el.style.top=pct(y-14,1536);el.style.width=pct(28,864);el.style.height=pct(28,1536);art.append(el);return el}
+function selected(k){return page===0?data.advances.includes(k):page===1?data.confidence===k:data.nextStep===k}
+function toggle(k){if(page===0){const has=data.advances.includes(k);if(k==='empezando')data.advances=has?[]:['empezando'];else if(has)data.advances=data.advances.filter(v=>v!==k);else data.advances=[...data.advances.filter(v=>v!=='empezando'),k]}else if(page===1)data.confidence=k;else data.nextStep=k;saveLocal();render();status(page===0?'Seleccionaste '+data.advances.length+' avance(s).':'Respuesta seleccionada. Puedes continuar.')}
+function render(){const n=page+1;art.replaceChildren();const bg=document.createElement('img');bg.src='assets/erection-day7/spm-de-day7-screen-0'+n+'.jpg';bg.alt='Pantalla premium aprobada: '+labels[page];bg.draggable=false;bg.addEventListener('error',()=>status('No se pudo cargar la imagen. Recarga la página en Safari.'));art.append(bg);art.setAttribute('aria-label','Día 18 · '+labels[page]+' · pantalla '+n+' de 3');
+const fix=document.createElement('div');fix.className='day-fix';fix.setAttribute('aria-hidden','true');fix.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#cce9f7" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 2v6M17 2v6M3 10h18"/></svg><span>Día 18<small>Erección y firmeza</small></span>';art.append(fix);
+makeHit([172,269,693,357],'Escuchar guía de '+labels[page],talk,'audio');
+options[page].forEach(([key,title],i)=>{const box=bounds[page][i];const btn=makeHit(box,'Seleccionar '+title,()=>toggle(key));btn.setAttribute('aria-pressed',String(selected(key)));if(selected(key)){btn.classList.add('chosen');marker(793,(box[1]+box[3])/2)}});
+makeHit([17,25,74,112],'Anterior',()=>{if(page>0){stopVoice();page--;status('');render()}else status('Esta es la primera pantalla de la sesión.')});
+makeHit(page===2?[29,1406,835,1511]:[29,1399,835,1512],page===2?'Guardar y continuar mi ruta de hoy':'Continuar',advance);
+counter.textContent='Pantalla '+n+' de 3';back.disabled=page===0;next.textContent=page===2?'Guardar y continuar':'Continuar →';}
+function advance(){if(page===0&&!data.advances.length){status('Selecciona al menos un avance o «Aún estoy empezando».');return}if(page===1&&!data.confidence){status('Elige la idea que quieres conservar.');return}if(page===2){if(!data.nextStep){status('Elige una acción concreta antes de guardar.');return}saveLocal();stopVoice();status('Tus respuestas quedaron guardadas en esta revisión. El Día 18 está listo para integrar en la ruta «Hoy».');return}stopVoice();page++;status('');render()}
+back.addEventListener('click',()=>{if(page>0){stopVoice();page--;status('');render()}});next.addEventListener('click',advance);window.addEventListener('pagehide',stopVoice);render();
+})();
+</script></body></html>
