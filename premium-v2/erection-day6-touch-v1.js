@@ -5,7 +5,7 @@
 (()=>{'use strict';
 if(window.SPM_ED_DAY6_TOUCH)return;
 const IMAGE='/premium-v2/assets/erection-day6/spm-de-day6-screen-01.webp';
-const AUDIO='/premium-v2/assets/audio/erection/erection-day15-stimuli-20261117.mp3';
+// Narración nativa del dispositivo: no elegir voces por nombre, sexo o proveedor.
 const GUIDE='Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.';
 const OPTIONS=[
  {key:'contacto',label:'Contacto físico',box:[30,1086,421,1144],check:[72,1112],card:[32,753,230,980]},
@@ -21,10 +21,8 @@ const rect=(a,b,c,d)=>'left:'+(a/864*100).toFixed(4)+'%;top:'+(b/1536*100).toFix
 let active=null;
 function stopAudio(m){
  if(!m)return;
- try{m.audio?.pause?.();if(m.audio)m.audio.currentTime=0}catch{}
- m.audio=null;m.playing=false;
  try{window.speechSynthesis?.cancel?.()}catch{}
- m.voice=null;
+ m.voice=null;m.playing=false;
  const b=m.host?.querySelector('[data-ed6-action="audio"]');
  b?.classList.remove('playing');b?.setAttribute('aria-pressed','false');
 }
@@ -32,35 +30,26 @@ function stop(){const m=active;active=null;if(m){stopAudio(m);m.events?.abort?.(
 function pause(){if(active)stopAudio(active)}
 function message(m,text){m.note=text;const target=m.host?.querySelector('[data-ed6-status]');if(target)target.textContent=text||''}
 function warn(m,text){message(m,text);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
-function speakFallback(m){
- if(!m.valid()||m.saving)return;
- if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){
-  stopAudio(m);message(m,'No se pudo reproducir la guía. Puedes seguir las instrucciones escritas.');return;
- }
- try{
-  const u=new window.SpeechSynthesisUtterance(GUIDE);
-  m.voice=u;u.lang='es-CO';u.rate=.96;u.pitch=1;u.volume=1;
-  const voices=window.speechSynthesis.getVoices?.()||[];
-  u.voice=voices.find(v=>/^es-co$/i.test(v.lang)&&/female|mujer|sofia|paulina|maria|helena/i.test(v.name))||voices.find(v=>/^es-co$/i.test(v.lang))||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
-  u.onend=()=>{if(m.voice===u){m.voice=null;m.playing=false;const b=m.host?.querySelector('[data-ed6-action="audio"]');b?.classList.remove('playing');b?.setAttribute('aria-pressed','false')}};
-  u.onerror=()=>{if(m.voice===u){stopAudio(m);message(m,'No se pudo escuchar esta guía en el dispositivo.')}};
-  window.speechSynthesis.speak(u);
- }catch{stopAudio(m);message(m,'No se pudo reproducir el audio.')}
-}
 function audio(m){
  if(!m.valid()||m.saving)return;
- if(m.playing){m.playing=false;stopAudio(m);return}
- stopAudio(m);m.playing=true;
- const b=m.host.querySelector('[data-ed6-action="audio"]');
- b?.classList.add('playing');b?.setAttribute('aria-pressed','true');
- if(typeof window.Audio!=='function'){speakFallback(m);return}
+ if(m.playing){stopAudio(m);return}
+ if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){
+  message(m,'La voz del dispositivo no está disponible. Puedes seguir las instrucciones escritas.');return;
+ }
+ stopAudio(m);
+ const button=m.host.querySelector('[data-ed6-action="audio"]');
  try{
-  const player=new window.Audio(AUDIO);m.audio=player;player.preload='auto';
-  player.onended=()=>{if(m.audio===player){m.playing=false;stopAudio(m)}};
-  player.onerror=()=>{if(m.audio===player){m.audio=null;speakFallback(m)}};
-  const result=player.play();
-  result?.catch?.(()=>{if(m.audio===player){m.audio=null;speakFallback(m)}});
- }catch{m.audio=null;speakFallback(m)}
+  const utterance=new window.SpeechSynthesisUtterance(GUIDE);
+  // El sistema elige la voz predeterminada para español; no forzar Sofía, Rocío u otra voz.
+  utterance.lang='es-CO';utterance.rate=1;utterance.pitch=1;utterance.volume=1;
+  m.voice=utterance;m.playing=true;
+  button?.classList.add('playing');button?.setAttribute('aria-pressed','true');
+  utterance.onend=()=>{if(m.voice===utterance)stopAudio(m)};
+  utterance.onerror=()=>{if(m.voice===utterance){stopAudio(m);message(m,'No se pudo reproducir la voz del dispositivo. Vuelve a intentar.')}};
+  window.speechSynthesis.speak(utterance);
+ }catch{
+  stopAudio(m);message(m,'No se pudo reproducir la voz del dispositivo. Vuelve a intentar.');
+ }
 }
 function hotspot(coords,action,label,{value=null,selected=false,extra='',disabled=false,audio=false}={}){
  return '<button type="button" class="spm-ed6-hit'+(selected?' selected':'')+(audio?' audio':'')+(extra?' '+extra:'')+'" style="'+rect(...coords)+'" data-ed6-action="'+escapeHtml(action)+'"'+(value===null?'':' data-value="'+escapeHtml(value)+'" aria-pressed="'+selected+'"')+(audio?' aria-pressed="false"':'')+(disabled?' disabled':'')+' aria-label="'+escapeHtml(label)+'"></button>';
@@ -108,7 +97,7 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',
  if(!host||typeof onSave!=='function')return false;
  stop();const p=prior&&typeof prior==='object'&&!Array.isArray(prior)?prior:{};
  const choices=Array.isArray(p.erectionStimuli)?[...new Set(p.erectionStimuli.filter(x=>KEYS.includes(x)))]:[];
- const m={host,prior:{...p},valid,save:onSave,onBack,scope,calendarDay:Number(calendarDay),selected:choices,note:'',saving:false,audio:null,playing:false,voice:null,events:new AbortController()};
+ const m={host,prior:{...p},valid,save:onSave,onBack,scope,calendarDay:Number(calendarDay),selected:choices,note:'',saving:false,playing:false,voice:null,events:new AbortController()};
  active=m;render(m);
  host.addEventListener('click',ev=>{
   if(active!==m||!m.valid()||m.saving)return;
@@ -127,5 +116,5 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',
  return true;
 }
 window.addEventListener('pagehide',stop);
-window.SPM_ED_DAY6_TOUCH={mount,pause,stop,images:[IMAGE],fields:['erectionStimuli'],options:KEYS.slice(),audioSrc:AUDIO,guide:GUIDE};
+window.SPM_ED_DAY6_TOUCH={mount,pause,stop,images:[IMAGE],fields:['erectionStimuli'],options:KEYS.slice(),audioSrc:null,voiceMode:'device-default',guide:GUIDE};
 })();
