@@ -22,7 +22,7 @@ let active=null;
 function stopAudio(m){
  if(!m)return;
  try{m.audio?.pause?.();if(m.audio)m.audio.currentTime=0}catch{}
- m.audio=null;
+ m.audio=null;m.playing=false;
  try{window.speechSynthesis?.cancel?.()}catch{}
  m.voice=null;
  const b=m.host?.querySelector('[data-ed6-action="audio"]');
@@ -35,17 +35,17 @@ function warn(m,text){message(m,text);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.hos
 function speakFallback(m){
  if(!m.valid()||m.saving)return;
  if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){
-  message(m,'No se pudo reproducir la guía. Puedes seguir las instrucciones escritas.');return;
+  stopAudio(m);message(m,'No se pudo reproducir la guía. Puedes seguir las instrucciones escritas.');return;
  }
  try{
   const u=new window.SpeechSynthesisUtterance(GUIDE);
   m.voice=u;u.lang='es-CO';u.rate=.96;u.pitch=1;u.volume=1;
   const voices=window.speechSynthesis.getVoices?.()||[];
   u.voice=voices.find(v=>/^es-co$/i.test(v.lang)&&/female|mujer|sofia|paulina|maria|helena/i.test(v.name))||voices.find(v=>/^es-co$/i.test(v.lang))||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
-  u.onend=()=>{if(m.voice===u){m.voice=null;const b=m.host?.querySelector('[data-ed6-action="audio"]');b?.classList.remove('playing');b?.setAttribute('aria-pressed','false')}};
-  u.onerror=()=>{if(m.voice===u){m.voice=null;const b=m.host?.querySelector('[data-ed6-action="audio"]');b?.classList.remove('playing');b?.setAttribute('aria-pressed','false');message(m,'No se pudo escuchar esta guía en el dispositivo.')}};
+  u.onend=()=>{if(m.voice===u){m.voice=null;m.playing=false;const b=m.host?.querySelector('[data-ed6-action="audio"]');b?.classList.remove('playing');b?.setAttribute('aria-pressed','false')}};
+  u.onerror=()=>{if(m.voice===u){stopAudio(m);message(m,'No se pudo escuchar esta guía en el dispositivo.')}};
   window.speechSynthesis.speak(u);
- }catch{message(m,'No se pudo reproducir el audio.')}
+ }catch{stopAudio(m);message(m,'No se pudo reproducir el audio.')}
 }
 function audio(m){
  if(!m.valid()||m.saving)return;
