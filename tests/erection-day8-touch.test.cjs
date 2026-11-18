@@ -35,7 +35,7 @@ test('Tres narraciones completas, voz estándar del dispositivo sin Rocío/Sofí
  assert.doesNotMatch(js,/new window\.Audio\(|\.voice\s*=\s*voices\.find\(/);
  assert.match(js,/stopVoice\(m\);pauseTimer\(m\);m\.page=/);
  const clinical=read('premium-v2/erection-practice-v1.js');
- assert.match(clinical,/\[6,7,8\]\.includes\(lesson\)\?null/);
+ assert.match(clinical,/\[6,7,8,9\]\.includes\(lesson\)\?null/);
 });
 test('Pantalla 1: iniciar práctica y cronómetro opcional, sin tiempo mínimo',()=>{
  assert.match(js,/hit\(\[575,1492,1046,1620\],'timer'/);
@@ -93,9 +93,9 @@ test('Guardado real en Hoy del Día 21 y regreso sin avanzar a otro día',()=>{
 test('Octava sesión en Día 21; 14/28 son evaluaciones y la pausa comercial se conserva',()=>{
  const ctx={window:{}};vm.runInNewContext(read('premium-v2/erection-ten-schedule-v1.js'),ctx);
  const schedule=ctx.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(schedule.integrated,8);
+ assert.equal(schedule.integrated,9);
  assert.equal(schedule.isReady(21),true);
- assert.equal(schedule.isReady(24),false);
+ assert.equal(schedule.isReady(24),true);
  assert.deepEqual([...schedule.evaluationDays],[14,28]);
  const released=read('premium-v2/spm-active-module-release-v1.js');
  assert.match(released,/21:Object\.freeze/);
