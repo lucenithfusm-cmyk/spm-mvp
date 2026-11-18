@@ -1,0 +1,39 @@
+name: SPM Día 12 - diagnosticar pausas de audio
+on:
+  push:
+    branches:
+      - feat/erection-day12-touch-screens-20261117
+    paths:
+      - .github/workflows/spm-day12-audio-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pausas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Examinar silencios del audio original sin modificarlo
+        shell: bash
+        run: |
+          set -euo pipefail
+          audio=premium-v2/assets/audio/erection/erection-day-5-20261113.mp3
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "$audio"
+          ffmpeg -hide_banner -loglevel info -i "$audio" -af silencedetect=noise=-34dB:d=0.10 -f null - 2> /tmp/spm-pauses.log
+          python3 - <<'PYCODE'
+          import re
+          lines=open('/tmp/spm-pauses.log').read().splitlines()
+          starts=[];gaps=[]
+          for line in lines:
+              a=re.search(r'silence_start: ([0-9.]+)',line)
+              b=re.search(r'silence_end: ([0-9.]+) \\| silence_duration: ([0-9.]+)',line)
+              if a: starts.append(float(a.group(1)))
+              if b and starts:
+                  end=float(b.group(1));gaps.append((starts.pop(0),end,float(b.group(2))))
+          print('Silencios entre 10 y 40 segundos del audio original')
+          for a,b,d in gaps:
+              if 10 <= (a+b)/2 <= 40: print(f'{a:.3f} - {b:.3f} ({d:.3f}s)')
+          for target in (16.3,31.8):
+              candidates=sorted((abs((a+b)/2-target),a,b,d) for a,b,d in gaps if abs((a+b)/2-target)<4 and d>.13)
+              print('Candidatos alrededor',target,':',candidates[:12])
+          PYCODE
