@@ -12,12 +12,13 @@ jobs:
   pausas:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Examinar silencios del audio original sin modificarlo
         shell: bash
         run: |
           set -euo pipefail
-          audio=premium-v2/assets/audio/erection/erection-day-5-20261113.mp3
+          audio=/tmp/erection-day-5.mp3
+          curl --fail --location --retry 3 --silent --show-error --output "$audio" "https://raw.githubusercontent.com/lucenithfusm-cmyk/spm-mvp/main/premium-v2/assets/audio/erection/erection-day-5-20261113.mp3"
+          test -s "$audio"
           ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1 "$audio"
           ffmpeg -hide_banner -loglevel info -i "$audio" -af silencedetect=noise=-34dB:d=0.10 -f null - 2> /tmp/spm-pauses.log
           python3 - <<'PYCODE'
