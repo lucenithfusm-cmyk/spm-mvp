@@ -31,11 +31,13 @@ test('facilitadores 3, inhibidores 2, desconocido exclusivo, ajuste único',()=>
 test('el audio original está dividido en tres pistas completas con cortes en silencios',()=>{
  assert.ok(js.includes('erection-day-5-20261113.mp3'));
  assert.ok(js.includes('const AUDIO_CLIPS='));
+ const context={window:{addEventListener:()=>{}}};
+ vm.runInNewContext(js,context);
  for(let n=1;n<=3;n++){
   const file='premium-v2/assets/audio/erection/erection-day-5-screen-0'+n+'-20261117.mp3';
   const audio=fs.readFileSync(path.join(root,file));
   assert.ok(audio.length>200000,'clip '+n+' no está completo');
-  assert.ok(js.includes(file.slice(file.lastIndexOf('/')+1)));
+  assert.equal(context.window.SPM_ED_DAY5_TOUCH.audioClips[n-1],'/'+file);
  }
  assert.match(js,/new window\.Audio\(AUDIO_CLIPS\[m\.page-1\]\)/);
  assert.match(js,/audio\.play\(\)/);
