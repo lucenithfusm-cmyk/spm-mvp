@@ -88,7 +88,7 @@ test('Diez sesiones, evaluación días 14/28 y acceso comercial pausado sin camb
  const sch=read('premium-v2/erection-ten-schedule-v1.js');
  const state={window:{}};vm.runInNewContext(sch,state);
  const s=state.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(s.integrated,7);assert.equal(s.isReady(18),true);assert.equal(s.isReady(21),false);
+ assert.equal(s.integrated,8);assert.equal(s.isReady(18),true);assert.equal(s.isReady(21),true);assert.equal(s.isReady(24),false);
  assert.deepEqual([...s.evaluationDays],[14,28]);
  const live=read('premium-v2/live.html'),review=read('premium-v2/program-review-v1.js'),reviewHtml=read('premium-v2/revision-programas-28-dias.html');
  const released=read('premium-v2/spm-active-module-release-v1.js');
