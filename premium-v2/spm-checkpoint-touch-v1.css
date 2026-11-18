@@ -1,0 +1,40 @@
+/* SPM · Seguimiento 14 y evaluación 28. Las imágenes aprobadas son las pantallas. */
+.spm-ck-session{width:100%;box-sizing:border-box;background:#0a3655;color:#fff;font:inherit}
+.spm-ck-session *{box-sizing:border-box}
+.spm-ck-artwork{width:min(100vw,540px);max-width:540px;aspect-ratio:864/1536;position:relative;isolation:isolate;overflow:hidden;background:#0d486c;margin:0 auto;flex:0 0 auto}
+.spm-ck-artwork>img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;display:block}
+.spm-ck-hit{position:absolute;z-index:5;appearance:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:transparent;border:2px solid transparent;border-radius:999px;color:transparent;padding:0;margin:0}
+.spm-ck-hit:focus-visible,.spm-ck-note:focus-visible{outline:3px solid #ffdf8a;outline-offset:1px}
+.spm-ck-hit:active{border-color:#ffe6a6;background:rgba(243,204,112,.15)}
+.spm-ck-hit.selected{z-index:7;border-color:#d8a33b;background:rgba(17,113,169,.14);box-shadow:0 0 0 2px #fff9e1b0 inset,0 0 9px rgba(24,115,165,.34)}
+.spm-ck-hit.audio{z-index:12;pointer-events:auto;min-height:42px;border-radius:999px;box-shadow:0 0 10px rgba(255,217,125,.64);animation:spmCkAudioGlow 2s ease-in-out infinite alternate}
+.spm-ck-hit.audio.playing{border-color:#fff1b9;background:rgba(253,216,126,.16);box-shadow:0 0 18px 4px rgba(255,206,105,.7)}
+.spm-ck-note{position:absolute;z-index:9;resize:none;border:1px solid transparent;border-radius:12px;padding:7px 12px;background:transparent;color:#12314b;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:clamp(13px,2.7vw,18px);font-weight:500;line-height:1.3;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:manipulation}
+.spm-ck-note::placeholder{color:transparent}
+.spm-ck-note:not(:placeholder-shown),.spm-ck-note:focus{border-color:#84b9d0;background:rgba(239,249,255,.97);box-shadow:0 0 8px #8ec6de70}
+.spm-ck-toolbar,.spm-ck-status{width:min(100vw,540px);max-width:540px;box-sizing:border-box;margin:0 auto;flex:0 0 auto}
+.spm-ck-toolbar{display:flex;align-items:center;justify-content:space-between;gap:7px;min-height:59px;padding:8px 10px;background:#10324e;border-top:1px solid #e8bd77a0}
+.spm-ck-toolbar button{appearance:none;min-height:44px;border:1px solid #e3bf7a;border-radius:11px;background:#1b4d70;color:#fff;cursor:pointer;padding:8px 11px;font-weight:750;font-size:12px}
+.spm-ck-toolbar button:focus-visible{outline:3px solid #ffe6ae;outline-offset:2px}
+.spm-ck-toolbar span{white-space:nowrap;color:#f7d99b;font-size:12px;font-weight:750}
+.spm-ck-status{min-height:0;color:#ffe6b9;font-size:13px;line-height:1.45;text-align:center;background:#113c58}
+.spm-ck-status:not(:empty){padding:12px;border:1px solid #e2bc7a80}
+.spm-ck-status:empty{display:none}
+.spm-checkpoint-warning,.spm-ck-report-overlay{position:fixed;inset:0;z-index:2147483400;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));background:rgba(2,20,36,.64);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.spm-checkpoint-warning-card{width:min(100%,420px);background:linear-gradient(150deg,#0b3653,#164965);border:2px solid #e8c888;color:#fff;border-radius:22px;text-align:center;padding:24px 20px;box-shadow:0 20px 55px rgba(0,12,26,.6)}
+.spm-checkpoint-warning-card strong{font-size:21px;display:block;color:#ffe1a2}
+.spm-checkpoint-warning-card p{font-size:17px;line-height:1.5;margin:13px 0 22px}
+.spm-checkpoint-warning-card button{width:100%;min-height:48px;border:0;border-radius:12px;background:#f2ce83;color:#123753;font-size:17px;font-weight:800;cursor:pointer}
+.spm-ck-report-card{width:min(100%,760px);max-height:88dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;background:linear-gradient(145deg,#0b2a42,#123e5b);border:2px solid #dfc180;border-radius:22px;box-shadow:0 20px 55px rgba(0,9,23,.65);padding:18px 18px 22px;color:#edf7fb}
+.spm-ck-report-inner{line-height:1.6;font-size:15px;overflow-wrap:anywhere}
+.spm-ck-report-inner h3{color:#fff;font-size:23px;margin:18px 0 12px}
+.spm-ck-report-inner .spm-checkpoint-table{overflow-x:auto}
+.spm-ck-report-inner table{width:100%;border-collapse:collapse;min-width:460px}
+.spm-ck-report-inner th,.spm-ck-report-inner td{border-bottom:1px solid #bdcfda50;padding:8px 10px;text-align:left}
+.spm-ck-report-inner th small{display:block;font-size:11px;font-weight:400;color:#bfd5e1}
+.spm-ck-report-inner caption{text-align:left;font-size:18px;font-weight:800;margin:10px 0;color:#f1d69c}
+.spm-ck-report-note{padding:11px 13px;border-radius:12px;border:1px solid #c8ad7b99;background:#173e59;color:#fff2cb;font-weight:700}
+.spm-ck-close-report{display:block;width:100%;min-height:48px;border:0;border-radius:12px;background:#f2d187;color:#123753;font-size:15px;font-weight:800;cursor:pointer;padding:10px;margin:6px 0 14px}
+@keyframes spmCkAudioGlow{to{box-shadow:0 0 16px 5px rgba(255,217,125,.72)}}
+@media(max-width:360px){.spm-ck-toolbar{padding:7px 5px}.spm-ck-toolbar button{padding:8px 6px;font-size:11px}.spm-ck-toolbar span{font-size:11px}.spm-ck-note{font-size:12px;padding:5px 8px}.spm-ck-hit.selected{border-width:2px}}
+@media(prefers-reduced-motion:reduce){.spm-ck-hit.audio{animation:none}.spm-checkpoint-warning,.spm-ck-report-overlay{-webkit-backdrop-filter:none;backdrop-filter:none}}
