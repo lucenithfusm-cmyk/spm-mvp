@@ -56,8 +56,8 @@
       'Cuando quieras terminar, observa qué detalle te ayudó a conectar. Puedes anotarlo en tu reflexión. Si no sentiste interés, también es una observación válida.'
     ],
     resp:[
-      'Elige una sensación que te resulte agradable y que quieras explorar: sostener una taza tibia, escuchar música suave o acariciar tus manos.',
-      'Disfruta esa sensación a tu ritmo. Nota la temperatura, la textura o el sonido. Si aparece presión o incomodidad, haz una pausa o detente.',
+      'Elige una sensación que te resulte agradable y que quieras explorar: el contacto piel con piel, el calor de una caricia, la suavidad del cabello o un aroma que te atraiga. Si estás con tu pareja, elijan caricias que ambos deseen.',
+      'Disfruta esa sensación a tu ritmo. Percibe la calidez de la piel y cómo cambia su textura cuando se eriza. Si estás con tu pareja y ambos lo desean, puedes acariciar su cabello y sentir su textura entre tus dedos. Si aparece presión o incomodidad, haz una pausa o detente.',
       'Cuando quieras terminar, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo en tu reflexión. No necesitas sentir deseo para que esta observación tenga valor.'
     ]
   };
@@ -67,13 +67,13 @@
     respIntro:'Vas a crear un momento agradable para explorar comodidad y conexión, sin exigir que aparezca deseo.',
     preparation:'Busca un lugar cómodo y privado. Silencia las notificaciones y ten a mano lo que quieras explorar.',
     presenceExit:'Cuando termines, puedes anotar qué te resultó útil y qué quieres repetir o adaptar.',
-    stimulusIntro:'Ampliar tus posibilidades de disfrute explorando un estímulo diferente. Ten a mano el objeto, la imagen o la música que quieras explorar.',
-    stimulusOptions:'Elige un estímulo que uses poco, diferente al de la primera práctica: escuchar una canción agradable, observar una imagen que te guste o explorar la textura de una tela suave sobre tus manos.',
-    stimulusExplore:'Explóralo a tu ritmo. Presta atención a un detalle: el ritmo, un color, la temperatura o la textura. Respira con naturalidad y observa si aparece comodidad, curiosidad o interés.',
+    stimulusIntro:'Ampliar tus posibilidades de disfrute explorando un estímulo diferente. Prepara una canción, una imagen agradable o un momento para explorar el contacto con la piel, a tu ritmo.',
+    stimulusOptions:'Elige un estímulo que uses poco, diferente al de la primera práctica: escuchar una canción agradable, observar una imagen que te guste o explorar una textura corporal, como la del cabello de tu pareja si ambos lo desean, o la calidez de tu propia piel.',
+    stimulusExplore:'Explóralo a tu ritmo. Presta atención a un detalle: el ritmo de una canción, un color de la imagen o la textura y la calidez de la piel al contacto. Respira con naturalidad y observa si aparece comodidad, curiosidad o interés.',
     stimulusExit:'Cuando termines de explorar, compara con la primera experiencia: ¿qué te resultó agradable, neutro o incómodo? Puedes anotarlo en Tu reflexión al terminar. Si no te gustó, elige otra opción en una próxima práctica.',
     close:'Cuando termines, puedes anotar qué te resultó útil y qué quieres repetir o adaptar.'
   };
-  const STIMULI={musica:'escuchar una canción agradable',imagen:'observar una imagen que te guste',textura:'explorar la textura de una tela suave sobre tus manos'};
+  const STIMULI={musica:'escuchar una canción agradable',imagen:'observar una imagen que te guste',textura:'explorar la textura y la calidez de tu propia piel o, si ambos lo desean, acariciar el cabello de tu pareja'};
   const OBS=['Más calma','Más conexión','Sin cambios'];
   const REPEAT=['Sí','Tal vez','No'];
   const clampScore=v=>v!==null&&v!==undefined&&v!==''&&Number.isInteger(Number(v))&&Number(v)>=0&&Number(v)<=10?Number(v):null;
