@@ -93,7 +93,7 @@ test('Guardado real en Hoy del Día 21 y regreso sin avanzar a otro día',()=>{
 test('Octava sesión en Día 21; 14/28 son evaluaciones y la pausa comercial se conserva',()=>{
  const ctx={window:{}};vm.runInNewContext(read('premium-v2/erection-ten-schedule-v1.js'),ctx);
  const schedule=ctx.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(schedule.integrated,9);
+ assert.equal(schedule.integrated,10);
  assert.equal(schedule.isReady(21),true);
  assert.equal(schedule.isReady(24),true);
  assert.deepEqual([...schedule.evaluationDays],[14,28]);
