@@ -11,7 +11,8 @@ const scripts={
  6:"Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.",
  7:"Reconoce qué has aprendido esta semana sin evaluar tu firmeza. Marca los avances que identificas o indica que aún estás empezando. Después elige una idea para fortalecer tu confianza y un siguiente paso concreto para tus próximas experiencias. Puedes observar tu progreso sin compararte ni buscar perfección. Guarda tus tres respuestas y regresa a Hoy.",
  8:"En una próxima experiencia íntima voluntaria, conserva un estímulo agradable sin exigirte firmeza constante. Puedes ajustar solo una variable o hacer una pausa. Recuerda posiciones que te resultan cómodas, identifica si alguna favorece tu respuesta y elige una estrategia. No es necesario provocar una erección ni medirla hoy. El cronómetro es opcional. Si alguna postura produce dolor, detente.",
- 9:"Si durante una experiencia íntima disminuye la firmeza, recuerda que la respuesta puede fluctuar. Evita convertir la variación en una prueba. Conserva la calma; ajusta una sola cosa del estímulo, prueba una posición que te resulte cómoda o haz una pausa. Retoma únicamente si te sientes cómodo y lo deseas. Elige una estrategia para tu próxima experiencia y guárdala sin evaluar hoy tu firmeza."
+ 9:"Si durante una experiencia íntima disminuye la firmeza, recuerda que la respuesta puede fluctuar. Evita convertir la variación en una prueba. Conserva la calma; ajusta una sola cosa del estímulo, prueba una posición que te resulte cómoda o haz una pausa. Retoma únicamente si te sientes cómodo y lo deseas. Elige una estrategia para tu próxima experiencia y guárdala sin evaluar hoy tu firmeza.",
+ 10:"Después de una experiencia sexual difícil, reconoce si temes que se repita, vigilas demasiado tu erección, evitas nuevas experiencias o sientes que debes demostrar algo. También puedes marcar que no identificas ninguna señal. No necesitas provocar una erección ni hacer una prueba. Elige una única estrategia flexible para tu próxima experiencia, o recuerda que consultar a un profesional es apropiado si una dificultad aparece de forma nueva o persiste. Guarda tu plan y regresa a Hoy."
 };
 const definitions={
  1:{title:'Reconoce tu punto de partida',summary:'Observa una experiencia reciente y elige la firmeza que recuerdas, o «No evaluable».'},
@@ -22,7 +23,8 @@ const definitions={
  6:{title:'Activa tu respuesta con estímulos que funcionan',summary:'Identifica estímulos agradables que favorecen tu respuesta y elige cuáles incorporar a tu próxima experiencia.'},
  7:{title:'Reconoce tu progreso',summary:'Identifica avances, fortalece una idea de confianza y define tu siguiente paso sin medir la firmeza.'},
  8:{title:'Sostener la erección sin perseguir firmeza constante',summary:'Reconoce posiciones favorables, adapta una condición sin presión y elige una estrategia para una próxima experiencia.'},
- 9:{title:'Qué hacer cuando disminuye la firmeza',summary:'Practica una secuencia de ajustes simples, sin presión, y elige tu estrategia cuando la firmeza fluctúe.'}
+ 9:{title:'Qué hacer cuando disminuye la firmeza',summary:'Practica una secuencia de ajustes simples, sin presión, y elige tu estrategia cuando la firmeza fluctúe.'},
+ 10:{title:'Prevención después de una caída',summary:'Identifica señales de preocupación o evitación y elige un plan para continuar sin exigirte una erección perfecta.'}
 };
 const contexts=['spontaneous','solo','partner'];
 const contextValues=['easy','variable','difficult','not_evaluable'];
@@ -41,9 +43,11 @@ const nextSteps=['repetir_contexto','mas_tiempo','menos_estres','mantener_estimu
 const positions=['tu_encima','pareja_encima','de_lado','sentado','de_pie','otra'];
 const positionStrategies=['maintain_stimulus','favor_position','switch_position','pause','observe'];
 const responseStrategies=['calm','stimulus','position','pause','sequence'];
+const preventionSignals=['fear_repeat','checking','avoidance','pressure','none'];
+const preventionStrategies=['reframe','refocus','reconnect','consult','maintain'];
 // En la ruta nueva, la sesión aprobada depende del día del calendario y no de
 // la numeración antigua del archivo visual.
-const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5],[15,6],[18,7],[21,8],[24,9]]);
+const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5],[15,6],[18,7],[21,8],[24,9],[27,10]]);
 const practiceDays=new Set(approvedDays.keys());
 const lessonOf=day=>approvedDays.get(Number(day))||null;
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -54,7 +58,7 @@ let current=null,sequence=0;
 function definition(day){
  const lesson=lessonOf(day),item=lesson?definitions[lesson]:null;
  return item?{...item,erectionLesson:lesson,calendarDay:Number(day),
-  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':[6,7,8,9].includes(lesson)?null:'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
+  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':[6,7,8,9,10].includes(lesson)?null:'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
 }
 function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day))&&(!a.erectionLesson||a.erectionLesson===lessonOf(c.day));}
 function score(value){return value===null||Number.isInteger(value)&&value>=0&&value<=10;}
@@ -78,6 +82,7 @@ function valid(record,day){
  if(lesson===7)return Array.isArray(record.erectionProgress)&&record.erectionProgress.length>=1&&record.erectionProgress.length<=4&&new Set(record.erectionProgress).size===record.erectionProgress.length&&record.erectionProgress.every(value=>progressMarkers.includes(value))&&(!record.erectionProgress.includes('empezando')||record.erectionProgress.length===1)&&confidenceIdeas.includes(record.erectionConfidenceStatement)&&nextSteps.includes(record.erectionNextStep);
  if(lesson===8)return Array.isArray(record.erectionFavorablePositions)&&record.erectionFavorablePositions.length>=1&&record.erectionFavorablePositions.length<=6&&new Set(record.erectionFavorablePositions).size===record.erectionFavorablePositions.length&&record.erectionFavorablePositions.every(value=>positions.includes(value)||value==='no_evaluable')&&(!record.erectionFavorablePositions.includes('no_evaluable')||record.erectionFavorablePositions.length===1)&&(record.erectionLessFavorablePosition==null||record.erectionLessFavorablePosition==='no_identificada'||positions.includes(record.erectionLessFavorablePosition))&&positionStrategies.includes(record.erectionChosenStrategy)&&(record.erectionPracticeStarted==null||typeof record.erectionPracticeStarted==='boolean')&&(record.erectionOptionalTimerSeconds==null||Number.isSafeInteger(record.erectionOptionalTimerSeconds)&&record.erectionOptionalTimerSeconds>=0);
  if(lesson===9)return responseStrategies.includes(record.erectionResponseStrategy)&&Array.isArray(record.erectionPlanStepsHeard)&&record.erectionPlanStepsHeard.length<=4&&new Set(record.erectionPlanStepsHeard).size===record.erectionPlanStepsHeard.length&&record.erectionPlanStepsHeard.every(n=>Number.isInteger(n)&&n>=0&&n<=3);
+ if(lesson===10)return Array.isArray(record.warningSignals)&&record.warningSignals.length>=1&&record.warningSignals.length<=4&&new Set(record.warningSignals).size===record.warningSignals.length&&record.warningSignals.every(v=>preventionSignals.includes(v))&&(!record.warningSignals.includes('none')||record.warningSignals.length===1)&&preventionStrategies.includes(record.preventionStrategy);
  return false;
 }
 function assignment(c){try{return window.SPM_DAILY_PRACTICE?.assignments(c)?.find(a=>a.id==='main');}catch{return null;}}
