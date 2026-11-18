@@ -10,7 +10,8 @@ const erection=Object.freeze({
  6:Object.freeze({key:'erection-lesson3',version:'2026-11-17-approved3',screens:3,title:'Reconoce y suelta la tensión',preview:'/premium-v2/assets/erection-day3/spm-de-day3-screen-01.webp',module:'SPM_ED_DAY3_TOUCH',bridge:'SPM_ERECTION_DAY3_BRIDGE'}),
  9:Object.freeze({key:'erection-lesson4',version:'2026-11-17-approved3',screens:3,title:'Vuelve a las sensaciones',preview:'/premium-v2/assets/erection-day4/spm-de-day4-screen-01.webp',module:'SPM_ED_DAY4_TOUCH',bridge:'SPM_ERECTION_DAY4_BRIDGE'}),
  12:Object.freeze({key:'erection-lesson5',version:'2026-11-17-audio3-tactil-v2',screens:3,title:'Reconoce lo que te ayuda',preview:'/premium-v2/assets/erection-day5/spm-de-day5-screen-01.webp',module:'SPM_ED_DAY5_TOUCH',bridge:'SPM_ERECTION_DAY5_BRIDGE'}),
- 15:Object.freeze({key:'erection-lesson6',version:'2026-11-17-voice-device-v2',screens:1,title:'Activa tu respuesta con estímulos que funcionan',preview:'/premium-v2/assets/erection-day6/spm-de-day6-screen-01.webp',module:'SPM_ED_DAY6_TOUCH',bridge:'SPM_ERECTION_DAY6_BRIDGE'})
+ 15:Object.freeze({key:'erection-lesson6',version:'2026-11-17-voice-device-v2',screens:1,title:'Activa tu respuesta con estímulos que funcionan',preview:'/premium-v2/assets/erection-day6/spm-de-day6-screen-01.webp',module:'SPM_ED_DAY6_TOUCH',bridge:'SPM_ERECTION_DAY6_BRIDGE'}),
+ 18:Object.freeze({key:'erection-lesson7',version:'2026-11-17-progreso-alertas-v1',screens:3,title:'Reconoce tu progreso',preview:'/premium-v2/assets/erection-day7/spm-de-day7-screen-01.jpg',module:'SPM_ED_DAY7_TOUCH',bridge:'SPM_ERECTION_DAY7_BRIDGE'})
 });
 const connections=Object.freeze({
  erection:'SPM_ERECTION_PRACTICE',sensate:'SPM_SENSATE_LAB',
@@ -31,5 +32,5 @@ function ready(context,activity){
  return !!(window[released.module]&&window[released.bridge]&&window.SPM_ERECTION_PRACTICE?.open);
 }
 function status(){return Object.freeze(Object.fromEntries(Object.entries(connections).map(([name,api])=>[name,!!window[api]])));}
-window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-17-10x28-current3-day15',erection,connections,resolve,ready,status});
+window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-17-10x28-current4-day18',erection,connections,resolve,ready,status});
 })();
