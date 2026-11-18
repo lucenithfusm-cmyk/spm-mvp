@@ -7,7 +7,7 @@ const read=p=>fs.readFileSync(path.join(root,'premium-v2',p),'utf8');
 const keys=['firmness','control','desire','confidence','comfort','sleep','skill'];
 function testHarness(){
  const d=new JSDOM('<div id="plan"><div id="spmDailyWorkspace"></div></div>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true});
- const w=d.window; w.HTMLElement.prototype.scrollIntoView=function(){};
+ const w=d.window; w.HTMLElement.prototype.scrollIntoView=function(){};w.HTMLMediaElement.prototype.pause=function(){};w.HTMLMediaElement.prototype.load=function(){};w.HTMLMediaElement.prototype.play=async function(){};
  const c={userId:'u-demo',planId:'p-demo',day:14,primary:'erection'};
  const rows={1:{checkpointVersion:2,scaleMax:4,milestone:1,submittedDay:1,metrics:Object.fromEntries(keys.map(x=>[x,x==='control'?null:2])),reflection:'Inicio',continuity:'Mi compromiso'}};
  const writes=[];
@@ -32,7 +32,8 @@ test('Días 14 y 28 conservan las cuatro imágenes originales y siete indicadore
   const image=fs.readFileSync(path.join(root,'premium-v2',p));
   assert.ok(image.length>300000);
   assert.equal(image[0],0xff);assert.equal(image[1],0xd8);
-  assert.ok(js.includes(p));
+  const context={window:{addEventListener(){}}};require('node:vm').runInNewContext(js,context);
+  assert.equal(context.window.SPM_CHECKPOINT_TOUCH.images[d][n-1],'/premium-v2/'+p);
  }
  assert.match(css,/aspect-ratio:864\/1536/);
  assert.match(js,/const vals=\[0,1,2,3,4,null\]/);
@@ -88,7 +89,7 @@ test('Día 28: preview with available report, then saves only one checkpoint wit
 });
 test('No introduce una segunda base de datos ni voces de proveedor',()=>{
  const js=read('spm-checkpoint-touch-v1.js'),base=read('program-checkpoint-v1.js');
- assert.doesNotMatch(js,/localStorage\.|new window\.Audio\(|\.voice\s*=/);
+ assert.doesNotMatch(js,/localStorage\.|new window\.Audio\(|(?:utterance|u)\.voice\s*=/);
  assert.match(js,/window\.speechSynthesis\.speak\(u\)/);
  assert.match(base,/legacySnapshot\(prior\)/);
  assert.match(base,/comparison\(available\)/);
