@@ -38,8 +38,8 @@ test('Tres narraciones completas, voz estándar del dispositivo sin Rocío/Sofí
  assert.match(clinical,/\[6,7,8\]\.includes\(lesson\)\?null/);
 });
 test('Pantalla 1: iniciar práctica y cronómetro opcional, sin tiempo mínimo',()=>{
- assert.match(js,/data-ed8-action="timer"/);
- assert.match(js,/data-ed8-action="practice"/);
+ assert.match(js,/hit\(\[575,1492,1046,1620\],'timer'/);
+ assert.match(js,/hit\(\[30,1492,561,1620\],'practice'/);
  assert.match(js,/setInterval\(\(\)=>/);
  assert.match(js,/clearInterval\(m\.timer\)/);
  assert.match(js,/m\.started=true/);
