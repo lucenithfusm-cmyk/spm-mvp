@@ -31,10 +31,11 @@ test('Narraciones adultas con ejemplos variados y sin telas ni tazas',()=>{
   assert.equal((touch.match(/acaricia lentamente su cabello/g)||[]).length,1);
 });
 test('Las cinco pantallas incluyen zonas funcionales visibles antes de interactuar',()=>{
-  for(const action of ['audio','form','step','stimulus','start','score','observe','repeat','saveFirst','saveFinal']){
+  for(const action of ['audio','form','step','stimulus','start','observe','repeat','saveFirst','saveFinal']){
     assert.match(touch,new RegExp("data-ds1-act|hit\\("));
     assert.ok(styles.includes('[data-ds1-act="'+action+'"]'),action+' debe tener halo');
   }
+  assert.doesNotMatch(styles,/\[data-ds1-act="score"\]::before/); // ni círculos ni escalas con halo
   assert.match(styles,/@keyframes spm-ds1-invite/);
   assert.match(styles,/prefers-reduced-motion:reduce/);
   assert.match(review,/@keyframes spm-ds1-invite/);

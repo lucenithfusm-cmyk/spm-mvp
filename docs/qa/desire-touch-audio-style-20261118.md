@@ -1,7 +1,9 @@
 # Criterio de interacción y audio SPM (18 noviembre de 2026)
 
 ## Antes de tocar: indicador visual obligatorio
-Cada imagen aprobada sigue siendo una pantalla completa; NO reconstruir tarjetas ni cambiar la estética. Sobre todos los botones de escucha, elección, pasos, inicio y registro, colocar un halo sutil cálido visible desde el momento de aparición, no condicionado a pulsaciones. Escalas con anillos más discretos; navegación y temporizadores también deben ser reconocibles. El efecto puede permanecer durante la interacción, con marcas claras al seleccionar. Las áreas táctiles siguen coincidiendo exactamente con los botones dibujados. Respetar `prefers-reduced-motion`: halo visible pero sin animación.
+Cada imagen aprobada sigue siendo una pantalla completa; NO reconstruir tarjetas ni cambiar la estética. Sobre todos los botones de escucha, elección, pasos, inicio y registro, colocar un halo sutil cálido visible desde el momento de aparición, no condicionado a pulsaciones. Los círculos pequeños y las escalas numéricas NO llevan anillos ni halos luminosos superpuestos. El halo aparece en la barra completa o botón grande, sin duplicar la circunferencia derecha que ya está impresa en la imagen. Navegación y temporizadores también deben ser reconocibles. El efecto puede permanecer durante la interacción, con marcas claras al seleccionar. Las áreas táctiles siguen coincidiendo exactamente con los botones dibujados. Respetar `prefers-reduced-motion`: halo visible pero sin animación.
+
+**Corrección visual aprobada:** nunca usar `::after` ni `::before` para dibujar anillos sobre los círculos de selección o puntuación que forman parte de la imagen. La selección se indica mediante una marca discreta sin nuevo fondo circular; la barra completa sigue siendo táctil y conserva su halo previo. Aplicar este criterio en todas las nuevas pantallas de Deseo.
 
 ## Audios clínicos adultos
 - La narración debe nombrar el control real y actual en la imagen: `Me dan ganas` y `Me voy conectando`, no botones eliminados como `Se parece a mí hoy`.

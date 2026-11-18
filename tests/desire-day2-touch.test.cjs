@@ -49,7 +49,8 @@ test('halos exist before interaction on audio, all selections and save',()=>{
  assert.match(css,/\.spm-ds2-hit::before/);
  assert.match(css,/@keyframes spm-ds2-invite/);
  assert.match(css,/prefers-reduced-motion:reduce/);
- assert.match(css,/\.spm-ds2-hit--choose::after/);
+ assert.doesNotMatch(css,/\.spm-ds2-hit--choose::after|spm-ds2-radio/); // los círculos originales NO llevan aureolas adicionales
+ assert.match(css,/\.spm-ds2-hit--choose::before/); // la barra completa sí conserva halo previo
  assert.match(css,/\.spm-ds2-hit--save::before/);
 });
 test('first screen: selection persists, audio is Spanish, validation precedes continuing',async()=>{
