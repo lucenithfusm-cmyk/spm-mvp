@@ -42,7 +42,7 @@ let current=null,sequence=0;
 function definition(day){
  const lesson=lessonOf(day),item=lesson?definitions[lesson]:null;
  return item?{...item,erectionLesson:lesson,calendarDay:Number(day),
-  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':lesson===6?'/premium-v2/assets/audio/erection/erection-day15-stimuli-20261117.mp3':'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
+  script:scripts[lesson],audioSrc:lesson===1?'/premium-v2/assets/audio/erection/erection-day-1-ehs-20261113.mp3':lesson===6?null:'/premium-v2/assets/audio/erection/erection-day-'+lesson+'-20261113.mp3'}:null;
 }
 function supports(c,a){return c?.primary==='erection'&&a?.id==='main'&&a.kind==='erection'&&practiceDays.has(Number(c.day))&&(!a.erectionLesson||a.erectionLesson===lessonOf(c.day));}
 function score(value){return value===null||Number.isInteger(value)&&value>=0&&value<=10;}
