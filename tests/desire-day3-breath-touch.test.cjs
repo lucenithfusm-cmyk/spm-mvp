@@ -42,15 +42,17 @@ test('three user-approved original 9:16 JPEG images and animation reference are 
  for(let n=1;n<=3;n++){const b=fs.readFileSync(path.join(ROOT,'premium-v2/assets/desire-day3/screen-0'+n+'.jpg'));assert.ok(b.length>360000);assert.equal(b[0],255);assert.equal(b[1],216);}
  const gif=fs.readFileSync(path.join(ROOT,'premium-v2/assets/desire-day3/breathing-animation-reference.gif'));assert.equal(gif.toString('ascii',0,3),'GIF');
  assert.match(controller,/\/premium-v2\/assets\/desire-day3\/screen-0/);
+ assert.match(controller,/breathing-animation-reference\.gif/);
+ assert.match(css,/\.spm-ds3-person-gif/);
 });
 test('page 1 and page 2: full-row choice, named audio, navigation and validation',async t=>{
  const e=env(),m=await mount(e);t.after(()=>e.stop());
  assert.match(e.host.innerHTML,/data-ds3-page="1"/);assert.equal((e.host.innerHTML.match(/data-ds3-action="choose"/g)||[]).length,4);
- e.host.click('next','forward');assert.match(e.host.lastMessage,/Elige el tipo de cercanía/);
+ e.host.click('next','forward');assert.match(e.host.innerHTML,/role="alertdialog"/);assert.match(e.host.innerHTML,/Selecciona una opción para avanzar/);e.host.click('dismiss-alert');assert.doesNotMatch(e.host.innerHTML,/role="alertdialog"/);
  e.host.click('audio','guide');assert.match(e.voices.at(-1),/cercanía/);
  e.host.click('choose','trust');assert.match(e.voices.at(-1),/acompañado/);
  e.host.click('next','forward');assert.match(e.host.innerHTML,/data-ds3-page="2"/);
- e.host.click('next','forward');assert.match(e.host.lastMessage,/Elige qué te gustaría intentar/);
+ e.host.click('next','forward');assert.match(e.host.innerHTML,/role="alertdialog"/);assert.match(e.host.innerHTML,/Selecciona una opción para avanzar/);e.host.click('dismiss-alert');
  e.host.click('choose','solo');assert.match(e.voices.at(-1),/estás solo/);
  e.host.click('back');assert.match(e.host.innerHTML,/data-ds3-page="1"/);
  e.host.click('next','forward');e.host.click('next','forward');assert.match(e.host.innerHTML,/data-ds3-page="3"/);
@@ -59,7 +61,7 @@ test('page 1 and page 2: full-row choice, named audio, navigation and validation
 test('real 05:00 countdown, phase changes, pause, resume, and restart',async t=>{
  const e=env();await mount(e);t.after(()=>e.stop());toBreath(e);
  assert.match(e.host.innerHTML,/05:00/);
- e.host.click('timer','play');assert.match(e.host.innerHTML,/data-running="true"/);
+ e.host.click('timer','play');assert.match(e.host.innerHTML,/data-running="true"/);assert.match(e.host.innerHTML,/spm-ds3-person-gif/);
  e.advance(100);assert.equal(e.host.clock,'03:20');assert.match(e.host.phase,/Respirar cómodo/);
  e.host.click('timer','pause');const paused=e.host.clock;e.advance(90);assert.equal(e.host.clock,paused);
  e.host.click('timer','play');e.advance(200);assert.equal(e.host.clock,'00:00');assert.match(e.host.lastMessage,/Terminaste los cinco minutos/);

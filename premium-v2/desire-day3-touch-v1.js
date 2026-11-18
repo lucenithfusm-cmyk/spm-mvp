@@ -63,7 +63,7 @@
  }
  function breatheVisual(m){
   const remaining=m.timer.remaining,progress=((DURATION-remaining)/DURATION*100).toFixed(2),running=m.timer.running;
-  return `<div class="spm-ds3-breath-motion${running?' is-running':''}" aria-hidden="true"><span class="spm-ds3-lungs"></span><span class="spm-ds3-pelvis"></span><span class="spm-ds3-flow"></span></div>
+  return `<img class="spm-ds3-person-gif" src="/premium-v2/assets/desire-day3/breathing-animation-reference.gif" alt="" aria-hidden="true" draggable="false" loading="eager" decoding="async"><div class="spm-ds3-breath-motion${running?' is-running':''}" aria-hidden="true"><span class="spm-ds3-lungs"></span><span class="spm-ds3-pelvis"></span><span class="spm-ds3-flow"></span></div>
    <svg class="spm-ds3-ringprogress" viewBox="0 0 430 430" aria-hidden="true"><circle cx="215" cy="215" r="195" fill="none" stroke="rgba(235,197,116,.38)" stroke-width="5"/><circle data-ds3-progress cx="215" cy="215" r="195" fill="none" stroke="#2c805e" stroke-width="7" stroke-linecap="round" transform="rotate(-90 215 215)" stroke-dasharray="${(progress/100*1225.22).toFixed(2)} 1225.22"/></svg>
    <div class="spm-ds3-live-time" role="timer" aria-label="Tiempo restante de la práctica" data-ds3-clock>${time(remaining)}</div>`;
  }
@@ -74,9 +74,11 @@
    <div class="spm-ds3-practice-options"><details><summary>Registrar presión antes y después (opcional)</summary><div class="spm-ds3-meters">${measure('before',m.before)}${measure('after',m.after)}</div></details>
    <button type="button" data-ds3-action="finish" class="spm-ds3-finish" ${!t.started?'disabled':''}>${t.finished?'Guardar y volver a Actividades de hoy':'Terminé la práctica · Guardar y finalizar'}</button></div>`;
  }
+ function selectionAlertMarkup(m){return m.selectionAlert?`<div class="spm-ds3-alert-backdrop"><div class="spm-ds3-alert-box" role="alertdialog" aria-modal="true" aria-labelledby="spm-ds3-alert-title" aria-describedby="spm-ds3-alert-message"><strong id="spm-ds3-alert-title">Falta una selección</strong><p id="spm-ds3-alert-message">Selecciona una opción para avanzar.</p><button type="button" data-ds3-action="dismiss-alert">Entendido</button></div></div>`:'';}
+ function showSelectionAlert(m){m.selectionAlert=true;render(m);m.host.querySelector('[data-ds3-action="dismiss-alert"]')?.focus?.();}
  function render(m){if(!m?.host?.isConnected)return;
   const p=m.page;
-  m.host.innerHTML=`<section class="spm-ds3-session" data-ds3-page="${p}" data-running="${p===3&&m.timer.running}" aria-label="Deseo, día 3, pantalla ${p} de 3"><div class="spm-ds3-art"><img src="${esc(m.images[p-1])}" alt="" width="864" height="1536" draggable="false" loading="eager">${p===3?breatheVisual(m):''}${hotspots(m)}</div>${extras(m)}<nav class="spm-ds3-nav" aria-label="Navegación de Deseo día 3"><button type="button" data-ds3-action="back">← ${p===1?'Actividades de hoy':'Anterior'}</button><span>${p} de 3</span><button type="button" data-ds3-action="${p===3?'finish':'next'}">${p===3?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds3-bottom"><button type="button" data-ds3-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds3-action="audio" data-ds3-value="guide">🔊 Escuchar guía</button></div><p class="spm-ds3-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
+  m.host.innerHTML=`<section class="spm-ds3-session" data-ds3-page="${p}" data-running="${p===3&&m.timer.running}" aria-label="Deseo, día 3, pantalla ${p} de 3"><div class="spm-ds3-art"><img src="${esc(m.images[p-1])}" alt="" width="864" height="1536" draggable="false" loading="eager">${p===3?breatheVisual(m):''}${hotspots(m)}</div>${selectionAlertMarkup(m)}${extras(m)}<nav class="spm-ds3-nav" aria-label="Navegación de Deseo día 3"><button type="button" data-ds3-action="back">← ${p===1?'Actividades de hoy':'Anterior'}</button><span>${p} de 3</span><button type="button" data-ds3-action="${p===3?'finish':'next'}">${p===3?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds3-bottom"><button type="button" data-ds3-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds3-action="audio" data-ds3-value="guide">🔊 Escuchar guía</button></div><p class="spm-ds3-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
  }
  function status(m,message){m.message=message;const el=m.host?.querySelector('.spm-ds3-status');if(el)el.textContent=message;}
  function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.voiceKey=null;}
@@ -129,9 +131,9 @@
  }
  function pause(m){const t=m.timer;if(!t.running)return;tick(m);t.running=false;clearInterval(m.interval);m.interval=null;stopVoice(m);paintClock(m);schedule(m);}
  function reset(m){pause(m);stopVoice(m);m.timer={remaining:DURATION,elapsed:0,started:false,finished:false,running:false,baseRemaining:DURATION,fromAt:0,phase:0};render(m);schedule(m);}
- function move(m,p){pause(m);stopVoice(m);m.page=p;m.message='';render(m);schedule(m);m.host.querySelector('.spm-ds3-session')?.scrollIntoView?.({block:'start',behavior:'instant'});}
- function next(m){if(m.page===1){if(!m.connection){status(m,'Elige el tipo de cercanía que te ayuda más.');return;}move(m,2);return;}
-  if(m.page===2){if(!m.action){status(m,'Elige qué te gustaría intentar antes de continuar.');return;}move(m,3);return;}
+ function move(m,p){pause(m);stopVoice(m);m.page=p;m.message='';m.selectionAlert=false;render(m);schedule(m);m.host.querySelector('.spm-ds3-session')?.scrollIntoView?.({block:'start',behavior:'instant'});}
+ function next(m){if(m.page===1){if(!m.connection){showSelectionAlert(m);return;}move(m,2);return;}
+  if(m.page===2){if(!m.action){showSelectionAlert(m);return;}move(m,3);return;}
   if(m.page===3)void complete(m);
  }
  async function exit(m){if(m.busy)return;pause(m);stopVoice(m);clearTimeout(m.pending);m.busy=true;
@@ -146,7 +148,7 @@
   p.dayDone={...normal(p.dayDone),[DAY]:normal(p.dayDone)[DAY]||date};
  }
  async function complete(m){if(m.busy)return;
-  if(!m.connection||!m.action){status(m,'Completa las elecciones de cercanía y la acción antes de finalizar.');return;}
+  if(!m.connection||!m.action){showSelectionAlert(m);return;}
   if(!m.timer.started&&!m.completed){status(m,'Inicia la práctica guiada de respiración antes de guardar el día.');return;}
   pause(m);stopVoice(m);clearTimeout(m.pending);m.busy=true;status(m,'Guardando tu actividad del Día 3…');
   try{m.timer.finished=true;m.completed=true;
@@ -158,6 +160,8 @@
  }
  function delegate(m,e){const el=e.target?.closest?.('[data-ds3-action]');if(!el||!m.host.contains(el)||active!==m||!m.valid()||m.busy)return;
   const act=el.dataset.ds3Action,val=el.dataset.ds3Value;
+  if(act==='dismiss-alert'){m.selectionAlert=false;render(m);return;}
+  if(m.selectionAlert)return;
   if(act==='audio'){speak(m,'guide'+m.page,GUIDE[m.page]);return;}
   if(act==='choose'){const item=option(m.page===1?CONNECTIONS:ACTIONS,val);if(!item)return;
    if(m.page===1)m.connection=val;else m.action=val;
@@ -172,7 +176,7 @@
  }
  async function mount({host,storage,valid=()=>true,onBack=()=>{},onCompleted=()=>{},images=IMAGES,reset:clear=false}={}){
   if(!host?.isConnected||!storage||typeof storage.read!=='function'||typeof storage.save!=='function')return false;
-  stop();const m={host,storage,valid,onBack,onCompleted,images,page:1,connection:null,action:null,completed:false,timer:{remaining:DURATION,elapsed:0,started:false,finished:false,running:false,baseRemaining:DURATION,fromAt:0,phase:0},before:null,after:null,pending:null,interval:null,queue:Promise.resolve(),busy:false,voiceKey:null,message:'',events:new AbortController()};
+  stop();const m={host,storage,valid,onBack,onCompleted,images,page:1,connection:null,action:null,completed:false,timer:{remaining:DURATION,elapsed:0,started:false,finished:false,running:false,baseRemaining:DURATION,fromAt:0,phase:0},before:null,after:null,pending:null,interval:null,queue:Promise.resolve(),busy:false,voiceKey:null,message:'',selectionAlert:false,events:new AbortController()};
   active=m;host.innerHTML='<p role="status">Recuperando tu progreso del Día 3…</p>';
   try{const bundle=normal(await storage.read());if(active!==m||!valid())return false;
    let p={};try{p=normal(JSON.parse(bundle['spm-desire-program']||'{}'));}catch{}
