@@ -6,10 +6,10 @@
 if(window.SPM_ED_DAY5_TOUCH)return;
 const BASE=window.SPM_ED_DAY5_IMAGE_BASE||'/premium-v2/assets/erection-day5/';
 const IMAGES=window.SPM_ED_DAY5_IMAGE_URLS||[1,2,3].map(n=>BASE+'spm-de-day5-screen-0'+n+'.webp');
-const AUDIO=window.SPM_ED_DAY5_AUDIO_SRC||'/premium-v2/assets/audio/erection/erection-day-5-20261113.mp3';
-// Segments are thematic passages in the already approved Day 5 source.
-// Source: 49.76325 s / narration; see docs/qa/erection-practice-audio-days4-6-20261113.json.
-const AUDIO_SECTIONS=[[0,17],[17,33],[33,49.76325]];
+const ORIGINAL_AUDIO='/premium-v2/assets/audio/erection/erection-day-5-20261113.mp3';
+// Tres pistas recortadas en pausas comprobadas del original (16.315 y 32.596 s).
+// Cada pista reproduce desde el comienzo: no se requiere seek/temporizador en iOS.
+const AUDIO_CLIPS=window.SPM_ED_DAY5_AUDIO_CLIPS||[1,2,3].map(n=>`/premium-v2/assets/audio/erection/erection-day-5-screen-0${n}-20261117.mp3`);
 const GUIDES={
  1:'Hoy identificarás qué suele facilitar tu respuesta eréctil. Recuerda experiencias que ya hayas vivido; no necesitas provocar una erección para responder. Elige hasta tres factores, por ejemplo contacto agradable, imaginación, anticipación, un ritmo cómodo, privacidad o conexión. Si todavía no puedes reconocer alguno, pulsa Aún no lo identifico. No estamos haciendo una prueba ni buscando una respuesta correcta.',
  2:'Ahora piensa qué condiciones suelen dificultarte la respuesta eréctil. Puedes reconocer presión por responder, prisa, cansancio, estrés o falta de privacidad. Selecciona hasta dos factores que hayas vivido. Si no tienes claro qué te frena, puedes marcar Aún no lo identifico. No necesitas evaluar tu firmeza ni repetir ninguna experiencia sexual ahora.',
@@ -50,7 +50,7 @@ function stopAudio(m){
  if(m.timer){clearInterval(m.timer);m.timer=null}
  m.audio=null;
  try{window.speechSynthesis?.cancel?.()}catch{}
- m.audioKey=null;m.host?.querySelectorAll?.('.spm-ed5-hit.playing').forEach(e=>e.classList.remove('playing'));
+ m.audioKey=null;m.host?.querySelectorAll?.('.spm-ed5-hit.playing').forEach(e=>{e.classList.remove('playing');e.setAttribute('aria-pressed','false')});
 }
 function stop(){let m=active;active=null;if(m){stopAudio(m);m.events?.abort?.()}}
 function pause(){if(active)stopAudio(active)}
@@ -72,25 +72,23 @@ function play(m){
  const key='guide-'+m.page;
  if(m.audioKey===key){stopAudio(m);return}
  stopAudio(m);m.audioKey=key;
- const btn=m.host.querySelector('[data-ed5-audio]');btn?.classList.add('playing');
- const [start,end]=AUDIO_SECTIONS[m.page-1];
+ const btn=m.host.querySelector('[data-ed5-audio]');
+ btn?.classList.add('playing');
+ btn?.setAttribute('aria-pressed','true');
  if(typeof window.Audio!=='function'){speakFallback(m,key);return}
  try{
-  const audio=new window.Audio(AUDIO);m.audio=audio;audio.preload='auto';
-  const finish=()=>{if(m.audioKey===key)stopAudio(m)};
-  audio.onended=finish;audio.onerror=()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}};
-  // iOS Safari exige iniciar audio.play() dentro del gesto táctil; no diferirlo a loadedmetadata.
-  const align=()=>{if(m.audioKey!==key)return;try{if(Math.abs(audio.currentTime-start)>.25)audio.currentTime=start}catch{}};
-  if(audio.readyState>=1)align();else{
-   try{audio.currentTime=start}catch{}
-   audio.addEventListener('loadedmetadata',align,{once:true});
-  }
-  const result=audio.play();result?.catch?.(()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}});
-  m.timer=window.setInterval(()=>{if(m.audioKey!==key)return;if(audio.currentTime>=end-0.08)finish()},100);
+  // Un audio completo e independiente por pantalla; funciona con el toque real en Safari.
+  const audio=new window.Audio(AUDIO_CLIPS[m.page-1]);
+  m.audio=audio;
+  audio.preload='auto';
+  audio.onended=()=>{if(m.audioKey===key)stopAudio(m)};
+  audio.onerror=()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}};
+  const result=audio.play();
+  result?.catch?.(()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}});
  }catch{m.audio=null;speakFallback(m,key)}
 }
 function hotspot(coords,action,label,{value=null,selected=false,audio=false,disabled=false}={}){
- return `<button type="button" class="spm-ed5-hit${selected?' selected':''}${audio?' audio':''}" style="${rect(...coords)}" data-ed5-action="${esc(action)}"${value!==null?` data-value="${esc(value)}" aria-pressed="${selected?'true':'false'}"`:''}${audio?' data-ed5-audio="true"':''}${disabled?' disabled':''} aria-label="${esc(label)}"></button>`;
+ return `<button type="button" class="spm-ed5-hit${selected?' selected':''}${audio?' audio':''}" style="${rect(...coords)}" data-ed5-action="${esc(action)}"${value!==null?` data-value="${esc(value)}" aria-pressed="${selected?'true':'false'}"`:''}${audio?' data-ed5-audio="true" aria-pressed="false"':''}${disabled?' disabled':''} aria-label="${esc(label)}"></button>`;
 }
 function check(x,y){return `<span class="spm-ed5-check" aria-hidden="true" style="${rect(x-22,y-22,x+22,y+22)}">✓</span>`}
 function optionsUI(rows,values,action,multi){let hits='',marks='';rows.forEach(([value,label,coords,center])=>{const on=multi?values.includes(value):values===value;hits+=hotspot(coords,action,(on?'Desmarcar ':'Seleccionar ')+label,{value,selected:on});if(on)marks+=check(...center)});return {hits,marks}}
@@ -159,5 +157,5 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',
  return true;
 }
 window.addEventListener('pagehide',stop);
-window.SPM_ED_DAY5_TOUCH={mount,stop,pause,images:IMAGES.slice(),audioOriginal:AUDIO,fields:['erectionFacilitators','erectionInhibitors','microAdjustment'],guides:{...GUIDES}};
+window.SPM_ED_DAY5_TOUCH={mount,stop,pause,images:IMAGES.slice(),audioOriginal:ORIGINAL_AUDIO,audioClips:AUDIO_CLIPS.slice(),fields:['erectionFacilitators','erectionInhibitors','microAdjustment'],guides:{...GUIDES}};
 })();
