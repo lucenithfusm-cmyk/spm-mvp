@@ -13,7 +13,8 @@ const erection=Object.freeze({
  15:Object.freeze({key:'erection-lesson6',version:'2026-11-17-voice-device-v2',screens:1,title:'Activa tu respuesta con estímulos que funcionan',preview:'/premium-v2/assets/erection-day6/spm-de-day6-screen-01.webp',module:'SPM_ED_DAY6_TOUCH',bridge:'SPM_ERECTION_DAY6_BRIDGE'}),
  18:Object.freeze({key:'erection-lesson7',version:'2026-11-17-progreso-alertas-v1',screens:3,title:'Reconoce tu progreso',preview:'/premium-v2/assets/erection-day7/spm-de-day7-screen-01.jpg',module:'SPM_ED_DAY7_TOUCH',bridge:'SPM_ERECTION_DAY7_BRIDGE'}),
  21:Object.freeze({key:'erection-lesson8',version:'2026-11-17-sostener-firmeza-v1',screens:3,title:'Sostener la erección sin perseguir firmeza constante',preview:'/premium-v2/assets/erection-day8/spm-de-day8-screen-01.webp',module:'SPM_ED_DAY8_TOUCH',bridge:'SPM_ERECTION_DAY8_BRIDGE'}),
- 24:Object.freeze({key:'erection-lesson9',version:'2026-11-17-firmeza-recovery-v1',screens:3,title:'Qué hacer cuando disminuye la firmeza',preview:'/premium-v2/assets/erection-day9/spm-de-day9-screen-01.webp',module:'SPM_ED_DAY9_TOUCH',bridge:'SPM_ERECTION_DAY9_BRIDGE'})
+ 24:Object.freeze({key:'erection-lesson9',version:'2026-11-17-firmeza-recovery-v1',screens:3,title:'Qué hacer cuando disminuye la firmeza',preview:'/premium-v2/assets/erection-day9/spm-de-day9-screen-01.webp',module:'SPM_ED_DAY9_TOUCH',bridge:'SPM_ERECTION_DAY9_BRIDGE'}),
+ 27:Object.freeze({key:'erection-lesson10',version:'2026-11-18-prevencion-caida-v1',screens:2,title:'Prevención después de una caída',preview:'/premium-v2/assets/erection-day10/spm-de-day10-screen-01.webp',module:'SPM_ED_DAY10_TOUCH',bridge:'SPM_ERECTION_DAY10_BRIDGE'})
 });
 const connections=Object.freeze({
  erection:'SPM_ERECTION_PRACTICE',sensate:'SPM_SENSATE_LAB',
@@ -34,5 +35,5 @@ function ready(context,activity){
  return !!(window[released.module]&&window[released.bridge]&&window.SPM_ERECTION_PRACTICE?.open);
 }
 function status(){return Object.freeze(Object.fromEntries(Object.entries(connections).map(([name,api])=>[name,!!window[api]])));}
-window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-17-10x28-current6-day24',erection,connections,resolve,ready,status});
+window.SPM_ACTIVE_MODULE_RELEASE=Object.freeze({version:'2026-11-18-10x28-current7-day27',erection,connections,resolve,ready,status});
 })();
