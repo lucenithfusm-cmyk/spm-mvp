@@ -38,7 +38,7 @@ const BOUNDS=[
 ];
 const KEYS=[ADVANCES,CONFIDENCE,ACTIONS].map(rows=>rows.map(([key])=>key));
 const LABELS=['Reconoce tu progreso','Fortalece tu confianza','Define tu siguiente paso'];
-const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;':'&quot;',"'":'&#39;'}[ch]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const rect=(x1,y1,x2,y2)=>'left:'+(x1/864*100).toFixed(4)+'%;top:'+(y1/1536*100).toFixed(4)+'%;width:'+((x2-x1)/864*100).toFixed(4)+'%;height:'+((y2-y1)/1536*100).toFixed(4)+'%';
 let active=null;
 function stopAudio(m){
