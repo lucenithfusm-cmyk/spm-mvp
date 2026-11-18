@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+ <meta name="theme-color" content="#0c3d34">
+ <title>SPM · Deseo · Día 3 · Revisión funcional</title>
+ <link rel="stylesheet" href="../desire-day3-touch-v1.css?v=20261118-breathing-real-3">
+ <style>
+  *{box-sizing:border-box}body{margin:0;background:#103a32;color:#f8efdf;font:15px/1.5 system-ui,-apple-system,sans-serif}
+  .review-head{max-width:510px;margin:0 auto;padding:15px 12px 10px;text-align:center}
+  .review-head small{font-size:11px;letter-spacing:.08em;color:#e6cd93}
+  .review-head h1{font:700 24px/1.15 Georgia,serif;margin:5px 0 8px}
+  .review-head p{font-size:12px;margin:5px 0}
+  .review-notice{max-width:440px;margin:9px auto!important;border:1px solid #e7c58155;border-radius:12px;padding:9px}
+  .review-buttons{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:10px auto}
+  .review-buttons button,#reviewSummary button{min-height:44px;border:1px solid #d3b06f;border-radius:22px;background:#e9d295;color:#18483a;font-weight:800;padding:9px 17px;cursor:pointer}
+  .review-buttons .secondary{background:transparent;color:#f2d89a}
+  #reviewWorkspace{max-width:440px;margin:0 auto}#reviewStatus{min-height:22px;color:#ead295}
+  #reviewSummary{max-width:440px;margin:12px auto 26px;background:#f8efe3;color:#1b4a3e;padding:17px;border-radius:16px}
+  #reviewSummary h2{font:700 24px Georgia,serif;margin:0 0 9px}#reviewSummary p{margin:5px 0;font-size:13px}
+  [hidden]{display:none!important}
+ </style>
+</head>
+<body>
+ <header class="review-head">
+  <small>SPM DIGITAL WELLNESS · PRUEBA AISLADA</small>
+  <h1>Deseo · Día 3</h1>
+  <p>Tres imágenes completas · voz del dispositivo · cronómetro real de 5 minutos</p>
+  <p class="review-notice">Esta revisión usa datos simulados, separados de pacientes, evaluaciones y pagos. El cronómetro funciona con tiempo real. Puedes pausar y reanudar; no es obligatorio agotar los cinco minutos.</p>
+  <div class="review-buttons"><button id="reviewOpen" type="button">Abrir Día 3</button><button id="reviewReset" type="button" class="secondary">Reiniciar prueba</button></div>
+  <p id="reviewStatus" role="status" aria-live="polite"></p>
+ </header>
+ <main id="reviewWorkspace" aria-label="Pantallas táctiles del Día 3"></main>
+ <section id="reviewSummary" hidden aria-label="Resultado simulado">
+  <h2>Actividad guardada ✓</h2>
+  <p data-field="connection"></p><p data-field="action"></p><p data-field="elapsed"></p><p data-field="pressure"></p>
+  <p>El registro es solo de prueba. SPM Central guarda el progreso privado por usuario.</p>
+  <button id="reviewAgain" type="button">Revisar de nuevo</button>
+ </section>
+ <script src="../desire-day3-touch-v1.js?v=20261118-breathing-real-3"></script>
+ <script>
+ (()=>{'use strict';
+ const KEY='spm-desire-day3-breath-review-v2',host=document.getElementById('reviewWorkspace'),summary=document.getElementById('reviewSummary'),status=document.getElementById('reviewStatus');
+ const initial=()=>({'spm-desire-program':JSON.stringify({v:2,detailNotes:{},sessions:[],dayDone:{}})});
+ let data=initial(),generation=0;
+ try{const saved=sessionStorage.getItem(KEY);if(saved){const v=JSON.parse(saved);if(v&&typeof v['spm-desire-program']==='string')data=v;}}catch{}
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const connections={embrace:'Abrazo o contacto tranquilo',conversation:'Conversación sin distracciones',caresses:'Caricias suaves sin exigencia',trust:'Sentirme acompañado y en confianza'};
+ const actions={hug:'Tomarnos unos minutos para abrazarnos',talk:'Hablar y escucharnos con calma',touch:'Explorar caricias suaves sin presión',solo:'Conectar conmigo con una experiencia agradable'};
+ const program=()=>{try{return JSON.parse(data['spm-desire-program']||'{}');}catch{return {};}};
+ function show(){const p=program();let t={};try{t=JSON.parse(p.detailNotes?.desireDay3TouchV1||'{}');}catch{}
+  const row=(p.sessions||[]).find(s=>s.day===3&&s.practiceId==='breath-routine'&&s.status==='completed');
+  summary.hidden=!row;
+  summary.querySelector('[data-field="connection"]').textContent='Cercanía: '+(connections[t.connection]||'sin respuesta');
+  summary.querySelector('[data-field="action"]').textContent='Acción: '+(actions[t.action]||'sin respuesta');
+  summary.querySelector('[data-field="elapsed"]').textContent='Tiempo activo real registrado: '+(row?.activeSec??0)+' segundos';
+  summary.querySelector('[data-field="pressure"]').textContent='Presión antes/después: '+(row?.before??'N/A')+' / '+(row?.after??'N/A');
+ }
+ async function open(){window.SPM_DESIRE_DAY3_TOUCH?.stop?.();const ticket=++generation;
+  summary.hidden=true;status.textContent='Abriendo las tres pantallas…';
+  const ok=await window.SPM_DESIRE_DAY3_TOUCH?.mount?.({host,valid:()=>generation===ticket&&host.isConnected,
+   storage:{read:async()=>clone(data),save:async value=>{if(generation!==ticket)throw Error('Sesión de prueba cambiada');data=clone(value);sessionStorage.setItem(KEY,JSON.stringify(data));}},
+   onCompleted:async()=>{if(!(program().sessions||[]).some(s=>s.day===3&&s.practiceId==='breath-routine'&&s.status==='completed'))throw Error('Falta sesión');},
+   onBack:()=>{window.SPM_DESIRE_DAY3_TOUCH.stop();host.replaceChildren();status.textContent='Regresaste a Actividades de hoy · revisión.';show();}});
+  status.textContent=ok?'Pantallas funcionales. En la tercera, activa el reloj y mira los segundos reales.':'No se pudo abrir la revisión.';
+ }
+ document.getElementById('reviewOpen').onclick=()=>void open();
+ document.getElementById('reviewAgain').onclick=()=>void open();
+ document.getElementById('reviewReset').onclick=()=>{generation++;window.SPM_DESIRE_DAY3_TOUCH?.stop?.();data=initial();sessionStorage.removeItem(KEY);summary.hidden=true;host.replaceChildren();status.textContent='Prueba reiniciada sin afectar usuarios.';};
+ show();void open();
+ })();
+ </script>
+</body>
+</html>
