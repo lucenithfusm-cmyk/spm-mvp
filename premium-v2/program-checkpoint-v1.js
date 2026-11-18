@@ -114,7 +114,7 @@ async function open(activity,edit=false){
  // Keeping the form connected ensures the existing validation, archive,
  // comparison, account/day checks, and final report remain unmodified.
  if([14,28].includes(milestone)&&window.SPM_CHECKPOINT_TOUCH){
-  form.hidden=true;form.setAttribute('aria-hidden','true');
+  form.hidden=true;form.style.display='none';form.setAttribute('aria-hidden','true');
   const touchHost=document.createElement('div');
   touchHost.setAttribute('data-checkpoint-touch-host','');
   host.appendChild(touchHost);
