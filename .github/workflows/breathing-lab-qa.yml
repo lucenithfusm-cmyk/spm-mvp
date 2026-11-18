@@ -42,6 +42,7 @@ jobs:
           CHROME_BIN: /usr/bin/google-chrome
           DEBUG: pw:api
         run: |
+          set -o pipefail
           mkdir -p browser-results
           node tests/support/static-server.cjs >browser-results/server.log 2>&1 &
           spm_server_pid=$!
