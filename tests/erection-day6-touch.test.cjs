@@ -32,19 +32,24 @@ test('los seis estímulos se pueden seleccionar en filas y ejemplos ilustrados',
  assert.match(js,/hotspot\(\[214,298,650,389\],'audio'/);
  assert.match(js,/hotspot\(\[30,1413,830,1524\],'save'/);
 });
-test('guía nueva de estímulos en MP3 autónomo, sin audio antiguo de piso pélvico',()=>{
+test('Día 15 usa solo voz estándar del dispositivo, nunca Rocío o Sofía',()=>{
  const touch=api();
- const f='premium-v2/assets/audio/erection/erection-day15-stimuli-20261117.mp3';
- const file=fs.readFileSync(path.join(root,f));
- assert.ok(file.length>200000);
- assert.ok(file.subarray(0,3).toString('ascii')==='ID3'||file[0]===0xff);
- assert.equal(touch.audioSrc,'/'+f);
+ assert.equal(touch.audioSrc,null);
+ assert.equal(touch.voiceMode,'device-default');
  assert.match(touch.guide,/estímulos/);
  assert.doesNotMatch(touch.guide,/contracciones|piso pélvico/i);
- assert.match(js,/new window\.Audio\(AUDIO\)/);
- assert.match(js,/player\.play\(\)/);
- assert.match(js,/player\.onended=/);
- assert.match(js,/window\.speechSynthesis\?\.cancel/);
+ assert.match(js,/new window\.SpeechSynthesisUtterance\(GUIDE\)/);
+ assert.match(js,/window\.speechSynthesis\.speak\(utterance\)/);
+ assert.match(js,/utterance\.lang='es-CO'/);
+ assert.match(js,/utterance\.rate=1/);
+ assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|\.voice=voices|erection-day15-stimuli-20261117\.mp3/);
+ const clinical=read('premium-v2/erection-practice-v1.js');
+ assert.match(clinical,/lesson===6\?null/);
+ assert.doesNotMatch(clinical,/erection-day15-stimuli-20261117\.mp3/);
+ const direct=read('premium-v2/revision-ereccion-dia15.html');
+ assert.match(direct,/new SpeechSynthesisUtterance\(guide\)/);
+ assert.match(direct,/window\.speechSynthesis\.speak\(u\)/);
+ assert.doesNotMatch(direct,/new Audio\(|voices\.find\(|\.voice=voices|erection-day15-stimuli-20261117\.mp3/);
 });
 test('registro de usuario y retorno a Hoy sin adelantarse al día 16',()=>{
  assert.match(bridge,/Number\(c\.day\)!==15/);
