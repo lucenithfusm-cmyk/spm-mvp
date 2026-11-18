@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="robots" content="noindex,nofollow">
+ <meta name="referrer" content="no-referrer">
+ <meta name="theme-color" content="#0d3a33">
+ <title>SPM · Deseo · Día 2 · Pantallas táctiles</title>
+ <link rel="stylesheet" href="../desire-day2-touch-v1.css?v=20261118-day2-approved-1">
+ <style>
+  *{box-sizing:border-box}body{margin:0;background:#0e382f;color:#f7efe1;font:15px/1.5 system-ui,-apple-system,sans-serif}
+  .demo-head{max-width:530px;margin:auto;padding:17px 14px 12px;text-align:center}.demo-head h1{font-size:23px;margin:4px 0 7px;font-family:Georgia,serif}.demo-head p{margin:6px 0;font-size:13px}
+  .demo-head small{color:#e4c891}.demo-buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .demo-buttons button{border:1px solid #dcb96a;border-radius:24px;background:#e7c887;color:#164438;min-height:44px;padding:9px 17px;font-size:14px;font-weight:800;cursor:pointer}
+  .demo-buttons .alt{background:transparent;color:#e4c891}.demo-notice{border:1px solid #e4c89155;border-radius:10px;padding:8px;margin:12px auto;max-width:440px}
+  #demoStatus{min-height:22px;color:#e8c77f}#demoWorkspace{width:min(100%,440px);margin:auto}
+  #demoResult{width:min(440px,95vw);margin:12px auto 28px;background:#f5ece0;color:#153d34;padding:20px;border-radius:18px}
+  #demoResult h2{font-family:Georgia,serif;margin:0 0 12px;font-size:25px}#demoResult p{margin:9px 0}
+  #demoResult button{border:0;border-radius:22px;background:#cca353;color:#173f34;min-height:44px;padding:8px 17px;font-weight:800;cursor:pointer}
+  [hidden]{display:none!important}
+ </style>
+</head>
+<body>
+ <header class="demo-head">
+  <small>SPM DIGITAL WELLNESS · REVISIÓN PRIVADA DE CONTENIDO</small>
+  <h1>Deseo · Día 2</h1>
+  <p>Dos imágenes completas · guía por voz del dispositivo · respuestas táctiles</p>
+  <p class="demo-notice">Esta revisión usa datos simulados, separados de las cuentas reales. No modifica pagos ni actividades de pacientes.</p>
+  <div class="demo-buttons"><button type="button" id="demoOpen">Abrir pantallas del Día 2</button><button type="button" class="alt" id="demoReset">Reiniciar prueba</button></div>
+  <p id="demoStatus" aria-live="polite" role="status"></p>
+ </header>
+ <main id="demoWorkspace" aria-label="Pantallas táctiles aprobadas"></main>
+ <section id="demoResult" hidden aria-label="Resultados de la prueba"><h2>Registro guardado ✓</h2><p data-field="factor"></p><p data-field="plan"></p><p>El registro de esta prueba es simulado. La versión de SPM Central usa el guardado de tu cuenta.</p><button type="button" id="demoAgain">Revisar pantallas otra vez</button></section>
+ <script src="../desire-day2-touch-v1.js?v=20261118-day2-approved-1"></script>
+ <script>
+ (()=>{'use strict';
+  const KEY='spm-desire-day2-review-only-v1';
+  const workspace=document.getElementById('demoWorkspace'),result=document.getElementById('demoResult'),status=document.getElementById('demoStatus');
+  const defaultData=()=>({'spm-desire-program':JSON.stringify({v:2,detailNotes:{},sessions:[],dayDone:{}})});
+  let model=defaultData(),session=0;
+  try{const raw=sessionStorage.getItem(KEY);if(raw){const data=JSON.parse(raw);if(data&&typeof data==='object'&&typeof data['spm-desire-program']==='string')model=data;}}catch{}
+  const clone=o=>JSON.parse(JSON.stringify(o));
+  const record=()=>{try{return JSON.parse(model['spm-desire-program']);}catch{return {};}};
+  const optionsFactor={'no_pressure':'Sentirme tranquilo y sin presión','closeness':'Contacto afectivo y cercanía','fantasy':'Fantasías o pensamientos eróticos','caresses':'Caricias o estimulación','privacy':'Tiempo a solas o conmigo','unclear':'Todavía no lo tengo claro'};
+  const optionsPlan={'myself':'Dedicar unos minutos a conectar conmigo','partner':'Buscar un momento sin prisa con mi pareja','stimulus':'Explorar un estímulo que me resulte agradable','observe':'Solo observar sin exigirme respuesta'};
+  function summary(){
+   const p=record(),note=(()=>{try{return JSON.parse(p.detailNotes?.desireDay2TouchV1||'{}');}catch{return {};}})();
+   result.querySelector('[data-field="factor"]').textContent=note.factor?'Reconociste: '+(optionsFactor[note.factor]||note.factor):'Sin factor registrado';
+   result.querySelector('[data-field="plan"]').textContent=note.plan?'Elegiste: '+(optionsPlan[note.plan]||note.plan):'Sin acción registrada';
+   result.hidden=note.completed!==true;
+  }
+  async function open(){
+   window.SPM_DESIRE_DAY2_TOUCH?.stop?.();session++;const which=session;
+   result.hidden=true;status.textContent='Abriendo Día 2…';
+   const ok=await window.SPM_DESIRE_DAY2_TOUCH?.mount?.({host:workspace,
+    valid:()=>session===which&&workspace.isConnected,
+    storage:{read:async()=>clone(model),save:async next=>{if(session!==which)throw Error('Cambio de revisión');model=clone(next);sessionStorage.setItem(KEY,JSON.stringify(model));}},
+    onCompleted:async()=>{const p=record();if(!p.sessions?.some(s=>s.day===2&&s.practiceId==='pattern-observe'&&s.status==='completed'))throw Error('Falta sesión');},
+    onBack:()=>{window.SPM_DESIRE_DAY2_TOUCH.stop();workspace.replaceChildren();status.textContent='Regresaste a Actividades de hoy · revisión.';summary();}
+   });
+   status.textContent=ok?'Pantallas activas: pulsa las zonas con halo dorado.':'No se pudieron abrir las pantallas.';
+  }
+  document.getElementById('demoOpen').onclick=()=>void open();
+  document.getElementById('demoAgain').onclick=()=>void open();
+  document.getElementById('demoReset').onclick=()=>{session++;window.SPM_DESIRE_DAY2_TOUCH?.stop?.();model=defaultData();sessionStorage.removeItem(KEY);result.hidden=true;workspace.replaceChildren();status.textContent='Prueba reiniciada; no se modificaron datos reales.';};
+  summary();void open();
+ })();
+ </script>
+</body></html>

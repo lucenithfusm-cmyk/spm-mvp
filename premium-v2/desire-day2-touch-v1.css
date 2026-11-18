@@ -1,0 +1,29 @@
+/* SPM Deseo · Día 2. Pantalla = fotografía aprobada entera, sin overlays de tarjeta. */
+.spm-ds2-session{box-sizing:border-box;width:min(100%,440px);margin:0 auto 24px;background:#f8f0e6;color:#153e36;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;isolation:isolate}
+.spm-ds2-session *{box-sizing:border-box}
+.spm-ds2-art{position:relative;aspect-ratio:9/16;width:100%;overflow:hidden;background:#f3e4d4;line-height:0}
+.spm-ds2-art>img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.spm-ds2-hit{position:absolute;z-index:3;display:block;border:0;padding:0;margin:0;color:transparent;font-size:0;background:transparent;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;outline-offset:-3px;border-radius:18px}
+/* El halo se enciende desde que la pantalla se dibuja, antes de tocar. */
+.spm-ds2-hit::before{content:'';position:absolute;inset:6% 2%;border:2px solid rgba(220,174,82,.78);border-radius:28px;pointer-events:none;opacity:.75;box-shadow:0 0 10px 2px rgba(237,188,91,.3),inset 0 0 9px rgba(255,239,199,.23);animation:spm-ds2-invite 2.65s ease-in-out infinite}
+.spm-ds2-hit--audio::before,.spm-ds2-hit--next::before,.spm-ds2-hit--save::before{inset:5% 2%;border-radius:64px;border-width:2px;animation-duration:2.15s}
+.spm-ds2-hit--choose::before{inset:8% 1%;border-radius:32px;border-width:1.5px}
+.spm-ds2-hit--choose::after{content:'';pointer-events:none;position:absolute;right:3.3%;top:50%;transform:translateY(-50%);width:39px;height:39px;border-radius:50%;border:2px solid rgba(201,149,47,.82);box-shadow:0 0 11px rgba(236,193,89,.42);animation:spm-ds2-radio 2.65s ease-in-out infinite}
+.spm-ds2-hit--choose:nth-of-type(3n)::before,.spm-ds2-hit--choose:nth-of-type(3n)::after{animation-delay:.5s}
+.spm-ds2-hit--choose[aria-pressed="true"]::before{border-color:rgba(17,110,86,.9);opacity:1;animation:none;box-shadow:0 0 0 2px rgba(17,110,86,.25),0 0 9px rgba(221,174,82,.4)}
+.spm-ds2-hit--choose[aria-pressed="true"]::after{animation:none;opacity:.35}
+.spm-ds2-hit:focus-visible{outline:3px solid #136c57}
+.spm-ds2-hit:active{background:rgba(22,115,91,.1)}
+.spm-ds2-check{position:absolute;z-index:4;display:grid;place-items:center;pointer-events:none;background:#176b56;color:white;border:2px solid #edcf8b;border-radius:50%;font-size:26px;line-height:1;font-weight:800;box-shadow:0 1px 9px rgba(40,30,14,.25)}
+.spm-ds2-nav{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:12px 9px 6px;background:#fbf2e8}
+.spm-ds2-nav button{min-height:44px;padding:8px 12px;border:1px solid #c5a86b;background:#fff9ee;color:#174940;border-radius:18px;font-size:13px;font-weight:750;cursor:pointer;touch-action:manipulation;box-shadow:0 0 0 2px rgba(212,170,80,.2)}
+.spm-ds2-nav span{color:#416d61;font-size:12px;font-weight:700;white-space:nowrap}
+.spm-ds2-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 12px 8px;background:#fbf2e8}
+.spm-ds2-bottom button{min-height:42px;border:0;background:transparent;color:#21584c;font-size:11px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.spm-ds2-bottom button:last-child{border-radius:18px;padding:7px 11px;border:1px solid #d3ad67;text-decoration:none;background:#fff8ec;animation:spm-ds2-border 2.65s ease-in-out infinite}
+.spm-ds2-status{margin:0;min-height:32px;padding:6px 13px 16px;background:#fbf2e8;color:#1b584b;font-size:12px;line-height:1.45}
+@keyframes spm-ds2-invite{0%,100%{opacity:.42;box-shadow:0 0 5px 1px rgba(229,185,96,.24),inset 0 0 7px rgba(249,224,167,.17)}50%{opacity:.98;box-shadow:0 0 19px 3px rgba(232,188,88,.65),inset 0 0 13px rgba(255,236,190,.36)}}
+@keyframes spm-ds2-radio{0%,100%{box-shadow:0 0 5px rgba(236,193,89,.22)}50%{box-shadow:0 0 14px 3px rgba(236,193,89,.8)}}
+@keyframes spm-ds2-border{0%,100%{box-shadow:0 0 0 1px rgba(213,172,75,.2)}50%{box-shadow:0 0 0 3px rgba(213,172,75,.68),0 0 12px rgba(213,172,75,.38)}}
+@media(prefers-reduced-motion:reduce){.spm-ds2-hit::before,.spm-ds2-hit::after,.spm-ds2-bottom button:last-child{animation:none!important;opacity:.78!important;box-shadow:0 0 0 2px rgba(214,174,75,.48)!important}}
+@media(max-width:340px){.spm-ds2-nav button{font-size:11px;padding:7px 9px}.spm-ds2-bottom button{font-size:10px}.spm-ds2-hit--choose::after{width:31px;height:31px}}

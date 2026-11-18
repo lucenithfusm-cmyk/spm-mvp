@@ -160,7 +160,8 @@ const scripts=[
    'erection-day9-touch-v1.js?v=20261117-dia24-recuperacion-v1','erection-day9-bridge-v1.js?v=20261117-dia24-recuperacion-v1',
     'erection-day10-touch-v1.js?v=20261118-dia27-prevencion-v1','erection-day10-bridge-v1.js?v=20261118-dia27-prevencion-v1',
   'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261117-erection10x28-v1',
-  'desire-day1-touch-v1.js?v=20261118-five-approved-1','desire-day1-bridge-v1.js?v=20261118-five-approved-1'
+  'desire-day1-touch-v1.js?v=20261118-five-approved-1','desire-day1-bridge-v1.js?v=20261118-five-approved-1',
+  'desire-day2-touch-v1.js?v=20261118-desire-day2-touch1','desire-day2-bridge-v1.js?v=20261118-desire-day2-touch1'
 ];
 async function boot(){
   try{
