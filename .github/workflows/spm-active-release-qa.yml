@@ -11,6 +11,7 @@ on:
       - 'tests/erection-day7-touch.test.cjs'
       - 'tests/erection-day8-touch.test.cjs'
       - 'tests/erection-day9-touch.test.cjs'
+      - 'tests/erection-day10-touch.test.cjs'
       - 'tests/erection-ten-schedule.test.cjs'
       - 'vercel.json'
       - '.github/workflows/spm-active-release-qa.yml'
@@ -26,6 +27,7 @@ on:
       - 'tests/erection-day7-touch.test.cjs'
       - 'tests/erection-day8-touch.test.cjs'
       - 'tests/erection-day9-touch.test.cjs'
+      - 'tests/erection-day10-touch.test.cjs'
       - 'tests/erection-ten-schedule.test.cjs'
       - 'vercel.json'
       - '.github/workflows/spm-active-release-qa.yml'
@@ -41,4 +43,4 @@ jobs:
         with:
           node-version: '22'
       - name: Validate module version parity and approved entry
-        run: node --test tests/active-module-release.test.cjs tests/erection-day1-touch.test.cjs tests/erection-day2-touch.test.cjs tests/erection-day3-touch.test.cjs tests/erection-day4-touch.test.cjs tests/erection-day5-touch.test.cjs tests/erection-day6-touch.test.cjs tests/erection-day7-touch.test.cjs tests/erection-day8-touch.test.cjs tests/erection-day9-touch.test.cjs tests/erection-ten-schedule.test.cjs
+        run: node --test tests/active-module-release.test.cjs tests/erection-day1-touch.test.cjs tests/erection-day2-touch.test.cjs tests/erection-day3-touch.test.cjs tests/erection-day4-touch.test.cjs tests/erection-day5-touch.test.cjs tests/erection-day6-touch.test.cjs tests/erection-day7-touch.test.cjs tests/erection-day8-touch.test.cjs tests/erection-day9-touch.test.cjs tests/erection-day10-touch.test.cjs tests/erection-ten-schedule.test.cjs

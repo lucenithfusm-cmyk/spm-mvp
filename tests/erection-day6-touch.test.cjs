@@ -44,7 +44,7 @@ test('Día 15 usa solo voz estándar del dispositivo, nunca Rocío o Sofía',()=
  assert.match(js,/utterance\.rate=1/);
  assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|\.voice=voices|erection-day15-stimuli-20261117\.mp3/);
  const clinical=read('premium-v2/erection-practice-v1.js');
- assert.match(clinical,/\[6,7,8,9\]\.includes\(lesson\)\?null/);
+ assert.match(clinical,/\[6,7,8,9,10\]\.includes\(lesson\)\?null/);
  assert.doesNotMatch(clinical,/erection-day15-stimuli-20261117\.mp3/);
  const direct=read('premium-v2/revision-ereccion-dia15.html');
  assert.match(direct,/new SpeechSynthesisUtterance\(guide\)/);
@@ -71,7 +71,7 @@ test('calendario y módulo activo conservan 10 sesiones y evaluaciones',()=>{
  const released=read('premium-v2/spm-active-module-release-v1.js');
  const r={window:{}};vm.runInNewContext(sched,r);
  const s=r.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(s.integrated,9);
+ assert.equal(s.integrated,10);
  assert.equal(s.isReady(15),true);assert.equal(s.isReady(18),true);assert.equal(s.isReady(21),true);assert.equal(s.isReady(24),true);
  assert.deepEqual([...s.evaluationDays],[14,28]);
  assert.match(released,/15:Object\.freeze/);

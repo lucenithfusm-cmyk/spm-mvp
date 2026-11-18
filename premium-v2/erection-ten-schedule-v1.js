@@ -16,9 +16,10 @@ const approved=Object.freeze([
  'Activa tu respuesta con estímulos que funcionan',
  'Reconoce tu progreso',
  'Sostener la erección sin perseguir firmeza constante',
- 'Qué hacer cuando disminuye la firmeza'
+ 'Qué hacer cuando disminuye la firmeza',
+ 'Prevención después de una caída'
 ]);
-const integrated=9;
+const integrated=10;
 const isDay=n=>Number.isInteger(Number(n))&&Number(n)>=1&&Number(n)<=28;
 function lessonFor(day){if(!isDay(day))return null;const i=days.indexOf(Number(day));return i<0?null:i+1;}
 function dayFor(lesson){const n=Number(lesson);return Number.isInteger(n)&&n>=1&&n<=10?days[n-1]:null;}
@@ -34,7 +35,7 @@ function phase(day){
  const item=slot(day);return item?(item.ready?'ready':'pending'):'transversal';
 }
 window.SPM_ERECTION_10_SCHEDULE=Object.freeze({
- version:'2026-11-17-10x28-v6-dia24',days,evaluationDays,integrated,
+ version:'2026-11-18-10x28-v7-dia27',days,evaluationDays,integrated,
  lessonFor,dayFor,slot,isReady,phase
 });
 })();
