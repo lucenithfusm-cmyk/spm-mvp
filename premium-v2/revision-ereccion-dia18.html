@@ -26,6 +26,13 @@
 @keyframes spmHalo{to{box-shadow:0 0 15px 5px #ffdc79ad}}
 @media(prefers-reduced-motion:reduce){.hit.audio{animation:none}}
 @media(max-width:370px){.review-footer{padding:7px 5px}.review-footer button{font-size:11px;padding:7px 8px}}
+.spm-ed18-alert-layer{position:fixed;inset:0;z-index:2147483100;display:grid;place-items:center;padding:20px;padding-top:max(20px,env(safe-area-inset-top));padding-bottom:max(20px,env(safe-area-inset-bottom));background:rgba(2,19,35,.60);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.spm-ed18-alert-card{width:min(100%,420px);padding:25px 22px 22px;border:2px solid #ead09c;border-radius:23px;background:linear-gradient(145deg,#103651,#174963);box-shadow:0 22px 55px rgba(0,9,22,.55);color:#fff;text-align:center}
+.spm-ed18-alert-card .symbol{width:46px;height:46px;margin:0 auto 12px;display:grid;place-items:center;background:#f1cb8326;border:1px solid #efcb84;border-radius:50%;color:#f4d38f;font-size:27px;font-weight:900}
+.spm-ed18-alert-card strong{font-size:21px;line-height:1.25;color:#ffe2a2}
+.spm-ed18-alert-card p{font-size:17px;line-height:1.5;margin:13px 0 22px;color:#f3f8fc}
+.spm-ed18-alert-card button{border:0;border-radius:12px;background:#f1ce81;color:#15334c;min-height:49px;width:100%;font-size:17px;font-weight:850;cursor:pointer}
+.spm-ed18-alert-card button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 </style></head>
 <body><header class="top">SPM DIGITAL WELLNESS · Día 18 <span>· Revisión interactiva</span></header>
 <main class="viewer">
@@ -57,6 +64,19 @@ const bounds=[
 ];
 function saveLocal(){try{localStorage.setItem(storageKey,JSON.stringify(data))}catch{}}
 function status(s){statusEl.textContent=s||''}
+let openedAlert=null;
+function warn(s){
+ if(openedAlert){openedAlert.close()}
+ const previous=document.activeElement,priorOverflow=document.body.style.overflow;
+ const overlay=document.createElement('div');overlay.className='spm-ed18-alert-layer';overlay.setAttribute('data-ed18-alert','');
+ overlay.innerHTML='<section class="spm-ed18-alert-card" role="alertdialog" aria-modal="true" aria-labelledby="spm-ed18-alert-title" aria-describedby="spm-ed18-alert-message"><span class="symbol" aria-hidden="true">!</span><strong id="spm-ed18-alert-title">Selecciona una opción</strong><p id="spm-ed18-alert-message"></p><button type="button" data-ed18-alert-close>Entendido</button></section>';
+ overlay.querySelector('#spm-ed18-alert-message').textContent=String(s||'Selecciona una opción antes de continuar.');
+ const button=overlay.querySelector('[data-ed18-alert-close]');
+ const close=()=>{if(!overlay.isConnected)return;overlay.remove();document.body.style.overflow=priorOverflow;openedAlert=null;if(previous?.isConnected)previous.focus({preventScroll:true})};
+ openedAlert={close};button.addEventListener('click',close);overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+ overlay.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}else if(e.key==='Tab'){e.preventDefault();button.focus({preventScroll:true})}});
+ document.body.append(overlay);document.body.style.overflow='hidden';button.focus({preventScroll:true});
+}
 function stopVoice(){try{window.speechSynthesis?.cancel?.()}catch{}utterance=null;voiceKey=null;art.querySelector('.hit.audio')?.classList.remove('playing')}
 function talk(){if(voiceKey===page){stopVoice();status('Guía detenida. Pulsa nuevamente para escucharla.');return}stopVoice();if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){status('La voz estándar del dispositivo no está disponible. Puedes leer las indicaciones de la pantalla.');return}try{const u=new window.SpeechSynthesisUtterance(guides[page]);u.lang='es-CO';u.rate=1;u.pitch=1;u.volume=1;utterance=u;voiceKey=page;const b=art.querySelector('.hit.audio');b?.classList.add('playing');u.onend=()=>{if(utterance===u){stopVoice();status('Guía finalizada. Puedes continuar.')}};u.onerror=()=>{if(utterance===u){stopVoice();status('No se pudo reproducir la guía. Inténtalo de nuevo.')}};window.speechSynthesis.speak(u);status('Reproduciendo la guía con la voz del dispositivo…')}catch{stopVoice();status('No se pudo reproducir la guía.') }}
 function makeHit(coords,label,action,cls=''){const b=document.createElement('button');b.type='button';b.className='hit'+(cls?' '+cls:'');b.style.left=pct(coords[0],864);b.style.top=pct(coords[1],1536);b.style.width=pct(coords[2]-coords[0],864);b.style.height=pct(coords[3]-coords[1],1536);b.setAttribute('aria-label',label);b.addEventListener('click',action);art.append(b);return b}
@@ -67,10 +87,10 @@ function render(){const n=page+1;art.replaceChildren();const bg=document.createE
 const fix=document.createElement('div');fix.className='day-fix';fix.setAttribute('aria-hidden','true');fix.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="#cce9f7" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 2v6M17 2v6M3 10h18"/></svg><span>Día 18<small>Erección y firmeza</small></span>';art.append(fix);
 makeHit([172,269,693,357],'Escuchar guía de '+labels[page],talk,'audio');
 options[page].forEach(([key,title],i)=>{const box=bounds[page][i];const btn=makeHit(box,'Seleccionar '+title,()=>toggle(key));btn.setAttribute('aria-pressed',String(selected(key)));if(selected(key)){btn.classList.add('chosen');marker(793,(box[1]+box[3])/2)}});
-makeHit([17,25,74,112],'Anterior',()=>{if(page>0){stopVoice();page--;status('');render()}else status('Esta es la primera pantalla de la sesión.')});
+makeHit([17,25,74,112],'Anterior',()=>{if(page>0){stopVoice();page--;status('');render()}else warn('Estás en la primera pantalla de esta sesión.')});
 makeHit(page===2?[29,1406,835,1511]:[29,1399,835,1512],page===2?'Guardar y continuar mi ruta de hoy':'Continuar',advance);
 counter.textContent='Pantalla '+n+' de 3';back.disabled=page===0;next.textContent=page===2?'Guardar y continuar':'Continuar →';}
-function advance(){if(page===0&&!data.advances.length){status('Selecciona al menos un avance o «Aún estoy empezando».');return}if(page===1&&!data.confidence){status('Elige la idea que quieres conservar.');return}if(page===2){if(!data.nextStep){status('Elige una acción concreta antes de guardar.');return}saveLocal();stopVoice();status('Tus respuestas quedaron guardadas en esta revisión. El Día 18 está listo para integrar en la ruta «Hoy».');return}stopVoice();page++;status('');render()}
+function advance(){if(page===0&&!data.advances.length){warn('Selecciona al menos un cambio que reconoces en ti, o «Aún estoy empezando», para continuar.');return}if(page===1&&!data.confidence){warn('Elige una idea que quieras conservar esta semana para continuar.');return}if(page===2){if(!data.nextStep){warn('Selecciona una acción concreta para guardar y continuar tu ruta de hoy.');return}saveLocal();stopVoice();status('Tus respuestas quedaron guardadas en esta revisión. El Día 18 está listo para integrar en la ruta «Hoy».');return}stopVoice();page++;status('');render()}
 back.addEventListener('click',()=>{if(page>0){stopVoice();page--;status('');render()}});next.addEventListener('click',advance);window.addEventListener('pagehide',stopVoice);render();
 })();
 </script></body></html>
