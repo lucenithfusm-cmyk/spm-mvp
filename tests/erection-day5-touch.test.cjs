@@ -28,14 +28,25 @@ test('facilitadores 3, inhibidores 2, desconocido exclusivo, ajuste único',()=>
  assert.match(js,/m\.inhibitors\.filter\(v=>v!=='unknown'\)/);
  assert.match(js,/m\.adjustment=key/);
 });
-test('bocinas por pantalla y segmentos del audio original del día 5',()=>{
+test('el audio original está dividido en tres pistas completas con cortes en silencios',()=>{
  assert.ok(js.includes('erection-day-5-20261113.mp3'));
- assert.ok(js.includes('const AUDIO_SECTIONS=[[0,17],[17,33],[33,49.76325]]'));
+ assert.ok(js.includes('const AUDIO_CLIPS='));
+ for(let n=1;n<=3;n++){
+  const file='premium-v2/assets/audio/erection/erection-day-5-screen-0'+n+'-20261117.mp3';
+  const audio=fs.readFileSync(path.join(root,file));
+  assert.ok(audio.length>200000,'clip '+n+' no está completo');
+  assert.ok(js.includes(file.slice(file.lastIndexOf('/')+1)));
+ }
+ assert.match(js,/new window\.Audio\(AUDIO_CLIPS\[m\.page-1\]\)/);
  assert.match(js,/audio\.play\(\)/);
- assert.match(js,/loadedmetadata/);
- assert.match(js,/if\(audio\.currentTime>=end-0\.08\)/);
+ assert.doesNotMatch(js,/AUDIO_SECTIONS|loadedmetadata|audio\.currentTime>=end/);
  assert.match(js,/window\.speechSynthesis\?\.cancel/);
  assert.match(css,/\.spm-ed5-hit\.audio\.playing/);
+});
+test('la zona de escucha cubre toda la pastilla dorada y es prioritaria en iPhone',()=>{
+ assert.ok(js.includes("hotspot([190,352,890,488],'audio'"));
+ assert.match(css,/\.spm-ed5-hit\.audio\{z-index:12;pointer-events:auto;/);
+ assert.match(js,/data-ed5-audio="true" aria-pressed="false"/);
 });
 test('registro central y regreso manual a Hoy en día 12, sin alterar otros módulos',()=>{
  assert.match(bridge,/Number\(c\.day\)!==12/);
