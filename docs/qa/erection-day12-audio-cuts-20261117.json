@@ -1,0 +1,48 @@
+{
+  "module": "SPM Erección y firmeza",
+  "calendarDay": 12,
+  "originalLessonDay": 5,
+  "screens": 3,
+  "original": "premium-v2/assets/audio/erection/erection-day-5-20261113.mp3",
+  "sourceDurationSeconds": 49.76325,
+  "sourcePreserved": true,
+  "method": "FFmpeg silencedetect at -34dB, duration >=0.10s. Split at midpoint of natural speech pauses; source voice and speaking rate unchanged. Three standalone MP3s, 44100 Hz mono, 160 kbps.",
+  "pauses": [
+    {
+      "start": 16.07712,
+      "end": 16.55288,
+      "cut": 16.315
+    },
+    {
+      "start": 32.296803,
+      "end": 32.895828,
+      "cut": 32.596
+    }
+  ],
+  "clips": [
+    {
+      "screen": 1,
+      "sourceStart": 0,
+      "sourceEnd": 16.315,
+      "duration": 16.32,
+      "path": "premium-v2/assets/audio/erection/erection-day-5-screen-01-20261117.mp3"
+    },
+    {
+      "screen": 2,
+      "sourceStart": 16.315,
+      "sourceEnd": 32.596,
+      "duration": 16.28,
+      "path": "premium-v2/assets/audio/erection/erection-day-5-screen-02-20261117.mp3"
+    },
+    {
+      "screen": 3,
+      "sourceStart": 32.596,
+      "sourceEnd": 49.76325,
+      "duration": 17.17,
+      "path": "premium-v2/assets/audio/erection/erection-day-5-screen-03-20261117.mp3"
+    }
+  ],
+  "description": "Boundary 1 follows the completed facilitators instructions before Después, marca...; boundary 2 follows the complete obstacle instructions before Por último, escoge...",
+  "qa": "Automated silence detection and file duration checks passed. Auditory review on an iPhone remains advisable.",
+  "safety": "No patient data, calendar changes, or payments."
+}
