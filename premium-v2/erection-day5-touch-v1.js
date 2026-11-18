@@ -96,7 +96,7 @@ function check(x,y){return `<span class="spm-ed5-check" aria-hidden="true" style
 function optionsUI(rows,values,action,multi){let hits='',marks='';rows.forEach(([value,label,coords,center])=>{const on=multi?values.includes(value):values===value;hits+=hotspot(coords,action,(on?'Desmarcar ':'Seleccionar ')+label,{value,selected:on});if(on)marks+=check(...center)});return {hits,marks}}
 function render(m){
  if(!m.host?.isConnected)return;
- let hits=hotspot([230,380,850,464],'audio',m.page===3?'Escuchar práctica':'Escuchar guía',{audio:true}),marks='';
+ let hits=hotspot([190,352,890,488],'audio',m.page===3?'Escuchar práctica':'Escuchar guía',{audio:true}),marks='';
  if(m.page===1){const o=optionsUI(FAC,m.facilitators,'fac',true);hits+=o.hits;marks+=o.marks;}
  else if(m.page===2){const o=optionsUI(INHIB,m.inhibitors,'inhib',true);hits+=o.hits;marks+=o.marks;}
  else{const o=optionsUI(ADJUST,m.adjustment,'adjust',false);hits+=o.hits;marks+=o.marks;}
