@@ -88,7 +88,7 @@ async function save(m){
 function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',calendarDay=24}={}){
  if(!host||typeof onSave!=='function')return false;
  stop();const p=prior&&typeof prior==='object'&&!Array.isArray(prior)?prior:{};
- const m={host,prior:{...p},valid,save:onSave,scope,calendarDay:Number(calendarDay),page:1,strategy:STRATEGY_KEYS.includes(p.erectionResponseStrategy)?p.erectionResponseStrategy:null,stepsHeard:[],stepHeard:null,saving:false,status:'',events:new AbortController()};
+ const m={host,prior:{...p},valid,save:onSave,onBack,scope,calendarDay:Number(calendarDay),page:1,strategy:STRATEGY_KEYS.includes(p.erectionResponseStrategy)?p.erectionResponseStrategy:null,stepsHeard:[],stepHeard:null,saving:false,status:'',events:new AbortController()};
  active=m;render(m);
  host.addEventListener('click',e=>{
   if(active!==m||!m.valid()||m.saving)return;
