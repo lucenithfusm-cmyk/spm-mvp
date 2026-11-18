@@ -109,6 +109,47 @@ async function open(activity,edit=false){
    if(current()&&form.isConnected){saving=false;button.disabled=false;cancel.disabled=false;form.querySelector('[data-checkpoint-status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; revisa tu conexión y reintenta.';}
   }
  };
+ // Preserve the original checkpoint form and its submit handler as the only
+ // source of truth. The premium touch screens are a visual input surface.
+ // Keeping the form connected ensures the existing validation, archive,
+ // comparison, account/day checks, and final report remain unmodified.
+ if([14,28].includes(milestone)&&window.SPM_CHECKPOINT_TOUCH){
+  form.hidden=true;form.setAttribute('aria-hidden','true');
+  const touchHost=document.createElement('div');
+  touchHost.setAttribute('data-checkpoint-touch-host','');
+  host.appendChild(touchHost);
+  const touch=window.SPM_CHECKPOINT_TOUCH;
+  touch.mount({
+   host:touchHost,milestone,day,prior,
+   valid:()=>current()&&host.contains(form)&&touchHost.isConnected,
+   save:async draft=>{
+    if(!current()||!form.isConnected)throw Error('checkpoint-stale');
+    for(const [key] of metrics){
+     const value=draft.metrics?.[key];
+     form.querySelector('[name="'+key+'"]').value=value===null?'na':String(value);
+    }
+    form.querySelector('[name="reflection"]').value=String(draft.reflection||'');
+    form.querySelector('[name="continuity"]').value=String(draft.continuity||'');
+    await form.onsubmit({preventDefault(){}});
+    // On success the original submit replaces the form with its final report.
+    // A connected form means the original handler rejected or could not save.
+    if(form.isConnected)throw Error('checkpoint-not-saved');
+    return true;
+   },
+   onBack:()=>{touch.stop();stopAudio();requestId++;window.SPM_DAILY_PRACTICE.open();},
+   report:draft=>{
+    const draftRecord={checkpointVersion:2,scaleMax:4,milestone,submittedDay:day,
+     metrics:draft.metrics,reflection:draft.reflection,continuity:draft.continuity};
+    const available={...rows};
+    if(valid(draftRecord))available[milestone]=draftRecord;
+    return '<h3>Vista previa de tu informe · SPM</h3>'
+      +'<p class="spm-ck-report-note">Vista previa sin guardar. La comparación utiliza los registros existentes; las respuestas de esta evaluación solo se incluyen si completas los siete aspectos. Guarda al terminar para conservarlas en tu informe.</p>'
+      +comparison(available)
+      +archivedRecords(available)
+      +(milestone===28?closingMarkup(false):'<p>'+esc(message14)+'</p>');
+   }
+  });
+ }
  host.scrollIntoView({block:'start'});
 }
 function showReport(rows,day,captured){
