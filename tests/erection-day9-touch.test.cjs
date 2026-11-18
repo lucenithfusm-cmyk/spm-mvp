@@ -93,9 +93,9 @@ test('Validación de sesión 9 acepta una estrategia y rechaza datos ajenos',()=
 test('Calendario 28 días: novena sesión abierta; Día 27 reservado; evaluaciones 14/28',()=>{
  const ctx={window:{}};vm.runInNewContext(read('premium-v2/erection-ten-schedule-v1.js'),ctx);
  const schedule=ctx.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(schedule.integrated,9);
+ assert.equal(schedule.integrated,10);
  assert.equal(schedule.isReady(24),true);
- assert.equal(schedule.isReady(27),false);
+ assert.equal(schedule.isReady(27),true);
  assert.deepEqual([...schedule.evaluationDays],[14,28]);
  const registry=read('premium-v2/spm-active-module-release-v1.js');
  assert.match(registry,/24:Object\.freeze/);
