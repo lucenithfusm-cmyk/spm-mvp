@@ -71,8 +71,8 @@ test('calendario y módulo activo conservan 10 sesiones y evaluaciones',()=>{
  const released=read('premium-v2/spm-active-module-release-v1.js');
  const r={window:{}};vm.runInNewContext(sched,r);
  const s=r.window.SPM_ERECTION_10_SCHEDULE;
- assert.equal(s.integrated,8);
- assert.equal(s.isReady(15),true);assert.equal(s.isReady(18),true);assert.equal(s.isReady(21),true);assert.equal(s.isReady(24),false);
+ assert.equal(s.integrated,9);
+ assert.equal(s.isReady(15),true);assert.equal(s.isReady(18),true);assert.equal(s.isReady(21),true);assert.equal(s.isReady(24),true);
  assert.deepEqual([...s.evaluationDays],[14,28]);
  assert.match(released,/15:Object\.freeze/);
  assert.match(released,/spm-de-day6-screen-01\.webp/);
