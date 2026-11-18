@@ -35,7 +35,7 @@ test('Tres narraciones completas, voz estándar del dispositivo sin Rocío/Sofí
  assert.doesNotMatch(js,/new window\.Audio\(|\.voice\s*=\s*voices\.find\(/);
  assert.match(js,/stopVoice\(m\);pauseTimer\(m\);m\.page=/);
  const clinical=read('premium-v2/erection-practice-v1.js');
- assert.match(clinical,/\[6,7,8\]\.includes\(lesson\)\?null/);
+ assert.match(clinical,/\[6,7,8,9\]\.includes\(lesson\)\?null/);
 });
 test('Pantalla 1: iniciar práctica y cronómetro opcional, sin tiempo mínimo',()=>{
  assert.match(js,/hit\(\[575,1492,1046,1620\],'timer'/);
