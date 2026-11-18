@@ -67,23 +67,30 @@ function update(){for(const [k,v]of views){for(const b of v.buttons){b.classList
 function toggle(k){if(selected.has(k))selected.delete(k);else selected.add(k);persist();const n=update();status((selected.has(k)?'Seleccionaste ':'Retiraste ')+labels[k]+'. '+(n?`${n} opción${n===1?'':'es'} elegida${n===1?'':'s'}.`:'Puedes elegir varias.'))}
 for(const r of rows){const m=marker(r.check);const btn=hotspot(r.box,{value:r.key,label:'Elegir '+labels[r.key],onClick:()=>toggle(r.key)});views.set(r.key,{mark:m,buttons:[btn]})}
 for(const c of cards){const btn=hotspot(c.box,{className:'art-card',value:c.key,label:'Seleccionar ejemplo: '+labels[c.key],onClick:()=>toggle(c.key)});views.get(c.key).buttons.push(btn)}
-let speaking=false, utterance=null, player=null;
+let speaking=false, utterance=null;
 const guide="Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.";
-const AUDIO='assets/audio/erection/erection-day15-stimuli-20261117.mp3';
-function stopAudio(){try{player?.pause();if(player)player.currentTime=0}catch{}player=null;try{window.speechSynthesis?.cancel()}catch{}speaking=false;utterance=null;listen?.classList.remove('is-playing');listen?.setAttribute('aria-pressed','false')}
-function fallback(){
- if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance'in window)){stopAudio();status('La narración no está disponible. Puedes leer las indicaciones de la lámina.','error');return}
- const u=new SpeechSynthesisUtterance(guide);u.lang='es-CO';u.rate=.96;u.pitch=1;u.volume=1;
- const voices=speechSynthesis.getVoices?.()||[];u.voice=voices.find(v=>/^es-CO$/i.test(v.lang)&&/female|mujer|sofia|paulina|maria|helena/i.test(v.name))||voices.find(v=>/^es-CO$/i.test(v.lang))||voices.find(v=>v.lang?.startsWith('es'))||null;
- u.onend=()=>{if(utterance===u){speaking=false;utterance=null;listen.classList.remove('is-playing');listen.setAttribute('aria-pressed','false');status('Guía finalizada. Elige los estímulos que reconozcas.')}};
- u.onerror=()=>{if(utterance===u){stopAudio();status('No se pudo escuchar la guía.','error')}};
- utterance=u;try{speechSynthesis.speak(u)}catch{stopAudio();status('No se pudo reproducir la narración.','error')}
+function stopAudio(){
+ try{window.speechSynthesis?.cancel?.()}catch{}
+ speaking=false;utterance=null;
+ listen?.classList.remove('is-playing');listen?.setAttribute('aria-pressed','false');
 }
-const listen=hotspot([214,298,650,389],{className:'guide',label:'Escuchar guía completa del Día 15',onClick:()=>{
+const listen=hotspot([214,298,650,389],{className:'guide',label:'Escuchar guía con la voz estándar del dispositivo',onClick:()=>{
  if(speaking){stopAudio();status('Guía detenida. Pulsa nuevamente para escucharla.');return}
- stopAudio();speaking=true;listen.classList.add('is-playing');listen.setAttribute('aria-pressed','true');status('Reproduciendo la guía profesional de la actividad…');
- try{const a=new Audio(AUDIO);player=a;a.onended=()=>{if(player===a){stopAudio();status('Guía finalizada. Elige los estímulos que reconozcas.')}};a.onerror=()=>{if(player===a){player=null;fallback()}};a.play()?.catch?.(()=>{if(player===a){player=null;fallback()}})}
- catch{fallback()}
+ if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){
+  status('La voz del dispositivo no está disponible. Puedes leer las indicaciones de la lámina.','error');return;
+ }
+ stopAudio();
+ try{
+  const u=new SpeechSynthesisUtterance(guide);
+  // Sin seleccionar voces de proveedores ni imponer voz femenina: usar la estándar del dispositivo.
+  u.lang='es-CO';u.rate=1;u.pitch=1;u.volume=1;
+  utterance=u;speaking=true;
+  listen.classList.add('is-playing');listen.setAttribute('aria-pressed','true');
+  status('Reproduciendo la guía con la voz estándar del dispositivo…');
+  u.onend=()=>{if(utterance===u){stopAudio();status('Guía finalizada. Elige los estímulos que reconozcas.')}};
+  u.onerror=()=>{if(utterance===u){stopAudio();status('No se pudo reproducir esta guía. Intenta de nuevo.','error')}};
+  window.speechSynthesis.speak(u);
+ }catch{stopAudio();status('No se pudo reproducir esta guía.','error')}
 }});
 listen.setAttribute('aria-pressed','false');
 hotspot([30,1413,830,1524],{label:'Continuar y guardar mi selección',onClick:()=>{stopAudio();persist();const v=[...selected];if(v.length){status('Selección guardada para revisión: '+v.map(x=>labels[x]).join(', ')+'. Puedes continuar tu ruta.','success')}else{status('Selecciona al menos uno de los estímulos que más te ayudan y luego continúa.','error')}}});
