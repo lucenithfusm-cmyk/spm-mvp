@@ -1,0 +1,21 @@
+/* Día 12 de 28: preservar las láminas premium, solo zonas táctiles y selección. */
+.spm-ed5-session{width:min(100%,540px);max-width:540px;margin:0 auto;background:#0d4569;color:#fff;box-sizing:border-box}
+.spm-ed5-session *{box-sizing:border-box}
+.spm-ed5-artwork{position:relative;isolation:isolate;width:100%;aspect-ratio:1080/1920;background:#0a4871 center top/100% 100% no-repeat;overflow:hidden}
+.spm-ed5-hit{position:absolute;z-index:4;border:2px solid transparent;border-radius:18px;background:transparent;padding:0;margin:0;color:transparent;cursor:pointer;appearance:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.spm-ed5-hit:focus-visible{outline:3px solid #fff1b4;outline-offset:-1px}
+.spm-ed5-hit:active{background:rgba(255,229,149,.12);border-color:#ffeca9}
+.spm-ed5-hit.selected{border-color:#167dbc;background:rgba(33,139,196,.07);box-shadow:0 0 7px rgba(46,150,213,.45)}
+.spm-ed5-hit.audio{z-index:12;pointer-events:auto;min-height:44px;user-select:none;-webkit-user-select:none;border-radius:999px;box-shadow:0 0 11px rgba(244,205,120,.5);animation:spmEd5Sound 2.5s ease-in-out infinite alternate}
+.spm-ed5-hit.audio.playing{background:rgba(255,221,134,.2);border-color:#fff5c4;box-shadow:0 0 17px 4px #ffd17cae}
+.spm-ed5-check{position:absolute;z-index:5;pointer-events:none;display:grid;place-items:center;background:#0d84b7;color:white;border:2px solid #f6faff;border-radius:50%;box-shadow:0 0 9px rgba(21,133,205,.6);font-size:clamp(13px,3vw,22px);font-weight:900;line-height:1}
+.spm-ed5-calendar-label{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;background:#123c64;color:#fff;font-size:clamp(12px,3.1vw,21px);font-weight:850;line-height:1;pointer-events:none;white-space:nowrap}
+.spm-ed5-toolbar{display:flex;justify-content:space-between;align-items:center;gap:5px;padding:9px;background:#102d47;border-top:1px solid #d8b77c80;font-size:12px;min-height:62px}
+.spm-ed5-toolbar button{min-height:44px;background:#204a66;border:1px solid #dcc18e;border-radius:10px;color:#fff;padding:8px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.spm-ed5-toolbar button:focus-visible{outline:3px solid #ffe8ae;outline-offset:2px}
+.spm-ed5-toolbar span{white-space:nowrap;color:#f7dda4;font-weight:800;font-size:12px}
+.spm-ed5-status{margin:0;padding:0 12px;background:#113b56;color:#ffe7bd;text-align:center;font-weight:760;font-size:13px;line-height:1.5}
+.spm-ed5-status:not(:empty){padding:12px;border:1px solid #e7c58d70}
+@keyframes spmEd5Sound{to{box-shadow:0 0 14px 4px rgba(250,210,115,.65)}}
+@media(prefers-reduced-motion:reduce){.spm-ed5-hit.audio{animation:none}}
+@media(max-width:360px){.spm-ed5-toolbar{padding:7px 5px}.spm-ed5-toolbar button{font-size:10px;padding:6px}.spm-ed5-toolbar span{font-size:10px}}
