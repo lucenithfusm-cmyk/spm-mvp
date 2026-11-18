@@ -1,0 +1,29 @@
+name: SPM — Checkpoints tactile review and report compatibility
+on:
+  pull_request:
+    paths:
+      - 'premium-v2/spm-checkpoint-touch-v1.*'
+      - 'premium-v2/program-checkpoint-v1.js'
+      - 'premium-v2/revision-ereccion-checkpoints.html'
+      - 'tests/spm-checkpoint-touch.test.cjs'
+      - '.github/workflows/spm-checkpoint-touch-qa.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'premium-v2/spm-checkpoint-touch-v1.*'
+      - 'premium-v2/program-checkpoint-v1.js'
+      - 'tests/spm-checkpoint-touch.test.cjs'
+permissions:
+  contents: read
+jobs:
+  checkpoint-tactile-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install the existing isolated DOM test dependencies
+        run: npm ci --prefix labs/desire --no-audit --no-fund
+      - name: Verify the original report and new 14/28 touch screens
+        run: node --test tests/program-checkpoint.test.cjs tests/spm-checkpoint-touch.test.cjs

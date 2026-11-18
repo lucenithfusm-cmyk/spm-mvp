@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><title>SPM · Día 27 · Prevención después de una caída</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="erection-day10-touch-v1.css?v=20261118-dia27-review1">
+<link rel="stylesheet" href="erection-fullscreen-v1.css?v=20261117-er-fullscreen-cierre1">
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#082b44;color:#fff}body{display:flex;flex-direction:column;align-items:center}
+.review-title{background:#103651;text-align:center;width:100%;padding:12px;color:#f5d48c;font-size:14px;font-weight:800;border-bottom:1px solid #e1c48a}
+.review-home{width:min(92%,490px);margin:12vh auto;background:#123a57;padding:23px;border:1px solid #dfbd7e;border-radius:21px;text-align:center}
+.review-home[hidden]{display:none}.review-home h1{font-size:24px;margin:4px 0 15px}.review-home p{font-size:14px;color:#d9e8f3;line-height:1.5}
+.review-home button{width:100%;min-height:50px;background:#f4d084;color:#183c55;border:0;border-radius:12px;font-size:16px;font-weight:850;cursor:pointer}
+</style></head><body>
+<header class="review-title">SPM DIGITAL WELLNESS · DÍA 27 · REVISIÓN PRIVADA</header>
+<div id="spmDailyWorkspace"></div>
+<section class="review-home" id="reviewEnd" hidden><h1>Revisión finalizada</h1><p id="endMessage"></p><button type="button" id="reviewAgain">Volver a revisar el Día 27</button></section>
+<script src="erection-fullscreen-v1.js?v=20261117-er-fullscreen-cierre1"></script>
+<script src="erection-day10-touch-v1.js?v=20261118-dia27-review1"></script>
+<script>
+(()=>{'use strict';
+ const key='SPM_ED10_REVIEW_ONLY_20261118',host=document.getElementById('spmDailyWorkspace');
+ const done=document.getElementById('reviewEnd'),message=document.getElementById('endMessage');
+ window.SPM_RESOURCE_CONTEXT=()=>({userId:'review-only',planId:'day27',day:27,primary:'erection'});
+ function read(){try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{return {}}}
+ function finish(saved){window.SPM_ED_DAY10_TOUCH.stop();host.replaceChildren();done.hidden=false;
+  message.textContent=saved?'Guardaste una selección de prueba solo en este navegador. No se modificaron registros de pacientes ni el programa publicado.':'Saliste de la revisión sin modificar los registros del programa.';
+  window.scrollTo(0,0)}
+ async function start(){done.hidden=true;let saved=false;
+  window.SPM_ED_DAY10_TOUCH.mount({host,prior:read(),calendarDay:27,scope:'review-only:day27',valid:()=>host.isConnected,
+   save:async record=>{localStorage.setItem(key,JSON.stringify(record));saved=true;return true},onBack:()=>finish(saved)});
+ }
+ document.getElementById('reviewAgain').addEventListener('click',start);start();
+})();
+</script></body></html>

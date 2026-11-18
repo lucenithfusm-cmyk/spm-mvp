@@ -1,0 +1,24 @@
+/* SPM · Erección y firmeza · Día 24. Láminas aprobadas a pantalla completa. */
+.spm-ed9-session{width:min(100%,540px);max-width:540px;margin:0 auto;background:#0b3657;color:#fff;box-sizing:border-box}
+.spm-ed9-session *{box-sizing:border-box}
+.spm-ed9-artwork{width:100%;aspect-ratio:864/1536;position:relative;flex:0 0 auto;margin:0 auto;overflow:hidden;isolation:isolate;background:#0b4266 center top/100% 100% no-repeat}
+.spm-ed9-hit{position:absolute;z-index:4;appearance:none;margin:0;padding:0;background:transparent;border:2px solid transparent;color:transparent;border-radius:15px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.spm-ed9-hit:focus-visible{outline:3px solid #fff0b0;outline-offset:-1px}
+.spm-ed9-hit:active{background:rgba(255,225,155,.13);border-color:rgba(255,233,169,.78)}
+.spm-ed9-hit.audio{z-index:12;border-radius:999px;pointer-events:auto;box-shadow:0 0 9px rgba(248,210,110,.62);animation:ed9Halo 2s ease-in-out infinite alternate}
+.spm-ed9-hit.audio.playing,.spm-ed9-hit.step.playing{z-index:12;border-color:#ffe7a3;background:rgba(251,221,155,.12);box-shadow:0 0 14px 4px rgba(244,207,120,.58)}
+.spm-ed9-hit.step{border-radius:20px}
+.spm-ed9-hit.selected{border-color:rgba(34,143,193,.85);background:rgba(30,144,190,.06);box-shadow:inset 0 0 0 1px #f4fdff77}
+.spm-ed9-check{position:absolute;z-index:7;display:grid;place-items:center;pointer-events:none;border-radius:50%;background:#188ab9;color:#fff;border:2px solid #fefefe;box-shadow:0 0 9px rgba(27,147,191,.65);font-size:clamp(11px,3vw,18px);font-weight:900;line-height:1}
+.spm-ed9-step-tag{position:absolute;z-index:6;pointer-events:none;display:grid;place-items:center;background:rgba(13,67,101,.85);border:1px solid #f1d188;border-radius:999px;color:#f1d188;font-size:14px}
+.spm-ed9-toolbar,.spm-ed9-status{width:min(100%,540px);max-width:540px;box-sizing:border-box;margin:0 auto;flex:0 0 auto}
+.spm-ed9-toolbar{min-height:57px;background:#0f304c;display:flex;align-items:center;justify-content:space-between;gap:5px;padding:8px;border-top:1px solid rgba(219,189,123,.57);font-size:12px}
+.spm-ed9-toolbar button{appearance:none;cursor:pointer;border:1px solid rgba(231,200,133,.86);border-radius:11px;min-height:44px;padding:7px 9px;color:#fff;background:#1a4a6a;font-size:11px;font-weight:750}
+.spm-ed9-toolbar button:focus-visible{outline:3px solid #fff2bc;outline-offset:2px}
+.spm-ed9-toolbar span{color:#f5d9a3;white-space:nowrap;font-weight:800;font-size:12px}
+.spm-ed9-status{background:#113a56;color:#ffe9be;line-height:1.5;text-align:center;font-weight:700;font-size:13px;min-height:0}
+.spm-ed9-status:not(:empty){padding:12px;border:1px solid rgba(231,196,131,.4)}
+.spm-ed9-status:empty{display:none}
+@keyframes ed9Halo{to{box-shadow:0 0 16px 5px rgba(249,215,131,.67)}}
+@media(prefers-reduced-motion:reduce){.spm-ed9-hit.audio{animation:none}}
+@media(max-width:360px){.spm-ed9-toolbar{padding:6px 3px;gap:4px}.spm-ed9-toolbar button{padding:6px;font-size:10px}.spm-ed9-toolbar span{font-size:10px}}

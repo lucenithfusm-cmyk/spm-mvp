@@ -1,0 +1,27 @@
+/* SPM Erección y firmeza · Día 27. Dos láminas 1080×1920 completas e interactivas. */
+.spm-ed10-session{width:min(100%,540px);max-width:540px;margin:0 auto;color:#fff;background:#123956;box-sizing:border-box}
+.spm-ed10-session *{box-sizing:border-box}
+.spm-ed10-artwork{position:relative;isolation:isolate;width:100%;aspect-ratio:1080/1920;flex:0 0 auto;overflow:hidden;background-color:#0f4163;background-position:center top;background-size:100% 100%;background-repeat:no-repeat;margin:0 auto}
+.spm-ed10-hit{position:absolute;z-index:4;appearance:none;margin:0;padding:0;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:2px solid transparent;border-radius:14px;background:transparent;color:transparent}
+.spm-ed10-hit:focus-visible{outline:3px solid #fff4b7;outline-offset:-1px}
+.spm-ed10-hit:active{background:rgba(253,216,132,.15);border-color:rgba(255,232,170,.88)}
+.spm-ed10-hit.selected{border-color:rgba(12,132,193,.95);background:rgba(15,126,188,.08);box-shadow:inset 0 0 0 2px rgba(230,251,255,.65)}
+.spm-ed10-hit.audio{z-index:12;pointer-events:auto;border-radius:999px;box-shadow:0 0 13px rgba(251,217,130,.64);animation:spmEd10Sound 2s ease-in-out infinite alternate}
+.spm-ed10-hit.audio.playing{border-color:#fff5c5;background:rgba(255,235,155,.15);box-shadow:0 0 19px 5px rgba(245,204,98,.7)}
+.spm-ed10-check{position:absolute;z-index:6;display:grid;place-items:center;pointer-events:none;border-radius:7px;background:#1182bb;color:#fff;border:2px solid #fff;box-shadow:0 0 10px rgba(10,130,195,.65);font-size:clamp(11px,3.3vw,19px);font-weight:900;line-height:1}
+.spm-ed10-toolbar,.spm-ed10-status{width:min(100%,540px);max-width:540px;margin:0 auto;box-sizing:border-box;flex:0 0 auto}
+.spm-ed10-toolbar{min-height:59px;display:flex;align-items:center;justify-content:space-between;gap:5px;padding:8px;background:#10334e;border-top:1px solid rgba(230,194,124,.55)}
+.spm-ed10-toolbar button{cursor:pointer;min-height:44px;border:1px solid #e0bb75;border-radius:11px;padding:8px 9px;color:#fff;background:#1c4d6c;font-size:12px;font-weight:750}
+.spm-ed10-toolbar button:focus-visible{outline:3px solid #ffe9aa;outline-offset:2px}
+.spm-ed10-toolbar span{white-space:nowrap;color:#f7dfa8;font-size:12px;font-weight:800}
+.spm-ed10-status{min-height:0;background:#123e5b;color:#ffe9bc;text-align:center;font-size:13px;line-height:1.5}
+.spm-ed10-status:not(:empty){padding:12px;border:1px solid rgba(231,196,131,.4)}
+.spm-ed10-status:empty{display:none}
+.spm-ed10-alert-layer{position:fixed;inset:0;display:grid;place-items:center;z-index:99;padding:20px;background:rgba(2,19,35,.62);backdrop-filter:blur(5px)}
+.spm-ed10-alert-layer section{width:min(100%,420px);background:#103b59;border:2px solid #ead09c;border-radius:22px;padding:23px;color:#fff;text-align:center;box-shadow:0 18px 50px #061521aa}
+.spm-ed10-alert-layer strong{font-size:22px;color:#f4d18c}
+.spm-ed10-alert-layer p{font-size:17px;line-height:1.5}
+.spm-ed10-alert-layer button{min-height:49px;width:100%;border:0;border-radius:12px;background:#f1cd80;color:#11334b;font-size:17px;font-weight:900;cursor:pointer}
+@keyframes spmEd10Sound{to{box-shadow:0 0 16px 5px rgba(255,210,126,.67)}}
+@media(prefers-reduced-motion:reduce){.spm-ed10-hit.audio{animation:none}}
+@media(max-width:360px){.spm-ed10-toolbar{padding:7px 4px}.spm-ed10-toolbar button{font-size:11px;padding:6px}.spm-ed10-toolbar span{font-size:10px}}

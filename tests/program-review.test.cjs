@@ -226,11 +226,11 @@ test('day 28 closing audio stays separate from navigation and opens the final re
   }finally{h.close();}
 });
 
-test('Erección distribuye cuatro sesiones aprobadas, no abre el formulario antiguo y reserva el día 12',async()=>{
+test('Erección abre las diez sesiones aprobadas y conserva días transversales y evaluaciones',async()=>{
  const h=await harness('?programa=erection&dia=1');
  try{
   const {w}=h,api=w.SPM_DAILY_PRACTICE;
-  for(const [day,lesson,count] of [[1,1,6],[3,2,4],[6,3,3],[9,4,3]]){
+  for(const [day,lesson,count] of [[1,1,6],[3,2,4],[6,3,3],[9,4,3],[12,5,3],[15,6,1],[18,7,3],[21,8,3],[24,9,3],[27,10,2]]){
    await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
    const c=w.SPM_RESOURCE_CONTEXT(),main=api.assignments()[0];
    assert.equal(main.kind,'erection');assert.equal(main.erectionLesson,lesson);
@@ -242,14 +242,13 @@ test('Erección distribuye cuatro sesiones aprobadas, no abre el formulario anti
    assert.ok(w.document.querySelector('.spm-ed'+lesson+'-session.spm-er-fullscreen[data-screen="1"]'),'la actividad '+lesson+' se abre desde Hoy el día '+day);
    assert.equal(w.document.querySelector('[data-erection-form]'),null,'sin formularios de la rama antigua');
   }
-  for(const day of [2,4,5,7,8,10,11,12,14,15,18,21,24,27,28]){
+  for(const day of [2,4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28]){
    await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
    const main=api.assignments()[0],card=w.document.querySelector('[data-activity="main"]');
    assert.equal(main.kind,'erection-support-day');
    assert.equal(card.dataset.erectionTransversal,'true');
    assert.equal(card.querySelector('[data-daily-open]'),null);
    assert.equal(w.document.querySelector('[data-erection-form]'),null);
-   if(day===12)assert.equal(main.erectionScheduledLesson,5);
    if([14,28].includes(day))assert.ok(api.assignments().some(a=>a.kind==='program-checkpoint'));
   }
   assert.deepEqual(h.errors,[]);

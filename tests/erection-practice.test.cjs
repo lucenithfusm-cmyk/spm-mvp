@@ -1,12 +1,13 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {harness,answer,saved,assertOnlyMain,days,tick,clone,deferred}=require('./support/erection-touch-harness.cjs');
 
-test('only the four approved calendar assignments support direct erection practice',async()=>{
- const h=harness();try{
-  for(let day=0;day<=29;day++)assert.equal(h.api.supports({...h.c,day},{...h.activity,erectionLesson:undefined}),days.includes(day),'day '+day);
-  for(const [index,day] of days.entries()){
+test('only the ten approved calendar assignments support direct erection practice',async()=>{
+ const h=harness(),approvedDays=[1,3,6,9,12,15,18,21,24,27];try{
+  for(let day=0;day<=29;day++)assert.equal(h.api.supports({...h.c,day},{...h.activity,erectionLesson:undefined}),approvedDays.includes(day),'day '+day);
+  for(const [index,day] of approvedDays.entries()){
    const definition=h.api.definition(day);assert.equal(definition.erectionLesson,index+1);assert.equal(definition.calendarDay,day);
-   for(const key of ['title','summary','script','audioSrc'])assert.ok(definition[key]);
+   for(const key of ['title','summary','script'])assert.ok(definition[key]);
+   if(index<5)assert.ok(definition.audioSrc);else assert.equal(definition.audioSrc,null,'later sessions use the approved device voice');
    assert.equal(h.api.supports({...h.c,day},{...h.activity,erectionLesson:99}),false);
   }
   for(const primary of ['desire','ejaculation','confidence','wellbeing','lifestyle'])assert.equal(h.api.supports({...h.c,primary},h.activity),false);
@@ -54,8 +55,8 @@ for(const lesson of [1,2,3,4]){
  });
 }
 
-test('not-yet-approved sessions do not resurrect day-five forms or overwrite their historical data',async()=>{
- const h=harness();try{for(const day of [5,12,15,18,21,24,27]){h.c.day=day;h.db[day]={main:{notes:'Historia intacta'}};assert.equal(await h.open(),false);assert.equal(h.api.definition(day),null);assert.equal(h.api.valid({...saved(1),day},day),false);assert.deepEqual(h.db[day],{main:{notes:'Historia intacta'}});}assert.deepEqual(h.attempts,[]);assert.deepEqual(h.reads,[]);}finally{h.close()}
+test('transversal and evaluation days cannot resurrect old forms or overwrite historical data',async()=>{
+ const h=harness();try{for(const day of [2,4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28]){h.c.day=day;h.db[day]={main:{notes:'Historia intacta'}};assert.equal(await h.open(),false);assert.equal(h.api.definition(day),null);assert.equal(h.api.valid({...saved(1),day},day),false);assert.deepEqual(h.db[day],{main:{notes:'Historia intacta'}});}assert.deepEqual(h.attempts,[]);assert.deepEqual(h.reads,[]);}finally{h.close()}
 });
 
 test('record validation preserves EHS zero/null and rejects malformed scores, contexts, anchors and days',()=>{
