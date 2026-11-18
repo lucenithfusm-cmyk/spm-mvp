@@ -35,7 +35,7 @@ async function open(a){
  }
  if(!permitted(ctx(),s))return false;
  return ui.mount({host,prior,scope:s,calendarDay:21,valid:()=>permitted(ctx(),s)&&host.isConnected,
-  save:record=>window.SPM_DAILY_PRACTICE.saveActivity('main',{...record,day:21,erectionLesson:8},s,18),
+  save:record=>window.SPM_DAILY_PRACTICE.saveActivity('main',{...record,day:21,erectionLesson:8},s,21),
   onBack:()=>window.SPM_DAILY_PRACTICE?.open?.()});
 }
 function pause(){ui.pause();oldPause()}
