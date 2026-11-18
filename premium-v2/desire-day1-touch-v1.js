@@ -10,8 +10,8 @@
   const NOTE_KEY='desireDay1TouchV1';
   const DAY=1;
   const FORM_AUDIO={
-    spont:'A veces las ganas aparecen antes de iniciar cualquier contacto. Por ejemplo, recuerdas un momento agradable y notas interés. A esto lo llamamos deseo espontáneo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a reconocer qué despierta ese interés y a disfrutarlo sin convertirlo en una obligación.',
-    resp:'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si se parece a tu experiencia de hoy, pulsa Se parece a mí hoy. Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.'
+    spont:'A veces las ganas aparecen antes de iniciar cualquier contacto. Por ejemplo, recuerdas un momento agradable y notas interés. A esto lo llamamos deseo espontáneo. Si esta forma se parece a ti hoy, toca directamente «Me dan ganas». Tu práctica te ayudará a reconocer qué despierta ese interés y a disfrutarlo sin convertirlo en una obligación.',
+    resp:'Otras veces no tienes ganas al principio, pero sí disposición a disfrutar de algo agradable. El interés puede aparecer poco a poco, con tranquilidad y sin presión. A esto lo llamamos deseo responsivo. Si esta forma se parece a ti hoy, toca directamente «Me voy conectando». Tu práctica te ayudará a explorar qué condiciones favorecen la conexión, sin obligarte a sentir deseo ni a continuar.'
   };
   const FORM_STEPS={
     spont:[
@@ -20,24 +20,24 @@
       'Cuando quieras terminar, observa qué detalle te ayudó a conectar. Puedes anotarlo en tu reflexión. Si no sentiste interés, también es una observación válida.'
     ],
     resp:[
-      'Elige una sensación que te resulte agradable y que quieras explorar: el contacto piel con piel, el calor de una caricia, la suavidad del cabello o un aroma que te atraiga. Si estás con tu pareja, elijan caricias que ambos deseen.',
-      'Disfruta esa sensación a tu ritmo. Percibe la calidez de la piel y cómo cambia su textura cuando se eriza. Si estás con tu pareja y ambos lo desean, puedes acariciar su cabello y sentir su textura entre tus dedos. Si aparece presión o incomodidad, haz una pausa o detente.',
+      'Elige una sensación que te resulte agradable y que pueda despertar tu interés: el roce delicado de unas manos sobre la piel, el calor de un abrazo o un aroma que te atraiga. Si estás con tu pareja, exploren solamente el contacto que ambos deseen.',
+      'Disfruta a tu ritmo. Observa si aparece un hormigueo suave en el cuello o la espalda con una caricia. Si estás con tu pareja y ambos lo desean, acaricia lentamente su cabello y descubre su suavidad. Si aparece presión o incomodidad, haz una pausa o detente.',
       'Cuando quieras terminar, pregúntate: ¿me sentí más cómodo, curioso o conectado? Puedes anotarlo en tu reflexión. No necesitas sentir deseo para que esta observación tenga valor.'
     ]
   };
   const NARRATION={
-    formIntro:'Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy vamos a reconocer cómo aparece en ti. Escucha las dos opciones y pulsa Se parece a mí hoy en la que mejor describa tu momento. Después harás una práctica relacionada con tu elección, a tu propio ritmo.',
+    formIntro:'Antes de practicar, vamos a conocer dos formas del deseo. A veces las ganas aparecen antes de empezar. Otras veces el interés surge poco a poco, durante una experiencia agradable que tú eliges. Ambas pueden alternarse. Hoy vamos a reconocer cómo aparece en ti. Escucha ambas opciones. Si esto se parece a ti hoy, toca «Me dan ganas» para el deseo espontáneo, o «Me voy conectando» para el deseo responsivo. Pulsa directamente sobre la opción elegida. Después harás una práctica relacionada con tu elección, a tu propio ritmo.',
     spontIntro:'Vas a reconocer un estímulo que despierta tu interés y explorar una sensación agradable sin presión.',
     respIntro:'Vas a crear un momento agradable para explorar comodidad y conexión, sin exigir que aparezca deseo.',
     preparation:'Busca un lugar cómodo y privado. Silencia las notificaciones y ten a mano lo que quieras explorar.',
     presenceExit:'Cuando termines, puedes anotar qué te resultó útil y qué quieres repetir o adaptar.',
-    stimulusIntro:'Ampliar tus posibilidades de disfrute explorando un estímulo diferente. Prepara una canción, una imagen agradable o un momento para explorar el contacto con la piel, a tu ritmo.',
-    stimulusOptions:'Elige un estímulo que uses poco, diferente al de la primera práctica: escuchar una canción agradable, observar una imagen que te guste o explorar una textura corporal, como la del cabello de tu pareja si ambos lo desean, o la calidez de tu propia piel.',
-    stimulusExplore:'Explóralo a tu ritmo. Presta atención a un detalle: el ritmo de una canción, un color de la imagen o la textura y la calidez de la piel al contacto. Respira con naturalidad y observa si aparece comodidad, curiosidad o interés.',
+    stimulusIntro:'Ampliar tus posibilidades de disfrute explorando un estímulo diferente. Elige una canción, una imagen que te atraiga o un momento de contacto agradable. No necesitas buscar una respuesta específica.',
+    stimulusOptions:'Para esta segunda exploración, elige una sola opción diferente. Música: escucha un ritmo que te resulte atractivo. Imagen agradable: observa una mirada, un gesto o una escena que despierte tu curiosidad. Textura: siente la calidez de tu piel bajo la yema de los dedos o, si ambos lo desean, el roce de los labios durante un beso.',
+    stimulusExplore:'Continúa con la opción elegida sin prisa. Deja que el ritmo, una mirada o el contacto despierten una sensación agradable. Quizá notes un escalofrío placentero, esa pequeña corriente de sensibilidad que puede surgir con una caricia inesperada. Si no aparece, también está bien. Respira con naturalidad y observa tu comodidad.',
     stimulusExit:'Cuando termines de explorar, compara con la primera experiencia: ¿qué te resultó agradable, neutro o incómodo? Puedes anotarlo en Tu reflexión al terminar. Si no te gustó, elige otra opción en una próxima práctica.',
     close:'Cuando termines, puedes anotar qué te resultó útil y qué quieres repetir o adaptar.'
   };
-  const STIMULI={musica:'escuchar una canción agradable',imagen:'observar una imagen que te guste',textura:'explorar la textura y la calidez de tu propia piel o, si ambos lo desean, acariciar el cabello de tu pareja'};
+  const STIMULI={musica:'escuchar una canción agradable',imagen:'observar una imagen que te guste',textura:'recorrer suavemente la piel de tus brazos con las yemas de los dedos o, si ambos lo desean, disfrutar el contacto de una caricia compartida'};
   const OBS=['Más calma','Más conexión','Sin cambios'];
   const REPEAT=['Sí','Tal vez','No'];
   const clampScore=v=>v!==null&&v!==undefined&&v!==''&&Number.isInteger(Number(v))&&Number(v)>=0&&Number(v)<=10?Number(v):null;
@@ -239,7 +239,7 @@
       const which=val;if(which==='first'&&!m.form){status(m,'Antes de iniciar, elige cómo aparece tu deseo.');return;}
       if(which==='second'&&!m.stimulus){status(m,'Elige Música, Imagen agradable o Textura antes de iniciar.');return;}
       stopVoice(m);startTimer(m,which);
-      say(m,'running:'+which,which==='first'?FORM_STEPS[m.form][0]:NARRATION.stimulusExplore);return;
+      say(m,'running:'+which,which==='first'?'Comienza a tu ritmo. Presta atención a lo que elegiste explorar y permite que aparezca la sensación sin buscar una respuesta determinada. Si necesitas una pausa, puedes hacerla.':NARRATION.stimulusExplore);return;
     }
     if(action==='pause'){pauseTimer(m,val);render(m);return;}
     if(action==='resume'){startTimer(m,val);return;}

@@ -23,5 +23,29 @@
 .spm-ds1-bottom button{border:0;background:transparent;color:#27665a;text-decoration:underline;text-underline-offset:3px;font-size:11px;min-height:36px;padding:3px;cursor:pointer}
 .spm-ds1-bottom .spm-ds1-audio{text-decoration:none;font-weight:700}
 .spm-ds1-status{margin:0;min-height:28px;padding:5px 13px 16px;font-size:12px;color:#0c4b42;line-height:1.4;background:#f8f1e9}
+/* Guías de interacción SPM: brillo visible DESDE ANTES del primer toque; 
+ * se dibuja solo sobre los puntos interactivos de las láminas aprobadas. */
+.spm-ds1-hit:is([data-ds1-act="audio"],[data-ds1-act="form"],[data-ds1-act="step"],[data-ds1-act="stimulus"],[data-ds1-act="start"],[data-ds1-act="saveFirst"],[data-ds1-act="saveFinal"],[data-ds1-act="next"])::before{
+  content:"";position:absolute;inset:4%;pointer-events:none;border:2px solid rgba(224,179,91,.75);border-radius:26px;
+  box-shadow:0 0 10px 2px rgba(228,191,114,.32),inset 0 0 12px rgba(251,225,156,.24);
+  opacity:.85;animation:spm-ds1-invite 2.6s ease-in-out infinite;
+}
+.spm-ds1-hit:is([data-ds1-act="audio"],[data-ds1-act="start"],[data-ds1-act="saveFirst"],[data-ds1-act="saveFinal"],[data-ds1-act="next"])::before{inset:4% 2%;border-radius:48px}
+.spm-ds1-hit:is([data-ds1-act="form"],[data-ds1-act="stimulus"],[data-ds1-act="step"])::before{inset:5% 3%;border-radius:27px}
+.spm-ds1-hit:is([data-ds1-act="score"],[data-ds1-act="observe"],[data-ds1-act="repeat"])::before{
+  content:"";position:absolute;inset:9%;pointer-events:none;border:2px solid rgba(211,163,64,.64);
+  border-radius:50px;box-shadow:0 0 7px rgba(227,188,95,.29);opacity:.75;
+}
+.spm-ds1-hit[data-ds1-act="score"]::before{inset:9%;border-radius:50%;border-width:2px;box-shadow:0 0 5px rgba(227,188,95,.35)}
+.spm-ds1-hit[data-ds1-val="resp"]::before,
+.spm-ds1-hit:is([data-ds1-act="step"],[data-ds1-act="stimulus"])[data-ds1-val="1"]::before{animation-delay:.7s}
+.spm-ds1-hit:is([data-ds1-act="step"],[data-ds1-act="stimulus"])[data-ds1-val="2"]::before{animation-delay:1.4s}
+.spm-ds1-hit:focus-visible::before{opacity:1!important;border-color:#0a6555!important}
+.spm-ds1-clock-actions .spm-ds1-complete,
+.spm-ds1-nav button[data-ds1-act="forward"],
+.spm-ds1-bottom button[data-ds1-act="audio"]{box-shadow:0 0 0 2px rgba(210,160,69,.3);animation:spm-ds1-nav-invite 2.8s ease-in-out infinite}
+@keyframes spm-ds1-invite{0%,100%{opacity:.42;box-shadow:0 0 5px rgba(228,191,114,.2),inset 0 0 7px rgba(251,225,156,.12)}50%{opacity:.95;box-shadow:0 0 18px 3px rgba(228,191,114,.53),inset 0 0 11px rgba(251,225,156,.26)}}
+@keyframes spm-ds1-nav-invite{0%,100%{box-shadow:0 0 0 2px rgba(210,160,69,.25)}50%{box-shadow:0 0 0 3px rgba(210,160,69,.75),0 0 12px rgba(210,160,69,.38)}}
+@media(prefers-reduced-motion:reduce){.spm-ds1-hit::before{animation:none!important;opacity:.75!important}.spm-ds1-nav button,.spm-ds1-bottom button,.spm-ds1-clock-actions button{animation:none!important;box-shadow:0 0 0 2px rgba(210,160,69,.5)!important}}
 @media(prefers-reduced-motion:reduce){.spm-ds1-session *{scroll-behavior:auto!important;animation:none!important}}
 @media(max-width:330px){.spm-ds1-nav button{font-size:11px;padding:6px}.spm-ds1-clock-actions button{font-size:11px}}
