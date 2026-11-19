@@ -7,6 +7,7 @@ on:
       - 'premium-v2/live.html'
       - 'premium-v2/program-review-v1.js'
       - 'tests/desire-week1-touch.test.cjs'
+      - 'tests/desire-access-browser.cjs'
       - '.github/workflows/desire-week1-qa.yml'
   pull_request:
     paths:
@@ -37,3 +38,18 @@ jobs:
           NODE
       - name: Run Desire days 4-7 isolated integration tests
         run: node --test tests/desire-week1-touch.test.cjs
+
+  access-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install browser test dependencies
+        run: npm install --prefix /tmp/spm-desire-access playwright@1.62.1 --no-audit --no-fund
+      - name: Reproduce Desire opening in isolated reviewer
+        env:
+          NODE_PATH: /tmp/spm-desire-access/node_modules
+          CHROME_BIN: /usr/bin/google-chrome
+          SPM_TEST_BASE: https://spm-premium-staging.vercel.app/premium-v2/
+        run: node tests/desire-access-browser.cjs
