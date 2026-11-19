@@ -6,5 +6,7 @@ export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
   resolve: {alias: {'@': fileURLToPath(new URL('./src', import.meta.url))}},
-  build: {outDir: '../../premium-v2/pelvic-floor-lab', emptyOutDir: true, sourcemap: false},
+  // The active entry selects the approved weekly flow or the library bundle.
+  // Compile this source in isolation; publishing it requires a separate review.
+  build: {outDir: 'dist', emptyOutDir: true, sourcemap: false},
 });

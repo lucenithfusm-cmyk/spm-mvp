@@ -27,7 +27,7 @@ test('all 28 days have concrete launchers; secondary Desire is never the main da
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
    h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=9);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
-   if(route==='erection')assert.equal(items[0].kind,[1,3,6,9].includes(day)?'erection':'erection-support-day');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
+   if(route==='erection')assert.equal(items[0].kind,[1,3,6,9,12,15,18,21,24,27].includes(day)?'erection':'erection-support-day');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
  }
@@ -506,17 +506,17 @@ test('discomfort and danger flags suppress strength without taking away the Lab 
 });
 
 test('La agenda de Erección admite días transversales sin formulario viejo ni guardado ficticio',async()=>{
- const h=harness('erection',12);
+ const h=harness('erection',11);
  try{
   await wait();const api=h.w.SPM_DAILY_PRACTICE,doc=h.w.document;
   const current=api.assignments();assert.equal(current[0].kind,'erection-support-day');
-  assert.equal(current[0].erectionScheduledLesson,5);
+  assert.equal(current[0].erectionScheduledLesson,null);
   assert.equal(doc.querySelector('[data-activity="main"] [data-daily-open]'),null);
   assert.ok(doc.querySelector('[data-erection-transversal="true"]'));
   assert.ok(current.some(x=>x.kind==='wellness'||x.kind==='desire'||x.kind==='sensate'));
   await assert.rejects(api.saveActivity('main',{confirmed:true}));
   assert.equal(h.writes.length,0);
   assert.equal(api.nextActivities().some(x=>x.kind==='erection-support-day'),false);
-  assert.equal(h.c.day,12);
+  assert.equal(h.c.day,11);
  }finally{h.close()}
 });

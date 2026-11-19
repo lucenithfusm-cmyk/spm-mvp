@@ -1,0 +1,31 @@
+name: Current program validation
+on:
+  pull_request:
+    paths:
+      - 'tests/**'
+      - 'premium-v2/**'
+      - 'labs/**'
+      - 'supabase/functions/_shared/**'
+      - 'vercel.json'
+      - '.github/workflows/program-validation-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  current-program:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: npm ci --prefix labs/sensate --no-audit --no-fund
+      - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - name: Exercise every current unit and integration contract
+        env:
+          NODE_PATH: ./labs/desire/node_modules
+          SPM_QA_ALL_LAYERS: '1'
+        run: node --test --test-concurrency=2 tests/*.test.cjs tests/*.test.mjs

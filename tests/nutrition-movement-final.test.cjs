@@ -17,5 +17,11 @@ assert(H.includes('OASIS DE BIENESTAR')&&H.includes('tone-nutrition')&&H.include
 assert(S.includes('slNightVisual')&&S.includes('const ICON=')&&S.includes('const TONE='),'Sleep visual Oasis layer missing');
 assert(W.includes("const ORDER=['nutrition','movement','sleep']"),'wellness rotation must be Nutrition Movement Sleep');
 assert(W.includes('spm-wellness-tip-icon')&&W.includes('data-category'),'daily Wellness visual state missing');
-for(const s of ['spm-nutrition-premium-images-v1.js?v=20261002-wellness-nav4','sleep-library-v1.js?v=20261002-wellness-nav4','wellness-library-v1.js?v=20261002-wellness-nav4','wellness-daily-tip-v1.js?v=20261002-wellness-nav4'])assert(L.includes(s),'live cache wiring missing '+s);
+const scripts=[...L.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match=>new URL(match[1],'https://spm.test/premium-v2/live.html'));
+for(const file of ['spm-nutrition-premium-images-v1.js','sleep-library-v1.js','wellness-library-v1.js','wellness-daily-tip-v1.js']){
+ const active=scripts.filter(url=>url.pathname==='/premium-v2/'+file);
+ assert.equal(active.length,1,'one active script: '+file);
+ assert(active[0].searchParams.get('v'),'cache revision required: '+file);
+ assert(fs.existsSync(path.join(root,file)),'active resource exists: '+file);
+}
 console.log('Wellness Oasis static QA OK');

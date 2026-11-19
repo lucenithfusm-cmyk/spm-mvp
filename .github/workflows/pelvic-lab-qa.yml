@@ -3,7 +3,7 @@ on:
   push:
     branches: ["feat/pelvic-floor-lab-audio"]
   pull_request:
-    paths: ["labs/pelvic-floor/**", "premium-v2/**", "tests/pelvic-lab-*", ".github/workflows/pelvic-lab-qa.yml"]
+    paths: ["tests/active-lab-entry.test.cjs", "labs/pelvic-floor/**", "premium-v2/**", "tests/pelvic-lab-*", ".github/workflows/pelvic-lab-qa.yml"]
 jobs:
   pelvic-lab:
     runs-on: ubuntu-latest
@@ -13,8 +13,11 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
       - run: npm run typecheck --prefix labs/pelvic-floor && npm run build --prefix labs/pelvic-floor
       - run: git diff --exit-code -- premium-v2/pelvic-floor-lab
+      - name: Verify weekly and library entries in the approved release
+        run: node --test tests/active-lab-entry.test.cjs tests/pelvic-weekly-flow.test.cjs tests/pelvic-posture-photos.test.cjs
       - run: npm install --prefix /tmp/spm-pelvic-qa jsdom@26.1.0 --no-audit --no-fund
       - run: node tests/pelvic-lab-bridge.test.cjs && node tests/pelvic-lab-audio.test.cjs && node tests/movement-safety.test.cjs && node tests/returning-user-restore.test.cjs
         env:

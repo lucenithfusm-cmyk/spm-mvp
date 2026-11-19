@@ -29,34 +29,31 @@ function harness(){
  return{w,writes,dailyWrites,guide,load(file){w.eval(read(file));},close(){observers.forEach(observer=>observer.disconnect());w.close();}};
 }
 
-test('the DE modal shows descending grades and a bound image without selecting or saving a response',async()=>{
- const h=harness();try{
+// The active DE surface is the touch controller; Response Tracker remains independent.
+const {harness:touchHarness,assertOnlyMain}=require('./support/erection-touch-harness.cjs');
+test('the approved touch scale enlarges its independent guide without selecting or saving',async()=>{
+ const h=touchHarness();try{
   const assessments={baseline:{answers:[3,4,3,4,4],score:18,date:'2026-10-01T00:00:00.000Z'}};
-  h.w.localStorage.setItem('spm_de_assessments',JSON.stringify(assessments));h.load('erectile-function-route.js');
-  h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});const root=h.w.document.getElementById('deContent');
-  assert.equal(root.querySelectorAll('[data-guide-contract] img').length,1);assert.equal(h.guide.bindings,1);
-  assert.deepEqual([...root.querySelectorAll('.deFirmnessDegrees [data-ehs]')].map(button=>button.dataset.ehs),['4','3','2','1']);
-  assert.deepEqual([...root.querySelectorAll('.deFirmnessDegrees [data-ehs] span')].map(span=>span.textContent),levels.map(level=>level.label));
-  assert.deepEqual([...root.querySelectorAll('.deFirmnessOther [data-ehs]')].map(button=>button.dataset.ehs),['0','na']);
-  assert.equal(root.querySelectorAll('.deFirmnessViz,.deFirmnessDegrees svg').length,0);assert.equal(root.querySelectorAll('#deIief .deIiefQ').length,5);
-  root.querySelector('[data-guide-enlarge]').click();await tick();assert.equal(h.guide.opens,1);
-  assert.equal(root.querySelector('#deEhs [aria-pressed="true"]'),null);assert.equal(root.querySelector('#deEhs .on'),null);
-  assert.deepEqual(h.dailyWrites,[]);assert.equal(h.w.localStorage.getItem('spm_de_records'),null);
+  h.w.localStorage.setItem('spm_de_assessments',JSON.stringify(assessments));await h.open();h.touch('next');
+  assert.deepEqual([...h.host().querySelectorAll('[data-ed1-act="ehs"]')].map(b=>b.dataset.value),['0','1','2','3','4','na']);
+  assert.equal(h.host().querySelector('[data-ed1-act="ehs"][aria-pressed="true"]'),null);
+  h.touch('open-ehs');const dialog=h.host().querySelector('[data-ed1-ehs-dialog]');assert.equal(dialog.open,true);
+  assert.equal(dialog.querySelector('img').getAttribute('src'),'/premium-v2/assets/erection-day1/spm-de-day1-ehs4-guide.jpg');
+  h.touch('close-ehs');assert.equal(dialog.open,false);assert.equal(h.host().querySelector('[data-ed1-act="ehs"][aria-pressed="true"]'),null);
+  assert.deepEqual(h.writes,[]);assert.equal(h.w.localStorage.getItem('spm_de_records'),null);
   assert.deepEqual(JSON.parse(h.w.localStorage.getItem('spm_de_assessments')),assessments);
- }finally{h.close();}
+ }finally{h.close()}
 });
 
-test('DE selection retains each numeric grade, evaluable zero and distinct not-evaluable null',async()=>{
+test('touch selection saves every numeric grade including zero separately from not evaluable and restores it',async()=>{
  for(const [choice,value,evaluable] of [['4',4,true],['3',3,true],['2',2,true],['1',1,true],['0',0,true],['na',null,false]]){
-  const h=harness();try{
-   h.load('erectile-function-route.js');h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});
-   const button=h.w.document.querySelector('#deEhs [data-ehs="'+choice+'"]');button.click();
-   h.w.document.querySelector('[data-guide-enlarge]').click();assert.equal(button.getAttribute('aria-pressed'),'true');assert.equal(h.dailyWrites.length,0);
-   h.w.document.getElementById('deSave').click();await tick();assert.equal(h.dailyWrites.length,1);
-   const [id,record,scope,day]=h.dailyWrites[0];assert.equal(id,'main');assert.equal(scope,'qa:plan');assert.equal(day,1);assert.equal(record.ehs,value);assert.equal(record.ehsEvaluable,evaluable);
-   const stored=h.w.SPM_ERECTILE_FUNCTION.records();assert.equal(stored.length,1);assert.equal(stored[0].ehs,value);assert.equal(stored[0].ehsEvaluable,evaluable);
-   h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});assert.equal(h.w.document.querySelector('#deEhs [aria-pressed="true"]').dataset.ehs,choice);assert.equal(h.dailyWrites.length,1);
-  }finally{h.close();}
+  const h=touchHarness();try{
+   await h.open();h.touch('next');h.touch('ehs',choice);h.touch('open-ehs');h.touch('close-ehs');
+   assert.equal(h.el('ehs',choice).getAttribute('aria-pressed'),'true');assert.equal(h.writes.length,0);
+   h.touch('next');h.touch('next');h.touch('next');h.touch('outcome','omitted');h.touch('save');await tick();assertOnlyMain(h);
+   const r=h.writes[0].metadata;assert.equal(r.ehs,value);assert.equal(r.ehsEvaluable,evaluable);
+   h.w.document.querySelector('[data-ed1-success-close]').click();await h.open();h.touch('next');assert.equal(h.el('ehs',choice).getAttribute('aria-pressed'),'true');assert.equal(h.writes.length,1);
+  }finally{h.close()}
  }
 });
 

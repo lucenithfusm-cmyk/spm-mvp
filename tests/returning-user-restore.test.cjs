@@ -23,7 +23,10 @@ async function harness(primary='erection',options={}){
  w.HTMLMediaElement.prototype.pause=function(){};
  w.HTMLMediaElement.prototype.play=async function(){};
  const NativeObserver=w.MutationObserver,observers=[];
- let source='',storm=null;
+ let source='',storm=null,currentScript=null;
+ // eval does not set currentScript as a classic browser script does. Keep the
+ // real src (including its query) available only during synchronous execution.
+ Object.defineProperty(w.document,'currentScript',{configurable:true,get:()=>currentScript});
  w.MutationObserver=class extends NativeObserver{
   constructor(callback){
    const owner=source;
@@ -65,7 +68,10 @@ async function harness(primary='erection',options={}){
   if(/^https?:/.test(match[1]))continue;
   if(!process.env.SPM_QA_ALL_LAYERS&&!layers.includes(match[1]))continue;
   source=match[1];
-  try{w.eval(read(source)+'\n//# sourceURL='+source)}catch(error){w.close();throw error;}
+  currentScript=w.document.createElement('script');
+  currentScript.src=/src="([^"]+)"/.exec(match[0])[1];
+  try{w.eval(read(source)+'\n//# sourceURL='+source)}catch(error){observers.forEach(x=>x.disconnect());w.close();throw error;}
+  finally{currentScript=null;}
  }
  await delay(1800);
  return {w,requests,consoleErrors,observerRuns,storm,plan,close(){observers.forEach(x=>x.disconnect());w.close()}};

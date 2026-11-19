@@ -226,11 +226,11 @@ test('day 28 closing audio stays separate from navigation and opens the final re
   }finally{h.close();}
 });
 
-test('Erección distribuye cuatro sesiones aprobadas, no abre el formulario antiguo y reserva el día 12',async()=>{
+test('Erección abre las diez sesiones aprobadas y conserva días transversales y evaluaciones',async()=>{
  const h=await harness('?programa=erection&dia=1');
  try{
   const {w}=h,api=w.SPM_DAILY_PRACTICE;
-  for(const [day,lesson,count] of [[1,1,6],[3,2,4],[6,3,3],[9,4,3]]){
+  for(const [day,lesson,count] of [[1,1,6],[3,2,4],[6,3,3],[9,4,3],[12,5,3],[15,6,1],[18,7,3],[21,8,3],[24,9,3],[27,10,2]]){
    await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
    const c=w.SPM_RESOURCE_CONTEXT(),main=api.assignments()[0];
    assert.equal(main.kind,'erection');assert.equal(main.erectionLesson,lesson);
@@ -242,14 +242,13 @@ test('Erección distribuye cuatro sesiones aprobadas, no abre el formulario anti
    assert.ok(w.document.querySelector('.spm-ed'+lesson+'-session.spm-er-fullscreen[data-screen="1"]'),'la actividad '+lesson+' se abre desde Hoy el día '+day);
    assert.equal(w.document.querySelector('[data-erection-form]'),null,'sin formularios de la rama antigua');
   }
-  for(const day of [2,4,5,7,8,10,11,12,14,15,18,21,24,27,28]){
+  for(const day of [2,4,5,7,8,10,11,13,14,16,17,19,20,22,23,25,26,28]){
    await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
    const main=api.assignments()[0],card=w.document.querySelector('[data-activity="main"]');
    assert.equal(main.kind,'erection-support-day');
    assert.equal(card.dataset.erectionTransversal,'true');
    assert.equal(card.querySelector('[data-daily-open]'),null);
    assert.equal(w.document.querySelector('[data-erection-form]'),null);
-   if(day===12)assert.equal(main.erectionScheduledLesson,5);
    if([14,28].includes(day))assert.ok(api.assignments().some(a=>a.kind==='program-checkpoint'));
   }
   assert.deepEqual(h.errors,[]);
@@ -456,6 +455,97 @@ test('El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el 
   assert.equal(doc.querySelector('.spm-ed1-success-overlay'),null);
   assert.match(doc.querySelector('#spmDailySession').textContent,/Registrada|registrada|Volver a abrir/);
   assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close()}
+});
+
+// Exercise the actual touch controllers and bridges, not a synthetic legacy form.
+for(const [day,lesson] of [[1,1],[3,2],[6,3],[9,4]]){
+ test(`Sesión ${lesson}, día ${day}: reintento conserva respuestas, un solo guardado y reapertura sin completar el día`,async()=>{
+  const h=await harness('?programa=erection&dia='+day);
+  try{
+   const {w}=h,doc=w.document,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+   const attr=lesson<=2?'act':'action';
+   const selector=(action,value)=>`[data-ed${lesson}-${attr}="${action}"]${value===undefined?'':`[data-value="${value}"]`}`;
+   const touch=(action,value)=>{const el=doc.querySelector(selector(action,value));assert.ok(el,selector(action,value));assert.equal(el.disabled,false);el.click();};
+   await assert.rejects(w.SPM_DAILY_PRACTICE.saveActivity('main',{confirmed:true}),/Completa las acciones/);
+   await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+   if(lesson===1){
+    touch('next');touch('ehs','na');touch('next');touch('next');touch('next');touch('outcome','omitted');
+   }else if(lesson===2){
+    for(const [key,value] of [['spontaneous','not_evaluable'],['solo','variable'],['partner','difficult']]){
+     const input=doc.querySelector(`[data-ed2-context="${key}"]`);assert.ok(input);
+     input.value=value;input.dispatchEvent(new w.Event('change',{bubbles:true}));
+    }
+    touch('next');touch('condition','good_rest');touch('next');touch('aspect','maintain');touch('next');touch('plan','privacy');
+   }else if(lesson===3){
+    touch('area','none');touch('next');touch('next');touch('anchor','hands');
+   }else{
+    touch('sense','temperature');touch('next');touch('next');touch('result','no_checking');
+   }
+   const save=w.SPM_DAILY_RECORDS.save;let attempts=0;
+   w.SPM_DAILY_RECORDS.save=async(...args)=>{if(++attempts===1)throw Error('simulated-offline');return save(...args);};
+   touch('save');await wait();
+   assert.match(doc.querySelector(`[data-ed${lesson}-status]`).textContent,/No se pudo guardar/);
+   assert.ok(doc.querySelector(`[data-ed${lesson}-session]`),'failed save keeps the touch session open');
+   assert.equal((await w.SPM_DAILY_RECORDS.read(scope,day)).main,undefined);
+   assert.equal(doc.querySelector('.spm-ed1-success-overlay'),null,'no success before persistence');
+   const button=doc.querySelector(selector('save'));button.click();button.click();await wait();await wait();
+   assert.equal(attempts,2,'one failed attempt and exactly one retry, even after a double tap');
+   const rows=await w.SPM_DAILY_RECORDS.read(scope,day),record=rows.main;
+   assert.deepEqual(Object.keys(rows),['main'],'no fabricated records in other activities');
+   assert.equal(record.completed,true);assert.equal(record.day,day);
+   assert.equal(record.anxiety,null);assert.equal(record.confidence,null);
+   if(lesson===1){
+    assert.equal(record.ehs,null);assert.equal(record.ehsEvaluable,false);
+    assert.equal(record.attentionPracticeCompleted,false);assert.equal(record.sensateModuleCompleted,null);
+    const overlay=doc.querySelector('.spm-ed1-success-overlay');assert.ok(overlay);
+    overlay.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await wait();
+    assert.equal(doc.querySelector('.spm-ed1-success-overlay'),null);
+   }else{
+    assert.equal(record.erectionLesson,lesson);
+    if(lesson===2){assert.equal(record.contexts.spontaneous,'not_evaluable');assert.equal(record.contexts.solo,'variable');assert.equal(record.contexts.partner,'difficult');assert.equal(record.contextPlan,'privacy');assert.equal(record.favourableConditions.join(','),'good_rest');}
+    if(lesson===3){assert.equal(record.tensionAreas.join(','),'none');assert.equal(record.sensoryAnchor,'hands');assert.equal(record.seconds,null);}
+    if(lesson===4){assert.equal(record.attentionSense,'temperature');assert.equal(record.practiceExperience,'no_checking');assert.equal(record.seconds,null);}
+   }
+   assert.equal(doc.querySelector(`[data-ed${lesson}-session]`),null);
+   assert.ok(doc.querySelector('[data-activity="main"] .spm-daily-saved'));
+   assert.equal(w.SPM_RESOURCE_CONTEXT().day,day);assert.equal(w.SPM_RESOURCE_CONTEXT().completed.length,0);
+   const before=JSON.stringify(rows);
+   await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+   if(lesson===1){touch('next');assert.equal(doc.querySelector(selector('ehs','na')).getAttribute('aria-pressed'),'true');}
+   if(lesson===2)assert.equal(doc.querySelector('[data-ed2-context="spontaneous"]').value,'not_evaluable');
+   if(lesson===3)assert.equal(doc.querySelector(selector('area','none')).getAttribute('aria-pressed'),'true');
+   if(lesson===4)assert.equal(doc.querySelector(selector('sense','temperature')).getAttribute('aria-pressed'),'true');
+   touch('exit');await wait();
+   assert.equal(attempts,2,'reopen and exit must not resave');
+   assert.equal(JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,day)),before);
+   assert.deepEqual(h.errors,[]);
+  }finally{h.close()}
+ });
+}
+
+test('Missing approved touch controllers block entry without resurrecting a legacy form or altering records',async()=>{
+ const h=await harness('?programa=erection&dia=1');
+ try{
+  const {w}=h,doc=w.document;
+  for(const [day,lesson] of [[1,1],[3,2],[6,3],[9,4]]){
+   await w.SPM_PROGRAM_REVIEW.select('erection',day);await wait();
+   const c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
+   const before=JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,day));
+   for(const name of [`SPM_ED_DAY${lesson}_TOUCH`,`SPM_ERECTION_DAY${lesson}_BRIDGE`]){
+    const current=w[name];delete w[name];
+    try{
+     await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+     assert.equal(doc.querySelector(`[data-ed${lesson}-session]`),null);
+     assert.equal(doc.querySelector('[data-erection-form]'),null);
+     assert.match(doc.querySelector('#spmDailyStatus').textContent,/no se pudo cargar/);
+     assert.equal(JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,day)),before);
+    }finally{w[name]=current;}
+   }
+   await w.SPM_DAILY_PRACTICE.launch('main');await wait();
+   assert.ok(doc.querySelector(`[data-ed${lesson}-session]`),'restoring the current controller allows entry');
+  }
   assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });

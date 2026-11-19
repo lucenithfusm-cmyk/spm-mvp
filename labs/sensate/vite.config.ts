@@ -6,5 +6,7 @@ export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
   resolve: {alias: {'@': fileURLToPath(new URL('./src', import.meta.url))}},
-  build: {outDir: '../../premium-v2/sensate-lab', emptyOutDir: true, sourcemap: false},
+  // The active touch-screen entry lives in premium-v2/sensate-lab. This
+  // retained React source must never replace that approved entry during QA.
+  build: {outDir: 'dist', emptyOutDir: true, sourcemap: false},
 });
