@@ -1,0 +1,39 @@
+name: SPM Deseo tactile days 4-7 QA
+on:
+  push:
+    paths:
+      - 'premium-v2/desire-week1-v1/**'
+      - 'premium-v2/desire-week1-bridge-v1.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'tests/desire-week1-touch.test.cjs'
+      - '.github/workflows/desire-week1-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/desire-week1-v1/**'
+      - 'premium-v2/desire-week1-bridge-v1.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'tests/desire-week1-touch.test.cjs'
+      - '.github/workflows/desire-week1-qa.yml'
+permissions:
+  contents: read
+jobs:
+  clinical-touch-week1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check isolated Desire bridge syntax
+        run: node --check premium-v2/desire-week1-bridge-v1.js
+      - name: Validate inlined app scripts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+          const s = fs.readFileSync('premium-v2/desire-week1-v1/index.html','utf8');
+          for (const m of s.matchAll(/<script(?:\s+[^>]*)?>([\s\S]*?)<\/script>/g)) new vm.Script(m[1]);
+          NODE
+      - name: Run Desire days 4-7 isolated integration tests
+        run: node --test tests/desire-week1-touch.test.cjs
