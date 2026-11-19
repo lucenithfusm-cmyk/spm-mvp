@@ -1,4 +1,4 @@
-name: SPM Deseo Semana 2 · QA piloto táctil
+name: SPM Deseo Semana 2 · QA táctil
 on:
   pull_request:
     paths:
@@ -9,6 +9,7 @@ on:
       - '.github/workflows/desire-week2-touch-qa.yml'
   push:
     branches:
+      - 'main'
       - 'spm-deseo-semana2-piloto-20261119'
     paths:
       - 'premium-v2/desire-week2-v1/**'

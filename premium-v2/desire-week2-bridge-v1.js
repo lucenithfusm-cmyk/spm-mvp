@@ -1,5 +1,5 @@
 /* SPM Digital Wellness · Deseo 8–14: puente aislado para pantallas táctiles.
- * No publica pantallas sin validación visual previa; instalar solo tras aprobar.
+ * Pantallas aprobadas el 19 de noviembre de 2026; audio de portada revisado.
  * No altera evaluaciones 14/28, registros de otros dominios, seguridad o pausas.
  */
 (()=>{'use strict';
@@ -29,7 +29,7 @@ function clean(day,src){const v=object(src),data={
  page:Math.max(1,Math.min(3,Number(v.page)||1))};return data;
 }
 let current=null;
-function allowed(m){if(!m||current!==m)return false;const c=ctx(),a=main(c);if(!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.day||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
+function allowed(m){if(!m||current!==m||m.iframe&&(!m.iframe.isConnected||!m.wrap?.isConnected))return false;const c=ctx(),a=main(c);if(!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.day||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
  if(a?.kind!=='desire'||window.SPM_DAILY_PRACTICE?.restricted?.(c,a))return false;
  const active=window.SPM_DAILY_PRACTICE?.active?.();return !active||(active.id==='main'&&active.scope===m.scope&&Number(active.day)===m.day);
 }
@@ -82,16 +82,21 @@ async function onMessage(m,event){if(!allowed(m)||event.origin!==location.origin
  else if(v.type==='SPM_WEEK2_CLOSE'){if(setLatest(m,v.record))void closeActive(m)}
  else if(v.type==='SPM_WEEK2_CHECKPOINT'){if(setLatest(m,v.record))void openOfficialCheckpoint(m)}
 }
-async function open(opts={}){const c=ctx();if(!eligible(c,opts))return legacyOpen(opts);const scope=scopeOf(c),day=Number(c.day),host=document.getElementById('spmDailyWorkspace');if(!scope||!host?.isConnected)return false;
+async function open(opts={}){
+ // Un cambio externo de día/cuenta o un workspace desmontado invalida esta sesión.
+ // Se elimina sin guardar sus respuestas en el contexto nuevo.
+ if(current&&!allowed(current))dispose(current);
+ const c=ctx();if(!eligible(c,opts))return legacyOpen(opts);const scope=scopeOf(c),day=Number(c.day);if(!scope)return false;
  if(current&&!await closeActive(current))return false;
  if(document.querySelector('.spm-desire-modal[open]')&&await legacyClose()===false)return false;
+ const host=document.getElementById('spmDailyWorkspace');if(!host?.isConnected)return false;
  const m={scope,day,host,sid:window.crypto?.randomUUID?.()||'spmweek2-'+Math.random().toString(36).slice(2),wrap:null,iframe:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,checkpointVerified:false,timer:0,onMessage:null};current=m;
  if(!allowed(m)){current=null;return false}
  const wrap=document.createElement('section');wrap.className='spm-ds-week2-root';wrap.setAttribute('aria-label','Deseo, día '+day+' interactivo');
- const iframe=document.createElement('iframe');iframe.title='Deseo · Día '+day;iframe.allow='autoplay';iframe.src='/premium-v2/desire-week2-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261119-w2-review1';
+ const iframe=document.createElement('iframe');iframe.title='Deseo · Día '+day;iframe.allow='autoplay';iframe.src='/premium-v2/desire-week2-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261119-w2-audio2';
  m.wrap=wrap;m.iframe=iframe;m.onMessage=e=>void onMessage(m,e);window.addEventListener('message',m.onMessage);wrap.append(iframe);host.replaceChildren(wrap);return true;
 }
-async function close(){return current?closeActive(current):legacyClose()}
+async function close(){if(current&&!allowed(current))dispose(current);return current?closeActive(current):legacyClose()}
 function stop(){if(current)dispose(current)}
 window.SPM_DESIRE_LAB={...lab,open,close};
 window.SPM_DESIRE_WEEK2_BRIDGE={open,close,stop,eligible,allowed,clean};

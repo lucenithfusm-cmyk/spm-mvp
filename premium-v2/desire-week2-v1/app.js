@@ -31,6 +31,44 @@ const SPEECH={
 13:['Hoy recordarás tres momentos reales de curiosidad, interés o conexión, incluso si fueron pequeños. Reconocer esas evidencias ayuda a elegir qué detalles repetir.','Recuerda qué estaba ocurriendo y qué te ayudó en cada uno de tres momentos. Puede ser una conversación, una mirada, un contacto agradable o una situación.','Elige una sola señal que te gustaría recuperar. Valora tu confianza de cero a diez, si deseas hacerlo. No es una prueba de desempeño.'],
 14:['La revisión del día catorce consiste en observar lo vivido y decidir qué mantener y qué ajustar. La evaluación comparativa oficial pertenece a tu programa principal y no se reemplaza por esta lámina.','Recuerda lo que te ayudó y aquello que prefieres adaptar. Tus respuestas sirven para decidir en qué quieres concentrarte la próxima semana.','Guarda tu reflexión y luego realiza el seguimiento del día catorce cuando corresponda. La imagen de semana completada se mostrará como cierre solo cuando la evaluación oficial esté registrada.']};
 const CHANNEL_SCRIPT={visual:'Puedes observar una imagen, mirada o gesto que te resulte atractivo o curioso, sin buscar un resultado.',tactile:'Percibe una textura, temperatura o contacto en manos o brazos que te resulte agradable. Detente si hay molestia.',auditory:'Escucha una voz, música o palabra agradable; presta atención al tono y al ritmo.',fantasy:'Recuerda o imagina una escena elegida por ti, sin exigirte sentir algo.',foreplay:'Si tienes interés y comodidad, observa cómo te resulta un ritmo más lento o una pausa; con otra persona siempre debe haber acuerdo.',context:'Prepara luz, privacidad, silencio o un ambiente que te resulte acogedor. Observa tu experiencia sin meta.'};
+// La guía general vive solo en su botón; cada opción aporta un mensaje propio.
+const COVER_CHOICE_SPEECH={
+ 8:{
+  calm:'Baja el ritmo y date unos minutos sin nada que resolver.',
+  near:'La cercanía puede ser una conversación o una compañía que te resulte cómoda.',
+  privacy:'Elige un espacio donde te sientas a gusto y puedas evitar interrupciones.',
+  time:'Reserva unos minutos para ti y decide cómo quieres usarlos.'
+ },
+ 9:{
+  privacy:'Busca un lugar donde no tengas que estar pendiente de quién llega.',
+  time:'Deja margen para detenerte, cambiar de idea o continuar cuando te apetezca.',
+  rest:'Puedes descansar primero y retomar la exploración cuando tengas ganas.',
+  quiet:'Silencia las notificaciones y aparta lo que hoy te distraiga.'
+ },
+ 10:{
+  less:'Puedes mantener el ritmo que te está resultando cómodo.',
+  equal:'Sentirte igual también es válido; observa sin intentar cambiarlo.',
+  more:'Puedes hacer una pausa o elegir una propuesta más sencilla.'
+ },
+ 11:{
+  contact:'Explora un contacto suave en la mano o el brazo, solo si te resulta agradable.',
+  talk:'Comparte una palabra, un recuerdo o algo que te gustaría expresar.',
+  ambience:'Ajusta la luz, la temperatura o el sonido a tu gusto.',
+  imagine:'Trae a tu imaginación una escena que tú elijas, sin buscar un resultado.',
+  near:'Una mirada o estar cerca pueden ser suficientes, si ambos se sienten cómodos.'
+ },
+ 12:{
+  calm:'Piensa en un momento en el que puedas bajar el ritmo.',
+  safe:'Elige un entorno donde puedas expresar lo que quieres y poner tus límites.',
+  curiosity:'Deja espacio para descubrir qué te llama la atención.',
+  near:'Puede ser un momento contigo mismo o compartido de común acuerdo.'
+ },
+ 13:{
+  privacy:'Busca un espacio propio para recordar lo vivido con tranquilidad.',
+  quiet:'Aparta por un momento las pantallas y otras interrupciones.',
+  time:'Deja que aparezcan los recuerdos a su ritmo; no necesitas encontrarlos enseguida.'
+ }
+};
 const blank=()=>({choice:[],note:'',stimulus:'',channel:'',idea:'',pleasant:'',moment:'',place:'',conditions:'',memory1:'',memory2:'',memory3:'',next:'',good:'',adjust:'',repeat:'',metricBefore:null,metricAfter:null,utility:null,confidence:null,expected:null,actual:null,timer:{elapsed:0,running:false,anchor:0,started:false},completed:false,checkpoint:false,page:1});
 const fresh=()=>Object.fromEntries(DAYS.map(d=>[d,blank()]));
 let data=fresh(),chosenDay=DAYS.includes(Number(url.get('dia')))?Number(url.get('dia')):0,ready=!CENTRAL,closing=false,pending=false,timeoutId=0,voices=null;
@@ -130,7 +168,13 @@ app.addEventListener('click',event=>{const b=event.target?.closest?.('button[dat
  if(act==='back'){pauseAll();if(s.page===1)setDay(0);else{s.page--;render();save()}return}
  if(act==='next'){next();return}
  if(act==='audio'){speak(SPEECH[day][Math.min(2,s.page-1)]);return}
- if(act==='choice'){choose(act,'choice',value,true);const opt=COVERS[day].options.find(x=>x[0]===value);if(opt)speak(opt[1]+'. '+(SPEECH[day][0].split('.')[0]||''));return}
+ if(act==='choice'){
+  choose(act,'choice',value,true);
+  if(!s.choice.includes(value)){stopVoice();return}
+  const opt=COVERS[day].options.find(x=>x[0]===value);
+  if(opt)speak(COVER_CHOICE_SPEECH[day]?.[value]||opt[1]);
+  return;
+ }
  if(act==='select'){choose(act,field,value,b.dataset.multi==='yes');return}
  if(act==='channel-audio'){speak(CHANNEL_SCRIPT[s.channel]||'Selecciona un canal para escuchar la indicación.');return}
  if(act==='number'){s[field]=value==='NA'?null:Number(value);save();render(false);return}

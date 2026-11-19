@@ -8,13 +8,25 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/desire-w
   :await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ // Capture the device-voice requests while exercising the real touch controls.
+ // Keep speech active until cancel() so quick switches can expose overlapping audio.
+ await page.addInitScript(()=>{
+  const speech=window.__spmSpeech={spoken:[],events:[],active:null,cancels:0};
+  Object.defineProperty(window,'SpeechSynthesisUtterance',{configurable:true,value:class{constructor(text){this.text=text}}});
+  Object.defineProperty(window,'speechSynthesis',{configurable:true,value:{
+   getVoices:()=>[],
+   cancel(){speech.cancels++;speech.events.push({type:'cancel',active:speech.active});speech.active=null},
+   speak(utterance){speech.events.push({type:'speak',activeBefore:speech.active,text:utterance.text});speech.spoken.push(utterance.text);speech.active=utterance.text}
+  }});
+ });
+ const speechState=()=>page.evaluate(()=>window.__spmSpeech);
  const config={
  8:{field:'stimulus',value:'music'},
  9:{field:'channel',value:'tactile'},
  10:{field:'idea',value:'escuchar'},
  11:{field:'pleasant',value:'rest'},
  };
- let screens=0;
+ let screens=0,audioOptions=0;
  try{
   await page.goto(base+'index.html',{waitUntil:'domcontentloaded',timeout:25000});
   await page.locator('.daycard').first().waitFor();
@@ -28,11 +40,49 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/desire-w
     await page.locator('.image-screen img').waitFor();
     const loaded=await page.locator('.image-screen img').evaluate(img=>img.complete&&img.naturalWidth>0);
     assert.equal(loaded,true,'original approved image for day '+day+' loads');
-    const firstCard=page.locator('.image-screen .hit.select').first();
-    assert(await firstCard.count()>0);
-    await firstCard.click();
-    assert.equal(await firstCard.getAttribute('aria-pressed'),'true');
-    assert.equal(await page.locator('.hit.audio').count(),1);
+    const guideButton=page.locator('.image-screen .hit.audio');
+    assert.equal(await guideButton.count(),1);
+    const beforeGuide=await speechState();
+    await guideButton.click();
+    const afterGuide=await speechState(),guide=afterGuide.spoken.at(-1);
+    assert.equal(afterGuide.spoken.length,beforeGuide.spoken.length+1,'guide responds to its own button');
+    assert(guide.length>40,'the full initial guide remains available');
+    const initialSentence=guide.split(/[.!?]/)[0].trim();
+    const optionIds=await page.locator('.image-screen .hit.select').evaluateAll(nodes=>nodes.map(node=>node.dataset.value));
+    assert(optionIds.length>0);
+    const optionLines=[];
+    // A curious user tries every option while the previous narration is active.
+    for(const id of optionIds){
+     const card=page.locator('.image-screen .hit.select[data-value="'+id+'"]');
+     const before=await speechState();
+     await card.click();
+     assert.equal(await card.getAttribute('aria-pressed'),'true');
+     const after=await speechState(),line=after.spoken.at(-1);
+     assert.equal(after.spoken.length,before.spoken.length+1,'one audio message per selection');
+     assert(!line.includes(initialSentence),'day '+day+' option '+id+' must not repeat the initial instruction');
+     assert(line.trim().split(/\s+/).length<=30,'option narration stays brief');
+     assert(!optionLines.includes(line),'each option on day '+day+' contributes its own message');
+     assert(after.cancels>before.cancels,'changing options stops the previous narration');
+     assert.equal(after.events.at(-1).activeBefore,null,'new narration starts after prior speech is canceled');
+     optionLines.push(line);audioOptions++;
+    }
+    for(const id of optionIds){
+     const card=page.locator('.image-screen .hit.select[data-value="'+id+'"]');
+     const before=await speechState();
+     await card.click();
+     const after=await speechState();
+     assert.equal(await card.getAttribute('aria-pressed'),'false');
+     assert.equal(after.spoken.length,before.spoken.length,'deselecting an option is silent');
+     assert(after.cancels>before.cancels,'deselecting stops narration');
+     assert.equal(after.active,null);
+    }
+    for(let repeat=0;repeat<2;repeat++){
+     const before=await speechState();
+     await guideButton.click();
+     const after=await speechState();
+     assert.equal(after.spoken.length,before.spoken.length+1,'initial guide remains manually repeatable');
+     assert.equal(after.spoken.at(-1),guide,'manual replay preserves the complete initial guide');
+    }
     await page.locator('.nav [data-act="next"]').click();
     await page.locator('.custom-head').waitFor();
     if(choice)await page.locator('[data-act="select"][data-field="'+choice.field+'"][data-value="'+choice.value+'"]').click();
@@ -61,6 +111,6 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/desire-w
    screens++;
   }
   assert.deepEqual(errors,[],'no uncaught JS browser errors');
-  console.log(JSON.stringify({result:'PASS',browser:process.env.SPM_BROWSER||'chrome',mobileDays:screens,images:6,checkpoint:'independent',browserErrors:errors.length}));
+  console.log(JSON.stringify({result:'PASS',browser:process.env.SPM_BROWSER||'chrome',mobileDays:screens,images:6,audioOptions,checkpoint:'independent',browserErrors:errors.length}));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
