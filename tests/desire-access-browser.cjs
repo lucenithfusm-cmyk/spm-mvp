@@ -63,6 +63,28 @@ const base=process.env.SPM_TEST_BASE||'https://spm-premium-staging.vercel.app/pr
       }catch(e){failures++;console.log(JSON.stringify({switchFrom:'erection',day,FAIL:String(e.message).slice(0,700),errors}));}
       await p.close();
     }
+
+    // A real user may open a practice in a different module before switching to Deseo.
+    for(const previous of ['erection','wellbeing','ejaculation']){
+      const p=await browser.newPage({viewport:{width:390,height:844}});
+      const errors=[];p.on('pageerror',e=>errors.push(e.message));
+      try{
+        await p.goto(base+'revision-programas-28-dias.html?programa='+previous+'&dia=4',{waitUntil:'domcontentloaded'});
+        await p.locator('#reviewProgram:not([disabled])').waitFor({timeout:50000});
+        const b=p.locator('[data-daily-open="main"]');
+        if(await b.count())await b.click();await p.waitForTimeout(400);
+        const before=await p.evaluate(()=>({modal:document.querySelectorAll('dialog[open]').length,session:document.querySelector('#spmDailySession')?.innerHTML?.slice(0,90)}));
+        await p.locator('#reviewProgram').selectOption('desire');
+        await p.waitForTimeout(700);
+        const selection=await p.evaluate(()=>({context:SPM_RESOURCE_CONTEXT(),program:document.querySelector('#reviewProgram')?.value,status:document.querySelector('#reviewStatus')?.textContent}));
+        await p.locator('[data-daily-open="main"]').click();
+        await p.waitForTimeout(700);
+        const ok=selection.context?.primary==='desire'&&await p.locator('.spm-ds-week1-root iframe').count()===1;
+        if(!ok)failures++;
+        console.log(JSON.stringify({switchAfterPractice:previous,ok,before,selection,errors:errors.slice(0,3)}));
+      }catch(e){failures++;console.log(JSON.stringify({switchAfterPractice:previous,FAIL:String(e.message).slice(0,800),errors}));}
+      await p.close();
+    }
     console.log('Access smoke failed days: '+failures);
   } finally {await browser.close();}
   if(failures)process.exitCode=1;
