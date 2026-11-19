@@ -20,9 +20,10 @@ const base='http://127.0.0.1:4173/premium-v2/';
       window.dispatchEvent(new Event('spm:resourcecontext'));
     });
     const trigger=p.locator('.dayCard [data-desire-daily]');
-    await trigger.waitFor({timeout:5000});
-    // Invoke the calendar button instead of the Today's main button.
-    await trigger.click();
+    await trigger.waitFor({state:'attached',timeout:5000});
+    // The synthetic .dayCard is not within a visually expanded calendar panel
+    // in the standalone reviewer. Trigger the real button event programmatically.
+    await trigger.evaluate(el=>el.click());
     await p.waitForTimeout(900);
     const check=await p.evaluate(()=>({
       day:window.SPM_RESOURCE_CONTEXT().day,
