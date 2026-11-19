@@ -1,7 +1,7 @@
-const { chromium } = require('playwright');
+const { chromium, webkit } = require('playwright');
 const base=process.env.SPM_TEST_BASE||'https://spm-premium-staging.vercel.app/premium-v2/';
 (async()=>{
-  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});
+  const browser=process.env.SPM_BROWSER==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});
   let failures=0;
   try {
     for(const day of [1,2,3,4,5,6,7,8]){
@@ -39,6 +39,28 @@ const base=process.env.SPM_TEST_BASE||'https://spm-premium-staging.vercel.app/pr
         if(!ok)failures++;
         console.log(JSON.stringify({day,status:res.status(),ok,initial,after,errors:errors.slice(0,8),failed:responses.slice(0,8)}));
       }catch(e){failures++;console.log(JSON.stringify({day,FAIL:String(e.message).slice(0,850),errors:errors.slice(0,8),failed:responses.slice(0,8)}));}
+      await p.close();
+    }
+
+    // Regression for the actual review workflow: select another program, then Deseo,
+    // and open a session on the same page (not just a fresh link).
+    for(const day of [1,4,6,7,8]){
+      const p=await browser.newPage({viewport:{width:390,height:844}});
+      const errors=[];p.on('pageerror',e=>errors.push(e.message));
+      try{
+        await p.goto(base+'revision-programas-28-dias.html?programa=erection&dia='+day,{waitUntil:'domcontentloaded'});
+        await p.locator('#reviewProgram:not([disabled])').waitFor({timeout:50000});
+        await p.locator('#reviewProgram').selectOption('desire');
+        await p.waitForTimeout(500);
+        const selection=await p.evaluate(()=>({context:SPM_RESOURCE_CONTEXT(),status:document.querySelector('#reviewStatus')?.textContent,program:document.querySelector('#reviewProgram')?.value,disabled:document.querySelector('#reviewProgram')?.disabled}));
+        const button=p.locator('[data-daily-open="main"]');
+        await button.waitFor({timeout:5000});await button.click();
+        await p.waitForTimeout(900);
+        const open=await p.evaluate(()=>({week:document.querySelectorAll('.spm-ds-week1-root iframe').length,first:document.querySelectorAll('[data-ds1-page],[data-ds2-page],[data-ds3-page]').length,modal:document.querySelectorAll('.spm-desire-modal[open]').length,workspace:document.querySelector('#spmDailyWorkspace')?.innerHTML?.slice(0,300),status:document.querySelector('#spmDailyStatus')?.textContent?.slice(0,200)}));
+        const ok=selection.context?.primary==='desire'&&selection.program==='desire'&&(day>=4&&day<=7?open.week===1:open.first===1||open.modal===1);
+        if(!ok)failures++;
+        console.log(JSON.stringify({switchFrom:'erection',day,ok,selection,open,errors:errors.slice(0,4)}));
+      }catch(e){failures++;console.log(JSON.stringify({switchFrom:'erection',day,FAIL:String(e.message).slice(0,700),errors}));}
       await p.close();
     }
     console.log('Access smoke failed days: '+failures);
