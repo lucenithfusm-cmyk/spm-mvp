@@ -213,6 +213,36 @@ async function load(force=false){
  render();
 }
 function open({focus:shouldFocus=true}={}){window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;delete $('#spmDailySession')?.dataset.focusedPractice;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}
+// Usa la misma puerta clínica de Hoy cuando el paciente pulsa "Práctica de deseo"
+// en la tarjeta del calendario. No abre el Lab antes de montar su workspace.
+let desireCalendarOpening=false;
+async function openDesireFromCalendar(){
+ const c=ctx();
+ if(c?.primary!=='desire'||desireCalendarOpening)return false;
+ desireCalendarOpening=true;
+ const captured=scopeOf(c),day=Number(c.day);
+ try{
+  open({focus:false});
+  // Espera la recuperación de los registros del día; el primer load se invalida
+  // deliberadamente y el segundo fija una sola versión antes de lanzar.
+  await load(true);
+  if(!loaded){status('No se pudieron recuperar tus registros de hoy. Usa Reintentar antes de iniciar Deseo.',true);return false;}
+  const next=ctx();
+  if(scopeOf(next)!==captured||Number(next?.day)!==day)return false;
+  const a=assignments(next).find(x=>x.id==='main');
+  if(a?.kind!=='desire'||!$('#spmDailyWorkspace')?.isConnected){
+   status('No se pudo preparar la práctica de Deseo. Abre Hoy para reintentar.',true);
+   return false;
+  }
+  await launch('main');
+  const shown=!!document.querySelector('#spmDailyWorkspace [data-ds1-page],#spmDailyWorkspace [data-ds2-page],#spmDailyWorkspace [data-ds3-page],#spmDailyWorkspace .spm-ds-week1-root,.spm-desire-modal[open]');
+  if(!shown)status('No se pudo mostrar la práctica de Deseo. Pulsa Iniciar mi práctica de hoy para reintentar.',true);
+  return shown;
+ }catch{
+  status('No se pudo abrir la práctica de Deseo. Tus registros no se han modificado. Reintenta desde Hoy.',true);
+  return false;
+ }finally{desireCalendarOpening=false;}
+}
 function pauseDailyVideo(){window.SPM_ERECTION_PRACTICE?.pause();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailySession'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}
 function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyLibraryIntro'));}
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
@@ -290,7 +320,14 @@ async function launch(id){
   else if(a.kind==='video')dailyVideo(a);
   else if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ejaculation')window.SPM_EJACULATORY_CONTROL.open(Number(c.day),{origin:'dailyPlan'});
-  else if(a.kind==='desire')await window.SPM_DESIRE_LAB.open({origin:'dailyPlan'});
+  else if(a.kind==='desire'){
+    const opened=await window.SPM_DESIRE_LAB?.open?.({origin:'dailyPlan'});
+    if(opened===false||!window.SPM_DESIRE_LAB?.open){
+     active=null;
+     status('No se pudo abrir la actividad de Deseo. Actualiza la página y vuelve a intentarlo; tu progreso se conserva.',true);
+     return false;
+    }
+   }
   else if(['confidence','response','recovery'].includes(a.kind))window.SPM_RESOURCES.open(a.kind,Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ep-checkpoint')window.SPM_EP_ASSESSMENT.open(Number(c.day));
   else if(a.kind==='pelvic')await window.SPM_PELVIC_LAB.openScheduled({origin:'dailyPlan',day:Number(c.day),activityId:a.id,intent:pelvicIntent(a),preference:pelvicIntent(a)==='scheduled'?'classic':'lab',onResult:r=>receivePelvicResult(r,session,a),onClose:()=>{if(active!==session||!validActive())return;if(freshPelvicResult(a))confirmActivity(a.id);else open();}});
@@ -386,7 +423,7 @@ window.addEventListener('spm:pelvic-readiness',()=>render());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:resource-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,openDesireFromCalendar,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
 layout();load();
 })();
