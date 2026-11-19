@@ -78,7 +78,15 @@ function mount(){
   if(c.primary!=='desire'||d!==Number(c.day)||!body){existing?.remove();return;}
   const b=existing||document.createElement('button');b.type='button';b.className='btn sec';b.dataset.desireDaily='1';
   const label='Práctica de deseo · Día '+d;if(b.textContent!==label)b.textContent=label;
-  b.onclick=()=>open({origin:'dailyPlan'});if(b.parentElement!==body)body.appendChild(b);
+  b.onclick=()=>{
+   // Antes se llamaba el Lab cuando Hoy todavía no tenía un contenedor montado.
+   // Los días 1–7 necesitan ese contenedor para mostrar las láminas aprobadas.
+   if(window.SPM_DAILY_PRACTICE?.openDesireFromCalendar){
+    void window.SPM_DAILY_PRACTICE.openDesireFromCalendar();
+   }else{
+    window.SPM_DAILY_PRACTICE?.open?.({focus:true});
+   }
+  };if(b.parentElement!==body)body.appendChild(b);
  });
 }
 function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(mount);}}
