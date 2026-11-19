@@ -146,7 +146,7 @@ const scripts=[
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261117-erection10x28-v1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
-  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261113-instructions3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
+  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261119-deseo-calendario-r3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
   'erection-daily-plan-v1.js?v=20261117-erection10x28-v1','daily-resource-plan-v1.js?v=20261117-erection10x28-v1','checkpoint-audio-v1.js?v=20261113-checkpoint2','spm-checkpoint-touch-v1.js?v=20261118-checkpoint-touch-v1','program-checkpoint-v1.js?v=20261118-checkpoint-touch-v1','erection-ten-schedule-v1.js?v=20261118-dia27-prevencion-v1','erection-practice-v1.js?v=20261118-dia27-prevencion-v1',
   'erection-fullscreen-v1.js?v=20261117-er-fullscreen-cierre1',
   'erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1','erection-day1-bridge-v1.js?v=20261116-approved6-v2',
@@ -159,7 +159,7 @@ const scripts=[
    'erection-day8-touch-v1.js?v=20261117-dia21-sostener-v1','erection-day8-bridge-v1.js?v=20261117-dia21-sostener-v1',
    'erection-day9-touch-v1.js?v=20261117-dia24-recuperacion-v1','erection-day9-bridge-v1.js?v=20261117-dia24-recuperacion-v1',
     'erection-day10-touch-v1.js?v=20261118-dia27-prevencion-v1','erection-day10-bridge-v1.js?v=20261118-dia27-prevencion-v1',
-  'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261117-erection10x28-v1',
+  'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261119-deseo-calendario-r3',
   'desire-day1-touch-v1.js?v=20261119-deseo-access-r2','desire-day1-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day2-touch-v1.js?v=20261119-deseo-access-r2','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day3-touch-v1.js?v=20261119-deseo-access-r2','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261119-deseo-access-r2'
