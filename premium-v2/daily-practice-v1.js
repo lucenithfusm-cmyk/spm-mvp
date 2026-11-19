@@ -302,6 +302,46 @@ function worksheet(a){
  box.innerHTML=`<form class="spm-daily-work"><span class="stepBadge">Práctica del día ${day}</span><h3>${esc(d.title_es)}</h3><details><summary>Antes de practicar</summary><p>${esc(d.learn_es)}</p></details><h4>Hazlo ahora</h4><p>${esc(d.practice_es)}</p>${window.SPM_PRACTICE_AUDIO?.button(d.practice_es)||''}<label>Tu registro<textarea name="reflection" rows="3" maxlength="2000" required placeholder="Escribe lo que identificaste o practicaste…">${esc(prior.reflection)}</textarea></label><label>${esc(d.measure_es)}<textarea name="measure" rows="2" maxlength="1000" placeholder="Tu medida u observación; puedes indicar no evaluable.">${esc(prior.measure)}</textarea></label><p>${esc(d.apply_es)}</p><label><input name="confirmed" type="checkbox" required> Ya realicé esta práctica.</label><button type="submit" class="btn pri">Guardar práctica y volver a Hoy</button><p role="status"></p></form>`;
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('[type=submit]');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{reflection:fields.get('reflection'),measure:fields.get('measure'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; reintenta.';}};focus(box);
 }
+// Los módulos de Deseo 1–7 se dibujan dentro del espacio de Hoy, debajo
+// de las tarjetas transversales. La actividad debe quedar visible al tocar
+// "Abrir actividad" también en Safari/iPhone; no basta con montarla en el DOM.
+function revealDesireActivity(session){
+ if(active!==session||!validActive())return false;
+ const workspace=$('#spmDailyWorkspace');
+ const screen=workspace?.querySelector('[data-ds1-page],[data-ds2-page],[data-ds3-page],.spm-ds-week1-root');
+ if(!workspace?.isConnected||!screen?.isConnected)return false;
+ const height=Math.ceil($('.top')?.getBoundingClientRect().height||0);
+ workspace.style.scrollMarginTop=(height+16)+'px';
+ workspace.tabIndex=-1;
+ const show=()=>{
+  if(active!==session||!validActive()||!workspace.isConnected||!screen.isConnected)return;
+  // style.css aplica scroll-behavior:smooth a html. No esperar una
+  // animación larga: en Safari privado parecía que el botón no funcionaba.
+  const root=document.documentElement,oldScroll=root.style.scrollBehavior;
+  root.style.scrollBehavior='auto';
+  try{workspace.scrollIntoView({behavior:'instant',block:'start'});}
+  catch{workspace.scrollIntoView();}
+  finally{root.style.scrollBehavior=oldScroll;}
+  workspace.focus({preventScroll:true});
+ };
+ show();
+ requestAnimationFrame(show);
+ return true;
+}
+function desireLaunchIssue(message){
+ status(message,true);
+ const card=$('#spmDailySession [data-activity="main"]');
+ if(!card)return;
+ let notice=card.querySelector('[data-desire-open-issue]');
+ if(!notice){
+  notice=document.createElement('p');notice.dataset.desireOpenIssue='1';
+  notice.setAttribute('role','alert');
+  notice.style.cssText='padding:12px;border:1px solid #d8ba75;border-radius:12px;background:#263e3b;color:#fff1cb;font-size:14px;line-height:1.45;margin:10px 0';
+  card.querySelector('.spm-daily-actions')?.append(notice);
+ }
+ notice.textContent=message;
+ notice.scrollIntoView({behavior:'auto',block:'center'});
+}
 async function launch(id){
  window.SPM_ERECTION_PRACTICE?.stop();delete $('#spmDailySession')?.dataset.focusedPractice;
  window.SPM_PRACTICE_AUDIO?.stop();pauseDailyVideo();
@@ -321,12 +361,20 @@ async function launch(id){
   else if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ejaculation')window.SPM_EJACULATORY_CONTROL.open(Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='desire'){
-    const opened=await window.SPM_DESIRE_LAB?.open?.({origin:'dailyPlan'});
-    if(opened===false||!window.SPM_DESIRE_LAB?.open){
+    // No abrir con registros pendientes ni duplicar el Lab anterior.
+    if(!loaded){
      active=null;
-     status('No se pudo abrir la actividad de Deseo. Actualiza la página y vuelve a intentarlo; tu progreso se conserva.',true);
+     desireLaunchIssue(loadError?'No pudimos recuperar tus registros. Pulsa Reintentar.':'Estamos recuperando tus registros. Vuelve a tocar Abrir actividad.');
      return false;
     }
+    const opened=await window.SPM_DESIRE_LAB?.open?.({origin:'dailyPlan'});
+    if(opened!==true){
+     active=null;
+     desireLaunchIssue('No se pudo abrir Deseo. Tus registros siguen guardados. Recarga esta página y vuelve a intentarlo.');
+     return false;
+    }
+    $('#spmDailySession [data-desire-open-issue]')?.remove();
+    revealDesireActivity(session);
    }
   else if(['confidence','response','recovery'].includes(a.kind))window.SPM_RESOURCES.open(a.kind,Number(c.day),{origin:'dailyPlan'});
   else if(a.kind==='ep-checkpoint')window.SPM_EP_ASSESSMENT.open(Number(c.day));
@@ -336,7 +384,12 @@ async function launch(id){
   else if(a.kind==='wellness')wellness(a);
   else worksheet(a);
 
- }catch{delete $('#spmDailySession')?.dataset.focusedPractice;status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);}
+ }catch{
+  delete $('#spmDailySession')?.dataset.focusedPractice;
+  if(a.kind==='desire'){
+   active=null;desireLaunchIssue('No se pudo abrir Deseo. Tu avance se conserva. Recarga la página e inténtalo de nuevo.');
+  }else status('No pudimos abrir la actividad. Vuelve a intentarlo.',true);
+ }
 }
 const moduleSelectors={desire:'.spm-desire-modal[open]',sensate:'.spm-sensate-modal[open]',breathing:'.spm-breathing-modal[open]',pelvic:'.spm-pf-modal[open],#spmPelvicV2:not([hidden])',erection:'#spmDeModal.on',ejaculation:'#spmEcModal.on',confidence:'.sr-dialog[open]',response:'.sr-dialog[open]',recovery:'.sr-dialog[open]'};
 function validActive(){const c=ctx();return active&&active.scope===scopeOf(c)&&active.day===Number(c?.day);}

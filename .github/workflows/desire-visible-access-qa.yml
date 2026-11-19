@@ -1,0 +1,46 @@
+name: SPM Desire visible opening mobile QA
+on:
+  push:
+    paths:
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/revision-programas-28-dias.html'
+      - 'tests/desire-viewport-access-browser.cjs'
+      - '.github/workflows/desire-visible-access-qa.yml'
+  pull_request:
+    paths:
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/live.html'
+      - 'premium-v2/program-review-v1.js'
+      - 'premium-v2/revision-programas-28-dias.html'
+      - 'tests/desire-viewport-access-browser.cjs'
+      - '.github/workflows/desire-visible-access-qa.yml'
+permissions:
+  contents: read
+jobs:
+  mobile-viewport:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, webkit]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install Playwright
+        run: |
+          npm install --prefix /tmp/spm-desire-visible playwright@1.62.1 --no-audit --no-fund
+          if [ "${{ matrix.browser }}" = "webkit" ]; then /tmp/spm-desire-visible/node_modules/.bin/playwright install --with-deps webkit; fi
+      - name: Validate Desire is actually visible after tap
+        env:
+          NODE_PATH: /tmp/spm-desire-visible/node_modules
+          CHROME_BIN: /usr/bin/google-chrome
+          SPM_BROWSER: ${{ matrix.browser }}
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-desire-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          node tests/desire-viewport-access-browser.cjs
