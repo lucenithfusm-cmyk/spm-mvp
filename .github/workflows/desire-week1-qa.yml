@@ -93,3 +93,24 @@ jobs:
           trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
           sleep 1
           node tests/desire-calendar-access-browser.cjs
+
+  ios-calendar-direct-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install WebKit
+        run: |
+          npm install --prefix /tmp/spm-desire-access playwright@1.62.1 --no-audit --no-fund
+          /tmp/spm-desire-access/node_modules/.bin/playwright install --with-deps webkit
+      - name: Verify actual calendar button in WebKit
+        env:
+          NODE_PATH: /tmp/spm-desire-access/node_modules
+          SPM_BROWSER: webkit
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-calendar-webkit-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          node tests/desire-calendar-access-browser.cjs
