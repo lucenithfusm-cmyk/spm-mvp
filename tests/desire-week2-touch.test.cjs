@@ -1,7 +1,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const source=fs.readFileSync(path.join(root,'app.js'),'utf8');
-const bridgeSrc=fs.readFileSync(path.join(root,'desire-week2-bridge-v1.js'),'utf8');
+const source=fs.readFileSync(path.join(root,'premium-v2/desire-week2-v1/app.js'),'utf8');
+const bridgeSrc=fs.readFileSync(path.join(root,'premium-v2/desire-week2-bridge-v1.js'),'utf8');
 function appTest(){
  const handlers={},writes=new Map(),app={innerHTML:'',addEventListener:(type,fn)=>handlers[type]=fn,querySelector:()=>null};
  const toast={textContent:'',classList:{add(){},remove(){}}};
