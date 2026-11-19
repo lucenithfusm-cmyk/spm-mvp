@@ -315,7 +315,13 @@ function revealDesireActivity(session){
  workspace.tabIndex=-1;
  const show=()=>{
   if(active!==session||!validActive()||!workspace.isConnected||!screen.isConnected)return;
-  workspace.scrollIntoView({behavior:'auto',block:'start'});
+  // style.css aplica scroll-behavior:smooth a html. No esperar una
+  // animación larga: en Safari privado parecía que el botón no funcionaba.
+  const root=document.documentElement,oldScroll=root.style.scrollBehavior;
+  root.style.scrollBehavior='auto';
+  try{workspace.scrollIntoView({behavior:'instant',block:'start'});}
+  catch{workspace.scrollIntoView();}
+  finally{root.style.scrollBehavior=oldScroll;}
   workspace.focus({preventScroll:true});
  };
  show();
