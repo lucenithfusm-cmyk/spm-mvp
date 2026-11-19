@@ -162,7 +162,7 @@ const scripts=[
   'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261117-erection10x28-v1',
   'desire-day1-touch-v1.js?v=20261118-five-approved-1','desire-day1-bridge-v1.js?v=20261118-five-approved-1',
   'desire-day2-touch-v1.js?v=20261118-d2-mapa6-final1','desire-day2-bridge-v1.js?v=20261118-desire-day2-touch1',
-  'desire-day3-touch-v1.js?v=20261118-d3-gif-alert1','desire-day3-bridge-v1.js?v=20261118-deseo-d3-reloj-real3'
+  'desire-day3-touch-v1.js?v=20261118-d3-gif-alert1','desire-day3-bridge-v1.js?v=20261118-deseo-d3-reloj-real3','desire-week1-bridge-v1.js?v=20261119-deseo-week1-v1'
 ];
 async function boot(){
   try{
