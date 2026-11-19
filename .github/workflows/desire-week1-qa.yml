@@ -55,8 +55,13 @@ jobs:
         env:
           NODE_PATH: /tmp/spm-desire-access/node_modules
           CHROME_BIN: /usr/bin/google-chrome
-          SPM_TEST_BASE: https://spm-premium-staging.vercel.app/premium-v2/
-        run: node tests/desire-access-browser.cjs
+          SPM_TEST_BASE: http://127.0.0.1:4173/premium-v2/
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-desire-access-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          node tests/desire-access-browser.cjs
 
   ios-webkit-smoke:
     runs-on: ubuntu-latest
@@ -72,8 +77,13 @@ jobs:
         env:
           NODE_PATH: /tmp/spm-desire-access/node_modules
           SPM_BROWSER: webkit
-          SPM_TEST_BASE: https://spm-premium-staging.vercel.app/premium-v2/
-        run: node tests/desire-access-browser.cjs
+          SPM_TEST_BASE: http://127.0.0.1:4173/premium-v2/
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-desire-access-webkit-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          node tests/desire-access-browser.cjs
 
   calendar-direct-smoke:
     runs-on: ubuntu-latest
