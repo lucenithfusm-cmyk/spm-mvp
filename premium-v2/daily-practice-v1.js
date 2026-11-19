@@ -226,6 +226,7 @@ async function openDesireFromCalendar(){
   // Espera la recuperación de los registros del día; el primer load se invalida
   // deliberadamente y el segundo fija una sola versión antes de lanzar.
   await load(true);
+  if(!loaded){status('No se pudieron recuperar tus registros de hoy. Usa Reintentar antes de iniciar Deseo.',true);return false;}
   const next=ctx();
   if(scopeOf(next)!==captured||Number(next?.day)!==day)return false;
   const a=assignments(next).find(x=>x.id==='main');
