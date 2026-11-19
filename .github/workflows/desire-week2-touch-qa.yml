@@ -1,0 +1,31 @@
+name: SPM Deseo Semana 2 · QA piloto táctil
+on:
+  pull_request:
+    paths:
+      - 'premium-v2/desire-week2-v1/**'
+      - 'premium-v2/desire-week2-bridge-v1.*'
+      - 'tests/desire-week2-touch.test.cjs'
+      - '.github/workflows/desire-week2-touch-qa.yml'
+  push:
+    branches:
+      - 'spm-deseo-semana2-piloto-20261119'
+    paths:
+      - 'premium-v2/desire-week2-v1/**'
+      - 'premium-v2/desire-week2-bridge-v1.*'
+      - 'tests/desire-week2-touch.test.cjs'
+      - '.github/workflows/desire-week2-touch-qa.yml'
+permissions:
+  contents: read
+jobs:
+  week2-standalone:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify scripts parse
+        run: |
+          node --check premium-v2/desire-week2-v1/app.js
+          node --check premium-v2/desire-week2-bridge-v1.js
+      - name: Test isolated interactive days 8 to 14
+        run: node --test tests/desire-week2-touch.test.cjs
