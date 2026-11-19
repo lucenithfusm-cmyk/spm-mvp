@@ -34,7 +34,8 @@ const base=process.env.SPM_TEST_BASE||'https://spm-premium-staging.vercel.app/pr
           catch(e){after.frameFailure=String(e.message).slice(0,500);}
           after.frameText=(await f.innerText({timeout:4000}).catch(()=>'' )).slice(0,280);
         }
-        const ok=day>=4&&day<=7?after.roots===1&&!after.frameFailure&&!/Recuperando tu práctica/.test(after.frameText):after.desireModals===1||!!p.locator('[data-ds'+day+'-page]').count;
+        const legacyCount=await p.locator('[data-ds'+day+'-page]').count();
+        const ok=day>=4&&day<=7?after.roots===1&&!after.frameFailure&&!/Recuperando tu práctica/.test(after.frameText):after.desireModals===1||legacyCount>0;
         if(!ok)failures++;
         console.log(JSON.stringify({day,status:res.status(),ok,initial,after,errors:errors.slice(0,8),failed:responses.slice(0,8)}));
       }catch(e){failures++;console.log(JSON.stringify({day,FAIL:String(e.message).slice(0,850),errors:errors.slice(0,8),failed:responses.slice(0,8)}));}
