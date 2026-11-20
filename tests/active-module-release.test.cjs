@@ -13,7 +13,7 @@ test('Programa real y visor de 28 días usan exactamente los mismos veintitrés 
  assert.equal(appScripts.length,23);
  assert.deepEqual(reviewScripts,appScripts);
  assert.ok(appScripts.findIndex(v=>v.startsWith('spm-active-module-release-v1.js?'))>appScripts.findIndex(v=>v.startsWith('erection-day10-bridge-v1.js?')));
- assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261117-erection10x28-v1');
+ assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261119-w34-review1');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
  for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','erection-day5-touch-v1.css','erection-day6-touch-v1.css','erection-day7-touch-v1.css','erection-day8-touch-v1.css','erection-day9-touch-v1.css','erection-day10-touch-v1.css','spm-approved-entry-v1.css']){

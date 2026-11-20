@@ -1,0 +1,81 @@
+name: SPM Deseo Semana 3 · QA táctil
+on:
+  pull_request:
+    paths:
+      - 'premium-v2/desire-week3-v1/**'
+      - 'premium-v2/desire-week3-bridge-v1.*'
+      - 'tests/desire-week3-*.cjs'
+      - 'premium-v2/desire-week4-v1/**'
+      - 'premium-v2/desire-week4-bridge-v1.*'
+      - 'tests/desire-week4-*.cjs'
+      - '.github/workflows/desire-week3-touch-qa.yml'
+  push:
+    branches:
+      - 'main'
+      - 'preview/deseo-semana3-iphone-20261119'
+      - 'fix/deseo-semana3-continuacion-20261119'
+    paths:
+      - 'premium-v2/desire-week3-v1/**'
+      - 'premium-v2/desire-week3-bridge-v1.*'
+      - 'tests/desire-week3-*.cjs'
+      - 'premium-v2/desire-week4-v1/**'
+      - 'premium-v2/desire-week4-bridge-v1.*'
+      - 'tests/desire-week4-*.cjs'
+      - '.github/workflows/desire-week3-touch-qa.yml'
+permissions:
+  contents: read
+jobs:
+  week3-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify scripts parse
+        run: |
+          node --check premium-v2/desire-week3-v1/app.js
+          node --check premium-v2/desire-week3-bridge-v1.js
+          node --check premium-v2/desire-week4-v1/app.js
+          node --check premium-v2/desire-week4-v1/core.js
+          node --check premium-v2/desire-week4-bridge-v1.js
+      - name: Test isolated weeks 3 and 4 persistence and clinical routes
+        run: node --test tests/desire-week3-*.test.cjs tests/desire-week4-*.test.cjs
+
+  mobile-journeys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chrome, webkit]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install browser test engine
+        run: |
+          npm install --prefix /tmp/spm-desire-week3-playwright playwright@1.62.1 --no-audit --no-fund
+          if [ "${{ matrix.engine }}" = "webkit" ]; then
+            /tmp/spm-desire-week3-playwright/node_modules/.bin/playwright install --with-deps webkit
+          fi
+      - name: Verify all seven days and conditional screens with local synthetic records
+        env:
+          NODE_PATH: /tmp/spm-desire-week3-playwright/node_modules
+          CHROME_BIN: /usr/bin/google-chrome
+          SPM_BROWSER: ${{ matrix.engine }}
+          SPM_SCREENSHOT_DIR: test-artifacts/desire-week3-${{ matrix.engine }}
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-week3-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          node tests/desire-week3-mobile-browser.cjs
+          node tests/desire-week3-central-browser.cjs
+      - name: Keep screenshots and test result for review
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: deseo-week3-${{ matrix.engine }}
+          path: test-artifacts/desire-week3-${{ matrix.engine }}/
+          if-no-files-found: warn
+          retention-days: 7
