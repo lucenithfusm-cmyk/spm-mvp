@@ -155,7 +155,7 @@ async function open(opts={}){
  const wrap=document.createElement('section');wrap.className='spm-ds-week1-root';wrap.setAttribute('aria-label','Deseo día '+day+' interactivo');
  const frame=document.createElement('iframe');
  frame.title='SPM Deseo día '+day;frame.allow='autoplay';
- frame.src='/premium-v2/desire-week1-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261119a';
+ frame.src='/premium-v2/desire-week1-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261120-audio-fullscreen1';
  m.wrap=wrap;m.frame=frame;m.onMessage=e=>void onMessage(m,e);
  window.addEventListener('message',m.onMessage);
  wrap.append(frame);host.replaceChildren(wrap);

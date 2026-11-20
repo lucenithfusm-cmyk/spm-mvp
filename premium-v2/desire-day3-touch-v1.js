@@ -77,8 +77,12 @@
  function selectionAlertMarkup(m){return m.selectionAlert?`<div class="spm-ds3-alert-backdrop"><div class="spm-ds3-alert-box" role="alertdialog" aria-modal="true" aria-labelledby="spm-ds3-alert-title" aria-describedby="spm-ds3-alert-message"><strong id="spm-ds3-alert-title">Falta una selección</strong><p id="spm-ds3-alert-message">Selecciona una opción para avanzar.</p><button type="button" data-ds3-action="dismiss-alert">Entendido</button></div></div>`:'';}
  function showSelectionAlert(m){m.selectionAlert=true;render(m);m.host.querySelector('[data-ds3-action="dismiss-alert"]')?.focus?.();}
  function render(m){if(!m?.host?.isConnected)return;
+    const previous=m.host.querySelector('.spm-ds3-session');
+    const scrollTop=previous?.dataset?.ds3Page===String(m.page)?(previous.scrollTop||0):0;
   const p=m.page;
   m.host.innerHTML=`<section class="spm-ds3-session" data-ds3-page="${p}" data-running="${p===3&&m.timer.running}" aria-label="Deseo, día 3, pantalla ${p} de 3"><div class="spm-ds3-art"><img src="${esc(m.images[p-1])}" alt="" width="864" height="1536" draggable="false" loading="eager">${p===3?breatheVisual(m):''}${hotspots(m)}</div>${selectionAlertMarkup(m)}${extras(m)}<nav class="spm-ds3-nav" aria-label="Navegación de Deseo día 3"><button type="button" data-ds3-action="back">← ${p===1?'Actividades de hoy':'Anterior'}</button><span>${p} de 3</span><button type="button" data-ds3-action="${p===3?'finish':'next'}">${p===3?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds3-bottom"><button type="button" data-ds3-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds3-action="audio" data-ds3-value="guide">🔊 Escuchar guía</button></div><p class="spm-ds3-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
+    const current=m.host.querySelector('.spm-ds3-session');
+    if(current)current.scrollTop=scrollTop;
  }
  function status(m,message){m.message=message;const el=m.host?.querySelector('.spm-ds3-status');if(el)el.textContent=message;}
  function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.voiceKey=null;}

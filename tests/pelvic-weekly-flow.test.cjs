@@ -138,3 +138,23 @@ test('the previous daily Lab surface is replaced and the public site stays pause
  assert.match(today,/pelvicIntent\(a\)==='scheduled'\?window\.SPM_PELVIC_GUIDANCE/);
  assert.match(read('premium-v2/program-paused.html'),/Estamos afinando tu experiencia/);
 });
+
+
+test('gold weekly voice controls reflect play, pause, resume, switching and completion without changing playback',()=>{
+ const h=lesson(3);try{
+  const audio=h.w.document.querySelector('audio');let paused=true,ended=false;
+  Object.defineProperty(audio,'paused',{get:()=>paused});Object.defineProperty(audio,'ended',{get:()=>ended});
+  audio.play=async()=>{paused=false;ended=false;audio.dispatchEvent(new h.w.Event('playing'))};
+  audio.pause=()=>{paused=true;audio.dispatchEvent(new h.w.Event('pause'))};
+  const intro=h.button('[data-action="audio-intro"]'),zone=h.button('[data-action="audio-zone"]');
+  assert.ok(intro.querySelector('.pf-weekly-speaker[aria-hidden="true"]'));
+  assert.equal(h.button('[data-action="continue-recognition"]').hasAttribute('aria-pressed'),false);
+  assert.equal(intro.getAttribute('aria-pressed'),'false');
+  intro.click();assert.equal(intro.getAttribute('aria-pressed'),'true');assert.match(intro.textContent,/Pausar explicación/);
+  audio.currentTime=9;intro.click();assert.equal(intro.getAttribute('aria-pressed'),'false');assert.match(intro.textContent,/Continuar explicación/);
+  intro.click();assert.equal(intro.getAttribute('aria-pressed'),'true');assert.equal(audio.currentTime,9,'resuming keeps the existing narration position');
+  zone.click();assert.equal(intro.getAttribute('aria-pressed'),'false');assert.match(intro.textContent,/Escuchar introducción/);assert.equal(zone.getAttribute('aria-pressed'),'true');
+  ended=true;paused=true;audio.dispatchEvent(new h.w.Event('ended'));
+  assert.equal(zone.getAttribute('aria-pressed'),'false');assert.match(zone.textContent,/Escuchar ubicación/);
+ }finally{h.close()}
+});

@@ -33,14 +33,19 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    },selector);
    if(day===8){
     // Reopening must attach to the current workspace, including after the
-    // frame's home action rebuilds Today. No patient account is involved.
+    // frame's home action rebuilds Today. While full-screen, Today is covered:
+    // exercise duplicate activation through the same public launcher used by
+    // its button; never force a click through the active practice. After exit,
+    // reopen through the visible Today button. No patient account is involved.
     for(const mode of ['while-open','after-frame-home']){
      const previousSrc=await p.locator(selector).getAttribute('src');
      if(mode==='after-frame-home'){
       await p.frameLocator(selector).locator('.topbar [data-act="home"]').click();
       await p.locator(selector).waitFor({state:'detached',timeout:10000});
+      await p.locator('#spmDailySession [data-daily-open="main"]').click();
+     }else{
+      await p.evaluate(()=>window.SPM_DAILY_PRACTICE.launch('main'));
      }
-     await p.locator('#spmDailySession [data-daily-open="main"]').click();
      await p.waitForFunction(({selector,previousSrc})=>{
       const frame=document.querySelector(selector);
       return frame&&frame.getAttribute('src')!==previousSrc;
@@ -52,6 +57,16 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
       const rect=document.querySelector(selector)?.getBoundingClientRect();
       return rect&&rect.top>=-30&&rect.top<window.innerHeight*.6&&rect.bottom>0;
      },selector,{timeout:5000});
+     const reopened=await p.evaluate(selector=>({
+      frames:document.querySelectorAll('.spm-ds-week2-root iframe').length,
+      roots:document.querySelectorAll('.spm-ds-week2-root').length,
+      legacy:document.querySelectorAll('.spm-desire-modal[open]').length,
+      day:window.SPM_RESOURCE_CONTEXT?.().day,
+      active:window.SPM_DAILY_PRACTICE.active?.()
+     }),selector);
+     if(reopened.frames!==1||reopened.roots!==1||reopened.legacy!==0||reopened.day!==day||reopened.active?.day!==day||reopened.active?.id!=='main'){
+      throw Error('Reopening left a duplicate, detached or stale daily session: '+JSON.stringify(reopened));
+     }
      console.log(JSON.stringify({day,reopen:mode,ready:true,visible:true}));
     }
    }
