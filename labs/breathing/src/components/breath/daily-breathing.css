@@ -1,4 +1,5 @@
 /* Practical route: the approved library stays available in its original layout. */
+:root:has(.bl-route-shell) {color-scheme:dark;scrollbar-width:thin;scrollbar-color:#48646a #071b24}
 .bl-route-shell {
  --route-ink:#061a23;--route-panel:#0d2a34;--route-line:#34535b;
  min-height:100dvh;background:radial-gradient(100% 38% at 100% 0,#17434b80,transparent),#071b24;
@@ -38,6 +39,7 @@
  max-width:760px;font-size:clamp(28px,6vw,42px);line-height:1.12;
  letter-spacing:-.025em;text-wrap:balance;color:#f6f5ec;
 }
+.bl-route-main .bl-h1:focus {outline:none}
 .bl-route-kicker {font-size:10px;color:#d9be86;letter-spacing:.14em;font-weight:800;line-height:1.4}
 .bl-route-main>.bl-p,.bl-route-lead {color:#c5d8d7;font-size:16px;line-height:1.5;max-width:740px}
 .bl-route-summary {color:#a9c5c4;font-size:14px;line-height:1.5;margin:0;max-width:740px}

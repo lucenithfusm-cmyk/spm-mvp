@@ -71,6 +71,24 @@ Comandos: `npm run typecheck`, `npx vitest run` y `npm run build` en `labs/breat
 
 Esta validación es dirigida. No declara aprobado todo el CI del repositorio: la iteración anterior documentó seis fallos preexistentes fuera de este cambio. La evidencia del despliegue y la inspección móvil se registra en la PR.
 
+## Inspección interactiva del preview
+
+Build funcional comprobado: `f7663a2d60a03859c815220b429fc061e0a2104f`, proyecto `spm-premium-staging`, equipo `lucenithfusm-cmyk`, Vercel READY. Se usaron exclusivamente perfiles sintéticos del visor.
+
+| Caso | Resultado observado |
+| --- | --- |
+| Sesión A, día 3, 390 × 844 | Imagen original de 1536 px decodificada; alternancia de abdomen y pecho; el movimiento CSS cambia la transformación y se pausa al cambiar de imagen. |
+| Narración A | `screen.02.mp3` terminó a 9,30 s sin error; la instrucción final 4–6 avanzó a 10,83 s sin error. |
+| Observación | La elección Abdomen y la primera señal quedan seleccionadas y muestran una indicación descriptiva. No hay pacer en preparación. |
+| Demostración | Video original `SPM_Respiracion_Lenny_Audio_Corregido.mp4` cargado, reproducido hasta 5,71 s y pausado, sin error. |
+| Práctica A | Una sola guía con ritmo 4·6. Finalización manual tras 14 s efectivos, consulta de seguridad y retorno conservan el check-in; Guardar muestra confirmación. |
+| Salida | Volver a Hoy elimina el modal de Respiración. |
+| Sesión B, día 6, 320 × 568 | Tarjetas seleccionables, tres observaciones, voces `screen.07` y `screen.06` sin error. Avanzar detiene la narración; no hay pacer en las tres primeras etapas. |
+| Práctica B | Un solo pacer final, ritmo original 4·2·6; sin desbordamiento horizontal. |
+| Biblioteca | El acceso desde la sesión B abre la biblioteca y su índice conserva las 18 pantallas. |
+
+La inspección detectó una barra de desplazamiento de la página subyacente que restaba ancho en el visor. El ajuste posterior bloquea únicamente ese desplazamiento mientras el modal diario está abierto, ocupa `100vw`, usa una barra interior oscura y elimina el contorno visual del título enfocado por navegación. La comprobación del build final se registra en la PR. Estas observaciones corresponden al navegador remoto; no se presentan como una nueva escucha física en el dispositivo de la propietaria, quien ya había confirmado el funcionamiento de los audios.
+
 ## Accesos de revisión
 
 - A: `/premium-v2/revision-programas-28-dias.html?programa=desire&dia=3&abrir=respiracion-ruta`
