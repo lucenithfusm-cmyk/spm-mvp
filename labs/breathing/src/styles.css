@@ -231,6 +231,12 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
  .bl-shell .bl-trainer img{width:76px}
  .bl-shell .bl-audio{padding:11px 12px;font-size:15px}
 }
+@media (max-width:300px) {
+ .bl-shell .bl-top{height:auto;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:9px 12px}
+ .bl-shell .bl-brand{width:100%;gap:8px}
+ .bl-shell .bl-brand-text{font-size:13px}
+ .bl-shell .bl-top-right{width:100%;justify-content:space-between}
+}
 @media (prefers-reduced-motion:reduce) {
  .bl-shell .bl-audio::after,
  .bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"])::after,
