@@ -1,0 +1,245 @@
+/* Applied only while a supported practice portrait is mounted. Home and safety views keep their layout. */
+.spm-desire-viewport-probe {
+  position: fixed;
+  width: 0;
+  height: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+html.spm-desire-screen-active {
+  min-width: 0;
+  min-height: 100%;
+  background: #fffcf6;
+  overflow-x: clip;
+}
+
+html.spm-desire-screen-active body {
+  min-width: 0;
+  min-height: var(--spm-desire-visible-height, 100dvh);
+  margin: 0;
+  padding: 0;
+  background: #fffcf6;
+  overscroll-behavior-y: contain;
+}
+
+html.spm-desire-screen-active #app {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  min-height: var(--spm-desire-visible-height, 100dvh);
+  margin: 0 auto;
+  padding: var(--spm-desire-safe-top, env(safe-area-inset-top, 0px)) 0 var(--spm-desire-safe-bottom, env(safe-area-inset-bottom, 0px));
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  background: #fffcf6;
+}
+
+@media (max-width: 600px) {
+  html.spm-desire-screen-active #app { max-width: none; }
+}
+
+html.spm-desire-screen-active .statusbar {
+  position: static;
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Keep this information available to assistive technology without a second visual header. */
+html.spm-desire-screen-active .statusbar > span,
+html.spm-desire-screen-active .meta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+}
+
+html.spm-desire-screen-active .statusbar .circle,
+html.spm-desire-screen-active .spm-desire-options-toggle {
+  position: absolute;
+  top: var(--spm-desire-tools-top, 70px);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d8b572;
+  border-radius: 50%;
+  color: #19382c;
+  background: #fffcf6ed;
+  box-shadow: none;
+  font: 400 28px/1 system-ui, sans-serif;
+  touch-action: manipulation;
+}
+
+html.spm-desire-screen-active .statusbar .circle { left: 16px; }
+html.spm-desire-screen-active .spm-desire-options-toggle { right: 16px; }
+html.spm-desire-screen-active .spm-desire-options-toggle span { transform: translateY(-3px); }
+
+html.spm-desire-screen-active .portrait[data-spm-layout="bands"] {
+  width: 100%;
+  height: var(--spm-desire-screen-height);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fffcf6;
+}
+
+.portrait[data-spm-layout="bands"] > .backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.spm-desire-art,
+.spm-desire-photo {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.spm-desire-art {
+  left: 0;
+  width: 100%;
+  background-size: 100% var(--spm-desire-art-height);
+  background-repeat: no-repeat;
+}
+
+.spm-desire-art-top {
+  top: 0;
+  height: var(--spm-desire-photo-top);
+  background-position: 0 0;
+}
+
+.spm-desire-art-bottom {
+  top: var(--spm-desire-bottom-top);
+  height: var(--spm-desire-bottom-height);
+  background-position: 0 var(--spm-desire-bottom-offset);
+}
+
+.spm-desire-photo {
+  top: var(--spm-desire-photo-top);
+  left: 5.0925925926%; /* 44 / 864 */
+  width: 89.8148148148%; /* 776 / 864 */
+  height: var(--spm-desire-photo-height);
+  overflow: hidden;
+  border: 1px solid #dfd1af;
+  border-radius: var(--spm-desire-photo-radius, 12px);
+  background: #e9e9db;
+  isolation: isolate;
+}
+
+.spm-desire-photo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.spm-desire-photo-fill {
+  z-index: 0;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(10px);
+  transform: scale(1.08);
+  opacity: .62;
+}
+
+.spm-desire-photo-image {
+  z-index: 1;
+  object-fit: contain;
+  object-position: center;
+}
+
+html.spm-desire-screen-active .screen-footer[data-desire-panel] {
+  position: fixed;
+  z-index: 60;
+  top: calc(var(--spm-desire-visual-top, 0px) + var(--spm-desire-visible-height, 100dvh) - var(--spm-desire-safe-bottom, 0px) - 12px);
+  left: 50%;
+  width: min(calc(100% - 24px), 520px);
+  max-height: calc(var(--spm-desire-visible-height, 100dvh) - var(--spm-desire-safe-top, 0px) - var(--spm-desire-safe-bottom, 0px) - 24px);
+  margin: 0;
+  padding: 12px 16px 18px;
+  transform: translate(-50%, -100%);
+  border: 1px solid #d8b572;
+  border-radius: 20px;
+  background: #fffcf6;
+  box-shadow: 0 12px 40px #19382c33;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.spm-desire-screen-active .screen-footer[data-desire-panel][hidden],
+.spm-desire-options-veil[hidden] {
+  display: none;
+}
+
+.spm-desire-options-veil {
+  position: fixed;
+  z-index: 50;
+  top: var(--spm-desire-visual-top, 0px);
+  left: 0;
+  width: 100%;
+  height: var(--spm-desire-visible-height, 100dvh);
+  background: #19382c4d;
+}
+
+.spm-desire-options-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.spm-desire-options-title {
+  margin: 0;
+  color: #19382c;
+  font: 700 20px/1.2 Georgia, serif;
+}
+
+.spm-desire-options-close {
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #d8b572;
+  border-radius: 50%;
+  background: #fff8e9;
+  color: #19382c;
+  font: 400 26px/1 system-ui, sans-serif;
+}
+
+html.spm-desire-screen-active.spm-desire-options-open,
+html.spm-desire-screen-active.spm-desire-options-open body {
+  overflow: hidden;
+}

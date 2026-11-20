@@ -164,9 +164,9 @@ const scripts=[
   'desire-day2-touch-v1.js?v=20261119-deseo-access-r2','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day3-touch-v1.js?v=20261119-deseo-access-r2','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-week2-bridge-v1.js?v=20261119-w2-audio2',
-  'desire-week3-bridge-v1.js?v=20261119-w3-central1',
+  'desire-week3-bridge-v1.js?v=20261119-w34-fullscreen1',
   'desire-week4-v1/catalog.js?v=20261119-w4-review1',
-  'desire-week4-bridge-v1.js?v=20261119-w4-review1'
+  'desire-week4-bridge-v1.js?v=20261119-w34-fullscreen1'
 ];
 async function boot(){
   try{
