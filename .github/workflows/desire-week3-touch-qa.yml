@@ -1,4 +1,4 @@
-name: SPM Deseo Semana 3 · QA táctil
+name: SPM Deseo Semanas 3 y 4 · QA táctil
 on:
   pull_request:
     paths:
@@ -8,12 +8,17 @@ on:
       - 'premium-v2/desire-week4-v1/**'
       - 'premium-v2/desire-week4-bridge-v1.*'
       - 'tests/desire-week4-*.cjs'
+      - 'premium-v2/desire-screen-layout-v1.*'
+      - 'premium-v2/desire-photo-layout-v1.js'
+      - 'premium-v2/desire-photo-v1/**'
+      - 'tests/desire-weeks3-4-*.cjs'
       - '.github/workflows/desire-week3-touch-qa.yml'
   push:
     branches:
       - 'main'
       - 'preview/deseo-semana3-iphone-20261119'
       - 'fix/deseo-semana3-continuacion-20261119'
+      - 'fix/deseo-fullscreen-weeks3-4-20261119'
     paths:
       - 'premium-v2/desire-week3-v1/**'
       - 'premium-v2/desire-week3-bridge-v1.*'
@@ -21,6 +26,10 @@ on:
       - 'premium-v2/desire-week4-v1/**'
       - 'premium-v2/desire-week4-bridge-v1.*'
       - 'tests/desire-week4-*.cjs'
+      - 'premium-v2/desire-screen-layout-v1.*'
+      - 'premium-v2/desire-photo-layout-v1.js'
+      - 'premium-v2/desire-photo-v1/**'
+      - 'tests/desire-weeks3-4-*.cjs'
       - '.github/workflows/desire-week3-touch-qa.yml'
 permissions:
   contents: read
@@ -38,8 +47,11 @@ jobs:
           node --check premium-v2/desire-week4-v1/app.js
           node --check premium-v2/desire-week4-v1/core.js
           node --check premium-v2/desire-week4-bridge-v1.js
+          node --check premium-v2/desire-screen-layout-v1.js
+          node --check premium-v2/desire-photo-layout-v1.js
+          node --check tests/desire-weeks3-4-viewport-browser.cjs
       - name: Test isolated weeks 3 and 4 persistence and clinical routes
-        run: node --test tests/desire-week3-*.test.cjs tests/desire-week4-*.test.cjs
+        run: node --test tests/desire-week3-*.test.cjs tests/desire-week4-*.test.cjs tests/desire-weeks3-4-*.test.cjs
 
   mobile-journeys:
     runs-on: ubuntu-latest
@@ -58,7 +70,7 @@ jobs:
           if [ "${{ matrix.engine }}" = "webkit" ]; then
             /tmp/spm-desire-week3-playwright/node_modules/.bin/playwright install --with-deps webkit
           fi
-      - name: Verify all seven days and conditional screens with local synthetic records
+      - name: Verify mobile journeys, all 64 screen layouts and return to Central
         env:
           NODE_PATH: /tmp/spm-desire-week3-playwright/node_modules
           CHROME_BIN: /usr/bin/google-chrome
@@ -71,6 +83,7 @@ jobs:
           sleep 1
           node tests/desire-week3-mobile-browser.cjs
           node tests/desire-week3-central-browser.cjs
+          node tests/desire-weeks3-4-viewport-browser.cjs
       - name: Keep screenshots and test result for review
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

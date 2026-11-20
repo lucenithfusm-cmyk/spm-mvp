@@ -332,7 +332,7 @@ async function open(opts={}){
  }catch{dispose(m);return false}
  const wrap=document.createElement('section');wrap.className='spm-ds-week4-root';wrap.setAttribute('aria-label','Deseo, día '+day+' interactivo');
  const frame=document.createElement('iframe');frame.title='Deseo · Día '+day;frame.allow='autoplay';
- frame.src='/premium-v2/desire-week4-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(sid)+'&v=20261119-w4-central1';
+ frame.src='/premium-v2/desire-week4-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(sid)+'&v=20261119-w34-fullscreen1';
  m.wrap=wrap;m.iframe=frame;m.onMessage=e=>void onMessage(m,e);window.addEventListener('message',m.onMessage);
  wrap.append(frame);host.replaceChildren(wrap);
  m.watch=setInterval(()=>{

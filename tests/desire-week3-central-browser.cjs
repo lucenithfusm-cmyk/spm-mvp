@@ -45,8 +45,11 @@ fs.mkdirSync(artifacts, { recursive: true });
     await page.locator('#spmDailySession [data-daily-open="main"]').click();
     await page.locator(selector).waitFor({ state: 'visible', timeout: 15000 });
     frame = page.frameLocator(selector);
-    await frame.locator('.daypill').filter({ hasText: 'Día ' + day + ' · Deseo' }).waitFor({ timeout: 15000 });
-    await frame.locator('.portrait').waitFor({ state: 'visible' });
+    // The duplicate visual heading is hidden by the fullscreen layout; its
+    // accessible text and the assigned application day must still be correct.
+    await frame.locator('.daypill').filter({ hasText: 'Día ' + day + ' · Deseo' }).waitFor({ state: 'attached', timeout: 15000 });
+    assert.equal(await frame.locator('#app').evaluate(() => window.SPM_WEEK3_REVIEW.day()), day);
+    await frame.locator('.portrait[data-spm-layout="bands"]').waitFor({ state: 'visible' });
     await page.waitForFunction(selector => {
       const r = document.querySelector(selector)?.getBoundingClientRect();
       return r && r.top >= -30 && r.top < innerHeight * .6 && r.bottom > 0;

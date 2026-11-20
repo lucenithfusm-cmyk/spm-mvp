@@ -200,7 +200,7 @@ test('other days, library access and existing clinical fallback keep their origi
 
 test('live and review include the same week 3 bridge after week 2, without changing commercial routes',()=>{
  const live=fs.readFileSync(path.join(root,'premium-v2/live.html'),'utf8'),review=fs.readFileSync(path.join(root,'premium-v2/program-review-v1.js'),'utf8'),html=fs.readFileSync(path.join(root,'premium-v2/revision-programas-28-dias.html'),'utf8');
- const name='desire-week3-bridge-v1.js?v=20261119-w3-central1';assert(live.includes(name));assert(review.includes(name));
- assert(live.indexOf(name)>live.indexOf('desire-week2-bridge-v1.js'));assert(review.indexOf(name)>review.indexOf('desire-week2-bridge-v1.js'));assert(html.includes('desire-week3-bridge-v1.css?v=20261119-w3-central1'));
+ const name='desire-week3-bridge-v1.js?v=20261119-w34-fullscreen1';assert(live.includes(name));assert(review.includes(name));
+ assert(live.indexOf(name)>live.indexOf('desire-week2-bridge-v1.js'));assert(review.indexOf(name)>review.indexOf('desire-week2-bridge-v1.js'));assert(html.includes('desire-week3-bridge-v1.css?v=20261119-w34-fullscreen1'));
  assert(fs.readFileSync(path.join(root,'vercel.json'),'utf8').includes('program-paused.html'));
 });

@@ -43,11 +43,17 @@ fs.mkdirSync(artifacts, { recursive: true });
   }
   async function go(day) {
     await page.locator('.day-card[data-day="' + day + '"]').click();
-    await page.locator('.portrait').waitFor();
+    await page.locator('.portrait[data-spm-layout="bands"]').waitFor();
+  }
+  async function previousScreen() {
+    const options = page.locator('[data-desire-options]');
+    if (await options.getAttribute('aria-expanded') !== 'true') await options.click();
+    await page.locator('.screen-footer[data-desire-panel]').waitFor({ state: 'visible' });
+    await page.locator('.quick [data-action="back"]').click();
   }
   async function openFirst(day) {
     await go(day);
-    while ((await state()).session[day].step > 1) await page.locator('.quick [data-action="back"]').click();
+    while ((await state()).session[day].step > 1) await previousScreen();
   }
   async function settings(values) {
     await page.locator('[data-action="settings"]').click();
@@ -67,7 +73,7 @@ fs.mkdirSync(artifacts, { recursive: true });
     assert.equal(Number(await el.inputValue()), value, id + ' responds to keyboard-accessible range controls');
   }
   async function observe(id, screenshot = true) {
-    await page.locator('.portrait[data-screen="' + id + '"]').waitFor({ timeout: 10000 });
+    await page.locator('.portrait[data-screen="' + id + '"][data-spm-layout="bands"]').waitFor({ timeout: 10000 });
     await page.waitForFunction(() => {
       const img = document.querySelector('.portrait .backdrop');
       return !!img && img.complete && img.naturalWidth > 0;
@@ -194,8 +200,8 @@ fs.mkdirSync(artifacts, { recursive: true });
     await ctl('partner_moment').fill('Después de caminar.');
     await ctl('partner_agreed').fill('Escucharnos sin exigencias.');
     await press('partner_consent');
-    await page.locator('.quick [data-action="back"]').click();
-    await page.locator('.quick [data-action="back"]').click();
+    await previousScreen();
+    await previousScreen();
     await press('communication_route-solo'); await next(); await next();
     await observe('d18_03a'); await ctl('partner_solo').fill('Puedo preparar lo que quiero comunicar.');
     await next(); await observe('d18_04'); await finish(18);
