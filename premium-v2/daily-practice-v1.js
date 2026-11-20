@@ -235,7 +235,7 @@ async function openDesireFromCalendar(){
    return false;
   }
   await launch('main');
-  const shown=!!document.querySelector('#spmDailyWorkspace [data-ds1-page],#spmDailyWorkspace [data-ds2-page],#spmDailyWorkspace [data-ds3-page],#spmDailyWorkspace .spm-ds-week1-root,#spmDailyWorkspace .spm-ds-week2-root,.spm-desire-modal[open]');
+  const shown=!!document.querySelector('#spmDailyWorkspace [data-ds1-page],#spmDailyWorkspace [data-ds2-page],#spmDailyWorkspace [data-ds3-page],#spmDailyWorkspace .spm-ds-week1-root,#spmDailyWorkspace .spm-ds-week2-root,#spmDailyWorkspace .spm-ds-week3-root,#spmDailyWorkspace .spm-ds-week4-root,.spm-desire-modal[open]');
   if(!shown)status('No se pudo mostrar la práctica de Deseo. Pulsa Iniciar mi práctica de hoy para reintentar.',true);
   return shown;
  }catch{
@@ -302,13 +302,13 @@ function worksheet(a){
  box.innerHTML=`<form class="spm-daily-work"><span class="stepBadge">Práctica del día ${day}</span><h3>${esc(d.title_es)}</h3><details><summary>Antes de practicar</summary><p>${esc(d.learn_es)}</p></details><h4>Hazlo ahora</h4><p>${esc(d.practice_es)}</p>${window.SPM_PRACTICE_AUDIO?.button(d.practice_es)||''}<label>Tu registro<textarea name="reflection" rows="3" maxlength="2000" required placeholder="Escribe lo que identificaste o practicaste…">${esc(prior.reflection)}</textarea></label><label>${esc(d.measure_es)}<textarea name="measure" rows="2" maxlength="1000" placeholder="Tu medida u observación; puedes indicar no evaluable.">${esc(prior.measure)}</textarea></label><p>${esc(d.apply_es)}</p><label><input name="confirmed" type="checkbox" required> Ya realicé esta práctica.</label><button type="submit" class="btn pri">Guardar práctica y volver a Hoy</button><p role="status"></p></form>`;
  const form=box.querySelector('form');form.onsubmit=async e=>{e.preventDefault();const b=form.querySelector('[type=submit]');b.disabled=true;const fields=new FormData(form);try{await saveActivity(a.id,{reflection:fields.get('reflection'),measure:fields.get('measure'),confirmed:true},captured,day);focus($('#spmDailySession'));}catch{b.disabled=false;form.querySelector('[role=status]').textContent='No se pudo guardar. Tus respuestas siguen aquí; reintenta.';}};focus(box);
 }
-// Los módulos de Deseo 1–14 se dibujan dentro del espacio de Hoy, debajo
+// Los módulos táctiles de Deseo 1–28 se dibujan dentro del espacio de Hoy, debajo
 // de las tarjetas transversales. La actividad debe quedar visible al tocar
 // "Abrir actividad" también en Safari/iPhone; no basta con montarla en el DOM.
 function revealDesireActivity(session){
  if(active!==session||!validActive())return false;
  const workspace=$('#spmDailyWorkspace');
- const screen=workspace?.querySelector('[data-ds1-page],[data-ds2-page],[data-ds3-page],.spm-ds-week1-root,.spm-ds-week2-root');
+ const screen=workspace?.querySelector('[data-ds1-page],[data-ds2-page],[data-ds3-page],.spm-ds-week1-root,.spm-ds-week2-root,.spm-ds-week3-root,.spm-ds-week4-root');
  if(!workspace?.isConnected||!screen?.isConnected)return false;
  const height=Math.ceil($('.top')?.getBoundingClientRect().height||0);
  workspace.style.scrollMarginTop=(height+16)+'px';
