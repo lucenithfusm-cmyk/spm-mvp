@@ -60,6 +60,30 @@ test('day-19 manual Focus II review button opens the same session and preserves 
  }finally{h.close()}
 });
 
+test('direct breathing review opens the real voice library with isolated example records',async()=>{
+ const h=await harness('?programa=desire&dia=1&abrir=respiracion');
+ try{
+  const {w}=h;await new Promise(resolve=>setTimeout(resolve,240));
+  assert.ok(w.document.querySelector('.spm-breathing-modal[open] iframe'));
+  assert.equal(w.SPM_BREATHING_LAB_HOST.getContext().mode,'library');
+  assert.equal(w.SPM_RESOURCE_CONTEXT().userId,'review-only');
+  assert.equal(w.__originalStorage.getItem('spm_de_records'),'real-origin-record');
+ }finally{h.close();}
+});
+
+test('direct weekly Pelvic review uses the assigned activity and retains the daily result flow',async()=>{
+ const h=await harness('?programa=desire&dia=3&abrir=pelvic-lab');
+ try{
+  const {w}=h;await new Promise(resolve=>setTimeout(resolve,240));
+  assert.ok(w.document.querySelector('.spm-pf-modal[open] iframe'));
+  const c=w.SPM_PELVIC_LAB_HOST.getContext();
+  assert.equal(c.day,3);assert.equal(c.origin,'dailyPlan');
+  assert.equal(c.activityId,'pelvic-daily-lab');assert.equal(c.intent,'daily-relax');
+  assert.equal(w.SPM_DAILY_PRACTICE.active().id,'pelvic-daily-lab');
+  assert.equal(w.SPM_RESOURCE_CONTEXT().userId,'review-only');
+ }finally{h.close();}
+});
+
 test('all five Focus I sessions can be opened directly from review links with active patient-style screens',async()=>{
  const sessions=[[4,'sf-i-1'],[8,'sf-i-2'],[12,'sf-i-3'],[23,'sf-i-4'],[26,'sf-i-5']];
  for(const [day,id] of sessions){

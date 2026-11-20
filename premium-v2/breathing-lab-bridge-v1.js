@@ -103,7 +103,7 @@ async function open(opts={}){
     return true;
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
+  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261120-audio-fullscreen1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
    const firstPractice=origin==='dailyPlan'&&day===1&&c.primary==='erection'&&activity?.id==='breath-start';
    const guide=firstPractice?window.SPM_PELVIC_GUIDANCE?.firstPractice?.():null;
    // El iframe conserva la altura completa: el audio forma parte del scroll de la práctica.

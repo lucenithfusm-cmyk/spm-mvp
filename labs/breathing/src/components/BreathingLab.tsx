@@ -80,7 +80,7 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
           <span className="bl-brand-text">SPM <b>Breathing Lab</b><small>REGULACIÓN AUTONÓMICA</small></span>
         </button>
         <div className="bl-top-right">
-          <Button variant="ghost" size="icon" className="bl-icon" aria-label={audio.muted ? 'Activar audio' : 'Silenciar audio'} title={audio.muted ? 'Activar audio' : 'Silenciar audio'} aria-pressed={audio.muted} onClick={() => setAudioMuted(!audio.muted)}>{audio.muted ? <VolumeX size={19} /> : <Volume2 size={19} />}</Button>
+          <Button variant="ghost" size="icon" className="bl-icon bl-voice-toggle" aria-label={audio.muted ? 'Activar audio' : 'Silenciar audio'} title={audio.muted ? 'Activar audio' : 'Silenciar audio'} aria-pressed={audio.muted} onClick={() => setAudioMuted(!audio.muted)}>{audio.muted ? <VolumeX size={19} /> : <Volume2 size={19} />}<span className="bl-voice-label" aria-hidden="true">{audio.muted ? 'Sin voz' : 'Voz activa'}</span></Button>
           <span className="bl-counter">{daily ? Math.max(0,dailyIndex)+1 : String(step + 1).padStart(2, '0')}<i>/</i>{daily ? assignedSteps.length : screens.length}</span>
           {!daily && <button className="bl-icon" onClick={() => setMenu(true)} aria-label="Abrir índice"><Menu size={21} /></button>}
         </div>
@@ -154,7 +154,7 @@ function DailyPracticeInstructions({ withoutHold, allowed }: { withoutHold: bool
     <div className="bl-note teal bl-practice-instructions">
       <b>{instruction.title}</b>
       {allowed ? <>
-        <Button type="button" variant="ghost" className="bl-audio bl-instruction-audio" aria-pressed={playing} disabled={audio.muted || !hasAudio(instruction.id)} onClick={() => playing ? stopAudio() : playAudio(instruction.id)}>
+        <Button type="button" variant="ghost" className="bl-audio bl-instruction-audio" aria-pressed={playing} disabled={!hasAudio(instruction.id)} onClick={() => { if (playing) stopAudio(); else { if (audio.muted) setAudioMuted(false); playAudio(instruction.id); } }}>
           <Volume2 size={24} aria-hidden="true" />{playing ? 'Detener instrucción' : 'Escuchar instrucción'}
         </Button>
         <ol>{instruction.steps.map(text => <li key={text}>{text}</li>)}</ol>
@@ -175,7 +175,7 @@ function Trainer({ n, text }: { n: number; text: string }) {
       <div>
         <span className="bl-trainer-name">ENTRENADOR SPM</span>
         <p>“{text}”</p>
-        <Button variant="ghost" className="bl-audio" disabled={!available || audio.muted} onClick={() => { if (playing) stopAudio(); else playAudio(id); }}>
+        <Button variant="ghost" className="bl-audio" aria-pressed={playing} disabled={!available} onClick={() => { if (playing) stopAudio(); else { if (audio.muted) setAudioMuted(false); playAudio(id); } }}>
           {available ? <Volume2 size={15} /> : <VolumeX size={15} />} {available ? (playing ? 'Detener voz' : 'Escuchar') : 'Voz oficial pendiente'}
         </Button>
       </div>

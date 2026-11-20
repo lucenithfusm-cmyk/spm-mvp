@@ -145,10 +145,13 @@ for (const [day, step, audioId, middleStep] of [
   expect(recordDaily).toHaveBeenCalledTimes(1); expect(close).not.toHaveBeenCalled();
 });
 
-test('the new instruction button respects the existing mute setting', async () => {
+test('an explicit instruction tap restores narration after the header was muted', async () => {
   audioState = { muted: true, id: null, error: null };
   await mount();
-  expect(button('Escuchar instrucción').disabled).toBe(true);
-  await click('Escuchar instrucción'); expect(playAudio).not.toHaveBeenCalled();
+  expect(button('Escuchar instrucción').disabled).toBe(false);
+  expect(el!.querySelector('.bl-voice-label')?.textContent).toBe('Sin voz');
+  await click('Escuchar instrucción');
+  expect(setAudioMuted).toHaveBeenCalledWith(false);
+  expect(playAudio).toHaveBeenCalledWith('instruction.daily.4-6');
   expect(recordDaily).not.toHaveBeenCalled();
 });

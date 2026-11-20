@@ -19,6 +19,7 @@ let day=validDay(params.get('dia'))?Number(params.get('dia')):1;
 // Open Focus II directly on day 19, and Focus I when a session-specific review link requests it.
 const focalDays=new Set([4,8,12,19,23,26]);
 const initialFocusII=params.has('programa')&&focalDays.has(day)&&(day===19||params.get('abrir')==='focalizacion');
+const initialLab=params.get('abrir');
 let focusing=false;
 let busy=true,ready=false;
 const states=new Map();
@@ -73,6 +74,27 @@ async function openFocusII(){
   status('No pudimos abrir la práctica de focalización. Usa el botón para reintentar.',true);
   return false;
  }finally{focusing=false;focusIIControls();}
+}
+async function openReviewLab(name){
+  if(busy||!ready||!['respiracion','pelvic-lab'].includes(name))return false;
+  try{
+    if(!await closeActivities())return false;
+    if(name==='respiracion'){
+      const opened=await window.SPM_BREATHING_LAB?.open({origin:'library'});
+      if(opened!==true)throw Error('Breathing unavailable');
+      status('Respiración diafragmática · Revisión de voz y bocinas');
+    }else{
+      const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(activity=>activity.id==='pelvic-daily-lab');
+      if(assigned)await window.SPM_DAILY_PRACTICE.launch(assigned.id);
+      else await window.SPM_PELVIC_LAB?.open({origin:'library',day});
+      if(!document.querySelector('.spm-pf-modal[open]'))throw Error('Pelvic Lab unavailable');
+      status('Pelvic Floor Lab · Revisión de bocinas');
+    }
+    return true;
+  }catch{
+    status('No pudimos abrir la práctica. Puedes volver a intentarlo desde Biblioteca completa.',true);
+    return false;
+  }
 }
 function render(){
   const selected=programs.find(p=>p.id===program);$('profileTitle').textContent=selected.profile;
@@ -146,7 +168,7 @@ const scripts=[
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261117-erection10x28-v1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
-  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261114-pelvic-adaptive6','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261119-deseo-calendario-r3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261113-respira-suelta-fullview1',
+  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261120-audio-fullscreen1','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261119-deseo-calendario-r3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261120-audio-fullscreen1',
   'erection-daily-plan-v1.js?v=20261117-erection10x28-v1','daily-resource-plan-v1.js?v=20261117-erection10x28-v1','checkpoint-audio-v1.js?v=20261113-checkpoint2','spm-checkpoint-touch-v1.js?v=20261118-checkpoint-touch-v1','program-checkpoint-v1.js?v=20261118-checkpoint-touch-v1','erection-ten-schedule-v1.js?v=20261118-dia27-prevencion-v1','erection-practice-v1.js?v=20261118-dia27-prevencion-v1',
   'erection-fullscreen-v1.js?v=20261117-er-fullscreen-cierre1',
   'erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1','erection-day1-bridge-v1.js?v=20261116-approved6-v2',
@@ -160,10 +182,10 @@ const scripts=[
    'erection-day9-touch-v1.js?v=20261117-dia24-recuperacion-v1','erection-day9-bridge-v1.js?v=20261117-dia24-recuperacion-v1',
     'erection-day10-touch-v1.js?v=20261118-dia27-prevencion-v1','erection-day10-bridge-v1.js?v=20261118-dia27-prevencion-v1',
   'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261120-movement-cards1',
-  'desire-day1-touch-v1.js?v=20261119-deseo-access-r2','desire-day1-bridge-v1.js?v=20261119-deseo-access-r2',
-  'desire-day2-touch-v1.js?v=20261119-deseo-access-r2','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
-  'desire-day3-touch-v1.js?v=20261119-deseo-access-r2','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261119-deseo-access-r2',
-  'desire-week2-bridge-v1.js?v=20261119-w2-audio2',
+  'desire-day1-touch-v1.js?v=20261120-audio-fullscreen1','desire-day1-bridge-v1.js?v=20261119-deseo-access-r2',
+  'desire-day2-touch-v1.js?v=20261120-audio-fullscreen1','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
+  'desire-day3-touch-v1.js?v=20261120-audio-fullscreen1','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261120-audio-fullscreen1',
+  'desire-week2-bridge-v1.js?v=20261120-audio-fullscreen1',
   'desire-week3-bridge-v1.js?v=20261119-w34-fullscreen1',
   'desire-week4-v1/catalog.js?v=20261119-w4-review1',
   'desire-week4-bridge-v1.js?v=20261119-w34-fullscreen1'
@@ -180,7 +202,8 @@ async function boot(){
     for(const src of scripts)await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(Error(src));document.body.append(script);});
     ready=true;busy=false;render();
     $('reviewOpenFocusII').onclick=()=>void openFocusII();
-    if(initialFocusII)setTimeout(()=>{void openFocusII();},120);
+    if(['respiracion','pelvic-lab'].includes(initialLab))setTimeout(()=>{void openReviewLab(initialLab);},120);
+    else if(initialFocusII)setTimeout(()=>{void openFocusII();},120);
     $('reviewProgram').onchange=e=>select(e.target.value,day);
     $('reviewDay').onchange=e=>select(program,e.target.value);
     $('reviewPrevious').onclick=()=>select(program,day-1);$('reviewNext').onclick=()=>select(program,day+1);
@@ -188,5 +211,5 @@ async function boot(){
     return true;
   }catch{busy=false;ready=false;controls();status('No pudimos preparar esta revisión. Recarga la página para intentarlo de nuevo.',true);return false;}
 }
-window.SPM_PROGRAM_REVIEW={programs,select,openFocusII,ready:boot()};
+window.SPM_PROGRAM_REVIEW={programs,select,openFocusII,openReviewLab,ready:boot()};
 })();
