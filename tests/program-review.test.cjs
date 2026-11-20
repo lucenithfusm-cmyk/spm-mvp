@@ -71,6 +71,40 @@ test('direct breathing review opens the real voice library with isolated example
  }finally{h.close();}
 });
 
+test('direct daily breathing review launches the actual assigned session on days 3 and 6',async()=>{
+ for(const [day,id,steps] of [[3,'breath-learn',[3,4]],[6,'breath-release',[9]]]){
+  const h=await harness('?programa=desire&dia='+day+'&abrir=respiracion-ruta');
+  try{
+   const {w}=h;await new Promise(resolve=>setTimeout(resolve,240));
+   const assigned=w.SPM_DAILY_PRACTICE.assignments().find(activity=>activity.kind==='breathing');
+   assert.equal(assigned.id,id);
+   assert.ok(w.document.querySelector('.spm-breathing-modal[open] iframe'));
+   const c=w.SPM_BREATHING_LAB_HOST.getContext();
+   assert.equal(c.mode,'daily');assert.equal(c.origin,'dailyPlan');assert.equal(c.day,day);
+   assert.equal(c.activity.id,assigned.id);assert.deepEqual(Array.from(c.activity.steps),steps);
+   assert.equal(w.SPM_DAILY_PRACTICE.active().id,assigned.id);
+   assert.equal(w.SPM_DAILY_PRACTICE.active().day,day);
+   const context=w.SPM_RESOURCE_CONTEXT();
+   assert.equal(context.userId,'review-only');
+   assert.equal(Object.keys(await w.SPM_DAILY_RECORDS.read(context.userId+':'+context.planId,day)).length,0,'opening the session does not complete it');
+   assert.equal(w.__originalStorage.getItem('spm_de_records'),'real-origin-record');
+   assert.deepEqual(h.errors,[]);
+  }finally{h.close();}
+ }
+});
+
+test('daily breathing review explains an unassigned day without opening the library',async()=>{
+ const h=await harness('?programa=desire&dia=1&abrir=respiracion-ruta');
+ try{
+  const {w}=h;await new Promise(resolve=>setTimeout(resolve,240));
+  assert.equal(w.SPM_DAILY_PRACTICE.assignments().some(activity=>activity.kind==='breathing'),false);
+  assert.equal(w.document.querySelector('.spm-breathing-modal[open]'),null);
+  assert.equal(w.SPM_DAILY_PRACTICE.active(),null);
+  assert.match(w.document.querySelector('#reviewStatus').textContent,/El día 1 no tiene una sesión de respiración asignada en esta ruta/);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
 test('direct weekly Pelvic review uses the assigned activity and retains the daily result flow',async()=>{
  const h=await harness('?programa=desire&dia=3&abrir=pelvic-lab');
  try{

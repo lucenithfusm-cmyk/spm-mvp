@@ -46,7 +46,7 @@ beforeEach(() => {
   hasRecordDaily = true;
   context = {
     day: 3, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
-    activity: { id: 'breath-3', day: 3, title: 'Respiración', summary: 'A tu ritmo.', steps: [4], minutes: 2 },
+    activity: { id: 'breath-learn', day: 3, title: 'Respiración', summary: 'A tu ritmo.', steps: [3, 4], minutes: 2 },
   };
 });
 afterEach(async () => {
@@ -59,10 +59,12 @@ async function mount() {
 }
 const button = (text: string) => Array.from(el!.querySelectorAll('button')).find(b => b.textContent === text)!;
 const click = async (text: string) => { await act(async () => button(text).click()); };
+const advanceToPractice = async () => { for (let stage = 0; stage < 3; stage++) await click('Continuar'); };
 
 test('daily confirmation flushes the session before recording the central activity', async () => {
   await mount();
   expect(recordDaily).not.toHaveBeenCalled();
+  await advanceToPractice();
   await click('Confirmar experiencia de prueba');
   expect(recordDaily).not.toHaveBeenCalled();
   await click('Guardar registro');
@@ -75,7 +77,7 @@ test('daily confirmation flushes the session before recording the central activi
 });
 
 test('flush and daily-record failures keep the experience open and retry without duplicate sessions', async () => {
-  await mount(); await click('Confirmar experiencia de prueba');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba');
   flush.mockRejectedValueOnce(Error('offline'));
   await click('Guardar registro');
   expect(recordDaily).not.toHaveBeenCalled();
@@ -95,14 +97,14 @@ test('flush and daily-record failures keep the experience open and retry without
 
 test('library saves never record a daily activity', async () => {
   context = { day: 3, origin: 'library', restriction: 'none', mode: 'library', launchStep: 4 };
-  await mount(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
   expect(flush).toHaveBeenCalledTimes(1);
   expect(recordDaily).not.toHaveBeenCalled();
   expect(el!.textContent).toContain('Guardado en tu programa');
 });
 
 test('returning to Today before saving never records a daily activity', async () => {
-  await mount(); await click('Volver a Hoy');
+  await mount(); await click('Atrás');
   expect(close).toHaveBeenCalledTimes(1);
   expect(flush).not.toHaveBeenCalled();
   expect(recordDaily).not.toHaveBeenCalled();
@@ -110,7 +112,7 @@ test('returning to Today before saving never records a daily activity', async ()
 
 test('an older daily host without recordDaily keeps the existing save behavior', async () => {
   hasRecordDaily = false;
-  await mount(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
   expect(flush).toHaveBeenCalledTimes(1);
   expect(recordDaily).not.toHaveBeenCalled();
   expect(el!.textContent).toContain('Guardado en tu programa');
@@ -122,9 +124,9 @@ for (const [day, step, audioId, middleStep] of [
 ] as const) test(`day ${day} narrates the current instructions and keeps the practice duration flexible`, async () => {
   context = {
     day, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
-    activity: { id: `breath-${day}`, day, title: 'Respiración', summary: 'A tu ritmo.', steps: [step], minutes: 2 },
+    activity: { id: day === 3 ? 'breath-learn' : 'breath-two', day, title: 'Respiración', summary: 'A tu ritmo.', steps: day === 3 ? [3, step] : [step], minutes: 2 },
   };
-  await mount();
+  await mount(); await advanceToPractice();
   expect(Array.from(el!.querySelectorAll('.bl-main ol li'), li => li.textContent)).toEqual([
     'Pulsa «Iniciar» y sigue la guía visual.',
     middleStep,
@@ -147,7 +149,7 @@ for (const [day, step, audioId, middleStep] of [
 
 test('an explicit instruction tap restores narration after the header was muted', async () => {
   audioState = { muted: true, id: null, error: null };
-  await mount();
+  await mount(); await advanceToPractice();
   expect(button('Escuchar instrucción').disabled).toBe(false);
   expect(el!.querySelector('.bl-voice-label')?.textContent).toBe('Sin voz');
   await click('Escuchar instrucción');

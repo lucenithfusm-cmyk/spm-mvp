@@ -76,13 +76,19 @@ async function openFocusII(){
  }finally{focusing=false;focusIIControls();}
 }
 async function openReviewLab(name){
-  if(busy||!ready||!['respiracion','pelvic-lab'].includes(name))return false;
+  if(busy||!ready||!['respiracion','respiracion-ruta','pelvic-lab'].includes(name))return false;
   try{
     if(!await closeActivities())return false;
     if(name==='respiracion'){
       const opened=await window.SPM_BREATHING_LAB?.open({origin:'library'});
       if(opened!==true)throw Error('Breathing unavailable');
       status('Respiración diafragmática · Revisión de voz y bocinas');
+    }else if(name==='respiracion-ruta'){
+      const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(activity=>activity.kind==='breathing');
+      if(!assigned){status('El día '+day+' no tiene una sesión de respiración asignada en esta ruta. Elige un día con práctica de respiración.');return false;}
+      await window.SPM_DAILY_PRACTICE.launch(assigned.id);
+      if(!document.querySelector('.spm-breathing-modal[open] iframe'))throw Error('Daily breathing unavailable');
+      status('Respiración diafragmática · Sesión de ruta · Día '+day);
     }else{
       const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(activity=>activity.id==='pelvic-daily-lab');
       if(assigned)await window.SPM_DAILY_PRACTICE.launch(assigned.id);
@@ -92,7 +98,7 @@ async function openReviewLab(name){
     }
     return true;
   }catch{
-    status('No pudimos abrir la práctica. Puedes volver a intentarlo desde Biblioteca completa.',true);
+    status(name==='respiracion-ruta'?'No pudimos abrir la sesión de respiración de la ruta. Vuelve a intentarlo desde las actividades de hoy.':'No pudimos abrir la práctica. Puedes volver a intentarlo desde Biblioteca completa.',true);
     return false;
   }
 }
@@ -168,7 +174,7 @@ const scripts=[
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261117-erection10x28-v1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
-  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261120-audio-fullscreen1','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261119-deseo-calendario-r3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261120-audio-fullscreen1',
+  'pelvic-module-rebuild-v2.js?v=20261114-circle-halo-welcome4','pelvic-guided-v3-hotfix.js?v=20261114-classic1','pelvic-lab-bridge-v1.js?v=20261120-audio-fullscreen1','pelvic-strength-readiness-v1.js?v=20261114-pelvic-adaptive6','desire-lab-bridge-v1.js?v=20261119-deseo-calendario-r3','sensate-lab-bridge-v1.js?v=20261116-focusii-direct-today-v2','breathing-lab-bridge-v1.js?v=20261120-breathing-routes2',
   'erection-daily-plan-v1.js?v=20261117-erection10x28-v1','daily-resource-plan-v1.js?v=20261117-erection10x28-v1','checkpoint-audio-v1.js?v=20261113-checkpoint2','spm-checkpoint-touch-v1.js?v=20261118-checkpoint-touch-v1','program-checkpoint-v1.js?v=20261118-checkpoint-touch-v1','erection-ten-schedule-v1.js?v=20261118-dia27-prevencion-v1','erection-practice-v1.js?v=20261118-dia27-prevencion-v1',
   'erection-fullscreen-v1.js?v=20261117-er-fullscreen-cierre1',
   'erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1','erection-day1-bridge-v1.js?v=20261116-approved6-v2',
@@ -202,7 +208,7 @@ async function boot(){
     for(const src of scripts)await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(Error(src));document.body.append(script);});
     ready=true;busy=false;render();
     $('reviewOpenFocusII').onclick=()=>void openFocusII();
-    if(['respiracion','pelvic-lab'].includes(initialLab))setTimeout(()=>{void openReviewLab(initialLab);},120);
+    if(['respiracion','respiracion-ruta','pelvic-lab'].includes(initialLab))setTimeout(()=>{void openReviewLab(initialLab);},120);
     else if(initialFocusII)setTimeout(()=>{void openFocusII();},120);
     $('reviewProgram').onchange=e=>select(e.target.value,day);
     $('reviewDay').onchange=e=>select(program,e.target.value);
