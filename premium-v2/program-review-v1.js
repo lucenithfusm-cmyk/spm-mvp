@@ -142,7 +142,7 @@ function installRecords(){
 const scripts=[
   'engine.js','modules.js?v=20261113-closing1','pelvic-guidance-v1.js?v=20261114-circle-halo-welcome4','daily-support-plan-v1.js?v=20261115-sensate-focus1-five-direct6','practice-audio-v1.js?v=20261113-recovery-audio1','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
   'firmness-guide-v1.js?v=20261113-firmness-1','spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-firmness-1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
-  'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261113-instructions1',
+  'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261120-movement-cards1',
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
   'technique-microclips.js','ejaculatory-startstop-v2.js?v=20261114-ep-combined-premium1','ejaculatory-squeeze-v1.js?v=20261114-ep-combined-premium1','ejaculatory-combined-v1.js?v=20261114-ep-combined-premium1','ejaculatory-control.js?v=20261114-ep-combined-premium1','ejaculatory-control-router.js','erectile-function-route.js?v=20261117-erection10x28-v1','erectile-function-premium.js?v=20261113-closing1',
   'erectile-platform-v2.js','erectile-library-v3.js?v=20261114-pelvic-entry2','erectile-guided-v3.js','erectile-central-v3.js?v=20261114-pelvic-entry2',
@@ -159,7 +159,7 @@ const scripts=[
    'erection-day8-touch-v1.js?v=20261117-dia21-sostener-v1','erection-day8-bridge-v1.js?v=20261117-dia21-sostener-v1',
    'erection-day9-touch-v1.js?v=20261117-dia24-recuperacion-v1','erection-day9-bridge-v1.js?v=20261117-dia24-recuperacion-v1',
     'erection-day10-touch-v1.js?v=20261118-dia27-prevencion-v1','erection-day10-bridge-v1.js?v=20261118-dia27-prevencion-v1',
-  'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261119-w34-review1',
+  'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','daily-practice-v1.js?v=20261120-movement-cards1',
   'desire-day1-touch-v1.js?v=20261119-deseo-access-r2','desire-day1-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day2-touch-v1.js?v=20261119-deseo-access-r2','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day3-touch-v1.js?v=20261119-deseo-access-r2','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261119-deseo-access-r2',

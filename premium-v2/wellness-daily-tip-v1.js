@@ -58,7 +58,17 @@ const MOVEMENT_STEPS={
  'mov.08':['Revisa la ficha de actividad acuática. Hazla solo si sabes nadar y en un entorno seguro o supervisado; no nades solo.','Si es adecuado para ti, realiza movimiento suave en el agua.','Si no puedes realizarla, elige una caminata cómoda como alternativa.'],
  'mov.09':['Revisa la ficha de baile y elige música que disfrutes.','Baila a un ritmo cómodo, adaptado a tu movilidad. Puedes hacerlo sentado o de pie.','Detente si aparece malestar.']
 };
-TIPS.movement.forEach(t=>{t.steps=MOVEMENT_STEPS[t.id]});
+// Añade las láminas recuperadas sin sustituir las indicaciones ni la agenda clínica.
+// Las recomendaciones sin lámina conservan su presentación y funcionamiento actuales.
+const MOVEMENT_VISUALS={
+ 'mov.01':{image:'assets/movement-daily-cards/day-02.webp',imageAlt:'Tarjeta de Movimiento del día 2: Camina con intención.',optionalBenefit:'Cuida tu bienestar sexual con una caminata a tu ritmo.'},
+ 'mov.02':{image:'assets/movement-daily-cards/day-05.webp',imageAlt:'Tarjeta de Movimiento del día 5: Rompe el tiempo sentado.',optionalBenefit:'Una pausa activa dentro de los hábitos que eliges para tu bienestar sexual.'},
+ 'mov.03':{image:'assets/movement-daily-cards/day-08.webp',imageAlt:'Tarjeta de Movimiento del día 8: Suma movimiento cotidiano.',optionalBenefit:'Integra pequeños movimientos al cuidado de tu bienestar sexual.'},
+ 'mov.04':{image:'assets/movement-daily-cards/day-11.webp',imageAlt:'Tarjeta de Movimiento del día 11: Movilidad a tu ritmo.',optionalBenefit:'Explora la comodidad de tu cuerpo como parte de tu bienestar sexual.'},
+ 'mov.05':{image:'assets/movement-daily-cards/day-14.webp',imageAlt:'Tarjeta de Movimiento del día 14: Un poco más de ritmo.',optionalBenefit:'Dedica este momento a tu cuerpo y a tu bienestar sexual, sin exigencias.'},
+ 'mov.08':{image:'assets/movement-daily-cards/day-23.webp',imageAlt:'Tarjeta de Movimiento del día 23: Actividad en el agua.',optionalBenefit:'Elige una forma cómoda de moverte y cuidar tu bienestar sexual.'}
+};
+TIPS.movement.forEach(t=>{t.steps=MOVEMENT_STEPS[t.id];if(MOVEMENT_VISUALS[t.id])Object.assign(t,MOVEMENT_VISUALS[t.id]);});
 function tipsFor(d=day()){
  return ORDER.flatMap(cat=>{
   const index=SCHEDULE[cat].indexOf(Number(d));if(index<0)return [];

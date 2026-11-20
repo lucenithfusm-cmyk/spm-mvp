@@ -1,0 +1,74 @@
+name: SPM Movimiento · Tarjetas diarias
+on:
+  pull_request:
+    paths:
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/wellness-daily-tip-v1.js'
+      - 'premium-v2/assets/movement-daily-cards/**'
+      - 'tests/movement-daily-cards*'
+      - 'tests/support/movement-daily-fixture.cjs'
+      - '.github/workflows/movement-daily-cards-qa.yml'
+  push:
+    branches: [main, release/movement-approved-cards-20261120]
+    paths:
+      - 'premium-v2/daily-practice-v1.js'
+      - 'premium-v2/wellness-daily-tip-v1.js'
+      - 'premium-v2/assets/movement-daily-cards/**'
+      - 'tests/movement-daily-cards*'
+      - 'tests/support/movement-daily-fixture.cjs'
+      - '.github/workflows/movement-daily-cards-qa.yml'
+permissions:
+  contents: read
+jobs:
+  movement-behavior:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install test DOM
+        run: npm install --prefix /tmp/spm-movement-qa jsdom@26.1.0 --ignore-scripts --no-audit --no-fund
+      - name: Check parsing and movement behavior
+        env:
+          NODE_PATH: /tmp/spm-movement-qa/node_modules
+        run: |
+          node --check premium-v2/daily-practice-v1.js
+          node --check premium-v2/wellness-daily-tip-v1.js
+          node --test tests/movement-daily-cards.test.cjs tests/movement-safety.test.cjs
+  movement-responsive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [chrome, webkit]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install browser test engine
+        run: |
+          npm install --prefix /tmp/spm-movement-playwright playwright@1.62.1 --ignore-scripts --no-audit --no-fund
+          if [ "${{ matrix.engine }}" = "webkit" ]; then
+            /tmp/spm-movement-playwright/node_modules/.bin/playwright install --with-deps webkit
+          fi
+      - name: Verify compact previews and complete artwork across viewports
+        env:
+          NODE_PATH: /tmp/spm-movement-playwright/node_modules
+          CHROME_BIN: /usr/bin/google-chrome
+          SPM_BROWSER: ${{ matrix.engine }}
+          SPM_SCREENSHOT_DIR: test-artifacts/movement-${{ matrix.engine }}
+        run: |
+          node tests/support/static-server.cjs >/tmp/spm-movement-static.log 2>&1 &
+          spm_pid=$!
+          trap 'kill "$spm_pid" 2>/dev/null || true' EXIT
+          node tests/movement-daily-cards-browser.cjs
+      - name: Keep responsive review screenshots and results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: movement-${{ matrix.engine }}
+          path: test-artifacts/movement-${{ matrix.engine }}/
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,0 +1,64 @@
+{
+  "version": "20261120-movement-cards1",
+  "cards": [
+    {
+      "day": 2,
+      "source": "day-02-restyled.png",
+      "asset": "day-02.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 207106,
+      "sha256": "e0d6e909819f84e9de4c1cf31acc6b49c1f319568346f5583e977e41a157be68"
+    },
+    {
+      "day": 5,
+      "source": "standing-up-approved.png",
+      "asset": "day-05.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 216370,
+      "sha256": "7ef523936f89673861b79d80e59d39ba1cdeb3adeacbb8d52441d9b2b9d785c4"
+    },
+    {
+      "day": 8,
+      "source": "stairs-approved.png",
+      "asset": "day-08.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 242452,
+      "sha256": "9d6433eebca7f9ff77450781c271aad73df23889fa2689cc5669db8583af38c9"
+    },
+    {
+      "day": 11,
+      "source": "mobility-approved.png",
+      "asset": "day-11.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 209240,
+      "sha256": "32dd58b78b8ba58ba31235e511920d285511605be673c1420da94e033c8a2496"
+    },
+    {
+      "day": 14,
+      "source": "day-14-corrected-label.png",
+      "asset": "day-14.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 235376,
+      "sha256": "d45073278412eda339aece350bdff8f1fd129e2041b628ad6636f2185955f90c"
+    },
+    {
+      "day": 23,
+      "source": "swimming-approved.png",
+      "asset": "day-23.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 264052,
+      "sha256": "6cdf5fb6cb3a098abc0aeafe8ed9c044a10421243a0e8cc193b33a3a7b1b5640"
+    }
+  ],
+  "unrecovered_days": [
+    17,
+    20,
+    26
+  ]
+}
