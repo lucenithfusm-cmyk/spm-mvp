@@ -1,4 +1,4 @@
-/* Fullscreen art bands: logical canvas 864 × 1536. Photos retain their full original frame. */
+/* Fullscreen art bands: logical canvas 864 × 1536. Photo framing policies preserve faces and contact gestures. */
 window.SPM_DESIRE_PHOTO_LAYOUT = Object.freeze({
   "d15_01": {
     "y": 399.98,
@@ -319,5 +319,54 @@ window.SPM_DESIRE_PHOTO_LAYOUT = Object.freeze({
     "y": 369.98,
     "height": 461.4,
     "src": "../desire-photo-v1/day28.webp"
+  }
+});
+
+/* Reviewed horizontal focus; wide scenes keep all participants and hands in frame. */
+window.SPM_DESIRE_PHOTO_FRAMING = Object.freeze({
+  "day15.webp": {
+    "objectPosition": "50% 50%"
+  },
+  "day16.webp": {
+    "objectPosition": "50% 50%"
+  },
+  "day17.webp": {
+    "objectPosition": "50% 50%",
+    "fit": "contain"
+  },
+  "day18.webp": {
+    "objectPosition": "50% 50%",
+    "fit": "contain"
+  },
+  "day19.webp": {
+    "objectPosition": "50% 50%"
+  },
+  "day20.webp": {
+    "objectPosition": "75% 50%"
+  },
+  "day21.webp": {
+    "objectPosition": "50% 50%"
+  },
+  "day22.webp": {
+    "objectPosition": "75% 50%"
+  },
+  "day23.webp": {
+    "objectPosition": "40% 50%"
+  },
+  "day24.webp": {
+    "objectPosition": "80% 50%"
+  },
+  "day25.webp": {
+    "objectPosition": "50% 50%"
+  },
+  "day26.webp": {
+    "objectPosition": "50% 50%",
+    "fit": "contain"
+  },
+  "day27.webp": {
+    "objectPosition": "60% 50%"
+  },
+  "day28.webp": {
+    "objectPosition": "40% 50%"
   }
 });

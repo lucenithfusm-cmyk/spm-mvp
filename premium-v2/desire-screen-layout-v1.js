@@ -72,6 +72,21 @@
     return entry;
   }
 
+  function updatePhotoFit(state) {
+    const image = state.photoImage;
+    const box = state.photoBox;
+    const key = state.photo.src.split('/').pop().split('?')[0];
+    const framing = window.SPM_DESIRE_PHOTO_FRAMING?.[key] || {};
+    const sourceRatio = image.naturalWidth / image.naturalHeight;
+    const frameRatio = box.clientWidth / box.clientHeight;
+    // Fill tall frames by trimming only the sides. Wide scenes and short frames
+    // retain the complete photograph so heads and contact gestures stay visible.
+    const fill = framing.fit !== 'contain' && Number.isFinite(sourceRatio) &&
+      sourceRatio > 0 && frameRatio <= sourceRatio;
+    box.dataset.fit = fill ? 'cover' : 'contain';
+    setStyle(image, 'object-position', fill ? (framing.objectPosition || '50% 50%') : '50% 50%');
+  }
+
   function updateLayout() {
     if (!active?.portrait.isConnected) return;
     const state = active;
@@ -110,6 +125,7 @@
     setStyle(state.portrait, '--spm-desire-bottom-top', px(topHeight + photoHeight));
     setStyle(state.portrait, '--spm-desire-bottom-height', px(bottomHeight));
     setStyle(state.portrait, '--spm-desire-bottom-offset', px(-photoEnd * scale));
+    updatePhotoFit(state);
 
     state.portrait.querySelectorAll('.spm-layer, .clock-tag').forEach(node => {
       const original = rememberCoordinates(state, node, scale);
@@ -230,6 +246,11 @@
       node.decoding = 'async';
     });
     photoBox.append(fill, image);
+    state.photoBox = photoBox;
+    state.photoImage = image;
+    image.addEventListener('load', () => {
+      if (active === state) schedule();
+    }, {once: true});
     state.layers = [top, photoBox, bottom];
     state.layers.forEach(node => node.setAttribute('aria-hidden', 'true'));
     portrait.prepend(...state.layers);

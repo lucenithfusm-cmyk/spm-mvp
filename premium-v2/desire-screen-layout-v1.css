@@ -166,15 +166,19 @@ html.spm-desire-screen-active .portrait[data-spm-layout="bands"] {
   z-index: 0;
   object-fit: cover;
   object-position: center;
-  filter: blur(10px);
+  filter: blur(20px);
   transform: scale(1.08);
-  opacity: .62;
+  opacity: .24;
 }
 
 .spm-desire-photo-image {
   z-index: 1;
   object-fit: contain;
   object-position: center;
+}
+
+.spm-desire-photo[data-fit="cover"] .spm-desire-photo-image {
+  object-fit: cover;
 }
 
 html.spm-desire-screen-active .screen-footer[data-desire-panel] {

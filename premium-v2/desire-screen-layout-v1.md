@@ -6,7 +6,7 @@ Al abrir una práctica de los días 15–28 desde Central, el visor ocupa todo e
 
 En el visor, el diseño aprobado llega a ambos bordes del móvil. No se repiten la marca, el día ni la barra de estado encima de la lámina. La información de esa cabecera sigue disponible para las tecnologías de asistencia.
 
-La fotografía se adapta al espacio vertical disponible y conserva su encuadre completo. Los textos, las escalas y los botones mantienen sus proporciones y posiciones relativas. En una pantalla especialmente baja, el contenido puede desplazarse verticalmente para no ocultar controles ni reducir la fotografía por debajo de 100 píxeles.
+La fotografía se adapta al espacio vertical disponible y conserva visibles los rostros y los gestos de la escena. Los textos, las escalas y los botones mantienen sus proporciones y posiciones relativas. En una pantalla especialmente baja, el contenido puede desplazarse verticalmente para no ocultar controles ni reducir la fotografía por debajo de 100 píxeles.
 
 El botón de opciones abre la navegación auxiliar, las guías y los controles adicionales existentes. El consentimiento requerido de la práctica en pareja abre ese panel automáticamente. La nota de repetición de la fase I permanece visible sobre la práctica; las respuestas, los temporizadores, el audio y el guardado siguen perteneciendo a la aplicación de cada semana.
 
@@ -22,7 +22,7 @@ El botón de opciones abre la navegación auxiliar, las guías y los controles a
 
 Las láminas aprobadas tienen un lienzo lógico de 864 × 1536. Su banda superior y su banda inferior conservan la escala determinada por el ancho del dispositivo. La banda fotográfica central absorbe la diferencia de altura. El mapa transforma las coordenadas verticales de los controles con las mismas tres bandas; sus coordenadas horizontales se conservan.
 
-Las fotografías usan `object-fit: contain`. Una copia desenfocada de la misma fotografía completa el fondo cuando la proporción del espacio difiere de la imagen original. No se estira la lámina completa ni se recortan caras y manos para llenar el marco.
+Las fotografías alternan entre `cover` y `contain` según la proporción disponible y la composición de la escena. `cover` se permite sólo cuando conserva toda la altura original; el foco horizontal se revisa por fotografía. Las escenas amplias con protagonistas separados conservan `contain`. En ese caso, una copia atenuada y desenfocada completa el fondo. No se estira la lámina completa ni se corta la parte superior o inferior de las fotografías para llenar el marco.
 
 Al cambiar una lámina en el futuro, hay que actualizar su banda en el mapa junto con las coordenadas de sus controles. La variante `d18_03a` conserva la escena individual de escritura del día 21.
 

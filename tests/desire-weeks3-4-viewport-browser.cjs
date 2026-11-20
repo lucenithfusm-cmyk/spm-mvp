@@ -11,7 +11,7 @@ const base = new URL(process.env.SPM_CENTRAL_TEST_BASE || 'http://127.0.0.1:4173
 const artifacts = path.join(process.env.SPM_SCREENSHOT_DIR || 'test-artifacts/desire-weeks3-4-' + engine, 'viewport');
 const hostUrl = new URL('../tests/desire-layout-host.html', base);
 const viewports = [{ width: 390, height: 844 }, { width: 320, height: 568 }, { width: 390, height: 650 }];
-const portraitShots = new Set(['d15_01', 'd16_01', 'd17_01', 'd21_01', 'd24_01', 'd28_01']);
+const portraitShots = new Set(Array.from({ length: 14 }, (_, index) => `d${index + 15}_01`));
 fs.mkdirSync(artifacts, { recursive: true });
 
 function hostDocument(screen) {
@@ -85,7 +85,11 @@ async function checkGeometry(frame, label, viewport) {
   assert.deepEqual(result.border, [0, 0, 0, 0], label + ': no portrait border');
   assert.equal(result.radius, 0, label + ': no card corners around the screen');
   assert.deepEqual(result.duplicateHeadings, [], label + ': no second brand/day heading above the approved artwork');
-  assert.equal(result.photo.fit, 'contain', label + ': complete illustration is never cropped by cover');
+  assert(['contain', 'cover'].includes(result.photo.fit), label + ': illustration keeps its original proportions');
+  if (result.photo.fit === 'cover') {
+    assert(result.photo.width / result.photo.height <= result.photo.naturalWidth / result.photo.naturalHeight + .01,
+      label + ': a filled photo frame keeps the entire source height, without cutting the head or hands vertically');
+  }
   assert(result.photo.naturalWidth > 0 && result.photo.naturalHeight > 0, label + ': illustration is loaded');
   assert(result.photo.width > 0 && result.photo.height >= 90, label + ': illustration remains visible at short heights');
   assert.equal(result.footerHidden, true, label + ': secondary controls do not add permanent page height');

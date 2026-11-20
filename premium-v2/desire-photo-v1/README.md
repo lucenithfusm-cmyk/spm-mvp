@@ -1,6 +1,8 @@
 # Fotografías de Deseo · días 15–28
 
-Estas fotografías se muestran como elementos independientes de los textos y controles de las prácticas. El visor conserva el encuadre completo con `object-fit: contain`; el área fotográfica se adapta a la altura disponible del dispositivo.
+Estas fotografías se muestran como elementos independientes de los textos y controles de las prácticas. El área fotográfica se adapta a la altura disponible del dispositivo y conserva visibles los rostros y los gestos de cada escena.
+
+En un marco vertical, las escenas compatibles llenan el espacio conservando toda la altura de la fotografía; sólo se ajustan los laterales con un foco revisado para cada imagen. En marcos panorámicos y escenas cuyos protagonistas están separados, se muestra la fotografía completa con `object-fit: contain` y un fondo suave de la misma imagen.
 
 - Los días 15 y 18–28 usan las ilustraciones originales aprobadas, sin recortarlas ni redibujarlas.
 - La variante individual «Escribir para mí» del día 18 conserva la escena de escritura del día 21, igual que su diseño aprobado.
