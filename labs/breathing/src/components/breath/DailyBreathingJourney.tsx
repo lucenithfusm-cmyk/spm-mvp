@@ -8,6 +8,7 @@ import { claimPlayback } from '@/lib/breath-playback';
 import { useBreathAudio } from '@/lib/use-breath-audio';
 import manifest from '@/assets/audio/lenny-manifest.json';
 import dailyInstructions from '@/assets/audio/daily-instructions-manifest.json';
+import practicalGuidance from '@/assets/audio/practical-guidance-manifest.json';
 import { BreathPatternGuide } from './BreathPatternGuide';
 import { DemoVideo } from './DemoVideo';
 import { PracticeBlock } from './PracticeBlock';
@@ -31,14 +32,14 @@ const releaseZones = [
   { key: 'shoulders', title: 'Hombros', detail: 'Súbelos al inhalar y déjalos caer al exhalar. Repite dos veces.' },
   { key: 'abd', title: 'Abdomen', detail: 'Deja de “meter barriga”. Permite que se expanda libremente.' },
 ] as const;
-const transcript = (id: string) => [...manifest.entries, ...dailyInstructions.entries].find(entry => entry.id === id)?.text ?? '';
+const transcript = (id: string) => [...manifest.entries, ...dailyInstructions.entries, ...practicalGuidance.entries].find(entry => entry.id === id)?.text ?? '';
 
-function Narration({ id, label = 'Escuchar explicación' }: { id: string; label?: string }) {
+function Narration({ id, label = 'Escuchar explicación', ariaLabel }: { id: string; label?: string; ariaLabel?: string }) {
   const audio = useBreathAudio();
   const playing = audio.id === id;
   return (
-    <section className="bl-route-audio">
-      <button type="button" className="bl-audio" aria-pressed={playing} disabled={!hasAudio(id)} onClick={() => {
+    <section className="bl-route-audio" data-narration={id}>
+      <button type="button" className="bl-audio" aria-label={ariaLabel ? playing ? 'Detener audio para acomodarte' : ariaLabel : undefined} aria-pressed={playing} disabled={!hasAudio(id)} onClick={() => {
         if (playing) stopAudio();
         else { if (audio.muted) setAudioMuted(false); playAudio(id); }
       }}>
@@ -102,7 +103,11 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
   const leave = () => { stopMedia(); void host()?.close(); };
   const openLibrary = () => { stopMedia(); void host()?.openLibrary(); };
   const showSafety = () => { stopMedia(); setSafety(true); };
-  const selectComparison = (mode: 'chest' | 'diaphragm') => { setComparison(mode); setComparisonActivation(previous => previous + 1); };
+  const selectComparison = (mode: 'chest' | 'diaphragm') => {
+    setComparison(mode); setComparisonActivation(previous => previous + 1);
+    if (audio.muted) setAudioMuted(false);
+    playAudio(`comparison.${mode}`);
+  };
   const toggleCheck = (index: number) => setChecks(previous => previous.includes(index) ? previous.filter(value => value !== index) : [...previous, index]);
   const title = safety ? 'Señales para detenerte' : !journey ? 'Explora la respiración con calma'
     : stage === 0 ? journey.variant === 'recognize' ? 'Pecho y abdomen' : 'Mandíbula, hombros y abdomen'
@@ -110,14 +115,9 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
         : stage === 2 ? validAssignment!.title : 'Respira a tu ritmo';
   const practice = journey?.practice;
   const instruction = dailyInstructions.entries.find(entry => entry.id === journey?.instructionAudioId);
-  const narrationId = safety ? 'screen.17' : !journey ? 'screen.03'
-    : stage === 0 ? journey.variant === 'recognize' ? 'screen.02' : 'screen.07'
-      : stage === 1 ? journey.variant === 'recognize' ? 'screen.03' : 'screen.06'
-        : stage === 2 ? journey.contextAudioId : allowed ? instruction?.id ?? null : null;
-  const narrationPlaying = !!narrationId && audio.id === narrationId;
 
   return (
-    <div className="bl-shell bl-route-shell" data-daily-journey={journey?.variant ?? 'education'} data-route-stage={stage + 1} data-route-assignment={validAssignment?.id}>
+    <div className="bl-shell bl-route-shell" data-daily-journey={journey?.variant ?? 'education'} data-route-stage={stage + 1} data-route-assignment={validAssignment?.id} data-route-safety={safety}>
       <div className="bl-central-day">Día {day} de 28 · Actividad asignada</div>
       <header className="bl-top bl-route-header">
         <button type="button" className="bl-brand" onClick={() => move(0)} aria-label="Inicio de la actividad">
@@ -125,13 +125,6 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
           <span className="bl-brand-text">SPM <b>Breathing Lab</b><small>{journey?.title ?? 'RESPIRACIÓN DIAFRAGMÁTICA'}</small></span>
         </button>
         <div className="bl-top-right">
-          <button type="button" className="bl-icon bl-voice-toggle bl-voice-play" aria-label={!narrationId ? 'Explicación no disponible en esta pantalla' : narrationPlaying ? 'Detener explicación de esta pantalla' : 'Escuchar explicación de esta pantalla'} aria-pressed={narrationPlaying} disabled={!narrationId || !hasAudio(narrationId)} onClick={() => {
-            if (!narrationId) return;
-            if (narrationPlaying) stopAudio();
-            else { if (audio.muted) setAudioMuted(false); playAudio(narrationId); }
-          }}>
-            <Volume2 size={20} aria-hidden="true" /><span className="bl-voice-label" aria-hidden="true">{!narrationId ? 'Sin audio' : narrationPlaying ? 'Detener' : 'Escuchar'}</span>
-          </button>
           {journey && <span className="bl-counter">{stage + 1}<i>/</i>4</span>}
         </div>
       </header>
@@ -153,13 +146,13 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
         </section>}
 
         <div className="bl-route-content" hidden={safety} style={safety ? { display: 'none' } : undefined}>
-          {!journey && <><BreathPatternGuide mode="diaphragm" suspended={safety} /><Narration id="screen.03" /></>}
+          {!journey && <><BreathPatternGuide mode="diaphragm" autoPlay showControls={false} suspended={safety} /><Narration id="screen.03" /></>}
           {journey?.variant === 'recognize' && stage === 0 && <>
             <div className="bl-route-tabs" role="group" aria-label="Compara las dos imágenes de respiración">
               <button type="button" className={`bl-route-tab ${comparison === 'chest' ? 'on' : ''}`} aria-pressed={comparison === 'chest'} onClick={() => selectComparison('chest')}>Torácica · pecho</button>
               <button type="button" className={`bl-route-tab ${comparison === 'diaphragm' ? 'on' : ''}`} aria-pressed={comparison === 'diaphragm'} onClick={() => selectComparison('diaphragm')}>Diafragmática · abdomen</button>
             </div>
-            <BreathPatternGuide mode={comparison} activationKey={comparisonActivation} suspended={safety} />
+            <BreathPatternGuide mode={comparison} activationKey={comparisonActivation} showControls={false} suspended={safety} />
             <Narration id="screen.02" />
             <section className="bl-route-card"><h2 className="bl-route-subtitle">{comparison === 'chest' ? 'Observa el pecho y los hombros' : 'Observa el abdomen'}</h2>
               <ul className="bl-bullets">{(comparison === 'chest' ? ['Se mueven pecho y hombros', 'Ritmo rápido y corto', 'Acompaña estrés y tensión'] : ['Se mueve el abdomen', 'Ritmo lento, exhalación larga', 'Favorece calma y control']).map(text => <li key={text}>{text}</li>)}</ul>
@@ -175,7 +168,7 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
           </>}
           {journey && stage === 1 && <>
             <Narration id={journey.variant === 'recognize' ? 'screen.03' : 'screen.06'} />
-            <BreathPatternGuide mode="diaphragm" suspended={safety} />
+            <BreathPatternGuide mode="diaphragm" autoPlay showControls={false} suspended={safety} />
             {journey.variant === 'recognize' && <section className="bl-route-card">
               <ol className="bl-ol"><li>Siéntate o recuéstate cómodo.</li><li>Una mano en el pecho, otra sobre el ombligo.</li><li>Respira como siempre durante 3–4 respiraciones.</li></ol>
               <h2 className="bl-route-subtitle">¿Qué mano se mueve más?</h2><div className="bl-route-tabs bl-route-observation" role="group" aria-label="Movimiento que percibes">
@@ -193,9 +186,11 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
             {practice?.step === 10 && <section className="bl-route-card bl-route-context"><p>Tres respiraciones lentas sin retención. Úsala en cualquier momento: antes de una conversación difícil, en un pico de ansiedad o de activación.</p></section>}
             {journey.fullDemonstration ? <div className="bl-route-media"><DemoVideo /></div>
               : journey.regulationVideo ? <div className="bl-route-media"><DemoVideo kind="regulation" /></div>
-                : <BreathPatternGuide mode="diaphragm" suspended={safety} />}
+                : <BreathPatternGuide mode="diaphragm" autoPlay showControls={false} suspended={safety} />}
             {journey.variant === 'recognize' && !journey.fullDemonstration && <details className="bl-route-card bl-route-demonstration" onToggle={event => { if (!event.currentTarget.open) stopMedia(); }}><summary>Ver demostración otra vez</summary><DemoVideo /></details>}
-            <section className="bl-route-card"><h2 className="bl-route-subtitle">Acomódate antes de empezar</h2><ul className="bl-bullets"><li>Espalda apoyada, hombros sueltos.</li><li>Sin esfuerzo ni ruido: suave es suficiente.</li><li>Respirar lento debe sentirse cómodo. Si aparece mareo o malestar, detente y respira normal.</li></ul></section>
+            {journey.variant === 'release'
+              ? <Narration id="instruction.prepare" label="Escuchar audio" ariaLabel="Escuchar audio para acomodarte" />
+              : <section className="bl-route-card"><h2 className="bl-route-subtitle">Acomódate antes de empezar</h2><ul className="bl-bullets"><li>Espalda apoyada, hombros sueltos.</li><li>Sin esfuerzo ni ruido: suave es suficiente.</li><li>Respirar lento debe sentirse cómodo. Si aparece mareo o malestar, detente y respira normal.</li></ul></section>}
           </>}
           {journey && stage === 3 && <>
             {allowed && instruction ? <section className="bl-route-card bl-route-instructions"><h2 className="bl-route-subtitle">{instruction.title}</h2><Narration id={instruction.id} label="Escuchar instrucción" /><ol className="bl-ol">{instruction.steps.map(text => <li key={text}>{text}</li>)}</ol></section>
@@ -205,6 +200,7 @@ export function DailyBreathingJourney({ assignment, day, practiceAllowed, noHold
         </div>
 
         {safety && <section className="bl-route-safety bl-route-card" role="region" aria-label="Recomendaciones de seguridad">
+          <Narration id="screen.17" />
           <div className="bl-note warn"><ShieldAlert size={20} aria-hidden="true" /><p><b>Detén la práctica</b> y respira de forma normal si notas: mareo, visión borrosa, hormigueo en manos o labios, falta de aire importante, dolor u opresión en el pecho, palpitaciones marcadas o cualquier malestar.</p></div>
           <h2 className="bl-route-subtitle">Cómo practicar con seguridad</h2><ul className="bl-bullets"><li>No fuerces el volumen de aire: lento no significa profundo.</li><li>No hiperventiles ni encadenes respiraciones rápidas.</li><li>Si las pausas te incomodan, usa siempre el modo sin pausa.</li><li>Practica sentado o recostado, nunca conduciendo ni en el agua.</li></ul>
           <p>Si los síntomas persisten, se repiten o tienes una condición respiratoria o cardíaca, consulta con tu profesional de salud. Ante dolor torácico intenso o dificultad respiratoria grave, busca atención urgente. Este módulo es educativo y no sustituye una valoración clínica.</p>

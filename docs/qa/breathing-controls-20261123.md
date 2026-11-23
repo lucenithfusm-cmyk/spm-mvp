@@ -1,5 +1,7 @@
 # Respiración · bocina superior y selección de la guía visual
 
+> Registro histórico. La solicitud posterior del mismo día retira la bocina superior y añade narraciones propias: ver [la experiencia vigente](breathing-distinct-narration-20261123.md).
+
 Fecha: 23 de noviembre de 2026. Rama: `fix/spm-audio-fullscreen-20261120`.
 Revisión: https://github.com/lucenithfusm-cmyk/spm-mvp/pull/84
 Base remota de esta corrección: `03eb390b9cd014e40174d93ce179b9227cca41b0`.

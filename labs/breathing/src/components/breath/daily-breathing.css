@@ -149,11 +149,11 @@
  .bl-route-footer>.bl-btn {padding:11px 14px;font-size:14px}
 }
 @media(max-width:340px) {
- .bl-route-shell .bl-route-header {display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:8px;padding:10px 12px}
+ .bl-route-shell .bl-route-header {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px}
  .bl-route-header .bl-brand-text {font-size:12px}
  .bl-route-header .bl-brand-text small {font-size:6px;letter-spacing:.7px}
  .bl-route-header .bl-top-right {width:auto}
- .bl-route-header .bl-counter {display:none}
+ .bl-route-header .bl-counter {display:inline-flex}
  .bl-route-shell .bl-route-main {padding:18px 12px 24px}
  .bl-route-main .bl-h1 {font-size:26px}
  .bl-route-tab {font-size:12px;padding:10px 6px}

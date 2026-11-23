@@ -25,6 +25,10 @@
 .bl-pattern-reading>span {grid-area:1/1;animation:bl-pattern-inhale var(--bl-pattern-cycle) linear infinite}
 .bl-pattern-reading>.bl-pattern-exhale {opacity:0;animation-name:bl-pattern-exhale}
 .bl-pattern-reading>.bl-pattern-paused {animation:none;display:none}
+.bl-pattern-guide[data-brief="true"] .bl-pattern-moving-zone,
+.bl-pattern-guide[data-brief="true"] .bl-pattern-glow,
+.bl-pattern-guide[data-brief="true"] .bl-pattern-arrows,
+.bl-pattern-guide[data-brief="true"] .bl-pattern-reading>span {animation-iteration-count:1;animation-fill-mode:forwards}
 .bl-pattern-caption p {margin:0;color:#bccfce;font-size:12px;line-height:1.5}
 .bl-pattern-caption small {color:#a8bfbe;font-size:12px;line-height:1.5}
 .bl-pattern-toggle {

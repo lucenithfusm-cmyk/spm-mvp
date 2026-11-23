@@ -1,7 +1,10 @@
 import { describe, expect, test } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { claimPlayback, registerPlayback } from './breath-playback';
 import { AUDIO_IDS, audioFiles, playAudio, stopAudio, getAudioState, setAudioMuted } from './breath-audio';
 import manifest from '../assets/audio/lenny-manifest.json';
+import practicalGuidance from '../assets/audio/practical-guidance-manifest.json';
 
 describe('Exclusive SPM playback', () => {
   test('video, narration and practice never remain active together', () => {
@@ -55,13 +58,79 @@ describe('Exclusive SPM playback', () => {
   });
   test('both current daily instructions have separate MP3s and preserve all 22 original recordings', () => {
     const dailyIds = ['instruction.daily.4-6', 'instruction.daily.flexible'];
-    expect(Object.keys(audioFiles).sort()).toEqual([...manifest.entries.map(entry => entry.id), ...dailyIds].sort());
+    expect(Object.keys(audioFiles).sort()).toEqual([...manifest.entries.map(entry => entry.id), ...dailyIds, ...practicalGuidance.entries.map(entry => entry.id)].sort());
     for (const id of dailyIds) {
       expect(audioFiles[id]).toMatch(/\.mp3(?:[?#]|$)/i);
       expect(manifest.entries.some(entry => entry.url === audioFiles[id])).toBe(false);
     }
     expect(audioFiles[dailyIds[0]]).not.toBe(audioFiles[dailyIds[1]]);
     for (const entry of manifest.entries) expect(audioFiles[entry.id]).toBe(entry.url);
+  });
+  test('the three new guidance recordings preserve the exact scripts, Lenny settings and downloaded MP3 bytes', () => {
+    const scripts = {
+      'comparison.chest': 'Observa el pecho y los hombros. Se mueven pecho y hombros. Ritmo rápido y corto. Acompaña estrés y tensión.',
+      'comparison.diaphragm': 'Observa el abdomen. Se mueve el abdomen. Ritmo lento, exhalación larga. Favorece calma y control.',
+      'instruction.prepare': 'Acomódate antes de empezar. Espalda apoyada, hombros sueltos. Sin esfuerzo ni ruido: suave es suficiente. Respirar lento debe sentirse cómodo. Si aparece mareo o malestar, detente y respira normal.',
+    };
+    const normalize = value => value.normalize('NFC').replace(/[.,:;!?]/g, '').replace(/\s+/g, ' ').trim();
+    expect(practicalGuidance.entries.map(entry => entry.id)).toEqual(Object.keys(scripts));
+    expect(practicalGuidance.voiceId).toBe(manifest.voiceId);
+    expect(practicalGuidance.language).toBe('es');
+    expect(practicalGuidance.generationSpeed).toBe(0.95);
+    expect(practicalGuidance.playbackRate).toBe(1);
+    for (const entry of practicalGuidance.entries) {
+      expect(entry.text).toBe(scripts[entry.id]);
+      expect(audioFiles[entry.id]).toBe(entry.url);
+      expect(entry.url).toMatch(/^audio\/[a-z-]+-20261123\.mp3$/);
+      const bytes = readFileSync(new URL('../../public/' + entry.url, import.meta.url));
+      expect(bytes.length).toBeGreaterThan(1000);
+      expect(bytes.subarray(0, 3).toString() === 'ID3' || bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0).toBe(true);
+      expect(createHash('sha256').update(bytes).digest('hex')).toBe(entry.sha256);
+      expect(entry.duration).toBeGreaterThanOrEqual(entry.sourceDuration);
+      expect(entry.duration - entry.sourceDuration).toBeLessThan(0.1);
+      expect(normalize(entry.wordTimestamps.map(word => word.text).join(' '))).toBe(normalize(entry.text));
+      expect(entry.wordTimestamps.every((word, index, words) => word.start >= 0 && word.end >= word.start && word.end <= entry.sourceDuration && (!index || word.start + 0.001 >= words[index - 1].end))).toBe(true);
+    }
+  });
+  test('switching comparison narration pauses other media and ignores completion from the prior card', () => {
+    const previous = globalThis.window, sounds = [];
+    let videoPauses = 0, practicePauses = 0;
+    const releaseVideo = registerPlayback({}, () => { videoPauses++; });
+    const releasePractice = registerPlayback({}, () => { practicePauses++; });
+    class FakeAudio { constructor() { this.pauses = 0; sounds.push(this); } play() { return Promise.resolve(); } pause() { this.pauses++; } }
+    globalThis.window = { Audio: FakeAudio };
+    try {
+      setAudioMuted(false);
+      playAudio('comparison.chest');
+      expect(videoPauses).toBe(1); expect(practicePauses).toBe(1);
+      const oldEnded = sounds[0].onended;
+      playAudio('comparison.diaphragm');
+      expect(sounds).toHaveLength(1);
+      expect(sounds[0].src).toBe(audioFiles['comparison.diaphragm']);
+      expect(sounds[0].playbackRate).toBe(1);
+      oldEnded();
+      expect(getAudioState().id).toBe('comparison.diaphragm');
+      claimPlayback({});
+      expect(getAudioState().id).toBe(null);
+      expect(sounds[0].onended).toBe(null); expect(sounds[0].onerror).toBe(null);
+    } finally { releaseVideo(); releasePractice(); stopAudio(); globalThis.window = previous; }
+  });
+  test.each(practicalGuidance.entries)('$id fallback reads its own exact script and cannot continue after playback is claimed elsewhere', async entry => {
+    const previous = globalThis.window, spoken = [];
+    let canceled = 0;
+    class FailedAudio { play() { return Promise.reject(new Error('media unavailable')); } pause() {} }
+    class Utterance { constructor(text) { this.text = text; } }
+    globalThis.window = { Audio: FailedAudio, SpeechSynthesisUtterance: Utterance, speechSynthesis: { cancel() { canceled++; }, speak(value) { spoken.push(value); } } };
+    try {
+      setAudioMuted(false); playAudio(entry.id); await Promise.resolve();
+      expect(spoken).toHaveLength(1); expect(spoken[0].text).toBe(entry.text);
+      const oldEnd = spoken[0].onend, before = canceled;
+      claimPlayback({});
+      expect(canceled).toBe(before + 1);
+      expect(getAudioState().id).toBe(null); expect(spoken[0].onend).toBe(null); expect(spoken[0].onerror).toBe(null);
+      oldEnd();
+      expect(spoken).toHaveLength(1); expect(getAudioState().id).toBe(null);
+    } finally { stopAudio(); globalThis.window = previous; }
   });
   test('mute stops active audio and prevents new cues', () => {
     const previous = globalThis.window;

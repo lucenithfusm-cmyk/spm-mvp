@@ -1,6 +1,7 @@
 import { claimPlayback, registerPlayback } from './breath-playback';
 import manifest from '@/assets/audio/lenny-manifest.json';
 import dailyInstructions from '@/assets/audio/daily-instructions-manifest.json';
+import practicalGuidance from '@/assets/audio/practical-guidance-manifest.json';
 // SPM official voice: Lenny — Clear & Professional (HeyGen, voice 050c403a43e047c796f8a6257ed2533e, 0.95x).
 // The approved HeyGen assets and exact IDs are preserved in lenny-manifest.json.
 // Prefer the approved recordings. If playback fails, read the same approved text
@@ -8,10 +9,12 @@ import dailyInstructions from '@/assets/audio/daily-instructions-manifest.json';
 export const audioFiles: Record<string, string> = {
   ...Object.fromEntries(manifest.entries.map(({ id, url }) => [id, url])),
   ...Object.fromEntries(dailyInstructions.entries.map(({ id, url }) => [id, url])),
+  ...Object.fromEntries(practicalGuidance.entries.map(({ id, url }) => [id, url])),
 };
 const audioText: Record<string, string> = Object.fromEntries([
   ...manifest.entries,
   ...dailyInstructions.entries,
+  ...practicalGuidance.entries,
 ].map(({ id, text }) => [id, text]));
 
 const initial = { muted: false, id: null as string | null, error: null as string | null };

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import { Pause, Play } from 'lucide-react';
 import chestImage from '@/assets/respiracion-toracica-premium.jpg.asset.json';
 import diaphragmImage from '@/assets/respiracion-diafragmatica-premium.jpg.asset.json';
@@ -9,11 +9,14 @@ export type BreathPatternGuideProps = {
   mode: BreathPatternMode;
   /** Start/restart on each positive counter change after mount, including the same mode. */
   activationKey?: number;
+  /** Request one animation once the loaded image is half visible. Blocked requests are discarded. */
+  autoPlay?: boolean;
   /** Pause while a parent route or safety panel hides the guide; never auto-resume. */
   suspended?: boolean;
   /** Omit for internal controls; otherwise pair with onRunningChange. */
   running?: boolean;
   onRunningChange?: (running: boolean) => void;
+  /** Without controls, each activation is one brief visual cycle and stops automatically. */
   showControls?: boolean;
   className?: string;
 };
@@ -35,8 +38,11 @@ const ART = {
   },
 } as const;
 
-/** Silent illustration only: no timer, prescribed cadence, audio or patient storage. */
-export function BreathPatternGuide({ mode, activationKey, suspended = false, running, onRunningChange, showControls = true, className = '' }: BreathPatternGuideProps) {
+// This bounds the illustrative effect, not a breathing exercise or pacer rhythm.
+const BRIEF_VISUAL_MS = 4000;
+
+/** Silent illustration only: no prescribed cadence, audio or patient storage. */
+export function BreathPatternGuide({ mode, activationKey, autoPlay = false, suspended = false, running, onRunningChange, showControls = true, className = '' }: BreathPatternGuideProps) {
   const [localRunning, setLocalRunning] = useState(false);
   const [userPaused, setUserPaused] = useState(() => suspended
     || (typeof document !== 'undefined' && document.hidden)
@@ -51,18 +57,75 @@ export function BreathPatternGuide({ mode, activationKey, suspended = false, run
   const lastRunning = useRef(running);
   // A request inherited after navigation is consumed on mount, not replayed.
   const lastActivation = useRef(activationKey);
+  const mountActivation = useRef(autoPlay);
+  const mountCleanup = useRef<(() => void) | null>(null);
+  const visual = useRef<HTMLDivElement>(null);
+  const latest = useRef({ mode, activationKey, suspended, visible, reduced });
+  latest.current = { mode, activationKey, suspended, visible, reduced };
   const uid = `bl-pattern-${useId().replace(/[^a-z0-9_-]/gi, '')}`;
   const art = ART[mode];
   const requested = running ?? localRunning;
   const moving = requested && !userPaused && visible && !reduced && !suspended && activeMode === mode;
   const visualKey = `${mode}:${activationKey ?? 'manual'}`;
 
+  const cancelMountActivation = () => {
+    mountActivation.current = false;
+    mountCleanup.current?.(); mountCleanup.current = null;
+  };
   const pause = () => {
+    cancelMountActivation();
     setLocalRunning(false); setUserPaused(true); change.current?.(false);
   };
   const start = () => {
+    cancelMountActivation();
     setActiveMode(mode); setUserPaused(false); setLocalRunning(true); setHasStarted(true); change.current?.(true);
   };
+  useEffect(() => {
+    if (!mountActivation.current) return;
+    if (suspended || !visible || document.hidden || reduced) { cancelMountActivation(); return; }
+    const element = visual.current;
+    // Older browsers and DOM-only test environments keep the immediate fallback.
+    if (!element || typeof window.IntersectionObserver !== 'function') { start(); return; }
+    const original = element.querySelector('img');
+    let inView = false;
+    let loaded = !original || (original.complete && original.naturalWidth > 0);
+    let disposed = false;
+    const attempt = () => {
+      if (disposed || !mountActivation.current) return;
+      const current = latest.current;
+      if (current.suspended || !current.visible || document.hidden || current.reduced
+        || current.mode !== mode || current.activationKey !== activationKey) {
+        cancelMountActivation(); return;
+      }
+      if (inView && loaded) start();
+    };
+    const observer = new window.IntersectionObserver(entries => {
+      const entry = entries.find(item => item.target === element);
+      if (!entry) return;
+      inView = entry.isIntersecting && entry.intersectionRatio >= .5;
+      attempt();
+    }, { threshold: .5 });
+    const imageLoaded = () => { loaded = !!original?.naturalWidth; attempt(); };
+    const imageFailed = () => cancelMountActivation();
+    const cleanup = () => {
+      disposed = true; observer.disconnect();
+      original?.removeEventListener('load', imageLoaded);
+      original?.removeEventListener('error', imageFailed);
+    };
+    mountCleanup.current = cleanup;
+    original?.addEventListener('load', imageLoaded);
+    original?.addEventListener('error', imageFailed);
+    observer.observe(element);
+    return () => {
+      cleanup();
+      if (mountCleanup.current === cleanup) mountCleanup.current = null;
+    };
+  }, []);
+  useEffect(() => {
+    if (!moving || showControls) return;
+    const timer = window.setTimeout(pause, BRIEF_VISUAL_MS);
+    return () => window.clearTimeout(timer);
+  }, [moving, visualKey, showControls]);
   useEffect(() => {
     if (lastRunning.current !== running) {
       lastRunning.current = running;
@@ -113,8 +176,9 @@ export function BreathPatternGuide({ mode, activationKey, suspended = false, run
   };
   const action = moving ? 'Pausar animación' : hasStarted ? 'Reanudar animación' : 'Activar guía visual';
 
-  return <figure className={`bl-pattern-guide ${className}`.trim()} data-mode={mode} data-running={moving} data-reduced-motion={reduced}>
-    <div className="bl-pattern-visual" key={visualKey}>
+  return <figure className={`bl-pattern-guide ${className}`.trim()} data-mode={mode} data-running={moving} data-reduced-motion={reduced}
+    data-brief={!showControls} style={showControls ? undefined : { '--bl-pattern-cycle': `${BRIEF_VISUAL_MS}ms` } as CSSProperties}>
+    <div className="bl-pattern-visual" ref={visual} key={visualKey}>
       <img className="bl-pattern-original" src={art.src} alt={art.alt} width={1536} height={1024} loading="lazy" />
       <svg className="bl-pattern-overlay" viewBox="0 0 1536 1024" aria-hidden="true" focusable="false">
         <defs>
@@ -162,8 +226,8 @@ export function BreathPatternGuide({ mode, activationKey, suspended = false, run
     <figcaption className="bl-pattern-caption">
       <div className="bl-pattern-caption-row">
         <div className="bl-pattern-reading" key={visualKey} aria-hidden="true">
-          <span className="bl-pattern-inhale">Inhala · observa la expansión</span>
-          <span className="bl-pattern-exhale">Exhala · observa el regreso</span>
+          <span className="bl-pattern-inhale">{showControls ? 'Inhala · observa la expansión' : 'Expansión ilustrativa'}</span>
+          <span className="bl-pattern-exhale">{showControls ? 'Exhala · observa el regreso' : 'Regreso ilustrativo'}</span>
           <span className="bl-pattern-paused">{art.cue}</span>
         </div>
         {showControls && (activationKey === undefined || hasStarted) && <button type="button" className="bl-pattern-toggle" onClick={toggle} aria-pressed={moving}

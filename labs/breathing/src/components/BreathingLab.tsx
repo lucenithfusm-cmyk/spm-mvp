@@ -80,7 +80,6 @@ export function BreathingLab({ practiceAllowed = false }: { practiceAllowed?: bo
           <span className="bl-brand-text">SPM <b>Breathing Lab</b><small>REGULACIÓN AUTONÓMICA</small></span>
         </button>
         <div className="bl-top-right">
-          <Button variant="ghost" size="icon" className="bl-icon bl-voice-toggle" aria-label={audio.muted ? 'Activar audio' : 'Silenciar audio'} title={audio.muted ? 'Activar audio' : 'Silenciar audio'} aria-pressed={audio.muted} onClick={() => setAudioMuted(!audio.muted)}>{audio.muted ? <VolumeX size={19} /> : <Volume2 size={19} />}<span className="bl-voice-label" aria-hidden="true">{audio.muted ? 'Sin voz' : 'Voz activa'}</span></Button>
           <span className="bl-counter">{String(step + 1).padStart(2, '0')}<i>/</i>{screens.length}</span>
           <button className="bl-icon" onClick={() => setMenu(true)} aria-label="Abrir índice"><Menu size={21} /></button>
         </div>

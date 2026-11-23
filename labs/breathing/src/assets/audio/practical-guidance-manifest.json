@@ -1,0 +1,378 @@
+{
+  "voice": "Lenny - Clear & Professional",
+  "voiceId": "050c403a43e047c796f8a6257ed2533e",
+  "voiceMode": "instant",
+  "provider": "HeyGen Voice",
+  "language": "es",
+  "generationSpeed": 0.95,
+  "playbackRate": 1,
+  "generatedAt": "2026-11-23",
+  "modelSelection": "server-default; model omitted from requests",
+  "returnedModel": null,
+  "outputFormat": {
+    "encoding": "mp3",
+    "bitrateBps": 128000,
+    "sampleRateHz": 44100,
+    "channels": 1
+  },
+  "validation": {
+    "fullDecode": "passed for all three original MP3 files",
+    "submittedTextAndReturnedTimings": "exact text match; ordered timestamps within the reported durations",
+    "auditoryReview": "not performed: no audio listening or independent transcription tool was available in this workflow",
+    "timingSource": "HeyGen original_words; seconds from the untrimmed generated source, not independently aligned",
+    "processing": "original downloads preserved; no trimming, speed changes, normalization or other audio edits"
+  },
+  "entries": [
+    {
+      "id": "comparison.chest",
+      "name": "comparison-chest-20261123",
+      "text": "Observa el pecho y los hombros. Se mueven pecho y hombros. Ritmo rápido y corto. Acompaña estrés y tensión.",
+      "url": "audio/comparison-chest-20261123.mp3",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=c2044ffe80a04438870cb02289fae70a.mp3",
+      "duration": 8.306938,
+      "sourceDuration": 8.256621315192744,
+      "sha256": "37b5fdf6a9a7ad66ef43d8deaf62704c930ec883657151d88276d5aba9b0d6e4",
+      "wordTimestamps": [
+        {
+          "text": "Observa",
+          "start": 0.225,
+          "end": 0.763
+        },
+        {
+          "text": "el",
+          "start": 0.808,
+          "end": 0.853
+        },
+        {
+          "text": "pecho",
+          "start": 0.898,
+          "end": 1.258
+        },
+        {
+          "text": "y",
+          "start": 1.302,
+          "end": 1.347
+        },
+        {
+          "text": "los",
+          "start": 1.392,
+          "end": 1.482
+        },
+        {
+          "text": "hombros",
+          "start": 1.527,
+          "end": 1.886
+        },
+        {
+          "text": "Se",
+          "start": 2.38,
+          "end": 2.515
+        },
+        {
+          "text": "mueven",
+          "start": 2.56,
+          "end": 2.6947
+        },
+        {
+          "text": "pecho",
+          "start": 2.874,
+          "end": 3.3235
+        },
+        {
+          "text": "y",
+          "start": 3.368,
+          "end": 3.458
+        },
+        {
+          "text": "hombros",
+          "start": 3.503,
+          "end": 3.862
+        },
+        {
+          "text": "Ritmo",
+          "start": 4.267,
+          "end": 4.626
+        },
+        {
+          "text": "rápido",
+          "start": 4.671,
+          "end": 5.165
+        },
+        {
+          "text": "y",
+          "start": 5.21,
+          "end": 5.2547
+        },
+        {
+          "text": "corto",
+          "start": 5.3,
+          "end": 5.614
+        },
+        {
+          "text": "Acompaña",
+          "start": 6.063,
+          "end": 6.647
+        },
+        {
+          "text": "estrés",
+          "start": 6.692,
+          "end": 7.096
+        },
+        {
+          "text": "y",
+          "start": 7.231,
+          "end": 7.2758
+        },
+        {
+          "text": "tensión",
+          "start": 7.321,
+          "end": 7.815
+        }
+      ]
+    },
+    {
+      "id": "comparison.diaphragm",
+      "name": "comparison-diaphragm-20261123",
+      "text": "Observa el abdomen. Se mueve el abdomen. Ritmo lento, exhalación larga. Favorece calma y control.",
+      "url": "audio/comparison-diaphragm-20261123.mp3",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=77a80fee8bc54e46908c99ff7bde1b1c.mp3",
+      "duration": 8.280813,
+      "sourceDuration": 8.22891156462585,
+      "sha256": "ed82b899275d861038fde6234dbd7de8cc5662cd9e0fa7deb3c22d990fb89d20",
+      "wordTimestamps": [
+        {
+          "text": "Observa",
+          "start": 0.225,
+          "end": 0.853
+        },
+        {
+          "text": "el",
+          "start": 0.898,
+          "end": 0.943
+        },
+        {
+          "text": "abdomen",
+          "start": 0.988,
+          "end": 1.392
+        },
+        {
+          "text": "Se",
+          "start": 1.752,
+          "end": 1.931
+        },
+        {
+          "text": "mueve",
+          "start": 1.976,
+          "end": 2.335
+        },
+        {
+          "text": "el",
+          "start": 2.38,
+          "end": 2.425
+        },
+        {
+          "text": "abdomen",
+          "start": 2.47,
+          "end": 2.919
+        },
+        {
+          "text": "Ritmo",
+          "start": 3.324,
+          "end": 3.7277
+        },
+        {
+          "text": "lento",
+          "start": 3.773,
+          "end": 4.087
+        },
+        {
+          "text": "exhalación",
+          "start": 4.491,
+          "end": 5.2098
+        },
+        {
+          "text": "larga",
+          "start": 5.255,
+          "end": 5.569
+        },
+        {
+          "text": "Favorece",
+          "start": 6.153,
+          "end": 6.557
+        },
+        {
+          "text": "calma",
+          "start": 6.737,
+          "end": 7.141
+        },
+        {
+          "text": "y",
+          "start": 7.231,
+          "end": 7.2758
+        },
+        {
+          "text": "control",
+          "start": 7.321,
+          "end": 7.455
+        }
+      ]
+    },
+    {
+      "id": "instruction.prepare",
+      "name": "prepare-comfort-20261123",
+      "text": "Acomódate antes de empezar. Espalda apoyada, hombros sueltos. Sin esfuerzo ni ruido: suave es suficiente. Respirar lento debe sentirse cómodo. Si aparece mareo o malestar, detente y respira normal.",
+      "url": "audio/prepare-comfort-20261123.mp3",
+      "sourceUrl": "https://resource2.heygen.ai/text_to_speech/f27f0d2de72d470e919ed331523331ef/050c403a43e047c796f8a6257ed2533e/id=e5e3901e39f44c80acc8acf789fcbc8f.mp3",
+      "duration": 15.0465,
+      "sourceDuration": 15.002018140589568,
+      "sha256": "534ad6f084b77dff8bf6fee5415a2f3fb37e34680e7c1e73d214fe1c66c390ce",
+      "wordTimestamps": [
+        {
+          "text": "Acomódate",
+          "start": 0.225,
+          "end": 0.853
+        },
+        {
+          "text": "antes",
+          "start": 0.988,
+          "end": 1.2126
+        },
+        {
+          "text": "de",
+          "start": 1.258,
+          "end": 1.392
+        },
+        {
+          "text": "empezar",
+          "start": 1.437,
+          "end": 1.752
+        },
+        {
+          "text": "Espalda",
+          "start": 2.246,
+          "end": 2.7396
+        },
+        {
+          "text": "apoyada",
+          "start": 2.829,
+          "end": 3.189
+        },
+        {
+          "text": "hombros",
+          "start": 3.683,
+          "end": 4.042
+        },
+        {
+          "text": "sueltos",
+          "start": 4.132,
+          "end": 4.581
+        },
+        {
+          "text": "Sin",
+          "start": 5.03,
+          "end": 5.2547
+        },
+        {
+          "text": "esfuerzo",
+          "start": 5.3,
+          "end": 5.7488
+        },
+        {
+          "text": "ni",
+          "start": 5.794,
+          "end": 5.928
+        },
+        {
+          "text": "ruido",
+          "start": 5.973,
+          "end": 6.333
+        },
+        {
+          "text": "suave",
+          "start": 6.692,
+          "end": 7.096
+        },
+        {
+          "text": "es",
+          "start": 7.276,
+          "end": 7.3656
+        },
+        {
+          "text": "suficiente",
+          "start": 7.41,
+          "end": 7.949
+        },
+        {
+          "text": "Respirar",
+          "start": 8.399,
+          "end": 8.8926
+        },
+        {
+          "text": "lento",
+          "start": 8.938,
+          "end": 9.2519
+        },
+        {
+          "text": "debe",
+          "start": 9.342,
+          "end": 9.521
+        },
+        {
+          "text": "sentirse",
+          "start": 9.566,
+          "end": 10.06
+        },
+        {
+          "text": "cómodo",
+          "start": 10.105,
+          "end": 10.465
+        },
+        {
+          "text": "Si",
+          "start": 10.959,
+          "end": 11.138
+        },
+        {
+          "text": "aparece",
+          "start": 11.183,
+          "end": 11.4526
+        },
+        {
+          "text": "mareo",
+          "start": 11.587,
+          "end": 11.9467
+        },
+        {
+          "text": "o",
+          "start": 12.126,
+          "end": 12.171
+        },
+        {
+          "text": "malestar",
+          "start": 12.216,
+          "end": 12.755
+        },
+        {
+          "text": "detente",
+          "start": 13.114,
+          "end": 13.698
+        },
+        {
+          "text": "y",
+          "start": 13.788,
+          "end": 13.833
+        },
+        {
+          "text": "respira",
+          "start": 13.878,
+          "end": 14.282
+        },
+        {
+          "text": "normal",
+          "start": 14.327,
+          "end": 14.507
+        }
+      ]
+    }
+  ]
+}
