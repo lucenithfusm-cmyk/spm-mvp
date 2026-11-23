@@ -87,6 +87,9 @@ export function BreathPatternGuide({ mode, activationKey, autoPlay = false, susp
     // Older browsers and DOM-only test environments keep the immediate fallback.
     if (!element || typeof window.IntersectionObserver !== 'function') { start(); return; }
     const original = element.querySelector('img');
+    // IntersectionObserver otherwise counts pixels covered by the sticky route footer.
+    const footer = element.closest('.bl-route-shell')?.querySelector('.bl-route-footer');
+    const footerHeight = Math.max(0, Math.ceil(footer?.getBoundingClientRect().height ?? 0));
     let inView = false;
     let loaded = !original || (original.complete && original.naturalWidth > 0);
     let disposed = false;
@@ -104,7 +107,7 @@ export function BreathPatternGuide({ mode, activationKey, autoPlay = false, susp
       if (!entry) return;
       inView = entry.isIntersecting && entry.intersectionRatio >= .5;
       attempt();
-    }, { threshold: .5 });
+    }, { threshold: .5, rootMargin: `0px 0px ${-footerHeight}px 0px` });
     const imageLoaded = () => { loaded = !!original?.naturalWidth; attempt(); };
     const imageFailed = () => cancelMountActivation();
     const cleanup = () => {

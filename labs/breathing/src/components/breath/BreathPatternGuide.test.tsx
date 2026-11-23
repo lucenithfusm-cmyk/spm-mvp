@@ -43,10 +43,16 @@ function mockIntersectionObserver() {
   class FakeObserver {
     target: Element | null = null;
     disconnect = vi.fn();
-    constructor(private callback: IntersectionObserverCallback) { observers.push(this); }
+    constructor(private callback: IntersectionObserverCallback, readonly options?: IntersectionObserverInit) { observers.push(this); }
     observe(element: Element) { this.target = element; }
     emit(ratio: number) {
       this.callback([{ target: this.target, isIntersecting: ratio > 0, intersectionRatio: ratio } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+    }
+    emitMeasuredIntersection() {
+      const rect = this.target!.getBoundingClientRect();
+      const bottomMargin = Number.parseFloat(this.options?.rootMargin?.split(' ')[2] ?? '0');
+      const rootBottom = window.innerHeight + bottomMargin;
+      this.emit(Math.max(0, Math.min(rect.bottom, rootBottom) - Math.max(rect.top, 0)) / rect.height);
     }
   }
   window.IntersectionObserver = FakeObserver as unknown as typeof IntersectionObserver;
@@ -318,6 +324,28 @@ test('a visible automatic guide waits for the original image to finish loading',
   await act(async () => observers.at(-1)!.emit(1));
   expect(running()).toBe('false');
   await loadOriginalImage();
+  expect(running()).toBe('true');
+});
+
+test('automatic motion excludes the image area covered by the route footer', async () => {
+  const observers = mockIntersectionObserver();
+  const footerHeight = 71;
+  await act(async () => root.render(<StrictMode><div className="bl-route-shell">
+    <BreathPatternGuide mode="diaphragm" autoPlay showControls={false} />
+    <footer className="bl-route-footer" ref={node => {
+      if (node) node.getBoundingClientRect = () => new DOMRect(0, window.innerHeight - footerHeight, 320, footerHeight);
+    }} />
+  </div></StrictMode>));
+  const observer = observers.at(-1)!;
+  expect(observer.options?.rootMargin).toBe('0px 0px -71px 0px');
+  // At a 509px viewport this is 356.609–545.94: only 81.391/189.331px are uncovered.
+  let top = window.innerHeight - 152.391;
+  observer.target!.getBoundingClientRect = () => new DOMRect(0, top, 284, 189.331);
+  await loadOriginalImage();
+  await act(async () => observer.emitMeasuredIntersection());
+  expect(running()).toBe('false');
+  top -= 30;
+  await act(async () => observer.emitMeasuredIntersection());
   expect(running()).toBe('true');
 });
 

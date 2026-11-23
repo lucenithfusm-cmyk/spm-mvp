@@ -34,7 +34,8 @@ const assert=require('node:assert/strict');
    await f.waitForFunction(()=>{
     const visual=document.querySelector('.bl-pattern-visual'),image=visual?.querySelector('.bl-pattern-original');
     if(!visual||!image?.complete||image.naturalWidth<=0)return false;
-    const r=visual.getBoundingClientRect(),width=Math.max(0,Math.min(r.right,innerWidth)-Math.max(r.left,0)),height=Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,0));
+    const footer=document.querySelector('.bl-route-footer'),visibleBottom=footer?Math.min(innerHeight,footer.getBoundingClientRect().top):innerHeight;
+    const r=visual.getBoundingClientRect(),width=Math.max(0,Math.min(r.right,innerWidth)-Math.max(r.left,0)),height=Math.max(0,Math.min(r.bottom,visibleBottom)-Math.max(r.top,0));
     return r.width>0&&r.height>0&&width*height/(r.width*r.height)>=.5;
    });checks++;
   }
