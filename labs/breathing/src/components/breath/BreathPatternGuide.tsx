@@ -107,7 +107,7 @@ export function BreathPatternGuide({ mode, activationKey, autoPlay = false, susp
       if (!entry) return;
       inView = entry.isIntersecting && entry.intersectionRatio >= .5;
       attempt();
-    }, { threshold: .5, rootMargin: `0px 0px ${-footerHeight}px 0px` });
+    }, { root: element.ownerDocument, threshold: .5, rootMargin: `0px 0px ${-footerHeight}px 0px` });
     const imageLoaded = () => { loaded = !!original?.naturalWidth; attempt(); };
     const imageFailed = () => cancelMountActivation();
     const cleanup = () => {

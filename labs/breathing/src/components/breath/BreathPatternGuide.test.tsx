@@ -337,6 +337,8 @@ test('automatic motion excludes the image area covered by the route footer', asy
     }} />
   </div></StrictMode>));
   const observer = observers.at(-1)!;
+  // An implicit root belongs to the outer page, so its margin cannot exclude an iframe footer.
+  expect(observer.options?.root).toBe(observer.target!.ownerDocument);
   expect(observer.options?.rootMargin).toBe('0px 0px -71px 0px');
   // At a 509px viewport this is 356.609–545.94: only 81.391/189.331px are uncovered.
   let top = window.innerHeight - 152.391;

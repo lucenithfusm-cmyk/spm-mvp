@@ -37,10 +37,12 @@ Se conservan los 22 audios originales y las dos instrucciones diarias. Los nuevo
 
 No se modifica el calendario, los tiempos/ciclos del pacer, las reglas sin pausa, las asignaciones ni el guardado en Central. Las interacciones de explicación y comparación no registran una sesión ni completan el día. Las imágenes y videos originales se conservan.
 
+La detección de visibilidad usa explícitamente el documento del módulo y descuenta la altura de su navegación fija. Esto importa porque el recorrido está dentro de un iframe: la raíz implícita de IntersectionObserver corresponde al documento superior, según la [especificación de W3C](https://www.w3.org/TR/intersection-observer/#intersectionobserver-root-intersection-rectangle).
+
 ## Verificación y entrega
 
 La suite comprueba ausencia de bocina superior, explicaciones de contenido sin el control duplicado, selección con voz propia, parada al cambiar/navegar, controles de animación ausentes, efecto breve automático, movimiento reducido, seguridad y conservación del guardado. Los clips nuevos se verifican contra sus SHA256 y guiones; las pruebas previas de exclusión de audio y fallback siguen activas.
 
 Verificación local completada: **152 pruebas aprobadas** —107 del módulo, 20 del bridge y 25 del visor—, TypeScript y build de Respiración aprobados, 29 medios originales con SHA256 intactos y sintaxis del script de navegador válida. Comandos: `npm run typecheck`, `npx vitest run`, `npm run build`, `sha256sum --check media-sha256.txt`, pruebas Node del bridge y del visor, y `node --check tests/breathing-lab-browser.cjs`. La inspección móvil del despliegue se registra en la PR, separada del estado del CI general.
 
-Versión de carga: `20261123-breathing-narration3`. Entrega en la rama de revisión y en `spm-premium-staging`, del equipo `lucenithfusm-cmyk`, según la autorización vigente. La PR permanece en borrador; los enlaces temporales de acceso no se incluyen en el repositorio público.
+Versión de carga: `20261123-breathing-narration4`. Entrega en la rama de revisión y en `spm-premium-staging`, del equipo `lucenithfusm-cmyk`, según la autorización vigente. La PR permanece en borrador; los enlaces temporales de acceso no se incluyen en el repositorio público.
