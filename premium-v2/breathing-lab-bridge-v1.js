@@ -73,7 +73,11 @@ function inlineFirstPracticeAudio(frame,guide,token){
   observer.observe(doc.getElementById('root'),{childList:true,subtree:true,attributes:true,attributeFilter:['data-route-stage']});
   attach();
   window.SPM_CHECKPOINT_AUDIO.bind(panel);
-  doc.addEventListener('click',e=>{if(e.target?.closest?.('.bl-audio,.bl-instruction-audio,.bl-voice-toggle,.bl-route-header .bl-brand,.bl-route-footer button,.bl-route-library button'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);},true);
+  doc.addEventListener('click',e=>{
+   // Stop the child's recording, device voice and pacer before the extended guide starts.
+   if(panel.contains(e.target?.closest?.('[data-checkpoint-audio-toggle]')))doc.defaultView.dispatchEvent(new doc.defaultView.CustomEvent('spm:breathing-stop-audio'));
+   if(e.target?.closest?.('.bl-audio,.bl-instruction-audio,.bl-voice-toggle,.bl-route-header .bl-brand,.bl-route-footer button,.bl-route-library button'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);
+  },true);
   doc.defaultView.addEventListener('pagehide',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
   frame.addEventListener('load',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
  },{once:true});
@@ -105,7 +109,7 @@ async function open(opts={}){
     return true;
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261120-breathing-routes2&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
+  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261123-breathing-controls1&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
    const firstPractice=origin==='dailyPlan'&&day===1&&c.primary==='erection'&&activity?.id==='breath-start';
    const guide=firstPractice?window.SPM_PELVIC_GUIDANCE?.firstPractice?.():null;
    // El iframe conserva la altura completa: el audio forma parte del scroll de la práctica.

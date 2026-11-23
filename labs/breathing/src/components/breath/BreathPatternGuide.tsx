@@ -7,6 +7,10 @@ import './breath-pattern-guide.css';
 export type BreathPatternMode = 'chest' | 'diaphragm';
 export type BreathPatternGuideProps = {
   mode: BreathPatternMode;
+  /** Start/restart on each positive counter change after mount, including the same mode. */
+  activationKey?: number;
+  /** Pause while a parent route or safety panel hides the guide; never auto-resume. */
+  suspended?: boolean;
   /** Omit for internal controls; otherwise pair with onRunningChange. */
   running?: boolean;
   onRunningChange?: (running: boolean) => void;
@@ -19,48 +23,72 @@ const ART = {
     src: chestImage.url,
     title: 'Pecho y hombros',
     alt: 'Ilustración de un torso masculino con el pecho y los hombros resaltados en dorado.',
-    cue: 'Observa el movimiento en el pecho.',
+    cue: 'Observa la zona del pecho.',
     centerY: 265, radiusX: 350, radiusY: 230,
   },
   diaphragm: {
     src: diaphragmImage.url,
     title: 'Abdomen y costillas bajas',
     alt: 'Ilustración de un torso masculino con el abdomen y las costillas bajas resaltados en turquesa.',
-    cue: 'Observa el movimiento en el abdomen.',
+    cue: 'Observa la zona del abdomen.',
     centerY: 590, radiusX: 270, radiusY: 235,
   },
 } as const;
 
 /** Silent illustration only: no timer, prescribed cadence, audio or patient storage. */
-export function BreathPatternGuide({ mode, running, onRunningChange, showControls = true, className = '' }: BreathPatternGuideProps) {
+export function BreathPatternGuide({ mode, activationKey, suspended = false, running, onRunningChange, showControls = true, className = '' }: BreathPatternGuideProps) {
   const [localRunning, setLocalRunning] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
+  const [userPaused, setUserPaused] = useState(() => suspended
+    || (typeof document !== 'undefined' && document.hidden)
+    || (typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches));
+  const [hasStarted, setHasStarted] = useState(!!running);
+  const [activeMode, setActiveMode] = useState(mode);
   const [visible, setVisible] = useState(() => typeof document === 'undefined' || !document.hidden);
   const [reduced, setReduced] = useState(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
   const change = useRef(onRunningChange);
   change.current = onRunningChange;
   const lastMode = useRef(mode);
   const lastRunning = useRef(running);
+  // A request inherited after navigation is consumed on mount, not replayed.
+  const lastActivation = useRef(activationKey);
   const uid = `bl-pattern-${useId().replace(/[^a-z0-9_-]/gi, '')}`;
   const art = ART[mode];
   const requested = running ?? localRunning;
-  const moving = requested && !userPaused && visible && !reduced && lastMode.current === mode;
+  const moving = requested && !userPaused && visible && !reduced && !suspended && activeMode === mode;
+  const visualKey = `${mode}:${activationKey ?? 'manual'}`;
 
   const pause = () => {
     setLocalRunning(false); setUserPaused(true); change.current?.(false);
   };
-  useEffect(() => {
-    if (lastMode.current !== mode) {
-      lastMode.current = mode;
-      setLocalRunning(false); setUserPaused(true); change.current?.(false);
-    }
-  }, [mode]);
+  const start = () => {
+    setActiveMode(mode); setUserPaused(false); setLocalRunning(true); setHasStarted(true); change.current?.(true);
+  };
   useEffect(() => {
     if (lastRunning.current !== running) {
       lastRunning.current = running;
-      setUserPaused(false);
+      if (running === undefined) return;
+      if (running && visible && !document.hidden && !reduced && !suspended) {
+        setActiveMode(mode); setUserPaused(false); setHasStarted(true);
+      } else pause();
     }
-  }, [running]);
+  }, [running, visible, reduced, suspended]);
+  useEffect(() => {
+    if (lastMode.current !== mode) {
+      lastMode.current = mode;
+      setHasStarted(false); pause();
+    }
+  }, [mode]);
+  useEffect(() => {
+    if (lastActivation.current === activationKey) return;
+    lastActivation.current = activationKey;
+    if (activationKey === undefined || !Number.isFinite(activationKey) || activationKey <= 0) {
+      setHasStarted(false); pause(); return;
+    }
+    // A blocked request is consumed now; returning to the page requires another tap.
+    if (suspended || !visible || document.hidden || reduced) { pause(); return; }
+    start();
+  }, [activationKey, mode, suspended, visible, reduced]);
+  useEffect(() => { if (suspended) pause(); }, [suspended]);
   useEffect(() => {
     const media = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const visibility = () => { setVisible(!document.hidden); if (document.hidden) pause(); };
@@ -80,12 +108,13 @@ export function BreathPatternGuide({ mode, running, onRunningChange, showControl
 
   const toggle = () => {
     if (moving) { pause(); return; }
-    if (reduced || !visible) return;
-    setUserPaused(false); setLocalRunning(true); change.current?.(true);
+    if (reduced || !visible || document.hidden || suspended) return;
+    start();
   };
+  const action = moving ? 'Pausar animación' : hasStarted ? 'Reanudar animación' : 'Activar guía visual';
 
   return <figure className={`bl-pattern-guide ${className}`.trim()} data-mode={mode} data-running={moving} data-reduced-motion={reduced}>
-    <div className="bl-pattern-visual" key={mode}>
+    <div className="bl-pattern-visual" key={visualKey}>
       <img className="bl-pattern-original" src={art.src} alt={art.alt} width={1536} height={1024} loading="lazy" />
       <svg className="bl-pattern-overlay" viewBox="0 0 1536 1024" aria-hidden="true" focusable="false">
         <defs>
@@ -132,18 +161,18 @@ export function BreathPatternGuide({ mode, running, onRunningChange, showControl
     </div>
     <figcaption className="bl-pattern-caption">
       <div className="bl-pattern-caption-row">
-        <div className="bl-pattern-reading" aria-hidden="true">
+        <div className="bl-pattern-reading" key={visualKey} aria-hidden="true">
           <span className="bl-pattern-inhale">Inhala · observa la expansión</span>
           <span className="bl-pattern-exhale">Exhala · observa el regreso</span>
           <span className="bl-pattern-paused">{art.cue}</span>
         </div>
-        {showControls && <button type="button" className="bl-pattern-toggle" onClick={toggle} aria-pressed={moving}
-          aria-label={moving ? `Pausar movimiento de ${art.title.toLowerCase()}` : `Ver movimiento de ${art.title.toLowerCase()}`} disabled={reduced}>
+        {showControls && (activationKey === undefined || hasStarted) && <button type="button" className="bl-pattern-toggle" onClick={toggle} aria-pressed={moving}
+          aria-label={`${reduced ? 'Guía visual estática' : action} de ${art.title.toLowerCase()}`} disabled={reduced || suspended}>
           {moving ? <Pause size={18} aria-hidden="true" /> : <Play size={18} aria-hidden="true" />}
-          {reduced ? 'Vista estática' : moving ? 'Pausar movimiento' : 'Ver movimiento'}
+          {reduced ? 'Vista estática' : action}
         </button>}
       </div>
-      <p>Movimiento ilustrativo · respira a tu ritmo</p>
+      <p>Guía visual ilustrativa · respira a tu ritmo</p>
       {reduced && <small>La animación está pausada según tu preferencia de movimiento reducido.</small>}
     </figcaption>
   </figure>;

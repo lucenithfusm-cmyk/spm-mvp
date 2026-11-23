@@ -170,7 +170,7 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
 
 /* Gold voice controls: keep narration distinct, visible and easy to touch. */
 .bl-shell .bl-audio,
-.bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"]),
+.bl-shell .bl-top-right > .bl-icon.bl-voice-toggle,
 .bl-shell .spm-first-breath-audio .spm-checkpoint-audio-toggle {
  position:relative;isolation:isolate;min-width:56px;min-height:56px;height:auto;
  display:inline-flex;align-items:center;justify-content:center;gap:10px;
@@ -181,30 +181,32 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
  white-space:normal;transition:background .18s ease,box-shadow .18s ease;
 }
 .bl-shell .bl-audio::after,
-.bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"])::after,
+.bl-shell .bl-top-right > .bl-icon.bl-voice-toggle::after,
 .bl-shell .spm-first-breath-audio .spm-checkpoint-audio-toggle::after {
  content:"";position:absolute;inset:-5px;border:1px solid #ead09580;border-radius:inherit;
  pointer-events:none;animation:spm-breath-audio-halo 3s ease-in-out infinite;
 }
 .bl-shell .bl-audio > svg,
-.bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"]) > svg {
+.bl-shell .bl-top-right > .bl-icon.bl-voice-toggle > svg {
  width:26px;height:26px;flex:0 0 26px;stroke-width:2.1;
 }
-.bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"]) {
+.bl-shell .bl-top-right > .bl-icon.bl-voice-toggle {
  width:50px;min-width:50px;height:50px;min-height:50px;padding:10px;border-radius:50%;flex-shrink:0;
 }
 .bl-shell .bl-top-right > .bl-icon[aria-label="Activar audio"] {
  background:linear-gradient(145deg,#e6c88c,#b58d4f);box-shadow:inset 0 0 0 1px #fff1cf,0 0 18px #d6ad6266;
 }
-.bl-shell .bl-audio[aria-pressed="true"] {
+.bl-shell .bl-audio[aria-pressed="true"],
+.bl-shell .bl-top-right > .bl-icon.bl-voice-play[aria-pressed="true"] {
  background:linear-gradient(145deg,#fff0c9,#e1bf7d);box-shadow:inset 0 0 0 1px #fff3d6,0 0 0 4px #d7b87540,0 4px 26px #e6bf7873;
 }
-.bl-shell .bl-audio[aria-pressed="true"]::after {animation:none;opacity:1;inset:-4px}
+.bl-shell .bl-audio[aria-pressed="true"]::after,
+.bl-shell .bl-top-right > .bl-icon.bl-voice-play[aria-pressed="true"]::after {animation:none;opacity:1;inset:-4px}
 .bl-shell .bl-audio:focus-visible,
-.bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"]):focus-visible,
+.bl-shell .bl-top-right > .bl-icon.bl-voice-toggle:focus-visible,
 .bl-shell .spm-first-breath-audio .spm-checkpoint-audio-toggle:focus-visible {outline:3px solid #fff2d0;outline-offset:5px}
-.bl-shell .bl-audio:disabled {opacity:.55;background:#42525a;color:#d7deda;border-color:#85918c;box-shadow:none}
-.bl-shell .bl-audio:disabled::after {display:none}
+.bl-shell .bl-audio:disabled,.bl-shell .bl-top-right > .bl-icon.bl-voice-play:disabled {opacity:.55;background:#42525a;color:#d7deda;border-color:#85918c;box-shadow:none}
+.bl-shell .bl-audio:disabled::after,.bl-shell .bl-top-right > .bl-icon.bl-voice-play:disabled::after {display:none}
 .bl-shell .bl-instruction-audio {min-height:62px;font-size:17px;margin:10px 0;width:100%}
 .bl-shell .bl-trainer {gap:14px}
 .bl-shell .bl-trainer > div {min-width:0}
@@ -239,6 +241,6 @@ h1,h2,h3,p{margin:0}p{line-height:1.6}
 }
 @media (prefers-reduced-motion:reduce) {
  .bl-shell .bl-audio::after,
- .bl-shell .bl-top-right > .bl-icon:is([aria-label="Activar audio"],[aria-label="Silenciar audio"])::after,
+ .bl-shell .bl-top-right > .bl-icon.bl-voice-toggle::after,
  .bl-shell .spm-first-breath-audio .spm-checkpoint-audio-toggle::after {animation:none;opacity:.65}
 }

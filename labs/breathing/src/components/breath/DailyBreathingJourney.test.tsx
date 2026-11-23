@@ -50,12 +50,85 @@ async function mount(assignment: DailyActivity | null = activity(), day = assign
 const button = (text: string) => Array.from(element!.querySelectorAll('button')).find(node => node.textContent === text)!;
 async function click(text: string) { await act(async () => button(text).click()); }
 const stage = () => element!.querySelector('.bl-route-shell')?.getAttribute('data-route-stage');
+const voiceButton = () => element!.querySelector<HTMLButtonElement>('.bl-voice-play')!;
+async function clickVoice() { await act(async () => voiceButton().click()); }
 
 test('StrictMode setup does not close the activity, start narration or create a record', async () => {
   await mount(activity(), 3, true, true);
   expect(stage()).toBe('1'); expect(close).not.toHaveBeenCalled(); expect(openLibrary).not.toHaveBeenCalled();
   expect(playAudio).not.toHaveBeenCalled(); expect(onSave).not.toHaveBeenCalled();
   await click('Continuar'); expect(stage()).toBe('2'); expect(close).not.toHaveBeenCalled();
+});
+
+test.each([
+  { day: 3, ids: ['screen.02', 'screen.03', 'screen.04', 'instruction.daily.4-6'] },
+  { day: 6, ids: ['screen.07', 'screen.06', 'screen.10', 'instruction.daily.flexible'] },
+])('the upper speaker plays the current screen throughout day $day', async ({ day, ids }) => {
+  await mount(activity(day));
+  expect(playAudio).not.toHaveBeenCalled();
+  for (let index = 0; index < ids.length; index++) {
+    expect(voiceButton().textContent).toBe('Escuchar');
+    expect(voiceButton().getAttribute('aria-label')).toBe('Escuchar explicación de esta pantalla');
+    expect(voiceButton().getAttribute('aria-pressed')).toBe('false');
+    await clickVoice();
+    expect(playAudio).toHaveBeenLastCalledWith(ids[index]);
+    if (index < ids.length - 1) {
+      vi.mocked(stopAudio).mockClear();
+      await click('Continuar');
+      expect(stopAudio).toHaveBeenCalled();
+    }
+  }
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+test('the upper speaker unmutes on an explicit tap and shares playback state with the explanation button', async () => {
+  audioState = { muted: true, id: null, error: null };
+  await mount();
+  await clickVoice();
+  expect(setAudioMuted).toHaveBeenCalledWith(false);
+  expect(playAudio).toHaveBeenCalledWith('screen.02');
+  expect(vi.mocked(setAudioMuted).mock.invocationCallOrder[0]).toBeLessThan(vi.mocked(playAudio).mock.invocationCallOrder[0]);
+  audioState = { muted: false, id: 'screen.02', error: null };
+  await act(async () => root!.render(<DailyBreathingJourney assignment={activity()} day={3} practiceAllowed noHold setNoHold={setNoHold} onSave={onSave} />));
+  expect(voiceButton().textContent).toBe('Detener');
+  expect(voiceButton().getAttribute('aria-label')).toBe('Detener explicación de esta pantalla');
+  expect(voiceButton().getAttribute('aria-pressed')).toBe('true');
+  expect(button('Detener voz')).toBeTruthy();
+  vi.mocked(stopAudio).mockClear(); vi.mocked(playAudio).mockClear();
+  await clickVoice();
+  expect(stopAudio).toHaveBeenCalledTimes(1); expect(playAudio).not.toHaveBeenCalled();
+  audioState = { muted: false, id: null, error: null };
+  await act(async () => root!.render(<DailyBreathingJourney assignment={activity()} day={3} practiceAllowed noHold setNoHold={setNoHold} onSave={onSave} />));
+  expect(voiceButton().textContent).toBe('Escuchar');
+});
+
+test('the upper speaker does not label unrelated phase cues as the screen explanation', async () => {
+  audioState = { muted: false, id: 'cue.inhale', error: null };
+  await mount();
+  expect(voiceButton().getAttribute('aria-pressed')).toBe('false');
+  await clickVoice();
+  expect(playAudio).toHaveBeenCalledWith('screen.02');
+});
+
+test('the upper speaker respects a blocked final practice but can read the safety screen', async () => {
+  await mount(activity(), 3, false);
+  await click('Continuar'); await click('Continuar'); await click('Continuar');
+  expect(voiceButton().disabled).toBe(true);
+  await clickVoice(); expect(playAudio).not.toHaveBeenCalled();
+  await click('Ver señales de seguridad');
+  expect(voiceButton().disabled).toBe(false);
+  await clickVoice(); expect(playAudio).toHaveBeenLastCalledWith('screen.17');
+  await click('Volver a la actividad'); expect(voiceButton().disabled).toBe(true);
+  expect(element!.querySelector('[data-practice]')).toBeNull(); expect(onSave).not.toHaveBeenCalled();
+});
+
+test('starting the approved external first-practice guide stops native voice and other playback', async () => {
+  await mount(activity(1));
+  await clickVoice(); expect(playAudio).toHaveBeenCalledWith('screen.07');
+  vi.mocked(stopAudio).mockClear(); vi.mocked(claimPlayback).mockClear();
+  await act(async () => window.dispatchEvent(new Event('spm:breathing-stop-audio')));
+  expect(stopAudio).toHaveBeenCalledTimes(1); expect(claimPlayback).toHaveBeenCalledTimes(1);
+  expect(onSave).not.toHaveBeenCalled();
 });
 
 test('narration shows its button before a closed transcript and keeps the instruction stop label', async () => {
@@ -173,8 +246,26 @@ test('opening safety pauses the illustrative movement without resuming it on ret
   await mount();
   const movement = () => element!.querySelector('.bl-pattern-guide')!.getAttribute('data-running');
   expect(movement()).toBe('false');
-  await click('Ver movimiento'); expect(movement()).toBe('true');
+  await click('Diafragmática · abdomen'); expect(movement()).toBe('true');
   await click('Ver señales de seguridad'); expect(movement()).toBe('false');
   await click('Volver a la actividad'); expect(movement()).toBe('false');
   expect(onSave).not.toHaveBeenCalled();
+});
+
+test('selecting either comparison starts its illustration directly, including the selected option after a pause', async () => {
+  await mount();
+  const guide = () => element!.querySelector('.bl-pattern-guide')!;
+  expect(element!.textContent).not.toContain('Ver movimiento');
+  expect(guide().getAttribute('data-running')).toBe('false');
+  await click('Diafragmática · abdomen');
+  expect(guide().getAttribute('data-mode')).toBe('diaphragm');
+  expect(guide().getAttribute('data-running')).toBe('true');
+  await click('Torácica · pecho');
+  expect(guide().getAttribute('data-mode')).toBe('chest');
+  expect(guide().getAttribute('data-running')).toBe('true');
+  await click('Pausar animación'); expect(guide().getAttribute('data-running')).toBe('false');
+  await click('Torácica · pecho'); expect(guide().getAttribute('data-running')).toBe('true');
+  await click('Continuar'); await click('Atrás');
+  expect(guide().getAttribute('data-running')).toBe('false');
+  expect(playAudio).not.toHaveBeenCalled(); expect(onSave).not.toHaveBeenCalled();
 });
