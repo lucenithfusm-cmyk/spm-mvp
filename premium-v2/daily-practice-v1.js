@@ -313,6 +313,7 @@ function wellness(a){
 }
 function patternTouch(a){
  const box=$('#spmDailyWorkspace'),d=a.lesson,prior=records[a.id]||{},captured=scopeOf(ctx()),day=Number(ctx().day);
+ if(ctx()?.primary==='ejaculation'&&window.openEpPattern)return window.openEpPattern({host:box,lesson:d,prior,exit:returnToToday,save:data=>saveActivity(a.id,data,captured,day)});
  let step=0,better=['',''],worse=['',''],measure=prior.measure||'';
  const pages=[()=>'<h2>'+esc(d.title_es)+'</h2><p>'+esc(d.learn_es)+'</p>',()=>'<h2>¿Cuándo responde mejor tu cuerpo?</h2>'+fields(better,'better'),()=>'<h2>¿Cuándo te cuesta más?</h2>'+fields(worse,'worse'),()=>'<h2>Tu mapa personal</h2><p>'+esc(d.apply_es)+'</p><p>Contextos favorables: '+esc(better.join(' · '))+'</p><p>Contextos desfavorables: '+esc(worse.join(' · '))+'</p><label>'+esc(d.measure_es)+'<textarea data-measure maxlength="1000">'+esc(measure)+'</textarea></label>'];
  function fields(values,key){return values.map((v,i)=>'<label>Contexto '+(i+1)+'<input data-context="'+key+'" data-index="'+i+'" maxlength="450" value="'+esc(v)+'" placeholder="Describe tu experiencia"></label>').join('');}
