@@ -23,7 +23,8 @@ const firstErectionPractice={id:'breath-start',title:'Mi primera práctica: resp
 function relevant(lab,c){return !!c&&routes[lab]?.some(x=>c.primary===x||c.secondary===x||c.motives?.includes(x));}
 function activity(lab,day,c){
  const n=Number(day),first=lab==='breathing'&&n===1&&c?.primary==='erection';
- const item=first?firstErectionPractice:({breathing,sensate})[lab]?.[n];
+ const scheduledDay=lab==='breathing'&&c?.primary==='ejaculation'?(n===10?0:n===11?10:n):n;
+ const item=first?firstErectionPractice:({breathing,sensate})[lab]?.[scheduledDay];
  const titled=lab==='sensate'&&n===19&&c?.primary==='desire'?{...item,title:'Sensate Focus II'}:item;
  return titled&&relevant(lab,c)?{...titled,steps:[...titled.steps],day:n,lab,...(first?{guide:window.SPM_PELVIC_GUIDANCE?.firstPractice?.(),optional:c.completed?.includes(1)===true}:{})}:null;
 }
