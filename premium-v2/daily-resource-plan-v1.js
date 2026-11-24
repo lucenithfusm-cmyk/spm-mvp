@@ -68,7 +68,7 @@ function cadence(main,support,c){
   if(main.kind==='recovery')main={...main,...activity};else support.push({...activity,id:'recovery-'+story.scenario});
  }
  // Un Lab semanal en los seis dominios; no confundirlo con el módulo de fuerza.
- const labDays=[3,10,17,24];
+ const labDays=c.primary==='ejaculation'?[3,10,18,24]:[3,10,17,24];
  support=support.filter(a=>a.kind!=='pelvic'||a.pelvicIntent==='scheduled');
 
  const week=labDays.indexOf(day);
