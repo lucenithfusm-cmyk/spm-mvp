@@ -1,0 +1,68 @@
+/* SPM gold voice controls. Shared by weekly sessions and the Lab library. */
+.pf-weekly-flow .pf-weekly-audio {
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,1fr);gap:18px;
+ align-items:center;padding:18px;border-color:#d6b67899;
+ background:linear-gradient(135deg,#17383f,#102a33);
+}
+.pf-weekly-flow .pf-weekly-audio>b {font-size:16px;line-height:1.45;color:#f0e5cc}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn,
+.pf.pf-action-lab .pf-audio>button {
+ position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;
+ gap:12px;width:100%;min-width:56px;min-height:62px;height:auto;max-width:100%;padding:14px 18px;
+ border:1px solid #f4dba5!important;border-radius:18px;
+ background:linear-gradient(145deg,#f0dbab 0%,#d5b06d 62%,#bf9553 100%);
+ color:#0b252d!important;font-size:18px;font-weight:800;line-height:1.35;
+ box-shadow:inset 0 1px 0 #fff7dfb3,0 0 0 3px #d7b8751f,0 4px 22px #d6ad624d;
+ white-space:normal;text-align:left;cursor:pointer;
+ transition:background .18s ease,box-shadow .18s ease;
+}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn::after,
+.pf.pf-action-lab .pf-audio>button::after {
+ content:"";position:absolute;inset:-5px;border:1px solid #ead09580;border-radius:inherit;
+ pointer-events:none;animation:spm-pelvic-audio-halo 3s ease-in-out infinite;
+}
+.pf-weekly-flow .pf-weekly-speaker,
+.pf.pf-action-lab .pf-audio>button>span[aria-hidden="true"] {
+ display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;font-size:0;color:inherit!important;
+}
+.pf-weekly-flow .pf-weekly-speaker::before,
+.pf.pf-action-lab .pf-audio>button>span[aria-hidden="true"]::before {
+ content:"";display:block;width:28px;height:28px;background:currentColor;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H3v6h3l5 4V5Z'/%3E%3Cpath d='M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M11 5 6 9H3v6h3l5 4V5Z'/%3E%3Cpath d='M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn[aria-pressed="true"],
+.pf.pf-action-lab .pf-audio[data-audio-status="playing"]>button {
+ background:linear-gradient(145deg,#fff0c9,#e1bf7d);
+ box-shadow:inset 0 0 0 1px #fff3d6,0 0 0 4px #d7b87540,0 4px 26px #e6bf7873;
+}
+.pf-weekly-flow .pf-weekly-btn[aria-pressed="true"]>.pf-weekly-speaker::before,
+.pf.pf-action-lab .pf-audio:is([data-audio-status="playing"],[data-audio-status="loading"])>button>span[aria-hidden="true"]::before {
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='4' width='5' height='16' rx='1.5'/%3E%3Crect x='14' y='4' width='5' height='16' rx='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='4' width='5' height='16' rx='1.5'/%3E%3Crect x='14' y='4' width='5' height='16' rx='1.5'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn[aria-pressed="true"]::after,
+.pf.pf-action-lab .pf-audio[data-audio-status="playing"]>button::after {animation:none;opacity:1;inset:-4px}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn:focus-visible,
+.pf.pf-action-lab .pf-audio>button:focus-visible {outline:3px solid #fff2d0;outline-offset:5px}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn:disabled,
+.pf.pf-action-lab .pf-audio>button:disabled {opacity:.55;background:#42525a;color:#d7deda!important;border-color:#85918c!important;box-shadow:none;cursor:not-allowed}
+.pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn:disabled::after,
+.pf.pf-action-lab .pf-audio>button:disabled::after {display:none}
+.pf.pf-action-lab .pf-audio {padding:4px 0;margin-top:12px}
+.pf.pf-action-lab .pf-trainer-main {min-width:0}
+@keyframes spm-pelvic-audio-halo {
+ 0%,100%{opacity:.38;box-shadow:0 0 8px #e2bd6833}
+ 50%{opacity:.9;box-shadow:0 0 17px 3px #e2bd6866}
+}
+@media (max-width:640px) {
+ .pf-weekly-flow .pf-weekly-audio {grid-template-columns:minmax(0,1fr);gap:14px;padding:18px 16px}
+ .pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn {min-height:64px;justify-content:flex-start;font-size:18px}
+ .pf.pf-action-lab .pf-audio>button {padding:12px 13px;font-size:17px;gap:10px}
+}
+@media (prefers-reduced-motion:reduce) {
+ .pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn::after,
+ .pf.pf-action-lab .pf-audio>button::after {animation:none;opacity:.65}
+ .pf-weekly-flow .pf-weekly-audio>.pf-weekly-btn,
+ .pf.pf-action-lab .pf-audio>button {transition:none}
+}

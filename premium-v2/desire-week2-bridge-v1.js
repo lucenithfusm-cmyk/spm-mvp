@@ -93,7 +93,7 @@ async function open(opts={}){
  const m={scope,day,host,sid:window.crypto?.randomUUID?.()||'spmweek2-'+Math.random().toString(36).slice(2),wrap:null,iframe:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,checkpointVerified:false,timer:0,onMessage:null};current=m;
  if(!allowed(m)){current=null;return false}
  const wrap=document.createElement('section');wrap.className='spm-ds-week2-root';wrap.setAttribute('aria-label','Deseo, día '+day+' interactivo');
- const iframe=document.createElement('iframe');iframe.title='Deseo · Día '+day;iframe.allow='autoplay';iframe.src='/premium-v2/desire-week2-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261119-w2-audio2';
+ const iframe=document.createElement('iframe');iframe.title='Deseo · Día '+day;iframe.allow='autoplay';iframe.src='/premium-v2/desire-week2-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261120-audio-fullscreen1';
  m.wrap=wrap;m.iframe=iframe;m.onMessage=e=>void onMessage(m,e);window.addEventListener('message',m.onMessage);wrap.append(iframe);host.replaceChildren(wrap);return true;
 }
 async function close(){if(current&&!allowed(current))dispose(current);return current?closeActive(current):legacyClose()}

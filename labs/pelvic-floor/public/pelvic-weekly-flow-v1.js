@@ -102,10 +102,24 @@ html,body{min-height:100%;background:#061a22}
 @media(prefers-reduced-motion:reduce){.pf-weekly-flow *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 `;
 const head=()=>`<header class="pf-weekly-head"><div class="pf-weekly-brand"><span>SPM</span><div><b>Pelvic Floor Lab</b><small>CONCIENCIA · RELAJACIÓN</small></div></div><span class="pf-weekly-week">SEMANA ${week} / 4</span></header>`;
-const button=(action,label,variant='primary',disabled=false)=>`<button type="button" class="pf-weekly-btn ${variant}" data-action="${action}" ${disabled?'disabled':''}>${escaped(label)}</button>`;
+const button=(action,label,variant='primary',disabled=false)=>{
+ const voice=action.startsWith('audio-'),text=voice?label.replace(/^▶\s*/, ''):label;
+ return `<button type="button" class="pf-weekly-btn ${variant}" data-action="${action}" ${voice?'aria-pressed="false" data-audio-status="idle"':''} ${disabled?'disabled':''}>${voice?'<span class="pf-weekly-speaker" aria-hidden="true"></span><span data-audio-label="'+escaped(text)+'">'+escaped(text)+'</span>':escaped(text)}</button>`;
+};
+function syncVoiceControls(){
+ const keys={'audio-intro':'intro-'+week,'audio-zone':'recognize-zone','audio-posture':'posture'};
+ box.querySelectorAll('.pf-weekly-audio [data-action]').forEach(control=>{
+  const selected=currentVoiceKey===keys[control.dataset.action],playing=selected&&!audio.paused&&!audio.ended;
+  control.setAttribute('aria-pressed',String(playing));
+  control.dataset.audioStatus=playing?'playing':selected?'paused':'idle';
+  const label=control.querySelector('[data-audio-label]');
+  if(label)label.textContent=playing?'Pausar explicación':selected?'Continuar explicación':label.dataset.audioLabel;
+ });
+}
+for(const event of ['play','playing','pause','ended','error','emptied'])audio.addEventListener(event,syncVoiceControls);
 const choices=(name,items,value)=>`<div class="pf-weekly-answers" role="group" aria-label="${escaped(name)}">${items.map(([key,label])=>`<button type="button" class="pf-weekly-choice ${(Array.isArray(value)?value.includes(key):value===key)?'on':''}" data-choice="${name}" data-value="${key}" aria-pressed="${Array.isArray(value)?value.includes(key):value===key}"><span class="dot" aria-hidden="true"></span><span>${escaped(label)}</span></button>`).join('')}</div>`;
 function current(){try{const ctx=parent?.getContext?.();return !!ctx&&ctx.day===entryContext.day&&ctx.activityId===entryContext.activityId&&ctx.origin===entryContext.origin&&ctx.intent===entryContext.intent&&ctx.restriction!=='review';}catch{return false}}
-function stopVoice(){currentVoiceKey=null;audio.pause();try{audio.currentTime=0}catch{};audio.removeAttribute('src');}
+function stopVoice(){currentVoiceKey=null;audio.pause();try{audio.currentTime=0}catch{};audio.removeAttribute('src');syncVoiceControls();}
 
 function speak(file,key){
  if(!file)return;
@@ -125,7 +139,7 @@ function speak(file,key){
   }
   const el=box.querySelector('[data-audio-message]');if(el)el.textContent='El audio no está disponible. Puedes continuar leyendo las indicaciones.';
  };
- audio.onended=()=>{if(currentVoiceKey===key)currentVoiceKey=null;};
+ audio.onended=()=>{if(currentVoiceKey===key)currentVoiceKey=null;syncVoiceControls();};
  audio.src=src;
  audio.play().catch(()=>{
   const alt=LOCAL_AUDIO_FALLBACKS[key];
@@ -163,7 +177,7 @@ function run(){
  all.since=performance.now();updateGuide();
  all.timer=setInterval(updateGuide,200);
 }
-function section(inner){box.innerHTML=`<div class="pf-weekly-wrap">${head()}<main class="pf-weekly-card" aria-live="polite">${inner}${all.error?`<p class="pf-weekly-alert" role="alert">${escaped(all.error)}</p>`:''}</main><div class="pf-weekly-status" role="status" data-audio-message></div></div>`;box.scrollTop=0;}
+function section(inner){box.innerHTML=`<div class="pf-weekly-wrap">${head()}<main class="pf-weekly-card" aria-live="polite">${inner}${all.error?`<p class="pf-weekly-alert" role="alert">${escaped(all.error)}</p>`:''}</main><div class="pf-weekly-status" role="status" data-audio-message></div></div>`;box.scrollTop=0;syncVoiceControls();}
 function showIntro(){
  const info=NARRATIONS.intro[week-1];
  const visuals=week===1?'<div class="pf-weekly-media"><img class="pf-weekly-image" src="'+images.anatomy+'" alt="Pelvis masculina con zona pélvica resaltada"><img class="pf-weekly-image" src="'+images.animation+'" alt="Animación educativa de relajación del piso pélvico"></div><div class="pf-weekly-audio"><b>Reconoce la zona con una explicación</b>'+button('audio-zone','▶ Escuchar ubicación','alt')+'</div><details class="pf-weekly-transcript"><summary>Leer cómo reconocer la zona</summary><p>El piso pélvico está en la base de la pelvis, debajo de los órganos pélvicos. Observa sin contraer, apretar ni empujar.</p></details>':'';

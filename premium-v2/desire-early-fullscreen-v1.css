@@ -1,0 +1,157 @@
+/* Deseo 1–14: the practice is the full device surface. The approved portrait
+ * and its percentage touch coordinates keep exactly the same proportions.
+ * Short devices scroll inside the practice instead of clipping its controls. */
+html:has(.spm-ds1-session), body:has(.spm-ds1-session),
+html:has(.spm-ds2-session), body:has(.spm-ds2-session),
+html:has(.spm-ds3-session), body:has(.spm-ds3-session) {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* Day 1's independent review keeps a hidden mounted session on return. */
+html:has([hidden] .spm-ds1-session), body:has([hidden] .spm-ds1-session) {
+  overflow: auto !important;
+  overscroll-behavior: auto;
+}
+
+.spm-ds1-session, .spm-ds2-session, .spm-ds3-session {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147482000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  isolation: isolate;
+}
+
+.spm-ds1-session > :not(.spm-ds1-overlay),
+.spm-ds2-session > :not(.spm-ds2-overlay),
+.spm-ds3-session > :not(.spm-ds3-alert-backdrop) {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: min(100%, 560px);
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spm-ds1-session > .spm-ds1-art,
+.spm-ds2-session > .spm-ds2-art,
+.spm-ds3-session > .spm-ds3-art {
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.spm-ds1-session > .spm-ds1-nav,
+.spm-ds2-session > .spm-ds2-nav,
+.spm-ds3-session > .spm-ds3-nav {
+  margin-top: auto;
+}
+
+.spm-ds1-status:empty, .spm-ds2-status:empty, .spm-ds3-status:empty {
+  display: none;
+}
+
+/* This class is used only by the two independent week viewers, never Central. */
+html.spm-desire-early-view,
+html.spm-desire-early-view body {
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fbf5e9;
+  overflow-x: clip;
+  overscroll-behavior-y: contain;
+}
+
+.spm-desire-early-view #app {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  background: #fbf5e9;
+}
+
+.spm-desire-early-view #app > * { flex: 0 0 auto; }
+.spm-desire-early-view #app > .custom { flex: 1 0 auto; min-height: 0; }
+.spm-desire-early-view #app > .navigation,
+.spm-desire-early-view #app > .nav { margin-top: auto; }
+
+/* The artwork already contains SPM, day and title. Put the existing auxiliary
+ * header below it, alongside navigation, so the screen starts at the top edge.
+ * All original back, voice, next and checkpoint controls stay available. */
+.spm-desire-early-view #app:has(> .art) > .art,
+.spm-desire-early-view #app:has(> .image-screen) > .image-screen {
+  order: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.spm-desire-early-view .art img.backdrop,
+.spm-desire-early-view .image-screen > img { object-fit: contain; }
+
+.spm-desire-early-view #app:has(> .art) > .sitebar,
+.spm-desire-early-view #app:has(> .image-screen) > .topbar {
+  order: 2;
+  position: static;
+  margin-top: auto;
+  border: 0;
+  border-radius: 0;
+  background: #fbf5e9;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.spm-desire-early-view #app:has(> .art) > .navigation,
+.spm-desire-early-view #app:has(> .image-screen) > .nav {
+  order: 3;
+  margin-top: 0;
+  background: #fbf5e9;
+}
+
+.spm-desire-early-view #app > .cover-note { order: 1; }
+.spm-desire-early-view #app > .disclaimer { order: 4; }
+.spm-desire-early-view .sitebar .back-chip,
+.spm-desire-early-view .topbar .iconback {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (max-width: 600px) {
+  .spm-desire-early-view #app { max-width: none; }
+  .spm-ds1-session > :not(.spm-ds1-overlay),
+  .spm-ds2-session > :not(.spm-ds2-overlay),
+  .spm-ds3-session > :not(.spm-ds3-alert-backdrop) { width: 100%; }
+}

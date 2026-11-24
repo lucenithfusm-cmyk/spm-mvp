@@ -64,14 +64,20 @@ function inlineFirstPracticeAudio(frame,guide,token){
   let observer=null;
   const attach=()=>{
    if(!modal||!frame.isConnected||token!==generation){observer?.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);return;}
+   const journey=doc.querySelector('.bl-route-shell');
+   if(journey&&(journey.dataset.routeStage!=='1'||journey.dataset.routeSafety==='true')){window.SPM_CHECKPOINT_AUDIO?.stop(panel);panel.remove();return;}
    const lesson=doc.querySelector('.bl-main'),title=lesson?.querySelector('.bl-h1');
    if(title&&panel.parentElement!==lesson)title.insertAdjacentElement('afterend',panel);
   };
   observer=new doc.defaultView.MutationObserver(attach);
-  observer.observe(doc.getElementById('root'),{childList:true,subtree:true});
+  observer.observe(doc.getElementById('root'),{childList:true,subtree:true,attributes:true,attributeFilter:['data-route-stage','data-route-safety']});
   attach();
   window.SPM_CHECKPOINT_AUDIO.bind(panel);
-  doc.addEventListener('click',e=>{if(e.target?.closest?.('.bl-audio,.bl-instruction-audio'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);},true);
+  doc.addEventListener('click',e=>{
+   // Stop the child's recording, device voice and pacer before the extended guide starts.
+   if(panel.contains(e.target?.closest?.('[data-checkpoint-audio-toggle]')))doc.defaultView.dispatchEvent(new doc.defaultView.CustomEvent('spm:breathing-stop-audio'));
+   if(e.target?.closest?.('.bl-audio,.bl-instruction-audio,.bl-voice-toggle,.bl-route-header .bl-brand,.bl-route-footer button,.bl-route-library button'))window.SPM_CHECKPOINT_AUDIO?.stop(panel);
+  },true);
   doc.defaultView.addEventListener('pagehide',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
   frame.addEventListener('load',()=>{observer.disconnect();window.SPM_CHECKPOINT_AUDIO?.stop(panel);},{once:true});
  },{once:true});
@@ -81,7 +87,7 @@ async function open(opts={}){
  const c=ctx();if(!c)return false;returnToDesire=opts.returnToDesire===true;
  scope=scopeOf(c);day=Math.min(28,Math.max(1,Number(c.day)||1));origin=['erectile','ejaculation','desire','dailyPlan'].includes(opts.origin)?opts.origin:'library';state={};dirty=saved=0;
  mode=origin==='library'?'library':'daily';launchStep=mode==='library'&&opts.practice==='guided'?11:null;activity=mode==='daily'?window.SPM_DAILY_SUPPORT?.activity('breathing',Number(opts.day)||day,c)||null:null;
- lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-breathing-modal';modal.setAttribute('aria-label','Respiración diafragmática SPM');
+ lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-breathing-modal';modal.dataset.breathingMode=mode;modal.setAttribute('aria-label','Respiración diafragmática SPM');
  modal.innerHTML='<header><button type="button" data-breathing-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':origin==='desire'?'Deseo':'mi programa')+'</button><span role="status" data-breathing-status>Cargando tu progreso…</span><button type="button" data-breathing-retry hidden>Reintentar guardado</button></header><main></main>';
  document.body.appendChild(modal);modal.showModal();modal.querySelector('[data-breathing-close]').onclick=close;modal.querySelector('[data-breathing-retry]').onclick=()=>flush().catch(()=>{});modal.addEventListener('cancel',e=>{e.preventDefault();close();});
  const token=++generation,captured=scope;
@@ -103,7 +109,7 @@ async function open(opts={}){
     return true;
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
-  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261113-instructions3&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
+  const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261123-breathing-narration4&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
    const firstPractice=origin==='dailyPlan'&&day===1&&c.primary==='erection'&&activity?.id==='breath-start';
    const guide=firstPractice?window.SPM_PELVIC_GUIDANCE?.firstPractice?.():null;
    // El iframe conserva la altura completa: el audio forma parte del scroll de la práctica.
@@ -130,6 +136,7 @@ window.addEventListener('spm:open-lab',e=>{if(['breathing','diaphragmatic-breath
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#newAssessment')&&modal)dispose();},true);
 window.addEventListener('spm:session-change',()=>{if(modal&&scopeOf(ctx())!==scope)dispose();schedule();});
 const style=document.createElement('style');style.textContent='.spm-breathing-modal{padding:0;border:1px solid #31545c;border-radius:18px;background:#07171f;color:#eef8f6;width:min(1120px,calc(100vw - 12px));height:94dvh;max-height:96dvh;overflow:hidden}.spm-breathing-modal[open]{display:flex;flex-direction:column}.spm-breathing-modal::backdrop{background:#020a10ed}.spm-breathing-modal>header{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid #31545c}.spm-breathing-modal button{min-height:44px;background:#17343e;border:1px solid #42616a;border-radius:10px;color:#eef8f6;padding:8px 12px}.spm-breathing-modal>header span{font-size:12px;color:#a3d3c7}.spm-breathing-modal>main{flex:1 1 0;min-height:0;overflow:hidden}.spm-breathing-modal iframe{display:block;width:100%;height:100%;border:0}#spmBreathingLabEntry>span{color:#d8ba75;font-size:11px;letter-spacing:.1em}[data-breathing-daily]{margin-top:12px}';style.textContent+=".spm-breathing-modal>main{display:flex;flex-direction:column}.spm-breathing-modal>main>iframe{flex:1 1 0;min-height:0;height:100%;width:100%}";document.head.appendChild(style);
+style.textContent+=':root:has(.spm-breathing-modal[open][data-breathing-mode="daily"]){overflow:hidden}.spm-breathing-modal[data-breathing-mode="daily"]{position:fixed;inset:0;margin:0;padding:0;width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0}.spm-breathing-modal[data-breathing-mode="daily"]>header{padding:8px max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));background:#061923}.spm-breathing-modal[data-breathing-mode="daily"]>header button{min-height:44px;font-size:13px}.spm-breathing-modal[data-breathing-mode="daily"]>header span{font-size:11px}@media(max-width:430px){.spm-breathing-modal[data-breathing-mode="daily"]>header{gap:5px;padding-top:max(6px,env(safe-area-inset-top))}.spm-breathing-modal[data-breathing-mode="daily"]>header span{flex:1;min-width:100px;text-align:right}}';
 window.addEventListener('spm:resourcecontext',schedule);
 window.SPM_BREATHING_LAB={open,close,flush,validState,relevant,restriction};schedule();
 })();

@@ -21,7 +21,8 @@ vi.mock('@/lib/central', () => ({
   },
 }));
 vi.mock('@/lib/breath-audio', () => ({
-  AUDIO_IDS: { screen: (n: number) => `screen.${n}` }, hasAudio: (id: string) => ['instruction.daily.4-6', 'instruction.daily.flexible'].includes(id),
+  AUDIO_IDS: { screen: (n: number) => `screen.${String(n).padStart(2, '0')}` },
+  hasAudio: (id: string) => /^screen\.(?:0[1-9]|1[0-8])$/.test(id) || ['instruction.daily.4-6', 'instruction.daily.flexible'].includes(id),
   playAudio: vi.fn(), stopAudio: vi.fn(), setAudioMuted: vi.fn(),
 }));
 vi.mock('@/lib/use-breath-audio', () => ({
@@ -46,7 +47,7 @@ beforeEach(() => {
   hasRecordDaily = true;
   context = {
     day: 3, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
-    activity: { id: 'breath-3', day: 3, title: 'Respiración', summary: 'A tu ritmo.', steps: [4], minutes: 2 },
+    activity: { id: 'breath-learn', day: 3, title: 'Respiración', summary: 'A tu ritmo.', steps: [3, 4], minutes: 2 },
   };
 });
 afterEach(async () => {
@@ -59,10 +60,12 @@ async function mount() {
 }
 const button = (text: string) => Array.from(el!.querySelectorAll('button')).find(b => b.textContent === text)!;
 const click = async (text: string) => { await act(async () => button(text).click()); };
+const advanceToPractice = async () => { for (let stage = 0; stage < 3; stage++) await click('Continuar'); };
 
 test('daily confirmation flushes the session before recording the central activity', async () => {
   await mount();
   expect(recordDaily).not.toHaveBeenCalled();
+  await advanceToPractice();
   await click('Confirmar experiencia de prueba');
   expect(recordDaily).not.toHaveBeenCalled();
   await click('Guardar registro');
@@ -75,7 +78,7 @@ test('daily confirmation flushes the session before recording the central activi
 });
 
 test('flush and daily-record failures keep the experience open and retry without duplicate sessions', async () => {
-  await mount(); await click('Confirmar experiencia de prueba');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba');
   flush.mockRejectedValueOnce(Error('offline'));
   await click('Guardar registro');
   expect(recordDaily).not.toHaveBeenCalled();
@@ -95,14 +98,14 @@ test('flush and daily-record failures keep the experience open and retry without
 
 test('library saves never record a daily activity', async () => {
   context = { day: 3, origin: 'library', restriction: 'none', mode: 'library', launchStep: 4 };
-  await mount(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
   expect(flush).toHaveBeenCalledTimes(1);
   expect(recordDaily).not.toHaveBeenCalled();
   expect(el!.textContent).toContain('Guardado en tu programa');
 });
 
 test('returning to Today before saving never records a daily activity', async () => {
-  await mount(); await click('Volver a Hoy');
+  await mount(); await click('Atrás');
   expect(close).toHaveBeenCalledTimes(1);
   expect(flush).not.toHaveBeenCalled();
   expect(recordDaily).not.toHaveBeenCalled();
@@ -110,7 +113,7 @@ test('returning to Today before saving never records a daily activity', async ()
 
 test('an older daily host without recordDaily keeps the existing save behavior', async () => {
   hasRecordDaily = false;
-  await mount(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
+  await mount(); if (context.mode === 'daily') await advanceToPractice(); await click('Confirmar experiencia de prueba'); await click('Guardar registro');
   expect(flush).toHaveBeenCalledTimes(1);
   expect(recordDaily).not.toHaveBeenCalled();
   expect(el!.textContent).toContain('Guardado en tu programa');
@@ -122,9 +125,9 @@ for (const [day, step, audioId, middleStep] of [
 ] as const) test(`day ${day} narrates the current instructions and keeps the practice duration flexible`, async () => {
   context = {
     day, origin: 'dailyPlan', restriction: 'none', mode: 'daily',
-    activity: { id: `breath-${day}`, day, title: 'Respiración', summary: 'A tu ritmo.', steps: [step], minutes: 2 },
+    activity: { id: day === 3 ? 'breath-learn' : 'breath-two', day, title: 'Respiración', summary: 'A tu ritmo.', steps: day === 3 ? [3, step] : [step], minutes: 2 },
   };
-  await mount();
+  await mount(); await advanceToPractice();
   expect(Array.from(el!.querySelectorAll('.bl-main ol li'), li => li.textContent)).toEqual([
     'Pulsa «Iniciar» y sigue la guía visual.',
     middleStep,
@@ -145,10 +148,57 @@ for (const [day, step, audioId, middleStep] of [
   expect(recordDaily).toHaveBeenCalledTimes(1); expect(close).not.toHaveBeenCalled();
 });
 
-test('the new instruction button respects the existing mute setting', async () => {
+test('an explicit instruction tap restores previously muted narration without an upper speaker', async () => {
+  audioState = { muted: true, id: null, error: null };
+  await mount(); await advanceToPractice();
+  expect(button('Escuchar instrucción').disabled).toBe(false);
+  expect(el!.querySelector('.bl-voice-toggle,.bl-voice-play,.bl-voice-label')).toBeNull();
+  expect(el!.querySelector('.bl-top .bl-audio')).toBeNull();
+  await click('Escuchar instrucción');
+  expect(setAudioMuted).toHaveBeenCalledWith(false);
+  expect(playAudio).toHaveBeenCalledWith('instruction.daily.4-6');
+  expect(recordDaily).not.toHaveBeenCalled();
+});
+
+test('all eighteen library screens retain content narration and navigation without header voice controls', async () => {
+  context = { day: 3, origin: 'library', restriction: 'none', mode: 'library', launchStep: 0 };
+  await mount();
+  for (let step = 0; step < 18; step++) {
+    const header = el!.querySelector('.bl-top')!;
+    expect(el!.querySelector('.bl-voice-toggle,.bl-voice-play,.bl-voice-label')).toBeNull();
+    expect(header.querySelector('.bl-audio')).toBeNull();
+    expect(Array.from(header.querySelectorAll('button'), control => control.getAttribute('aria-label'))).toEqual(['Inicio', 'Abrir índice']);
+    expect(header.querySelector('.bl-counter')?.textContent).toBe(`${String(step + 1).padStart(2, '0')}/18`);
+    const explanation = el!.querySelector<HTMLButtonElement>('.bl-main .bl-trainer .bl-audio')!;
+    expect(explanation.textContent?.trim()).toBe('Escuchar');
+    expect(explanation.disabled).toBe(false);
+    if (step < 17) await act(async () => el!.querySelector<HTMLButtonElement>('.bl-foot .bl-btn.teal')!.click());
+  }
+  expect(playAudio).not.toHaveBeenCalled();
+  expect(flush).not.toHaveBeenCalled();
+  expect(recordDaily).not.toHaveBeenCalled();
+  expect(JSON.parse(state['spmb-sessions']!)).toEqual([]);
+  expect(context.day).toBe(3);
+});
+
+test('the library explanation button unmutes, plays its current recording and stops without saving', async () => {
+  context = { day: 3, origin: 'library', restriction: 'none', mode: 'library', launchStep: 1 };
   audioState = { muted: true, id: null, error: null };
   await mount();
-  expect(button('Escuchar instrucción').disabled).toBe(true);
-  await click('Escuchar instrucción'); expect(playAudio).not.toHaveBeenCalled();
+  const explanation = () => el!.querySelector<HTMLButtonElement>('.bl-main .bl-trainer .bl-audio')!;
+  expect(playAudio).not.toHaveBeenCalled();
+  expect(explanation().getAttribute('aria-pressed')).toBe('false');
+  await act(async () => explanation().click());
+  expect(setAudioMuted).toHaveBeenCalledWith(false);
+  expect(playAudio).toHaveBeenCalledExactlyOnceWith('screen.02');
+  audioState = { muted: false, id: 'screen.02', error: null };
+  await act(async () => root!.render(<BreathingLab practiceAllowed />));
+  expect(explanation().textContent?.trim()).toBe('Detener voz');
+  expect(explanation().getAttribute('aria-pressed')).toBe('true');
+  vi.mocked(stopAudio).mockClear();
+  await act(async () => explanation().click());
+  expect(stopAudio).toHaveBeenCalledTimes(1);
+  expect(flush).not.toHaveBeenCalled();
   expect(recordDaily).not.toHaveBeenCalled();
+  expect(JSON.parse(state['spmb-sessions']!)).toEqual([]);
 });

@@ -143,3 +143,72 @@ test('Breathing returnToDesire reopens Desire after disposal without marking or 
   }finally{await h.close();}
  }
 });
+
+test('daily sessions use their own viewport mode while the complete library remains available',async()=>{
+ const h=harness({day:3});try{
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
+  assert.equal(h.w.document.querySelector('dialog').dataset.breathingMode,'daily');
+  assert.equal(h.w.SPM_BREATHING_LAB_HOST.getContext().activity.id,'breath-learn');
+  await h.w.SPM_BREATHING_LAB_HOST.openLibrary();
+  assert.equal(h.w.document.querySelector('dialog').dataset.breathingMode,'library');
+  assert.equal(h.w.SPM_BREATHING_LAB_HOST.getContext().mode,'library');
+  assert.equal(h.w.SPM_BREATHING_LAB_HOST.getContext().activity,null);
+  assert.equal(h.writes.length,0);
+ }finally{await h.close();}
+});
+
+test('the approved first Ereccion audio stays only in preparation and stops when the daily stage changes',async()=>{
+ const h=harness({day:1,primary:'erection'}),stops=[];try{
+  h.w.SPM_PELVIC_GUIDANCE={firstPractice:()=>({audioSrc:'approved-first-practice.mp3',script:'Guía aprobada de primera práctica.'})};
+  h.w.SPM_CHECKPOINT_AUDIO={markup:()=>'<button>Escuchar pasos</button>',bind:()=>{},stop:panel=>stops.push(panel)};
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
+  const frame=h.w.document.querySelector('iframe'),doc=frame.contentDocument;
+  doc.open();doc.write('<div id="root"><div class="bl-route-shell" data-route-stage="1"><main class="bl-main"><h1 class="bl-h1">Suelta tensión</h1></main></div></div>');doc.close();
+  frame.dispatchEvent(new h.w.Event('load'));
+  await new Promise(resolve=>setTimeout(resolve,0));
+  const panel=doc.querySelector('.spm-first-breath-audio');
+  assert.ok(panel);
+  assert.match(panel.textContent,/PRIMERA PRÁCTICA/);
+  const journey=doc.querySelector('.bl-route-shell');
+  journey.dataset.routeStage='2';
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(doc.querySelector('.spm-first-breath-audio'),null);
+  assert.ok(stops.includes(panel));
+  journey.dataset.routeStage='1';
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(doc.querySelectorAll('.spm-first-breath-audio').length,1);
+  journey.dataset.routeSafety='true';
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(doc.querySelector('.spm-first-breath-audio'),null,'safety does not display the first-practice instructions');
+  journey.dataset.routeSafety='false';
+  await new Promise(resolve=>setTimeout(resolve,0));
+  assert.equal(doc.querySelectorAll('.spm-first-breath-audio').length,1);
+  assert.equal(h.writes.length,0);
+ }finally{await h.close();}
+});
+
+test('first Ereccion guide and content narration stop each other before starting playback without a header speaker',async()=>{
+ const h=harness({day:1,primary:'erection'}),order=[],details=[],stops=[];try{
+  h.w.SPM_PELVIC_GUIDANCE={firstPractice:()=>({audioSrc:'approved-first-practice.mp3',script:'Guía aprobada de primera práctica.'})};
+  h.w.SPM_CHECKPOINT_AUDIO={
+   markup:()=>'<button data-checkpoint-audio-toggle><span>Escuchar pasos</span></button>',
+   bind:panel=>{panel.querySelector('button').onclick=()=>order.push('extended-play');},
+   stop:panel=>{stops.push(panel);order.push('extended-stop');}
+  };
+  await h.w.SPM_BREATHING_LAB.open({origin:'dailyPlan'});
+  const frame=h.w.document.querySelector('iframe'),doc=frame.contentDocument;
+  doc.open();doc.write('<div id="root"><div class="bl-route-shell" data-route-stage="1"><main class="bl-main"><h1 class="bl-h1">Suelta tensión</h1><button class="bl-audio"><span>Escuchar explicación</span></button></main></div></div>');doc.close();
+  doc.defaultView.addEventListener('spm:breathing-stop-audio',event=>{order.push('native-stop');details.push(event.detail);});
+  frame.dispatchEvent(new h.w.Event('load'));
+  await new Promise(resolve=>setTimeout(resolve,0));
+  const panel=doc.querySelector('.spm-first-breath-audio');assert.ok(panel);
+  order.length=0;panel.querySelector('button span').click();
+  assert.deepEqual(order,['native-stop','extended-play'],'the stop signal arrives in capture before the guide click handler');
+  assert.deepEqual(details,[null],'the stop signal carries no patient or playback data');
+  order.length=0;stops.length=0;
+  const native=doc.querySelector('.bl-audio');native.onclick=()=>order.push('native-play');native.querySelector('span').click();
+  assert.deepEqual(order,['extended-stop','native-play']);assert.deepEqual(stops,[panel]);
+  doc.querySelector('h1').click();assert.equal(details.length,1,'ordinary content clicks do not request an audio stop');
+  assert.equal(h.writes.length,0);
+ }finally{await h.close();}
+});

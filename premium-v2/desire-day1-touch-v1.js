@@ -106,8 +106,12 @@
   }
   function render(m){
     if(!m.host?.isConnected)return;
+    const previous=m.host.querySelector('.spm-ds1-session');
+    const scrollTop=previous?.dataset?.ds1Page===String(m.page)?(previous.scrollTop||0):0;
     const step=m.page,art=m.images[step-1];
     m.host.innerHTML=`<section class="spm-ds1-session" data-ds1-page="${step}" aria-label="Deseo · Día 1 · Pantalla ${step} de 5"><div class="spm-ds1-art"><img src="${esc(art)}" width="864" height="1536" alt="" draggable="false" loading="eager">${pageHits(m)}</div>${clock(m)}<nav class="spm-ds1-nav" aria-label="Navegación de Deseo"><button type="button" data-ds1-act="back">← ${step===1?'Actividades de hoy':'Anterior'}</button><span>Pantalla ${step} de 5</span><button type="button" data-ds1-act="forward">${step===5?'Volver a Hoy':'Siguiente →'}</button></nav><div class="spm-ds1-bottom"><button type="button" class="spm-ds1-exit" data-ds1-act="exit">Salir a Actividades de hoy</button><button type="button" class="spm-ds1-audio" data-ds1-act="audio" data-ds1-val="${step===3?'register':step===5?'close':'guide'}" aria-label="Escuchar instrucciones adicionales">🔊 Escuchar instrucciones</button></div><p class="spm-ds1-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
+    const current=m.host.querySelector('.spm-ds1-session');
+    if(current)current.scrollTop=scrollTop;
   }
   function status(m,message){m.message=message;const s=m.host?.querySelector('.spm-ds1-status');if(s)s.textContent=message;}
   function speechText(m,key){

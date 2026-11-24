@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>SPM · Revisión de experiencia móvil</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#e8ede7;color:#193f35;font:14px/1.4 system-ui,sans-serif}
+    header{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 18px;background:#f9f5eb;border-bottom:1px solid #cbb57f}
+    label{display:flex;gap:6px;align-items:center}select,button{font:inherit;min-height:40px;padding:5px 10px;border:1px solid #b49b61;border-radius:8px;background:#fffaf0;color:#193f35}
+    main{padding:16px;display:flex;justify-content:center}iframe{display:block;max-width:100%;width:390px;height:844px;border:0;background:#fbf5e9;box-shadow:0 6px 24px #183e3526}
+    a{color:#245b49}small{display:block;width:100%}
+  </style>
+</head>
+<body>
+  <header>
+    <strong>SPM · Revisión móvil</strong>
+    <label>Programa<select id="module"><option value="desire">Deseo</option><option value="breathing">Respiración</option><option value="breathing-daily">Respiración · sesión de ruta</option><option value="pelvic">Pelvic Floor Lab</option></select></label>
+    <label>Día<select id="day"></select></label>
+    <label>Pantalla<select id="size"><option value="390x844">390 × 844</option><option value="320x568">320 × 568</option><option value="390x650">390 × 650</option></select></label>
+    <button id="reload" type="button">Reabrir</button><a id="direct" target="_blank" rel="noopener">Abrir vista completa</a>
+    <small>Perfil de ejemplo; no consulta ni modifica registros de pacientes.</small>
+  </header>
+  <main><iframe id="review" title="Programa SPM en pantalla móvil" allow="autoplay"></iframe></main>
+  <script>
+    (()=>{'use strict';
+      const params=new URLSearchParams(location.search),module=document.getElementById('module'),day=document.getElementById('day'),size=document.getElementById('size'),frame=document.getElementById('review');
+      for(let n=1;n<=28;n++){const option=document.createElement('option');option.value=n;option.textContent='Día '+n;day.append(option);}
+      if(['desire','breathing','breathing-daily','pelvic'].includes(params.get('module')))module.value=params.get('module');
+      if(/^(?:[1-9]|1\d|2[0-8])$/.test(params.get('day')||''))day.value=params.get('day');
+      function resize(){const [width,height]=size.value.split('x').map(Number);frame.style.width=width+'px';frame.style.height=height+'px';}
+      function load(){const url=new URL('../premium-v2/revision-programas-28-dias.html',location.href);url.searchParams.set('programa','desire');url.searchParams.set('dia',day.value);if(module.value==='breathing')url.searchParams.set('abrir','respiracion');if(module.value==='breathing-daily')url.searchParams.set('abrir','respiracion-ruta');if(module.value==='pelvic')url.searchParams.set('abrir','pelvic-lab');frame.src=url.href;document.getElementById('direct').href=url.href;}
+      module.onchange=load;day.onchange=load;size.onchange=resize;document.getElementById('reload').onclick=load;resize();load();
+    })();
+  </script>
+</body>
+</html>
