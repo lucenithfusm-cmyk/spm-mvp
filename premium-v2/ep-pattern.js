@@ -54,7 +54,23 @@ window.openEpPattern = function ({host,lesson,prior={},save,exit}) {
     }
    },'ep-hit');
   }
-  function warn(text){const msg=document.createElement('button');msg.className='ep-alert';msg.setAttribute('role','alert');msg.textContent=text+' · Entendido';stage.append(msg);msg.onclick=()=>msg.remove();msg.focus();}
+  function warn(text){
+   if(stage.querySelector('.ep-alert'))return;
+   const previousFocus=document.activeElement;
+   const msg=document.createElement('button');
+   msg.type='button';
+   msg.className='ep-alert';
+   msg.setAttribute('role','alert');
+   msg.textContent=text+' · Toca la pantalla para continuar.';
+   stage.append(msg);
+   modal.addEventListener('click',event=>{
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    msg.remove();
+    if(previousFocus?.isConnected)previousFocus.focus({preventScroll:true});
+   },{capture:true,once:true});
+   msg.focus();
+  }
 
  }
  draw();
