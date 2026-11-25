@@ -1,4 +1,4 @@
-window.openEpPattern = function ({host,lesson,prior={},save,exit}) {
+window.openEpPattern = function ({host,lesson,prior={},save,exit,profile}) {
  const modal=document.createElement('dialog');
  modal.className='ep-pattern';
  host.append(modal);
@@ -17,6 +17,7 @@ window.openEpPattern = function ({host,lesson,prior={},save,exit}) {
   const stage=modal.firstChild;
   stage.querySelector('button').onclick=leave;
   stage.dataset.page=page;
+  if(page===0&&profile&&profile!=='ejaculation'){const owner=document.createElement('span');owner.className='confidence-owner';owner.textContent='Confianza y ansiedad de desempeño';stage.append(owner);}
   function place(el,x,y,w,h){el.style.cssText+=';position:absolute;left:'+x+'%;top:'+y+'%;width:'+w+'%;height:'+h+'%';stage.append(el);}
   function control(label,x,y,w,h,run,cls){const b=document.createElement('button');b.type='button';b.className=cls;b.setAttribute('aria-label',label);b.onclick=run;place(b,x,y,w,h);return b;}
   const guide=document.createElement('div');

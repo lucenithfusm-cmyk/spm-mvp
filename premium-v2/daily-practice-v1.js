@@ -114,6 +114,7 @@ function assignments(c=ctx()){
   support=support.map(a=>a.kind==='confidence'?{...a,optional:true,optionalLabel:'REVISIÓN · OPCIONAL'}:a);
  }
 
+ if(window.SPM_CONFIDENCE_TOUCH)({main,support}=window.SPM_CONFIDENCE_TOUCH.compose(main,support,c));
  if(directErection(c,main))main={...main,...window.SPM_ERECTION_PRACTICE.definition(day)};
  return [main,...support,...wellness];
 }
@@ -164,7 +165,7 @@ function render(){
  window.SPM_ERECTION_PRACTICE?.stop();delete host.dataset.focusedPractice;
  pauseDailyVideo();epStop();
  host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Lo que vas a hacer hoy</h2><p class="spm-daily-count">${required.length?done+' de '+required.length+' prácticas realizadas':'Explora tus actividades complementarias de hoy'}</p>${window.SPM_PROGRAM_RECOVERY?.notice(c)||''}${safetyNotice(c)}${pelvicPreview?'<section class="spm-pelvic-day-one" data-pelvic-strength-intro><b>Tu programa de piso pélvico · Contracción y fuerza</b><p>Ya puedes conocer tu entrenamiento de siete pasos. Las sesiones de contracción se programan dos veces por semana y comienzan en el día 2, según tu preparación.</p><button type="button" class="btn sec" data-pelvic-strength-info>Conocer mi programa</button></section>':''}${epCard(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
-  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1,directErectionEntry=directErection(c,a),guidedPelvicEntry=a.kind==='pelvic',directEntry=directDesireEntry||directErectionEntry||guidedPelvicEntry;
+  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1,directErectionEntry=directErection(c,a),guidedPelvicEntry=a.kind==='pelvic',directEntry=!!a.confidenceDay||directDesireEntry||directErectionEntry||guidedPelvicEntry;
   const firstBreath=a.kind==='breathing'&&a.id==='breath-start',guide=!blocked&&!firstBreath?recordedGuide(a):null;
   // Una sola versión aprobada, definida para Hoy y la revisión general.
   const activeRelease=directErectionEntry?window.SPM_ACTIVE_MODULE_RELEASE?.resolve(c,a):null;
@@ -313,7 +314,7 @@ function wellness(a){
 }
 function patternTouch(a){
  const box=$('#spmDailyWorkspace'),d=a.lesson,prior=records[a.id]||{},captured=scopeOf(ctx()),day=Number(ctx().day);
- if(ctx()?.primary==='ejaculation'&&window.openEpPattern)return window.openEpPattern({host:box,lesson:d,prior,exit:returnToToday,save:data=>saveActivity(a.id,data,captured,day)});
+ if(a.confidenceDay===2&&window.openEpPattern)return window.openEpPattern({host:box,lesson:d,prior,exit:returnToToday,save:data=>saveActivity(a.id,data,captured,day)});
  let step=0,better=['',''],worse=['',''],measure=prior.measure||'';
  const pages=[()=>'<h2>'+esc(d.title_es)+'</h2><p>'+esc(d.learn_es)+'</p>',()=>'<h2>¿Cuándo responde mejor tu cuerpo?</h2>'+fields(better,'better'),()=>'<h2>¿Cuándo te cuesta más?</h2>'+fields(worse,'worse'),()=>'<h2>Tu mapa personal</h2><p>'+esc(d.apply_es)+'</p><p>Contextos favorables: '+esc(better.join(' · '))+'</p><p>Contextos desfavorables: '+esc(worse.join(' · '))+'</p><label>'+esc(d.measure_es)+'<textarea data-measure maxlength="1000">'+esc(measure)+'</textarea></label>'];
  function fields(values,key){return values.map((v,i)=>'<label>Contexto '+(i+1)+'<input data-context="'+key+'" data-index="'+i+'" maxlength="450" value="'+esc(v)+'" placeholder="Describe tu experiencia"></label>').join('');}
@@ -379,7 +380,12 @@ async function launch(id){
  if((directErection(c,a)||a.kind==='pelvic')&&!loaded){status(loadError?'No pudimos recuperar tus registros. Pulsa «Reintentar» antes de iniciar.':'Estamos recuperando tus registros. Podrás iniciar en un momento.');return;}
  active={id,scope:scopeOf(c),day:Number(c.day),startedAt:Date.now()};const session=active;
  try{
-  if(directErection(c,a)){$('#spmDailySession').dataset.focusedPractice='erection';await window.SPM_ERECTION_PRACTICE.open(a);}
+  if(a.confidenceDay){
+   if(!loaded){active=null;status(loadError?'No pudimos recuperar tus registros. Pulsa Reintentar.':'Estamos recuperando tus registros. Vuelve a abrir la actividad en un momento.');return;}
+   const show=a.confidenceDay===2?window.openEpPattern:window.SPM_CONFIDENCE_TOUCH.open;
+   show({profile:c.primary,lesson:window.SPM_MODULES.days.find(d=>d.d===a.confidenceDay),host:$("#spmDailyWorkspace"),day:Number(c.day),prior:records[id],exit:returnToToday,save:data=>saveActivity(id,data,session.scope,session.day)});
+  }
+  else if(directErection(c,a)){$('#spmDailySession').dataset.focusedPractice='erection';await window.SPM_ERECTION_PRACTICE.open(a);}
   else if(a.kind==='program-checkpoint')await window.SPM_PROGRAM_CHECKPOINT.open(a);
   else if(a.kind==='video')dailyVideo(a);
   else if(a.kind==='erection')window.SPM_ERECTILE_FUNCTION.open(Number(c.day),{origin:'dailyPlan'});
@@ -506,7 +512,7 @@ window.addEventListener('spm:pelvic-readiness',()=>render());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:resource-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,openDesireFromCalendar,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,openDesireFromCalendar,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();if(a.confidenceDay)launch(a.id);else worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
 layout();load();
 })();
