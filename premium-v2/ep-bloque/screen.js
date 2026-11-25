@@ -14,6 +14,7 @@ const labels={
  27:['Consolidar el control del tiempo de eyaculación','Disfrutar más de las sensaciones y la conexión','Sentirme más seguro y confiado en mi desempeño']
 };
 function open({host,day,prior={},save,exit,profile}){
+ if(window.SPM_CONFIDENCE_NEW?.days.includes(day))return window.SPM_CONFIDENCE_NEW.open({host,day,prior,save,exit});
  const index=days.indexOf(day);if(index<0)return;
  const dialog=document.createElement('dialog');dialog.className='ep-block';
  const stage=document.createElement('section');stage.className='ep-canvas';
@@ -108,11 +109,19 @@ function open({host,day,prior={},save,exit,profile}){
 }
 function compose(main,support,c){
  const day=Number(c.day);
- if(day!==2&&!days.includes(day))return {main,support};
- const title=day===2?'Tu patrón real':titles[days.indexOf(day)];
+ const extraTitle=window.SPM_CONFIDENCE_NEW?.titles[window.SPM_CONFIDENCE_NEW.days.indexOf(day)];
+ const title=extraTitle||(day===2?'Tu patrón real':titles[days.indexOf(day)]);
+ if(!title)return {main,support};
  const tag=a=>({...a,title,confidenceDay:day,summary:'Abre la actividad guiada de hoy.',label:'CONFIANZA Y ANSIEDAD DE DESEMPEÑO'});
- if(['confidence','anxiety','mixed','ejaculation'].includes(c.primary))main=tag(main);
- else {
+ const own=['confidence','anxiety','mixed'].includes(c.primary);
+ if(own||(!extraTitle&&c.primary==='ejaculation')){
+  if(main.kind==='sensate'){
+   const lab=window.SPM_DAILY_SUPPORT?.activity('sensate',day,c);
+   if(lab&&!support.some(a=>a.id===lab.id))support=[...support,{...lab,kind:'sensate'}];
+   main={id:'main',kind:'worksheet',lesson:window.SPM_MODULES?.days.find(d=>d.d===day)};
+  }
+  main=tag(main);
+ }else{
   support=support.map(a=>a.kind==='confidence'&&day!==14?tag(a):a);
   if(c.primary==='desire'&&day===13&&!support.some(a=>a.confidenceDay))
    support.push(tag({id:'support-confidence',kind:'confidence',optional:true}));
