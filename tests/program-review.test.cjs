@@ -521,3 +521,36 @@ test('El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el 
   assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });
+
+test('Hoy opens the shared touch activities in both wellbeing profiles',async()=>{
+ const h=await harness('?programa=wellbeing&dia=2');
+ try{
+  const {w}=h;
+  w.structuredClone=structuredClone;
+  const days=[2,4,5,7,8,9,10,12,13,14,15,17,18,20,21,22,23,24,25,26,27];
+  for(const profile of ['wellbeing','lifestyle']){
+   for(const day of days){
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select(profile,day),true);
+    await wait();
+    const card=w.document.querySelector('[data-activity="main"]');
+    assert.equal(card.querySelector('[data-daily-confirm]'),null);
+    card.querySelector('[data-daily-open]').click();
+    await wait();
+    const modal=w.document.querySelector('#spmDailyWorkspace dialog[open]');
+    assert.ok(modal,profile+' must open its touch activity on day '+day);
+    if(day===2){
+     modal.querySelector('[aria-label="Abrir actividad"]').click();
+     const options=modal.querySelectorAll('.ep-option');
+     for(const index of [0,3,4,7])options[index].click();
+     modal.querySelector('[aria-label="Continuar"]').click();
+     await wait();
+     const c=w.SPM_RESOURCE_CONTEXT(),rows=await w.SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,day);
+     assert.equal(rows.main.better.length,2);assert.equal(rows.main.worse.length,2);
+    }else{
+     modal.dispatchEvent(new w.Event('cancel',{cancelable:true}));
+     await wait();
+    }
+   }
+  }
+ }finally{h.close();}
+});

@@ -113,7 +113,7 @@ function compose(main,support,c){
  const title=extraTitle||(day===2?'Tu patrón real':titles[days.indexOf(day)]);
  if(!title)return {main,support};
  const tag=a=>({...a,title,confidenceDay:day,summary:'Abre la actividad guiada de hoy.',label:'CONFIANZA Y ANSIEDAD DE DESEMPEÑO'});
- const own=['confidence','anxiety','mixed'].includes(c.primary);
+ const own=['confidence','anxiety','mixed','wellbeing','lifestyle','optimization'].includes(c.primary);
  if(own||(!extraTitle&&c.primary==='ejaculation')){
   if(main.kind==='sensate'){
    const lab=window.SPM_DAILY_SUPPORT?.activity('sensate',day,c);
