@@ -69,7 +69,10 @@ function speakNative(button){
  try{
   utterance=new Utterance(button.dataset.spmSpeak||'');utterance.lang='es-CO';utterance.rate=.92;
   let voices=[];try{voices=synthesis.getVoices?.()||[];}catch{}
-  utterance.voice=voices.find(v=>v.lang?.toLowerCase()==='es-co')||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
+  if(button.dataset.spmDeviceVoice==='true'){
+   const spanish=voices.filter(v=>/^es(?:-|$)/i.test(v.lang)&&!(/sof[ií]a/i.test(v.name)));
+   utterance.voice=spanish.find(v=>v.default)||spanish.find(v=>v.lang.toLowerCase()==='es-co')||spanish[0]||null;
+  }else utterance.voice=voices.find(v=>v.lang?.toLowerCase()==='es-co')||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
   current={button,utterance};label(button,'Detener audio',true);
   utterance.onend=()=>{if(current?.utterance===utterance){current=null;reset(button);}};
   utterance.onerror=event=>{

@@ -42,7 +42,7 @@ function restricted(c,id){
  if(a.kind==='wellness'&&a.tip.category==='movement'&&window.SPM_RESOURCES?.restricted?.(c)!==false)return true;
  if(window.SPM_PROGRAM_RECOVERY?.blocks(c,a))return true;
  if(level==='none')return false;
- return !(a.kind==='program-checkpoint'||a.kind==='video'||a.kind==='ep-checkpoint'||a.kind==='confidence'||(a.kind==='worksheet'&&educational.has(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement'));
+ return !(a.kind==='program-checkpoint'||a.kind==='video'||a.kind==='ep-checkpoint'||a.kind==='connection'||a.kind==='confidence'||(a.kind==='worksheet'&&educational.has(a.lesson?.interaction))||(a.kind==='wellness'&&a.tip.category!=='movement'));
 }
 function safetyNotice(c){
  const level=safety(c);if(level==='none')return '';
@@ -114,7 +114,15 @@ function assignments(c=ctx()){
   support=support.map(a=>a.kind==='confidence'?{...a,optional:true,optionalLabel:'REVISIÓN · OPCIONAL'}:a);
  }
 
- if(window.SPM_CONFIDENCE_TOUCH)({main,support}=window.SPM_CONFIDENCE_TOUCH.compose(main,support,c));
+ const connectionOwnsDay=c.primary==='wellbeing'&&window.SPM_CONNECTION?.days.includes(day);
+ if(window.SPM_CONFIDENCE_TOUCH&&!connectionOwnsDay)({main,support}=window.SPM_CONFIDENCE_TOUCH.compose(main,support,c));
+ if(window.SPM_CONNECTION){
+  if(connectionOwnsDay&&['sensate','breathing','video','pelvic'].includes(main.kind)&&!support.some(a=>a.kind===main.kind)){
+   const lab=window.SPM_DAILY_SUPPORT?.activity(main.kind,day,c);
+   support=[{...main,id:lab?.id||'support-'+main.kind},...support];
+  }
+  ({main,support}=window.SPM_CONNECTION.compose(main,support,c));
+ }
  if(directErection(c,main))main={...main,...window.SPM_ERECTION_PRACTICE.definition(day)};
  return [main,...support,...wellness];
 }
@@ -122,7 +130,7 @@ function pelvicRecordMatches(a,r,day){
  if(!r||r.completed!==true||r.day!==day||r.activityId!==a.id||r.intent!==a.pelvicIntent)return false;
  return a.pelvicIntent==='daily-relax'?r.practiceId==='percibe'&&r.origin==='dailyPlan':a.pelvicIntent==='scheduled'&&r.source==='pelvic-classic-v2';
 }
-function recordComplete(a){const r=records[a.id];if(a.kind==='erection'&&a.erectionLesson&&!window.SPM_ERECTION_PRACTICE?.valid?.(r,Number(ctx()?.day)))return false;if(a.tip&&r?.tipId!==a.tip.id)return false;if(a.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(r))return false;if(a.kind==='pelvic'&&a.pelvicIntent&&!pelvicRecordMatches(a,r?.pelvicResult,Number(ctx()?.day)))return false;return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind)&&(!a.scenario||r.scenario===a.scenario);}
+function recordComplete(a){const r=records[a.id];if(a.kind==='connection')return r?.completed===true&&window.SPM_CONNECTION.complete(ctx()?.day,r);if(a.kind==='erection'&&a.erectionLesson&&!window.SPM_ERECTION_PRACTICE?.valid?.(r,Number(ctx()?.day)))return false;if(a.tip&&r?.tipId!==a.tip.id)return false;if(a.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(r))return false;if(a.kind==='pelvic'&&a.pelvicIntent&&!pelvicRecordMatches(a,r?.pelvicResult,Number(ctx()?.day)))return false;return r?.completed===true&&(!r.activityKind||r.activityKind===a.kind)&&(!a.scenario||r.scenario===a.scenario);}
 function focus(el){if(!el)return;el.tabIndex=-1;el.style.scrollMarginTop=(Math.ceil($('.top')?.getBoundingClientRect().height||0)+16)+'px';el.scrollIntoView({behavior:'instant',block:'start'});el.focus({preventScroll:true});}
 function status(text,error=false){const el=$('#spmDailyStatus');if(el){el.textContent=text;el.classList.toggle('error',error);}}
 function layout(){
@@ -165,7 +173,7 @@ function render(){
  window.SPM_ERECTION_PRACTICE?.stop();delete host.dataset.focusedPractice;
  pauseDailyVideo();epStop();
  host.innerHTML=`<span class="stepBadge">HOY · DÍA ${c.day} DE 28</span><h2>Lo que vas a hacer hoy</h2><p class="spm-daily-count">${required.length?done+' de '+required.length+' prácticas realizadas':'Explora tus actividades complementarias de hoy'}</p>${window.SPM_PROGRAM_RECOVERY?.notice(c)||''}${safetyNotice(c)}${pelvicPreview?'<section class="spm-pelvic-day-one" data-pelvic-strength-intro><b>Tu programa de piso pélvico · Contracción y fuerza</b><p>Ya puedes conocer tu entrenamiento de siete pasos. Las sesiones de contracción se programan dos veces por semana y comienzan en el día 2, según tu preparación.</p><button type="button" class="btn sec" data-pelvic-strength-info>Conocer mi programa</button></section>':''}${epCard(c)}<div class="spm-daily-activities">${items.map((a,i)=>{
-  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1,directErectionEntry=directErection(c,a),guidedPelvicEntry=a.kind==='pelvic',directEntry=!!a.confidenceDay||directDesireEntry||directErectionEntry||guidedPelvicEntry;
+  const blocked=restricted(c,a),saved=recordComplete(a),directDesireEntry=a.kind==='desire'&&Number(c.day)===1,directErectionEntry=directErection(c,a),guidedPelvicEntry=a.kind==='pelvic',directEntry=a.kind==='connection'||!!a.confidenceDay||directDesireEntry||directErectionEntry||guidedPelvicEntry;
   const firstBreath=a.kind==='breathing'&&a.id==='breath-start',guide=!blocked&&!firstBreath?recordedGuide(a):null;
   // Una sola versión aprobada, definida para Hoy y la revisión general.
   const activeRelease=directErectionEntry?window.SPM_ACTIVE_MODULE_RELEASE?.resolve(c,a):null;
@@ -263,6 +271,7 @@ function library(){pauseDailyVideo();view='library';layout();focus($('#spmDailyL
 async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(ctx()?.day)){
  const c=ctx();if(scopeOf(c)!==expectedScope||Number(c?.day)!==day||restricted(c,id))throw Error('La sesión o su indicación de seguridad ha cambiado.');
  const activity=assignments(c).find(a=>a.id===id);if(!activity||activity.kind==='erection-support-day')throw Error('Esta actividad no se registra por separado. Consulta los recursos asignados de hoy.');if(activity.kind==='program-checkpoint'&&!window.SPM_PROGRAM_CHECKPOINT?.valid(data))throw Error('Completa la evaluación antes de registrarla.');if(directErection(c,activity)&&!window.SPM_ERECTION_PRACTICE.valid(data,day))throw Error('Completa las acciones de tu práctica antes de guardarla.');if(activity.kind==='pelvic'&&(!freshPelvicResult(activity)||data.confirmed!==true||JSON.stringify(data.pelvicResult)!==JSON.stringify(active.pelvicResult)))throw Error('Realiza la práctica de hoy y confirma su resultado antes de registrarla.');data={...data,...(activity.tip?{tipId:activity.tip.id}:{}),activityKind:activity.kind,...(activity.scenario?{scenario:activity.scenario}:{})};
+ if(activity.kind==='connection'&&!window.SPM_CONNECTION.complete(day,data))throw Error('Completa el registro de conexión.');
  await window.SPM_DAILY_RECORDS.save(id,{...data,completed:true},expectedScope,day);
  if(activity.kind==='pelvic'&&active?.id===id)delete active.pelvicResult;
  if(scopeOf(ctx())===expectedScope&&Number(ctx()?.day)===day){
@@ -282,7 +291,7 @@ async function saveActivity(id,data={},expectedScope=scopeOf(ctx()),day=Number(c
 }
 function confirmActivity(id){
  const assigned=assignments().find(a=>a.id===id);
- if(assigned?.confidenceDay||directErection(ctx(),assigned)||['program-checkpoint','desire','video'].includes(assigned?.kind)||assigned?.kind==='pelvic'&&!freshPelvicResult(assigned)){launch(id);return;}
+ if(assigned?.kind==='connection'||assigned?.confidenceDay||directErection(ctx(),assigned)||['program-checkpoint','desire','video'].includes(assigned?.kind)||assigned?.kind==='pelvic'&&!freshPelvicResult(assigned)){launch(id);return;}
  pauseDailyVideo();
  const a=assignments().find(x=>x.id===id),box=$('#spmDailyWorkspace');if(!a||!box||restricted(ctx(),a))return;
  const captured=scopeOf(ctx()),day=Number(ctx().day),pelvicResult=freshPelvicResult(a);
@@ -370,7 +379,8 @@ function desireLaunchIssue(message){
 async function launch(id){
  window.SPM_ERECTION_PRACTICE?.stop();delete $('#spmDailySession')?.dataset.focusedPractice;
  window.SPM_PRACTICE_AUDIO?.stop();pauseDailyVideo();
- const c=ctx(),a=assignments(c).find(x=>x.id===id);if(!a||a.kind==='erection-support-day')return;
+ const c=ctx(),items=assignments(c),a=id==='main'?items[0]:items.find(x=>x.id===id);if(!a||a.kind==='erection-support-day')return;
+ id=a.id;
  // Si faltan los controladores aprobados, nunca mostrar el formulario viejo.
  if(c?.primary==='erection'&&window.SPM_ERECTION_10_SCHEDULE?.isReady(c.day)===true&&a.id==='main'&&a.kind==='erection'&&!window.SPM_ACTIVE_MODULE_RELEASE?.ready?.(c,a)){
   status('La sesión interactiva actual no se pudo cargar. Actualiza la página y vuelve a intentarlo; tu progreso se conserva.',true);
@@ -380,7 +390,19 @@ async function launch(id){
  if((directErection(c,a)||a.kind==='pelvic')&&!loaded){status(loadError?'No pudimos recuperar tus registros. Pulsa «Reintentar» antes de iniciar.':'Estamos recuperando tus registros. Podrás iniciar en un momento.');return;}
  active={id,scope:scopeOf(c),day:Number(c.day),startedAt:Date.now()};const session=active;
  try{
-  if(a.confidenceDay){
+  if(a.kind==='connection'){
+   if(!loaded){active=null;status('Recupera tus registros antes de abrir la práctica. Si la carga falló, pulsa Reintentar.',true);return;}
+   const module=window.SPM_CONNECTION,key=module.storageKey;
+   let baseline;
+   if(session.day===28){
+    const first=await window.SPM_DAILY_RECORDS.read(session.scope,1);
+    if(active!==session||!validActive())return;
+    if(module.complete(1,first[key]))baseline=first[key].answers;
+   }
+   module.open({host:$('#spmDailyWorkspace'),day:session.day,prior:records[key],baseline,draftScope:session.scope,exit:returnToToday,
+    save:data=>saveActivity(id,data,session.scope,session.day)});
+  }
+  else if(a.confidenceDay){
    if(!loaded){active=null;status(loadError?'No pudimos recuperar tus registros. Pulsa Reintentar.':'Estamos recuperando tus registros. Vuelve a abrir la actividad en un momento.');return;}
    const show=a.confidenceDay===2?window.openEpPattern:window.SPM_CONFIDENCE_TOUCH.open;
    show({profile:c.primary,lesson:window.SPM_MODULES.days.find(d=>d.d===a.confidenceDay),host:$("#spmDailyWorkspace"),day:Number(c.day),prior:records[id],exit:returnToToday,save:data=>saveActivity(id,data,session.scope,session.day)});
@@ -512,7 +534,7 @@ window.addEventListener('spm:pelvic-readiness',()=>render());
 window.addEventListener('spm:session-change',e=>{if(e.detail?.userId&&current.startsWith(e.detail.userId+':'))return;generation++;current='';records={};loaded=false;active=null;$('#spmDailySession')?.replaceChildren();});
 window.addEventListener('spm:resource-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
 window.addEventListener('spm:de-return',e=>{if(e.detail?.origin==='dailyPlan')open();});
-window.SPM_DAILY_PRACTICE={open,openDesireFromCalendar,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c).find(x=>x.id==='main'),lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();if(a.confidenceDay)launch(a.id);else worksheet({...a,lesson});return true;}};
+window.SPM_DAILY_PRACTICE={open,openDesireFromCalendar,library,assignments,saveActivity,showContinuation,returnToToday,nextActivities,launch,closingAdvice,active:()=>active,restricted,safety,openLesson(day){const c=ctx();if(c?.primary==='erection')return false;const a=assignments(c)[0],lesson=window.SPM_MODULES?.days?.find(x=>x.d===Number(day));if(!c||Number(c.day)!==Number(day)||!a||!lesson||restricted(c,a))return false;open();if(a.kind==='connection'||a.confidenceDay)launch(a.id);else worksheet({...a,lesson});return true;}};
 let pending=false;new MutationObserver(()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;layout();});}).observe($('#plan')||document.body,{childList:true});
 layout();load();
 })();

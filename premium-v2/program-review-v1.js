@@ -6,7 +6,7 @@ const programs=Object.freeze([
   {id:'erection',label:'Erección y firmeza',profile:'Rendimiento eréctil'},
   {id:'ejaculation',label:'Control eyaculatorio',profile:'Control eyaculatorio'},
   {id:'confidence',label:'Confianza y ansiedad de desempeño',profile:'Confianza'},
-  {id:'wellbeing',label:'Satisfacción y conexión',profile:'Satisfacción y conexión'},
+  {id:'wellbeing',label:'Conexión y Satisfacción Sexual',profile:'Conexión y Satisfacción Sexual'},
   {id:'lifestyle',label:'Hábitos y bienestar',profile:'Hábitos y bienestar'}
 ]);
 const clone=value=>JSON.parse(JSON.stringify(value));
@@ -168,7 +168,7 @@ function installRecords(){
   window.SPM_COMPLETE_DAILY_PRACTICE=async(completedDay,expected)=>{assertScope(expected);assertDay(completedDay);const c=context();if(!c.completed.includes(day))c.completed.push(day);};
 }
 const scripts=[
-  'engine.js','modules.js?v=20261113-closing1','pelvic-guidance-v1.js?v=20261114-circle-halo-welcome4','daily-support-plan-v1.js?v=20261115-sensate-focus1-five-direct6','practice-audio-v1.js?v=20261113-recovery-audio1','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
+  'engine.js','modules.js?v=20261113-closing1','pelvic-guidance-v1.js?v=20261114-circle-halo-welcome4','daily-support-plan-v1.js?v=20261115-sensate-focus1-five-direct6','practice-audio-v1.js?v=20261126-conexion-final','spm-video-library.js?v=20261113-video-audio2','program-videos-v1.js?v=20261113-video-audio2','spm-inline-video-player.js?v=20261113-video-audio2',
   'firmness-guide-v1.js?v=20261113-firmness-1','spm-resources-content.js?v=20261113-instructions1','spm-resources.js?v=20261113-firmness-1','spm-visual-cards-staging-v4.js?v=20261113-instructions1','spm-nutrition-premium-images-v1.js',
   'nutrition-daily-cards-v1.js?v=20261113-instructions1','sleep-library-v1.js?v=20261113-recovery-audio1','wellness-library-v1.js?v=20261113-gift1','wellness-daily-tip-v1.js?v=20261120-movement-cards1',
   'recovery-story-premium-v4.js?v=20261113-instructions1','recovery-story-extra-v1.js?v=20261113-instructions1','recovery-media-local-staging-v4.js','recovery-story-audio-v1.js?v=20261113-recovery-audio2','recovery-audio-controller-staging-v10.js?v=20261113-recovery-audio2',
@@ -188,7 +188,8 @@ const scripts=[
    'erection-day9-touch-v1.js?v=20261117-dia24-recuperacion-v1','erection-day9-bridge-v1.js?v=20261117-dia24-recuperacion-v1',
     'erection-day10-touch-v1.js?v=20261118-dia27-prevencion-v1','erection-day10-bridge-v1.js?v=20261118-dia27-prevencion-v1',
   'spm-active-module-release-v1.js?v=20261118-dia27-prevencion-v1','ep-pattern.js','ep-bloque/voice.js','confianza-nuevas/activities.js','confianza-nuevas/screen.js',
-  'ep-bloque/screen.js?v=20261125-bienestar','daily-practice-v1.js?v=20261125-hoy',
+  'conexion-satisfaccion/guiones.js','conexion-satisfaccion/actividades.js','conexion-satisfaccion/pantalla.js',
+  'ep-bloque/screen.js?v=20261125-bienestar','daily-practice-v1.js?v=20261126-conexion-final',
   'desire-day1-touch-v1.js?v=20261120-audio-fullscreen1','desire-day1-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day2-touch-v1.js?v=20261120-audio-fullscreen1','desire-day2-bridge-v1.js?v=20261119-deseo-access-r2',
   'desire-day3-touch-v1.js?v=20261120-audio-fullscreen1','desire-day3-bridge-v1.js?v=20261119-deseo-access-r2','desire-week1-bridge-v1.js?v=20261120-audio-fullscreen1',
