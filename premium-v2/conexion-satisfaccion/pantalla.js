@@ -25,7 +25,16 @@
   }
   function el(tag,cls='',text){const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;}
   function button(label,fn,cls=''){const b=el('button',cls,label);b.type='button';b.onclick=fn;return b;}
-  function place(parent,n,[x,y,w,h]){Object.assign(n.style,{left:x+'%',top:y+'%',width:w+'%',height:h+'%'});n.classList.add('cx-placed');parent.append(n);return n;}
+  // Artwork and touch targets share the same midpoint as the viewport changes.
+  function verticalPosition(percent){
+    if(percent<=50)return 'calc(var(--cx-seam) * '+(percent/50)+')';
+    const lower=(percent-50)/50;
+    return 'calc(var(--cx-seam) * '+(1-lower)+' + '+(lower*100)+'%)';
+  }
+  function place(parent,n,[x,y,w,h]){
+    Object.assign(n.style,{left:x+'%',width:w+'%',top:verticalPosition(y),bottom:'calc(100% - '+verticalPosition(y+h)+')'});
+    n.classList.add('cx-placed');parent.append(n);return n;
+  }
   function open({host,day,prior,baseline,save,exit,draftScope}){
     day=Number(day);const a=activities[day],audio=window.SPM_PRACTICE_AUDIO;
     const data=structuredClone(prior?.connectionDay===day?prior.answers:{});
@@ -35,7 +44,11 @@
     }
     const modal=el('dialog','cx-dialog'),stage=el('section','cx-stage'),tools=el('div','cx-tools'),sheet=el('dialog','cx-sheet'),content=el('div','cx-content');
     modal.setAttribute('aria-label','Día '+day+' · '+a.title);sheet.append(content);modal.append(tools,stage,sheet);host.append(modal);modal.showModal();
-    const img=el('img','cx-art');img.alt='';img.src=window.SPM_CONNECTION_IMAGES?.[day]||'conexion-satisfaccion/d'+day+'.webp';stage.append(img);
+    const source=window.SPM_CONNECTION_IMAGES?.[day]||'conexion-satisfaccion/d'+day+'.webp';
+    for(const half of ['top','bottom']){
+      const band=el('div','cx-band cx-band-'+half),img=el('img','cx-art');
+      img.alt='';img.src=source;band.append(img);stage.append(band);
+    }
     const voice=button('',null,'cx-voice');voice.tabIndex=-1;voice.setAttribute('aria-hidden','true');voice.dataset.spmDeviceVoice='true';modal.append(voice);
     const say=text=>{audio.stop();voice.dataset.spmSpeak=text;voice.click();};
     let busy=false,ctx,trigger;
@@ -59,12 +72,11 @@
     function hit(label,rect,fn,cls=''){const b=button(label,fn,'cx-hit '+cls);b.setAttribute('aria-label',label);return place(stage,b,rect);}
     tools.append(button('‹ Volver',leave));
     const guide=button('◖))  Guía',null,'cx-audio');guide.dataset.spmSpeak=a.guide;guide.dataset.spmDeviceVoice='true';guide.dataset.audioLabel='Escuchar guía';guide.setAttribute('aria-label','Escuchar guía');
-    if(a.guideDock){
+    if(a.guideOverlay){
       guide.replaceChildren();
-      const icon=el('span','cx-guide-icon','▶︎');icon.setAttribute('aria-hidden','true');
+      const icon=el('span','cx-guide-icon');icon.setAttribute('aria-hidden','true');
       guide.append(icon,el('b','','Escuchar guía'));guide.classList.add('cx-guide-main','cx-pulse');
-      modal.classList.add('cx-with-guide');
-      const dock=el('div','cx-guide-dock');dock.append(guide);stage.after(dock);
+      place(stage,guide,a.guideOverlay);
     }else if(a.speaker){guide.classList.add('cx-hit','cx-pulse');place(stage,guide,a.speaker);}else tools.append(guide);
     tools.append(button('Leer guía',()=>{panel('Guía de la actividad');content.append(el('p','',a.guide));}));
     const topicButtons=[],scoreButtons=[];
