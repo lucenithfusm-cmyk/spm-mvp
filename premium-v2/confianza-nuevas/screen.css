@@ -1,1 +1,21 @@
 .conf-editor{position:absolute;inset:33% 6% auto;background:#fff5e5;color:#143e35;padding:5%;border:2px solid #b69247;border-radius:16px;z-index:2}.conf-editor textarea{display:block;width:100%;margin:12px 0;min-height:5em}.conf-editor footer{display:flex;justify-content:space-between}.conf-editor button{padding:8px 16px}.conf-output{background:#faf0cc;color:#183f38;text-align:center;font:600 3.5cqw system-ui}.ep-canvas .solid{overflow:auto}
+
+.conf-baseline:modal{position:fixed;inset:0;margin:0;padding:0;border:0;width:100%;max-width:none;height:100dvh;max-height:none;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;background:#113b32;color:#fff8e7;overflow:auto;overscroll-behavior:contain;font:16px/1.4 system-ui}
+.conf-baseline-tools{display:flex;justify-content:space-between;align-items:center;width:100%;box-sizing:border-box;padding:env(safe-area-inset-top,0px) max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
+.conf-baseline-tools button{font:600 14px system-ui;color:inherit;background:none;border:0;min-height:40px}
+.conf-baseline-art{flex:1 0 auto;position:relative;width:100%;min-height:148vw;box-sizing:border-box;background:url(d1.webp) center/100% 100% no-repeat;container-type:inline-size}
+@media(min-width:850px) and (orientation:landscape){.conf-baseline-art,.conf-baseline-tools{width:min(100%,68dvh)}.conf-baseline-art{min-height:0}}
+.conf-baseline-art input.conf-baseline-radio,.conf-baseline-art .conf-baseline-hit{position:absolute;box-sizing:border-box;appearance:none;-webkit-appearance:none;margin:0;padding:0;border:0;min-height:0;max-width:none;background:transparent;box-shadow:none;border-radius:7px;cursor:pointer;touch-action:manipulation}
+.conf-baseline-art .conf-baseline-hit{color:transparent;font-size:0;border-radius:999px}
+.conf-baseline-art input.conf-baseline-radio:checked{background:radial-gradient(circle at center,#134b3b 0 1.1cqw,#fff6db 1.15cqw 1.35cqw,#986f22 1.4cqw 1.7cqw,transparent 1.75cqw)}
+.conf-baseline :focus-visible{outline:3px solid #af7d21;outline-offset:-2px}
+.conf-baseline-guide{animation:conf-guide-pulse 3s ease-out infinite}
+@keyframes conf-guide-pulse{35%{box-shadow:0 0 0 2px #edc26f,0 0 12px #f1c477}}
+@media(prefers-reduced-motion:reduce){.conf-baseline-guide{animation:none}}
+.conf-baseline-art .conf-baseline-guide[aria-pressed=true]{background:#164335;color:#fff7e4;font:650 clamp(14px,4cqw,22px) system-ui;border:2px solid #d3ae65}
+.conf-baseline-art .conf-baseline-guide[aria-pressed=true]::after{content:attr(aria-label);position:absolute;inset:0;background:inherit;border-radius:inherit;display:grid;place-items:center}
+.conf-baseline-notice:not(:empty),.conf-baseline .spm-audio-status:not([hidden]){position:absolute;top:45%;left:5%;width:90%;box-sizing:border-box;margin:0;border:1px solid #d3ae65;border-radius:12px;padding:9px 14px;background:#133e34f5;color:white;font:600 14px/1.3 system-ui}
+.conf-baseline-sheet:modal{box-sizing:border-box;inset:0;margin:auto;padding:20px;width:min(92vw,430px);max-height:82dvh;overflow:auto;border:1px solid #bba06d;border-radius:18px;background:#fff9ed;color:#143c31;font:16px/1.45 system-ui}
+.conf-baseline-sheet::backdrop{background:#092f29bb}.conf-baseline-sheet h2{margin:0;font:600 24px/1.15 Georgia,serif;color:#163d32}
+.conf-baseline-sheet label{display:block;margin-bottom:10px}.conf-baseline-sheet select{display:block;width:100%;padding:8px;background:#fff;color:#173c31;font:inherit}
+.conf-baseline-sheet button{padding:10px 13px;border:1px solid #a48d59;border-radius:10px;background:#174537;color:white;font:600 15px system-ui;margin:6px 6px 0 0}

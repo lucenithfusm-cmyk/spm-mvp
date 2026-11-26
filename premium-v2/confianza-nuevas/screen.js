@@ -1,6 +1,7 @@
 (()=>{
 const days=Object.keys(CONFIDENCE_ACTIVITIES).map(Number),titles=days.map(d=>CONFIDENCE_ACTIVITIES[d].title);
 function open({host,day,prior={},save,exit}){
+ if(day===1)return window.SPM_CONFIDENCE_BASELINE.open({host,prior,save,exit});
  const a=CONFIDENCE_ACTIVITIES[day],data=structuredClone(prior.answers||{}),modal=document.createElement('dialog'),stage=document.createElement('section');
  modal.className='ep-block';stage.className='ep-canvas';stage.setAttribute('aria-label',a.title);stage.style.backgroundImage='url(confianza-nuevas/d'+day+'.webp)';modal.append(stage);host.append(modal);modal.showModal();
  let saving=false,started=false,step=0;

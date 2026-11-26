@@ -109,6 +109,7 @@ function open({host,day,prior={},save,exit,profile}){
 }
 function compose(main,support,c){
  const day=Number(c.day);
+ if(day===1&&!['confidence','anxiety'].includes(c.primary))return {main,support};
  const extraTitle=window.SPM_CONFIDENCE_NEW?.titles[window.SPM_CONFIDENCE_NEW.days.indexOf(day)];
  const title=extraTitle||(day===2?'Tu patrón real':titles[days.indexOf(day)]);
  if(!title)return {main,support};
