@@ -8,8 +8,9 @@ Cambios preparados y comprobados localmente después de la entrega inicial. La u
 
 El sitio estático tenía un fallback `filesystem` sin exclusiones para la documentación interna, los informes de QA, los scripts o el SQL. Se añadieron dos capas:
 
-1. `.vercelignore` excluye del deployment los directorios raíz `docs`, `tests`, `scripts`, `labs` y `.github`, y las fuentes de Supabase salvo el archivo público de política de evaluación que utiliza la interfaz.
-2. Dos reglas terminales de `vercel.json`, situadas antes de las rutas de aplicación y de `filesystem`, responden 404 para esos espacios de nombres. La excepción de Supabase es exactamente `/supabase/functions/_shared/assessment-policy.js`.
+1. `.vercelignore` excluye del deployment los directorios raíz `docs`, `tests`, `scripts`, `labs`, `.github` y `supabase`.
+2. Dos reglas terminales de `vercel.json`, situadas antes de las rutas de aplicación y de `filesystem`, responden 404 para esos espacios de nombres.
+3. El navegador carga `premium-v2/assessment-policy.js`, una copia exacta del archivo canónico del backend, generada con `node scripts/qa/sync-public-assessment-policy.cjs`. Una prueba exige igualdad byte por byte para impedir divergencias de reglas entre ambos consumidores.
 
 Los módulos compilados que se ejecutan en el navegador están en `premium-v2/breathing-lab`, `premium-v2/desire-lab` y `premium-v2/pelvic-floor-lab`. Las exclusiones del directorio fuente `/labs/` no los afectan. Las reglas anteriores de pausa comercial y el acceso al visor se conservan.
 
@@ -19,7 +20,9 @@ Estas protecciones afectan a los archivos cargados y servidos por Vercel. **No h
 
 `tests/deployment-source-boundary.test.cjs` comprueba la precedencia de las denegaciones, los archivos internos realmente versionados, la excepción exacta de la política pública, las dependencias del visor, la existencia de los módulos distribuidos y las exclusiones con la semántica de patrones Git. También preserva las rutas de pausa.
 
-La tanda focal junto con las regresiones de módulos y retorno a Hoy aprobó **19/19**, sin fallos ni omisiones. Evidencia: `spm-preview-boundary-20261127.tap`. Esta tanda incluye cinco pruebas nuevas; sus otros catorce casos ya pertenecían a la suite anterior. No se suma como si fueran diecinueve casos adicionales únicos.
+La tanda focal inicial junto con las regresiones de módulos y retorno a Hoy aprobó **19/19**, sin fallos ni omisiones. Evidencia: `spm-preview-boundary-20261127.tap`. Esta tanda incluye cinco pruebas nuevas; sus otros catorce casos ya pertenecían a la suite anterior. No se suma como si fueran diecinueve casos adicionales únicos.
+
+La primera comprobación alojada detectó que Vercel devolvía 404 para la antigua política bajo `supabase/functions/_shared`, aunque la excepción pasaba la simulación local de patrones. El visor mostraba su error de carga. Se sustituyó esa dependencia por la copia pública exacta dentro de `premium-v2` y se excluyó todo el árbol backend. La regresión local de publicación y continuidad aprobó **16/16**, incluyendo la nueva comprobación de identidad de la política. El resultado HTTP efectivo debe verificarse en el deployment corregido.
 
 **Pendiente:** comprobar las respuestas HTTP 404, la exclusión efectiva de archivos y la carga visual del visor en un deployment autorizado. La prueba local de configuración no se presenta como una prueba HTTP alojada.
 

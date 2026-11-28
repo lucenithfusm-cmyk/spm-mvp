@@ -6,7 +6,7 @@
       "status": 404
     },
     {
-      "src": "^/supabase(?:$|/(?!functions/_shared/assessment-policy\\.js$).*)$",
+      "src": "^/supabase(?:/.*)?$",
       "status": 404
     },
     {

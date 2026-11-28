@@ -33,8 +33,72 @@ test('legacy onerror cleanup does not hide recovery, while a session change stil
   h.calls[0].onerror({error:'language-unavailable'});
   assert.equal(h.voice.state,'error');assert.equal(h.w.document.querySelector('.spm-device-voice').hidden,false);
   assert.equal(h.w.document.querySelector('[data-voice-text]').textContent,'Guía completa para leer o reintentar.');
-  assert.equal(h.w.document.querySelector('[data-voice-recovery]').open,true);assert.equal(h.calls.length,1);
+  const details=h.w.document.querySelector('.spm-device-voice > details'),recovery=h.w.document.querySelector('[data-voice-recovery]');
+  assert.equal(details.open,false);assert.equal(recovery.open,false);assert.equal(h.calls.length,1);
+  details.querySelector('summary').click();recovery.querySelector('summary').click();
+  assert.equal(details.open,true);assert.equal(recovery.open,true);assert.equal(h.calls.length,1);
   h.w.dispatchEvent(new h.w.Event('spm:session-change'));assert.equal(h.voice.state,'idle');assert.equal(h.w.document.querySelector('.spm-device-voice').hidden,true);
+ }finally{h.close();}
+});
+
+test('watchdog recovery stays in normal flow and preserves explicit disclosure choices',()=>{
+ const h=setup();try{
+  h.owner.innerHTML='<img alt="Ilustración original"><nav><button type="button">Siguiente</button></nav>';
+  const next=h.owner.querySelector('button');let navigation=0;next.onclick=()=>navigation++;
+  h.voice.listen('Guía completa para leer o escuchar.',{owner:h.owner});
+  const panel=h.w.document.querySelector('.spm-device-voice'),details=panel.querySelector('details'),recovery=panel.querySelector('[data-voice-recovery]');
+  assert.equal(h.w.getComputedStyle(panel).position,'static');assert.equal(h.w.getComputedStyle(panel).zIndex,'');
+  assert.equal(panel.parentElement,h.w.document.body);assert.equal(h.owner.nextElementSibling,panel);
+  for(const fn of [...h.timers.values()])fn();
+  assert.equal(h.voice.state,'error');assert.equal(details.open,false);assert.equal(recovery.open,false);
+  assert.equal(panel.querySelector('[data-voice-summary]').getAttribute('aria-live'),'polite');
+  details.querySelector('summary').click();
+  const text=panel.querySelector('[data-voice-text]').closest('details');text.querySelector('summary').click();
+  assert.equal(text.open,true);assert.equal(panel.querySelector('[data-voice-text]').textContent,'Guía completa para leer o escuchar.');
+  recovery.querySelector('summary').click();assert.equal(recovery.open,true);
+  recovery.querySelector('summary').click();details.querySelector('summary').click();
+  h.setVoices([{name:'Español local',lang:'es-ES',voiceURI:'local'}]);
+  assert.equal(details.open,false);assert.equal(recovery.open,false);assert.equal(h.calls.length,1);
+  next.click();assert.equal(navigation,1);assert.equal(next.disabled,false);
+  details.querySelector('summary').click();panel.querySelector('[data-voice-toggle]').click();
+  assert.equal(h.calls.length,2);h.calls[1].onstart();panel.querySelector('[data-voice-toggle]').click();
+  assert.equal(h.voice.state,'paused');panel.querySelector('[data-voice-toggle]').click();
+  assert.equal(h.calls.length,3);panel.querySelector('[data-voice-stop]').click();
+  assert.equal(h.voice.state,'idle');assert.equal(panel.hidden,true);
+ }finally{h.close();}
+});
+
+test('full-screen and dialog activities keep the voice panel after their own content and controls',()=>{
+ const h=setup();try{
+  h.owner.innerHTML='<section class="spm-er-fullscreen"><img alt="Ilustración original"><nav><button type="button">Siguiente</button></nav></section>';
+  const fullscreen=h.owner.firstElementChild,art=fullscreen.firstElementChild,nav=fullscreen.lastElementChild;
+  h.voice.listen('Guía de la actividad.',{owner:h.owner});
+  const panel=h.w.document.querySelector('.spm-device-voice');
+  assert.equal(panel.parentElement,fullscreen);assert.equal(fullscreen.lastElementChild,panel);
+  assert.equal(fullscreen.firstElementChild,art);assert.equal(art.nextElementSibling,nav);
+  assert.equal(h.w.getComputedStyle(panel).position,'static');
+  h.voice.cancel();
+  const dialog=h.w.document.createElement('dialog');dialog.open=true;dialog.innerHTML='<button type="button">Escuchar guía</button>';
+  h.w.document.body.appendChild(dialog);h.voice.listen('Guía dentro del diálogo.',{owner:dialog.querySelector('button')});
+  assert.equal(panel.parentElement,dialog);assert.equal(dialog.lastElementChild,panel);assert.equal(panel.querySelector('details').open,false);
+ }finally{h.close();}
+});
+
+test('iframe voice controls and transcript stay inside the invoking document with local styling',()=>{
+ const h=setup();try{
+  const dialog=h.w.document.createElement('dialog');dialog.open=true;
+  const frame=h.w.document.createElement('iframe');dialog.appendChild(frame);h.w.document.body.appendChild(dialog);
+  const child=frame.contentWindow;child.document.body.innerHTML='<img alt="Ilustración original"><nav><button type="button">Siguiente</button></nav>';
+  child.eval(read('premium-v2/device-voice-v1.js'));child.SPM_VOICE.listen('Guía del visor.');
+  const panel=child.document.querySelector('.spm-device-voice');
+  assert.ok(panel);assert.equal(panel.parentElement,child.document.body);assert.equal(child.document.body.lastElementChild,panel);
+  assert.equal(h.w.document.querySelector('.spm-device-voice'),null);assert.equal(child.getComputedStyle(panel).position,'static');
+  const styleCount=child.document.head.querySelectorAll('style').length;
+  h.setVoices([]);assert.equal(child.document.head.querySelectorAll('style').length,styleCount);
+  panel.querySelector('summary').click();panel.querySelector('[data-voice-text]').closest('details').querySelector('summary').click();
+  assert.equal(panel.querySelector('[data-voice-text]').textContent,'Guía del visor.');
+  panel.querySelector('[data-voice-stop]').click();assert.equal(h.voice.state,'idle');
+  assert.equal(panel.parentElement,h.w.document.body);assert.equal(panel.hidden,true);
  }finally{h.close();}
 });
 test('same-origin iframe shares ownership; muted video cannot cancel its narration',()=>{

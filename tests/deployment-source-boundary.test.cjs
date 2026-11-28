@@ -19,6 +19,7 @@ const blocked=[
  '/supabase/migrations/20261127203151_spm_versioned_agenda_atomic_progress.sql',
  '/supabase/sql/spm-atomic-progress-body.sql',
  '/supabase/functions/check-payment-status/index.ts',
+ '/supabase/functions/_shared/assessment-policy.js',
  '/supabase/functions/_shared/assessment-policy.js.backup',
  '/supabase/functions/_shared/other-policy.js'
 ];
@@ -27,8 +28,8 @@ const publicFiles=[
  '/premium-v2/program-review-v1.js',
  '/premium-v2/device-voice-v1.js',
  '/premium-v2/agenda-manifest-20261127.js',
- '/supabase/functions/_shared/assessment-policy.js',
- '/supabase/functions/_shared/assessment-policy.js?v=20261127-technical',
+ '/premium-v2/assessment-policy.js',
+ '/premium-v2/assessment-policy.js?v=20261127-technical',
  '/premium-v2/breathing-lab/index.html',
  '/premium-v2/desire-lab/index.html',
  '/premium-v2/pelvic-floor-lab/index.html'
@@ -62,13 +63,10 @@ test('all tracked database and audit files stay outside the public HTTP boundary
  const files=cp.execFileSync('git',['ls-files','-z'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
  const scoped=files.filter(file=>/^(?:docs|tests|scripts|labs|\.github|supabase)\//.test(file));
  assert.ok(scoped.length>100,'exercise the real repository inventory');
- for(const file of scoped){
-  if(file==='supabase/functions/_shared/assessment-policy.js') assert.equal(denied('/'+file),undefined,file);
-  else assert.ok(denied('/'+file),file);
- }
+ for(const file of scoped) assert.ok(denied('/'+file),file);
 });
 
-test('deployment exclusion patterns retain only the required public Supabase policy',()=>{
+test('deployment exclusions keep backend sources private while retaining the browser policy copy',()=>{
  const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'spm-vercelignore-'));
  try{
   cp.execFileSync('git',['init','--quiet',temporary]);
@@ -82,6 +80,15 @@ test('deployment exclusion patterns retain only the required public Supabase pol
   for(const name of blocked) assert.ok(excluded.has(pathname(name).slice(1)),name);
   for(const name of publicFiles) assert.ok(!excluded.has(pathname(name).slice(1)),name);
  }finally{fs.rmSync(temporary,{recursive:true,force:true});}
+});
+
+test('the shipped browser policy is byte-for-byte identical to the canonical server policy',()=>{
+ assert.deepEqual(fs.readFileSync(path.join(root,'premium-v2/assessment-policy.js')),fs.readFileSync(path.join(root,'supabase/functions/_shared/assessment-policy.js')));
+ for(const file of ['premium-v2/live.html','premium-v2/program-review-v1.js']){
+  const source=fs.readFileSync(path.join(root,file),'utf8');
+  assert.ok(source.includes('assessment-policy.js?v=20261127-technical'),file);
+  assert.ok(!source.includes('supabase/functions/_shared/assessment-policy.js'),file+' must not request an excluded backend path');
+ }
 });
 
 test('existing commercial pause routes remain intact',()=>{

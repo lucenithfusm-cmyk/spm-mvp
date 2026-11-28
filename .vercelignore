@@ -5,11 +5,6 @@
 /labs/
 /.github/
 
-# The browser and synthetic reviewer use this one public scoring policy.
+# The browser uses the identical generated copy in premium-v2/assessment-policy.js.
 # Database migrations, SQL bodies and Edge Function sources stay off Vercel.
-/supabase/*
-!/supabase/functions/
-/supabase/functions/*
-!/supabase/functions/_shared/
-/supabase/functions/_shared/*
-!/supabase/functions/_shared/assessment-policy.js
+/supabase/

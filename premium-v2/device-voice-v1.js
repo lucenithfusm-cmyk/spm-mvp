@@ -6,7 +6,7 @@ if(window.SPM_VOICE)return;
 try{if(window.parent!==window&&window.parent.SPM_VOICE?.forWindow){window.SPM_VOICE=window.parent.SPM_VOICE.forWindow(window);return;}}catch{}
 const native=window.speechSynthesis,Utterance=window.SpeechSynthesisUtterance;
 const supported=!!(native&&typeof native.speak==='function'&&typeof Utterance==='function');
-const clients=new WeakMap(),listeners=new Set();
+const clients=new WeakMap(),listeners=new Set(),styledDocuments=new WeakSet();
 let generation=0,current=null,voices=[],panel=null,preference={lang:'es-CO',voiceURI:''};
 const ownershipObserver=new MutationObserver(()=>{if(current&&(current.owner?.nodeType&&!current.owner.isConnected||current.frame&&!current.frame.isConnected))cancel('owner-removed');});
 const cancellations=new Set(['canceled','interrupted']);
@@ -108,20 +108,36 @@ function forWindow(win){
  win.document.addEventListener('play',e=>{const media=e.target;if(media?.matches?.('audio,video')&&!media.muted&&media.volume!==0&&!media.hasAttribute('data-spm-nonverbal'))stopOwner();},true);
  return api;
 }
+function installPanelStyle(doc){
+ if(!doc?.head||styledDocuments.has(doc))return;
+ const style=doc.createElement('style');style.textContent='.spm-voice-transcript{box-sizing:border-box;width:min(720px,100%);margin:10px auto;padding:12px 16px;background:#102c32;color:#f4e9d3;border:1px solid #c5a46c;border-radius:12px;font:15px/1.5 system-ui}.spm-voice-transcript summary{cursor:pointer;min-height:36px;font-weight:650}.spm-voice-transcript summary:focus-visible{outline:3px solid #ffe1a3;outline-offset:3px}.spm-device-voice{position:static;box-sizing:border-box;flex:0 0 auto;clear:both;width:min(540px,calc(100% - 20px));max-width:100%;margin:10px auto;background:#102c32;color:#f4e9d3;border:1px solid #c5a46c;border-radius:14px;padding:10px;box-shadow:0 5px 24px #0008;font:14px/1.45 system-ui}.spm-device-voice[hidden]{display:none}.spm-device-voice summary{cursor:pointer;min-height:35px;font-weight:650}.spm-device-voice button,.spm-device-voice select{font:inherit;min-height:40px;padding:7px 10px;background:#183f43;color:#ffedca;border:1px solid #bca16f;border-radius:9px;margin:3px}.spm-device-voice button:focus-visible,.spm-device-voice select:focus-visible{outline:3px solid #ffe1a3;outline-offset:2px}.spm-device-voice p{margin:6px 0}.spm-device-voice [data-voice-text]{white-space:pre-line;max-height:35dvh;overflow:auto}.spm-device-voice select{max-width:100%}.spm-device-voice .spm-voice-controls{display:flex;flex-wrap:wrap;gap:2px}';doc.head.appendChild(style);styledDocuments.add(doc);
+}
 function ensurePanel(){
- if(panel||!document.body)return;
- const style=document.createElement('style');style.textContent='.spm-voice-transcript{box-sizing:border-box;width:min(720px,100%);margin:10px auto;padding:12px 16px;background:#102c32;color:#f4e9d3;border:1px solid #c5a46c;border-radius:12px;font:15px/1.5 system-ui}.spm-voice-transcript summary{cursor:pointer;min-height:36px;font-weight:650}.spm-voice-transcript summary:focus-visible{outline:3px solid #ffe1a3;outline-offset:3px}.spm-device-voice{position:fixed;z-index:2147483000;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));width:min(350px,calc(100vw - 20px));background:#102c32;color:#f4e9d3;border:1px solid #c5a46c;border-radius:14px;padding:10px;box-shadow:0 5px 24px #0008;font:14px/1.45 system-ui}.spm-device-voice[hidden]{display:none}.spm-device-voice summary{cursor:pointer;min-height:35px;font-weight:650}.spm-device-voice button,.spm-device-voice select{font:inherit;min-height:40px;padding:7px 10px;background:#183f43;color:#ffedca;border:1px solid #bca16f;border-radius:9px;margin:3px}.spm-device-voice button:focus-visible,.spm-device-voice select:focus-visible{outline:3px solid #ffe1a3;outline-offset:2px}.spm-device-voice p{margin:6px 0}.spm-device-voice [data-voice-text]{white-space:pre-line;max-height:35dvh;overflow:auto}.spm-device-voice select{max-width:100%}.spm-device-voice .spm-voice-controls{display:flex;flex-wrap:wrap;gap:2px}';document.head.appendChild(style);
+ installPanelStyle(document);
+ if(panel||!document?.body)return;
  panel=document.createElement('aside');panel.className='spm-device-voice';panel.setAttribute('aria-label','Guía de voz');panel.hidden=true;
- panel.innerHTML='<details><summary>Guía de voz <span data-voice-summary></span></summary><p role="status" aria-live="polite" data-voice-status></p><div class="spm-voice-controls"><button type="button" data-voice-toggle>Pausar</button><button type="button" data-voice-stop>Detener</button></div><details><summary>Leer guía completa</summary><p data-voice-text></p></details><details data-voice-recovery><summary>Opciones de voz del dispositivo</summary><label>Variante de español <select data-voice-language><option value="es-CO">Español (Colombia)</option><option value="es-ES">Español (España)</option><option value="es-MX">Español (México)</option><option value="es-US">Español (Estados Unidos)</option></select></label><label>Voz <select data-voice-selection><option value="">Voz estándar del dispositivo</option></select></label><p>El cambio se aplica al volver a escuchar. Las voces disponibles dependen de este dispositivo.</p></details></details>';
+ panel.innerHTML='<details><summary>Guía de voz <span data-voice-summary aria-live="polite"></span></summary><p role="status" aria-live="polite" data-voice-status></p><div class="spm-voice-controls"><button type="button" data-voice-toggle>Pausar</button><button type="button" data-voice-stop>Detener</button></div><details><summary>Leer guía completa</summary><p data-voice-text></p></details><details data-voice-recovery><summary>Opciones de voz del dispositivo</summary><label>Variante de español <select data-voice-language><option value="es-CO">Español (Colombia)</option><option value="es-ES">Español (España)</option><option value="es-MX">Español (México)</option><option value="es-US">Español (Estados Unidos)</option></select></label><label>Voz <select data-voice-selection><option value="">Voz estándar del dispositivo</option></select></label><p>El cambio se aplica al volver a escuchar. Las voces disponibles dependen de este dispositivo.</p></details></details>';
  panel.querySelector('[data-voice-toggle]').onclick=()=>current?.state==='paused'?resume():current?.state==='error'||current?.state==='ended'?retry():pause();
  panel.querySelector('[data-voice-stop]').onclick=()=>cancel('user-stopped');
  panel.querySelector('[data-voice-language]').onchange=e=>{preference.lang=e.target.value;preference.voiceURI='';};
  panel.querySelector('[data-voice-selection]').onchange=e=>{preference.voiceURI=e.target.value;};
  document.body.appendChild(panel);
 }
+function panelTarget(record){
+ const doc=record.ownerWindow?.document||document;
+ const owner=record.owner?.ownerDocument===doc?record.owner:doc.activeElement;
+ // Keep this optional panel in the activity's scroll flow. A fixed overlay
+ // covered navigation and original artwork, especially when speech failed.
+ const selector='dialog[open],[role=dialog],.spm-er-fullscreen';
+ const dialogs=[...doc.querySelectorAll('dialog[open]')];
+ const target=owner?.closest?.(selector)||owner?.querySelector?.('.spm-er-fullscreen')||dialogs[dialogs.length-1]||doc.querySelector('.spm-er-fullscreen')||doc.body;
+ return {doc,target};
+}
 function render(){
- ensurePanel();if(!panel)return;panel.hidden=!current;if(!current)return;
- const dialogs=[...document.querySelectorAll('dialog[open]')];const target=dialogs[dialogs.length-1]||current.owner?.closest?.('[role=dialog]')||document.body;if(target?.ownerDocument===document&&panel.parentElement!==target)target.appendChild(panel);
+ ensurePanel();if(!panel||!document?.body)return;panel.hidden=!current;
+ if(!current){if(panel.ownerDocument!==document&&document.body)document.body.appendChild(panel);return;}
+ const {doc,target}=panelTarget(current);installPanelStyle(doc);
+ if(target&&panel.parentElement!==target)target.appendChild(panel);
  const record=current,labels={idle:'',preparing:' · Preparando',playing:' · Reproduciendo',paused:' · Pausada',ended:' · Finalizada',error:' · No disponible',stopped:' · Detenida'};
  panel.querySelector('[data-voice-summary]').textContent=labels[record.state]||'';
  panel.querySelector('[data-voice-status]').textContent=record.message;
@@ -131,7 +147,7 @@ function render(){
  const standard=document.createElement('option');standard.value='';standard.textContent='Voz estándar del dispositivo';selection.appendChild(standard);
  for(const voice of voices.filter(v=>/^es(?:-|$)/i.test(v.lang)).sort((a,b)=>Number(b.localService)-Number(a.localService))){const option=document.createElement('option');option.value=voice.voiceURI;option.textContent=voice.name+' ('+voice.lang+(voice.localService?', local':'')+')';selection.appendChild(option);}selection.value=preference.voiceURI;
  panel.querySelector('[data-voice-language]').value=preference.lang;
- if(record.state==='error'){panel.querySelector('details').open=true;panel.querySelector('[data-voice-recovery]').open=true;}
+ // Expanding controls, transcript and recovery is always an explicit action.
 }
 window.SPM_VOICE=forWindow(window);
 refreshVoices();native?.addEventListener?.('voiceschanged',refreshVoices);
