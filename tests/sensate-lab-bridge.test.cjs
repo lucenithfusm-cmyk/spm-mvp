@@ -2,7 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const {JSDOM}=require('../labs/sensate/node_modules/jsdom');
+const {JSDOM}=(()=>{try{return require('jsdom')}catch{return require('../labs/sensate/node_modules/jsdom')}})();
 const source=fs.readFileSync(path.join(__dirname,'../premium-v2/sensate-lab-bridge-v1.js'),'utf8');
 function harness(extra={}){
  const dom=new JSDOM('<section id="plan"><div class="dayCard"></div></section><button id="logoutBtn">Salir</button>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only',pretendToBeVisual:true});

@@ -1,0 +1,353 @@
+{
+  "sourceCommit": "c27bbbba0292513b898d0684a30a95cd1e4e6449",
+  "sources": [
+    {
+      "file": "premium-v2/conexion-satisfaccion/guiones.js",
+      "sha256": "4096c86b600e0d62cf0adb8962bba3f280c2c2e8a466de2cd9c9c8dea01dd118"
+    },
+    {
+      "file": "premium-v2/conexion-satisfaccion/actividades.js",
+      "sha256": "340be9b229826c446336ba4c61e2515f8c2b0809dd58af199c73ae8b959f1b9e"
+    }
+  ],
+  "validator": "  const visible=(a,d)=>a.fields.filter(f=>(!f.when||d.mode===f.when)&&(d.mode!=='No aplica'||f.key==='mode'));\n  const isScore=v=>v===null||Number.isInteger(v)&&v>=0&&v<=10;\n  const valueLabel=v=>v===null?'No aplica':isScore(v)?v+'/10':'Sin registrar';\n  function complete(day,r){\n    const a=activities[day],d=r?.answers;if(!a||r?.connectionDay!==Number(day)||!d)return false;\n    if(a.max && (d.topics?.length!==a.max || new Set(d.topics).size!==a.max || !d.topics.every(v=>a.topics.some(o=>o.label===v))))return false;\n    return visible(a,d).every(f=>{\n      const v=d[f.key];if(f.optional&&(v===undefined||v===''))return true;\n      if(f.values==='scale')return isScore(v);\n      if(f.values==='chosen')return d.topics?.includes(v);\n      return f.values?f.values.includes(v):typeof v==='string'&&v.trim().length>0&&v.length<=400;\n    });\n  }",
+  "days": {
+    "1": {
+      "fields": [
+        {
+          "key": "score0",
+          "label": "Placer",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score1",
+          "label": "Intimidad y cercanía",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score2",
+          "label": "Satisfacción personal",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score3",
+          "label": "Conexión corporal",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "priority",
+          "label": "¿Qué dimensión quieres seguir cuidando?",
+          "values": [
+            "Placer",
+            "Intimidad y cercanía",
+            "Satisfacción personal",
+            "Conexión corporal"
+          ],
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": []
+    },
+    "4": {
+      "fields": [
+        {
+          "key": "enjoy",
+          "label": "¿Qué disfrutas hoy?",
+          "optional": false
+        },
+        {
+          "key": "change",
+          "label": "¿Qué cambio reconoces?",
+          "optional": false
+        },
+        {
+          "key": "explore",
+          "label": "¿Qué te gustaría explorar o cuidar?",
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Mis preferencias",
+        "Mis necesidades",
+        "Mis expectativas",
+        "El impacto de mis relaciones",
+        "El paso del tiempo",
+        "Mis experiencias"
+      ]
+    },
+    "7": {
+      "fields": [
+        {
+          "key": "preference",
+          "label": "Una preferencia que reconozco",
+          "optional": false
+        },
+        {
+          "key": "limit",
+          "label": "Un límite que quiero respetar",
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Contacto",
+        "Ambiente",
+        "Cercanía",
+        "Experiencias"
+      ]
+    },
+    "10": {
+      "fields": [
+        {
+          "key": "explore",
+          "label": "¿Cuál te gustaría explorar?",
+          "values": "chosen",
+          "optional": true
+        }
+      ],
+      "maxTopics": 2,
+      "topics": [
+        "Contacto corporal",
+        "Besos profundos",
+        "Caricias con intención",
+        "Cercanía y conexión"
+      ]
+    },
+    "13": {
+      "fields": [
+        {
+          "key": "mode",
+          "label": "¿Desde dónde quieres hacer la actividad?",
+          "values": [
+            "Individual",
+            "En pareja"
+          ],
+          "optional": false
+        },
+        {
+          "key": "rhythm",
+          "label": "Mi ritmo y mis preferencias",
+          "optional": false
+        },
+        {
+          "key": "other",
+          "label": "Lo que mi pareja ha expresado",
+          "values": null,
+          "optional": true,
+          "when": "En pareja"
+        },
+        {
+          "key": "agreement",
+          "label": "Un acuerdo o una decisión que me resulte cómoda",
+          "optional": false
+        },
+        {
+          "key": "preferences",
+          "label": "Una preferencia sexual que quiero comunicar",
+          "values": null,
+          "optional": true
+        },
+        {
+          "key": "timing",
+          "label": "Cuándo me siento disponible para la intimidad",
+          "values": null,
+          "optional": true
+        },
+        {
+          "key": "closeness",
+          "label": "La cercanía que necesito",
+          "values": null,
+          "optional": true
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Preferencias sexuales",
+        "Tiempos y disposición",
+        "Necesidades de cercanía"
+      ]
+    },
+    "16": {
+      "fields": [
+        {
+          "key": "enjoy",
+          "label": "Disfruto cuando…",
+          "optional": false
+        },
+        {
+          "key": "wish",
+          "label": "Me gustaría…",
+          "optional": false
+        },
+        {
+          "key": "limit",
+          "label": "Prefiero evitar…",
+          "optional": false
+        },
+        {
+          "key": "phrase",
+          "label": "Elige una frase para conversar o recordar",
+          "values": [
+            "Disfruto cuando…",
+            "Me gustaría…",
+            "Prefiero evitar…"
+          ],
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Estímulos que disfruto",
+        "Ritmo y tipo de contacto",
+        "Límites que quiero respetar",
+        "Experiencias que quiero explorar"
+      ]
+    },
+    "19": {
+      "fields": [
+        {
+          "key": "action",
+          "label": "Una acción de cercanía que elijo",
+          "optional": false
+        },
+        {
+          "key": "feeling",
+          "label": "¿Cómo me sentí o cómo imagino que me sentiría?",
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Contacto físico espontáneo",
+        "Conversaciones profundas",
+        "Compartir actividades",
+        "Muestras de afecto y reconocimiento"
+      ]
+    },
+    "21": {
+      "fields": [
+        {
+          "key": "mode",
+          "label": "¿Cómo quieres responder?",
+          "values": [
+            "Experiencia reciente",
+            "Algo que recuerdo",
+            "No aplica"
+          ],
+          "optional": false
+        },
+        {
+          "key": "body",
+          "label": "¿Cómo se sintió mi cuerpo?",
+          "optional": false
+        },
+        {
+          "key": "emotion",
+          "label": "¿Cómo me sentí emocionalmente?",
+          "optional": false
+        },
+        {
+          "key": "need",
+          "label": "¿Qué necesito después?",
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Conexión emocional",
+        "Relajación y bienestar",
+        "Cercanía y complicidad"
+      ]
+    },
+    "24": {
+      "fields": [
+        {
+          "key": "first",
+          "label": "Mi primera prioridad",
+          "optional": false
+        },
+        {
+          "key": "action1",
+          "label": "Mi acción semanal para esa prioridad",
+          "optional": false
+        },
+        {
+          "key": "second",
+          "label": "Mi segunda prioridad",
+          "optional": false
+        },
+        {
+          "key": "action2",
+          "label": "Mi acción semanal para esa prioridad",
+          "optional": false
+        }
+      ],
+      "maxTopics": null,
+      "topics": [
+        "Mis metas sexuales",
+        "Hábitos que mantendré",
+        "Lo que quiero seguir mejorando"
+      ]
+    },
+    "28": {
+      "fields": [
+        {
+          "key": "score0",
+          "label": "Placer",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score1",
+          "label": "Intimidad y cercanía",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score2",
+          "label": "Satisfacción personal",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "score3",
+          "label": "Conexión corporal",
+          "values": "scale",
+          "optional": false
+        },
+        {
+          "key": "communication",
+          "label": "Comodidad para expresar preferencias (solo hoy)",
+          "values": "scale",
+          "optional": true
+        },
+        {
+          "key": "priority",
+          "label": "¿Qué dimensión quieres seguir cuidando?",
+          "values": [
+            "Placer",
+            "Intimidad y cercanía",
+            "Satisfacción personal",
+            "Conexión corporal"
+          ],
+          "optional": false
+        },
+        {
+          "key": "reflection",
+          "label": "¿Qué es lo más valioso que te llevas?",
+          "values": null,
+          "optional": true
+        }
+      ],
+      "maxTopics": null,
+      "topics": []
+    }
+  },
+  "note": "Read-only baseline contract. Current 27/11 fields and validator are identical, including the pre-existing CN13 mode requirement. No historical record is rewritten."
+}

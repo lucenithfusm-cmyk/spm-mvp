@@ -21,14 +21,14 @@ function harness(){
   writes.push(clone(record));db[day]={[id]:clone(record)};
   w.document.getElementById('plan').innerHTML='<div id="spmDailyWorkspace"></div>';
  }};
- for(const file of ['checkpoint-audio-v1.js','program-checkpoint-v1.js'])w.eval(fs.readFileSync(path.join(__dirname,'../premium-v2',file),'utf8'));
+ for(const file of ['device-voice-v1.js','practice-audio-v1.js','checkpoint-audio-v1.js','program-checkpoint-v1.js'])w.eval(fs.readFileSync(path.join(__dirname,'../premium-v2',file),'utf8'));
  return{w,c,db,writes,close:()=>w.close()};
 }
 function fill(form,value=2){for(const key of keys)form.querySelector('[name="'+key+'"]').value=key==='control'?'na':String(value);}
 function submit(form){return form.onsubmit({preventDefault(){}});}
 function reportText(w,rows){const box=w.document.createElement('div');box.innerHTML=w.SPM_PROGRAM_CHECKPOINT.comparison(rows);return box.textContent;}
 
-test('baseline offers only 0–4, no default rating, a non-speaker audio player and closed instructions/notes',async()=>{
+test('baseline offers only 0–4, no default rating, an optional standard-device narration control and closed instructions/notes',async()=>{
  const h=harness();try{
   await h.w.SPM_PROGRAM_CHECKPOINT.open(activity,true);const form=h.w.document.querySelector('[data-program-checkpoint]');
   assert.ok(form);assert.equal(form.querySelectorAll('select').length,7);
@@ -37,8 +37,9 @@ test('baseline offers only 0–4, no default rating, a non-speaker audio player 
   }
   const legend=form.querySelector('.spm-checkpoint-scale');assert.ok(legend);assert.equal(legend.querySelectorAll('li').length,5);
   assert.doesNotMatch(legend.textContent,/muy bajo|muy malo|malo|\b10\b/i);
-  assert.equal(form.querySelector('[data-spm-speak],.spm-audio-action'),null);
-  assert.ok(form.querySelector('audio'),'the real explanation player is present');
+  assert.ok(form.querySelector('[data-spm-speak]'),'the exact written explanation is available to the shared voice control');
+  assert.equal(form.querySelector('audio'),null,'no previous recorded voice is played');
+  assert.equal(form.querySelector('[data-spm-speak]').dataset.spmSpeak,form.querySelector('.spm-checkpoint-audio-transcript').textContent);
   assert.ok(form.querySelectorAll('details').length>=2);
   for(const details of form.querySelectorAll('details'))assert.equal(details.open,false);
   for(const name of ['reflection','continuity'])assert.ok(form.querySelector('[name="'+name+'"]').closest('details'),'optional notes stay collapsed');

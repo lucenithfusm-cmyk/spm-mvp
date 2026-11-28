@@ -3,6 +3,7 @@
 .cx-dialog::backdrop{background:#0d2931}.cx-dialog button,.cx-sheet select,.cx-sheet textarea{font:inherit;cursor:pointer;touch-action:manipulation;box-sizing:border-box}
 .cx-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:2;min-height:42px;flex:none;width:100%;padding:calc(2px + env(safe-area-inset-top,0px)) max(8px,env(safe-area-inset-right,0px)) 2px max(8px,env(safe-area-inset-left,0px));box-sizing:border-box;color:#fff4dc;background:#153b46}
 .cx-tools button{background:none;border:0;color:inherit;font-size:14px;font-weight:600;margin:0;padding:5px;min-height:36px}.cx-tools .cx-audio{color:#ffe19a;border-radius:20px;animation:cx-glow 3s ease-out infinite}
+.cx-mode{max-width:44%;min-height:42px;padding:5px 7px;border:1px solid #cfb77c;border-radius:8px;background:#173e4c;color:#fff4dc;font:inherit;font-size:14px}.cx-mode:focus-visible{outline:3px solid #fbd378;outline-offset:2px}
 .cx-stage{
   position:relative;flex:1 0 auto;width:100%;min-height:145vw;container-type:inline-size;
   isolation:isolate;margin:0;padding:0;border:0;

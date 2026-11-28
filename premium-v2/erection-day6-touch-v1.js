@@ -21,7 +21,7 @@ const rect=(a,b,c,d)=>'left:'+(a/864*100).toFixed(4)+'%;top:'+(b/1536*100).toFix
 let active=null;
 function stopAudio(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voice=null;m.playing=false;
  const b=m.host?.querySelector('[data-ed6-action="audio"]');
  b?.classList.remove('playing');b?.setAttribute('aria-pressed','false');
@@ -46,7 +46,7 @@ function audio(m){
   button?.classList.add('playing');button?.setAttribute('aria-pressed','true');
   utterance.onend=()=>{if(m.voice===utterance)stopAudio(m)};
   utterance.onerror=()=>{if(m.voice===utterance){stopAudio(m);message(m,'No se pudo reproducir la voz del dispositivo. Vuelve a intentar.')}};
-  window.speechSynthesis.speak(utterance);
+  window.SPM_VOICE.speak(utterance);
  }catch{
   stopAudio(m);message(m,'No se pudo reproducir la voz del dispositivo. Vuelve a intentar.');
  }
@@ -71,7 +71,7 @@ function render(m){
  // La imagen original dice Día 6 / 1-3: solo se superponen etiquetas del calendario actual.
  const currentDay='<div class="spm-ed6-calendar-day" aria-hidden="true">Día '+m.calendarDay+'<small>Erección y firmeza</small></div><div class="spm-ed6-calendar-step" aria-hidden="true">1/1</div>';
  const toolbar='<nav class="spm-ed6-toolbar" aria-label="Navegación del Día '+m.calendarDay+'"><button type="button" data-ed6-action="back">← Volver a Hoy</button><span>Día '+m.calendarDay+' · Actividad única</span><button type="button" data-ed6-action="exit">Salir a Hoy</button></nav>';
- m.host.innerHTML='<section class="spm-ed6-session spm-er-fullscreen" data-ed6-session data-screen="1" aria-label="Erección y firmeza día '+m.calendarDay+', estímulos que funcionan"><div class="spm-ed6-artwork" role="group" aria-label="Pantalla visual aprobada del Día '+m.calendarDay+'" style="background-image:url(&quot;'+IMAGE+'&quot;)">'+hits+marks+currentDay+'</div>'+toolbar+'<p class="spm-ed6-status" role="status" aria-live="polite" data-ed6-status>'+escapeHtml(m.note)+'</p></section>';
+ m.host.innerHTML='<section class="spm-ed6-session spm-er-fullscreen" data-ed6-session data-screen="1" aria-label="Erección y firmeza día '+m.calendarDay+', estímulos que funcionan"><div class="spm-ed6-artwork" role="group" aria-label="Pantalla visual aprobada del Día '+m.calendarDay+'" style="background-image:url(&quot;'+IMAGE+'&quot;)">'+hits+marks+currentDay+'</div>'+toolbar+(window.SPM_VOICE?.transcript(GUIDE)||'')+'<p class="spm-ed6-status" role="status" aria-live="polite" data-ed6-status>'+escapeHtml(m.note)+'</p></section>';
 }
 function refreshSelections(m){
  m.host.querySelectorAll('[data-ed6-action="select"]').forEach(btn=>{

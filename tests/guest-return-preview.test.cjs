@@ -15,7 +15,8 @@ function harness(saved,language='es',media={}){
  w.supabase={createClient:()=>({auth:{onAuthStateChange:()=>{},getUser:async()=>({data:{user}}),signUp:authenticate,signInWithPassword:authenticate},from:table=>{if(!user)throw Error('Anonymous flow must not write patient records');return {upsert:async value=>{writes.push([table,value]);return {}},insert:value=>{writes.push([table,value]);return {select:()=>({single:async()=>({data:{id:'synthetic-'+table}})})}}}}})};
  let checkoutCalls=0;w.SPM_PAYMENTS={configuration:async()=>({ready:true,environment:'prod'}),checkout:async()=>{checkoutCalls++;if(media.checkoutError)throw Error('temporarily_unavailable')}};
  if(saved)w.localStorage.setItem(KEY,saved);
- for(const file of ['guest-entry-v1.js','engine.js','health-intake-v2.js','modules.js','evaluation-refresh-v1.js','commercial-journey-v1.js','commercial-conversion-v1.js','assessment-app-v3.js'])w.eval(fs.readFileSync('premium-v2/'+file,'utf8'));
+ w.speechSynthesis={getVoices:()=>[],cancel(){},speak(u){plays++;if(media.blockAutoplay&&plays===1){u.onerror?.({error:'not-allowed'});return;}u.onstart?.();}};w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
+ for(const file of ['device-voice-v1.js','guest-entry-v1.js','engine.js','health-intake-v2.js','modules.js','evaluation-refresh-v1.js','commercial-journey-v1.js','commercial-conversion-v1.js','assessment-app-v3.js'])w.eval(fs.readFileSync('premium-v2/'+file,'utf8'));
  w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
  // JSDOM also schedules its own event; the real page boots only once.
  w.document.addEventListener('DOMContentLoaded',e=>e.stopImmediatePropagation(),{capture:true,once:true});
@@ -103,7 +104,7 @@ test('urgent flags remain visible and cannot be bypassed by reopening the assess
 });
 test('English return screen retains review, privacy and one-time payment information',()=>{
  const first=completed(),saved=first.w.localStorage.getItem(KEY);first.close();const h=harness(saved,'en');
- try{assert.match(h.$('.spmGuestResult').textContent,/Your assessment is ready/);assert.match(h.$('.spmGuestResult').textContent,/No monthly, annual or recurring charges/);assert.equal(h.$('#spmGuestReview').textContent,'Edit my answers');assert.match(h.$('#spmGuestMotivationAudio').src,/-en\.mp3$/);assert.equal(h.$('.spmGuestPrivacyCard'),null);}finally{h.close()}
+ try{assert.match(h.$('.spmGuestResult').textContent,/Your assessment is ready/);assert.match(h.$('.spmGuestResult').textContent,/No monthly, annual or recurring charges/);assert.equal(h.$('#spmGuestReview').textContent,'Edit my answers');assert.equal(h.$('#spmGuestMotivationAudio'),null);assert.match(h.$('.spmGuestMotivation details').textContent,/Your assessment is ready/);assert.equal(h.$('.spmGuestPrivacyCard'),null);}finally{h.close()}
 });
 
 test('returning without a valid session goes to sign-in before checkout',async()=>{
@@ -118,22 +119,27 @@ test('return messaging follows the selected goal in all six domains without chan
  }
 });
 
-test('blocked autoplay leaves a working play control and never steals the next click',async()=>{
+test('returning stays silent; blocked speech can retry by gesture without stealing another click',async()=>{
  const first=completed(),saved=first.w.localStorage.getItem(KEY);first.close();const h=harness(saved,'es',{blockAutoplay:true});
  try{
-  await new Promise(resolve=>setImmediate(resolve));assert.equal(h.plays(),1);const audio=h.$('#spmGuestMotivationAudio'),control=h.$('#spmGuestMotivationToggle');assert.equal(control.dataset.state,'idle');assert(audio.paused);
-  h.$('.spmGuestAssessmentActions summary').click();assert.equal(h.plays(),1);assert(h.$('.spmGuestAssessmentActions').open);
-  control.click();await new Promise(resolve=>setImmediate(resolve));assert.equal(h.plays(),2);assert.equal(control.dataset.state,'playing');assert(!audio.paused);
-  control.click();assert(audio.paused);assert.equal(h.w.sessionStorage.getItem('spm_assessment_ready_audio_paused'),'1');
-  control.click();await new Promise(resolve=>setImmediate(resolve));assert(!audio.paused);h.$('#spmGuestOffer').click();assert(audio.paused);assert(h.$('.spmOfferFilm'));
-  h.$('.spmGuestStartBar [data-guest-start]').click();await new Promise(resolve=>setImmediate(resolve));assert.equal(h.plays(),3,'Opening checkout again must not autoplay again');assert(h.$('#spmGuestMotivationAudio').paused);
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(h.plays(),0);const control=h.$('#spmGuestMotivationToggle');
+  h.$('.spmGuestAssessmentActions summary').click();assert.equal(h.plays(),0);
+  control.click();assert.equal(h.plays(),1);assert.equal(control.dataset.state,'error');
+  control.click();assert.equal(h.plays(),2);assert.equal(control.dataset.state,'playing');
+  control.click();assert.equal(h.w.SPM_VOICE.state,'paused');assert.match(control.textContent,/este párrafo/);
+  control.click();assert.equal(h.plays(),3);assert.equal(h.w.SPM_VOICE.state,'playing');
+  h.$('#spmGuestOffer').click();assert.equal(h.w.SPM_VOICE.state,'idle');assert(h.$('.spmOfferFilm'));
  }finally{h.close()}
 });
-
-test('audio pauses on backgrounding, review and page exit, and respects a previous pause',async()=>{
- const first=completed(),saved=first.w.localStorage.getItem(KEY);assert.equal(first.plays(),0);first.close();const h=harness(saved);
- try{await new Promise(resolve=>setImmediate(resolve));const audio=h.$('#spmGuestMotivationAudio');assert(!audio.paused);Object.defineProperty(h.w.document,'hidden',{configurable:true,value:true});h.w.document.dispatchEvent(new h.w.Event('visibilitychange'));assert(audio.paused);Object.defineProperty(h.w.document,'hidden',{configurable:true,value:false});h.w.document.dispatchEvent(new h.w.Event('visibilitychange'));assert.equal(h.plays(),1);h.$('#spmGuestMotivationToggle').click();await new Promise(resolve=>setImmediate(resolve));assert(!audio.paused);h.$('#spmGuestReview').click();assert(audio.paused)}finally{h.close()}
- const quiet=harness(saved,'es',{previouslyPaused:true});try{await new Promise(resolve=>setImmediate(resolve));assert.equal(quiet.plays(),0);quiet.$('#spmGuestMotivationToggle').click();await new Promise(resolve=>setImmediate(resolve));const audio=quiet.$('#spmGuestMotivationAudio');assert(!audio.paused);quiet.w.dispatchEvent(new quiet.w.Event('pagehide'));assert(audio.paused)}finally{quiet.close()}
+test('voice stops on backgrounding, review and exit; returning never resumes it automatically',async()=>{
+ const first=completed(),saved=first.w.localStorage.getItem(KEY);first.close();const h=harness(saved);
+ try{
+  assert.equal(h.plays(),0);h.$('#spmGuestMotivationToggle').click();assert.equal(h.w.SPM_VOICE.state,'playing');
+  Object.defineProperty(h.w.document,'hidden',{configurable:true,value:true});h.w.document.dispatchEvent(new h.w.Event('visibilitychange'));assert.equal(h.w.SPM_VOICE.state,'idle');
+  Object.defineProperty(h.w.document,'hidden',{configurable:true,value:false});h.w.document.dispatchEvent(new h.w.Event('visibilitychange'));assert.equal(h.plays(),1);
+  h.$('#spmGuestMotivationToggle').click();assert.equal(h.w.SPM_VOICE.state,'playing');h.$('#spmGuestReview').click();assert.equal(h.w.SPM_VOICE.state,'idle');
+ }finally{h.close()}
+ const quiet=harness(saved,'es',{previouslyPaused:true});try{assert.equal(quiet.plays(),0);quiet.$('#spmGuestMotivationToggle').click();quiet.w.dispatchEvent(new quiet.w.Event('pagehide'));assert.equal(quiet.w.SPM_VOICE.state,'idle');}finally{quiet.close()}
 });
 
 for(const outcome of ['success','retry','confirm'])test('new buyer creates access and continues directly to Wompi: '+outcome,async()=>{

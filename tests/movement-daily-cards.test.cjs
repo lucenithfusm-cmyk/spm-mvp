@@ -44,8 +44,12 @@ test('six approved cards open the complete matching artwork with the existing sp
    assert.deepEqual(Array.from(panel.querySelectorAll('li'),li=>li.textContent),Array.from(tip.steps));
    const audio=panel.querySelector('[data-spm-speak]');
    const narration=tip.steps.map((s,i)=>`Paso ${i+1}. ${s}`).join(' ');
-   assert.equal(audio.dataset.spmSpeak,narration);audio.click();assert.equal(h.qa.spoken.at(-1),narration);
+   assert.equal(audio.dataset.spmSpeak,narration);audio.click();
    assert.equal(audio.getAttribute('aria-pressed'),'true');audio.click();assert.equal(audio.getAttribute('aria-pressed'),'false');
+   const first=h.qa.spoken.length;audio.click();
+   for(let n=0;n<30&&h.w.SPM_VOICE.speaking;n++)h.qa.utterances.at(-1).onend?.();
+   assert.equal(h.qa.spoken.slice(first).join(' '),narration,'all approved words are narrated after an explicit resume');
+   assert.equal(h.w.SPM_VOICE.speaking,false);
    assert.equal(h.qa.writes.length,0);
   }finally{h.close();}
  }
@@ -84,7 +88,7 @@ test('saving each movement activity records its own day and tip without completi
    assert.equal(id,'wellness-movement');assert.equal(data.tipId,'mov.'+String(index+1).padStart(2,'0'));
    assert.equal(data.activityKind,'wellness');assert.equal(data.completed,true);assert.equal(data.confirmed,true);
    assert.equal(scope,'movement-qa:movement-plan');assert.equal(savedDay,day);assert.equal(h.c.day,day);assert.equal(h.c.completed.length,0);
-   assert.match(h.d.querySelector('[data-activity="wellness-movement"]').textContent,/Registrada/);
+   assert.match(h.d.querySelector('[data-activity="wellness-movement"]').textContent,visualDays.includes(day)?/Registrada/:/Realizada y guardada/);
   }finally{h.close();}
  }
 });

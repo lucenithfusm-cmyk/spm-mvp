@@ -48,7 +48,7 @@ const priorities={
  ejaculation:['Control eyaculatorio','Ejaculatory control','Reconocer cómo aumenta tu excitación y trabajar la regulación de tu ritmo.','Recognize how your arousal rises and work on regulating your pace.'],
  desire:['Deseo y excitación','Desire and arousal','Identificar qué facilita tu deseo y qué puede estar frenándolo.','Identify what supports your desire and what may be holding it back.'],
  confidence:['Confianza y ansiedad de rendimiento','Confidence and performance anxiety','Trabajar la presión por rendir y la confianza durante la intimidad.','Work on performance pressure and confidence during intimacy.'],
- wellbeing:['Bienestar y conexión','Wellbeing and connection','Dar espacio a la comunicación, las sensaciones y el disfrute compartido.','Make room for communication, sensations and shared enjoyment.'],
+ wellbeing:['Bienestar y conexión','Wellbeing and connection','Dar espacio a tus preferencias, la comunicación, las sensaciones y el disfrute individual o compartido.','Make room for communication, sensations and shared enjoyment.'],
  lifestyle:['Hábitos protectores y prevención','Protective habits and prevention','Priorizar los hábitos cotidianos que tienen mayor margen de trabajo en tu perfil.','Prioritize the everyday habits with the greatest room for work in your profile.']
 };
 function temporaryNote(){return storageAvailable?t('Tu borrador se guarda en este navegador hasta 7 días desde tu último avance. Puedes borrarlo desde el inicio. Si cambias de navegador o borras sus datos, no podrás recuperarlo aquí.','Your draft is saved in this browser for up to 7 days after your last progress. You can delete it from the start page. If you change browsers or clear browser data, you cannot recover it here.'):t('Tu navegador no permite guardar el borrador para otra visita. Mantén esta página abierta para continuar.','Your browser cannot save the draft for another visit. Keep this page open to continue.')}
@@ -98,26 +98,17 @@ function returnFocus(){
  return {key: returnMessages[key]?key:'lifestyle',selected};
 }
 function motivationText(){return t('Tu evaluación ya está lista. Ya diste el primer paso: conocerte mejor. Ahora puedes pasar a la acción con una ruta de veintiocho días, prácticas guiadas y herramientas para trabajar tu confianza. Un paso cada día, a tu ritmo.','Your assessment is ready. You have already taken the first step: understanding yourself better. Now you can put that insight into practice with a twenty eight day pathway, guided activities, and tools to work on your confidence. One step each day, at your own pace.')}
-function motivationHTML(){return `<div class="spmGuestMotivation"><audio id="spmGuestMotivationAudio" preload="none" src="assets/audio/assessment-ready-v1-${lang()==='en'?'en':'es'}.mp3"></audio><button type="button" id="spmGuestMotivationToggle" aria-controls="spmGuestMotivationAudio" data-state="idle"><span class="spmGuestAudioIcon" aria-hidden="true">▶︎</span><span><b data-audio-label>${t('Escucha este mensaje para ti','Listen to a message for you')}</b><small>${t('Un impulso para empezar · 14 s','A little encouragement · 16 s')}</small></span><span class="spmGuestAudioWave" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button><details class="spmGuestTranscript"><summary>${t('Leer mensaje','Read message')}</summary><p>${motivationText()}</p></details></div>`}
-function stopMotivation(){const audio=readyAudio;if(audio){audio.pause();audio.currentTime=0}readyAudio=null}
+function motivationHTML(){return `<div class="spmGuestMotivation"><button type="button" id="spmGuestMotivationToggle" data-state="idle"><span class="spmGuestAudioIcon" aria-hidden="true">▶︎</span><span><b data-audio-label>${t('Escucha este mensaje para ti','Listen to a message for you')}</b><small>${t('Puedes escuchar o leer','You can listen or read')}</small></span><span class="spmGuestAudioWave" aria-hidden="true"><i></i><i></i><i></i></span></button><details class="spmGuestTranscript"><summary>${t('Leer mensaje','Read message')}</summary><p>${motivationText()}</p></details></div>`;}
+function stopMotivation(){if(readyAudio)window.SPM_VOICE?.cancel();readyAudio=null;}
 function bindMotivation(){
- const audio=$('#spmGuestMotivationAudio'),control=$('#spmGuestMotivationToggle');if(!audio||!control)return;readyAudio=audio;let request=0;
- const draw=state=>{control.dataset.state=state;control.querySelector('.spmGuestAudioIcon').textContent=state==='playing'?'Ⅱ':state==='loading'?'…':'▶︎';control.querySelector('[data-audio-label]').textContent=state==='playing'?t('Pausar mensaje','Pause message'):state==='loading'?t('Preparando audio…','Loading audio…'):t('Escucha este mensaje para ti','Listen to a message for you');};
- const play=async()=>{
-  const attempt=++request;draw('loading');
-  try{await audio.play();if(readyAudio!==audio||attempt!==request||document.hidden||!audio.isConnected){audio.pause();return}draw('playing')}
-  catch{if(readyAudio===audio&&attempt===request)draw('idle')}
- };
+ const control=$('#spmGuestMotivationToggle');if(!control)return;
+ const draw=state=>{control.dataset.state=state;control.querySelector('.spmGuestAudioIcon').textContent=state==='playing'?'Ⅱ':'▶︎';control.querySelector('[data-audio-label]').textContent=state==='playing'?t('Pausar mensaje','Pause message'):state==='paused'?t('Reanudar desde este párrafo','Resume this paragraph'):state==='error'?t('Reintentar audio','Retry audio'):t('Escucha este mensaje para ti','Listen to a message for you');};
  control.onclick=()=>{
-  if(control.dataset.state==='playing'||control.dataset.state==='loading'){request++;audio.pause();draw('idle');try{sessionStorage.setItem(READY_AUDIO_PAUSED,'1')}catch{}}
-  else{try{sessionStorage.removeItem(READY_AUDIO_PAUSED)}catch{}play()}
+  const voice=window.SPM_VOICE;if(!voice){draw('error');control.closest('.spmGuestMotivation')?.querySelector('details')?.setAttribute('open','');return;}
+  if(readyAudio===control&&voice.speaking){voice.pause();return;}
+  if(readyAudio===control&&voice.paused){voice.resume();return;}
+  readyAudio=control;voice.listen(motivationText(),{owner:control,lang:lang()==='en'?'en-US':'es-CO',onstate:({state})=>{if(readyAudio===control)draw(state);},onend:()=>{if(readyAudio===control){readyAudio=null;draw('idle');}},oncancel:()=>{if(readyAudio===control){readyAudio=null;draw('idle');}}});
  };
- audio.addEventListener('ended',()=>{if(readyAudio===audio)draw('idle')});
- audio.addEventListener('pause',()=>{request++;if(readyAudio===audio)draw('idle')});
- audio.addEventListener('error',()=>{if(readyAudio===audio){draw('idle');control.querySelector('[data-audio-label]').textContent=t('Reintentar audio','Retry audio')}});
- let paused=false;try{paused=sessionStorage.getItem(READY_AUDIO_PAUSED)==='1'}catch{}
- // One attempt per page visit. A blocked autoplay never intercepts an unrelated click.
- if(returning&&!readyAudioAttempted&&!paused&&!document.hidden){readyAudioAttempted=true;play()}
 }
 function returnExperienceHTML(){
  const {key,selected}=returnFocus(),message=returnMessages[key];
@@ -216,7 +207,7 @@ window.addEventListener('spm:languagechange',()=>{
  if(stage==='landing')renderLanding();else if(stage==='result')renderResult();else if(stage==='offer'){window.SPM_COMMERCIAL_GATE_PREVIEW.close();openOffer()}else if(stage==='account'){const mode=$('#spmGuestPassword')?.autocomplete==='current-password'?'signin':'signup';renderResult();renderAccount(mode)}else if(stage==='saved'){renderResult();renderSaved()}else if(stage==='restart')restartAssessment();
 });
 window.addEventListener('focus',expire);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)readyAudio?.pause();else expire()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMotivation();else expire()});
 window.addEventListener('pagehide',stopMotivation);
 window.addEventListener('storage',e=>{
  if(busy||(e.key!==KEY&&e.key!==null))return;

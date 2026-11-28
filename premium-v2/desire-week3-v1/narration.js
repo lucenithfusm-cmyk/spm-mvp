@@ -139,14 +139,14 @@
   d21_01:{
    'audio-guide':'Hoy revisarás lo vivido para elegir tu siguiente paso. Puedes consultar tus sesiones o partir del recuerdo de una experiencia de esta semana.',
    'triad-0-0':'Revisa lo que anotaste sobre tus experiencias.',
-   'triad-0-1':'Identifica algo que te resultó agradable y algo que quieras adaptar.',
+   'triad-0-1':'Identifica qué te resultó agradable, qué no o qué todavía no puedes valorar.',
    'triad-0-2':'Escoge una práctica o un detalle que te gustaría mantener.'
   },
   d21_02:{
    'audio-guide':'Toca un día para consultar las sesiones que hayas registrado. Observa qué práctica realizaste y cómo te sentiste; después vuelve a tu reflexión.'
   },
   d21_03:{
-   'audio-guide':'Escribe algo que te sirvió y algo que quieras adaptar. Si te ayuda, consulta Tu lista de excitación o Detalles por canal; son recursos opcionales.'
+   'audio-guide':'Escribe qué te resultó útil, qué no y qué aún no puedes valorar. Si te ayuda, consulta Tu lista de excitación o Detalles por canal; son recursos opcionales.'
   },
   d21_04:{
    'audio-guide':'Elige una práctica o un detalle que quieras llevar a la semana cuatro. Puedes valorar tu interés de hoy y guardar tu reflexión. Confirma la actividad sólo si la realizaste.'

@@ -18,7 +18,7 @@ test('las sesiones 1–4 usan la nueva agenda, registros independientes y conser
  assert.ok(daily.includes('erectionLesson:slot.lesson'));
  assert.ok(daily.includes("kind:'erection-support-day'"));
  assert.ok(daily.includes('data-erection-transversal'));
- assert.ok(daily.includes('allowNoRequired'));
+ assert.ok(daily.includes('function closeDecision('));assert.ok(daily.includes('voluntary:plan.required.length===0'));assert.ok(daily.includes('confirmVoluntary:decision.voluntary'));
   assert.ok(practice.includes('const approvedDays=new Map([[1,1],[3,2],[6,3],[9,4],[12,5],[15,6],[18,7],[21,8],[24,9],[27,10]])'));
  assert.ok(practice.includes('if(record.erectionLesson!==lesson)return false'));
  for(const [lesson,day] of [[2,3],[3,6],[4,9],[5,12],[6,15],[7,18],[8,21],[9,24],[10,27]]){

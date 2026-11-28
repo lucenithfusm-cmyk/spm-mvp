@@ -39,7 +39,7 @@ test('Día 15 usa solo voz estándar del dispositivo, nunca Rocío o Sofía',()=
  assert.match(touch.guide,/estímulos/);
  assert.doesNotMatch(touch.guide,/contracciones|piso pélvico/i);
  assert.match(js,/new window\.SpeechSynthesisUtterance\(GUIDE\)/);
- assert.match(js,/window\.speechSynthesis\.speak\(utterance\)/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(utterance\)/);
  assert.match(js,/utterance\.lang='es-CO'/);
  assert.match(js,/utterance\.rate=1/);
  assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|\.voice=voices|erection-day15-stimuli-20261117\.mp3/);
@@ -48,7 +48,7 @@ test('Día 15 usa solo voz estándar del dispositivo, nunca Rocío o Sofía',()=
  assert.doesNotMatch(clinical,/erection-day15-stimuli-20261117\.mp3/);
  const direct=read('premium-v2/revision-ereccion-dia15.html');
  assert.match(direct,/new SpeechSynthesisUtterance\(guide\)/);
- assert.match(direct,/window\.speechSynthesis\.speak\(u\)/);
+ assert.match(direct,/window\.SPM_VOICE\.speak\(u\)/);
  assert.doesNotMatch(direct,/new Audio\(|voices\.find\(|\.voice=voices|erection-day15-stimuli-20261117\.mp3/);
 });
 test('registro de usuario y retorno a Hoy sin adelantarse al día 16',()=>{

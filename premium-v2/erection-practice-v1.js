@@ -3,25 +3,25 @@
 if(window.SPM_ERECTION_PRACTICE)return;
 
 const scripts={
- 1:'Vamos a reconocer tu punto de partida. Recuerda una experiencia reciente, sin provocar una erección ni hacer una prueba. Mira la lámina y elige la descripción que corresponde a lo que viviste. Cuatro: erección completa. Tres: erección incompleta, pero con firmeza suficiente para la penetración. Dos: hay rigidez, pero no es suficiente para la penetración. Uno: aumento de tamaño, pero no es una erección. Si en esa experiencia no hubo respuesta, elige “Sin respuesta eréctil”. Si no tuviste una experiencia que puedas valorar, elige “No evaluable”. Son opciones diferentes. El dibujo es orientativo: el ángulo no determina tu nivel. Puedes ampliar la imagen para verla mejor. Al terminar, confirma que hiciste la observación y pulsa “Guardar práctica y continuar”.',
+ 1:'Puedes reconocer tu punto de partida sin provocar una erección ni hacer una prueba. La valoración de firmeza es voluntaria. Si decides responder, recuerda una experiencia que ya hayas vivido y elige la descripción de la lámina. Cero indica que no hubo respuesta; No evaluable indica que no puedes valorar una experiencia; Continuar sin puntuar registra que prefieres omitir esta medición. El dibujo es orientativo: el ángulo no determina tu nivel. Después revisa los tres pasos de atención, que puedes practicar a tu ritmo. Indica si mantuviste la atención, volviste al estímulo, te costó volver o preferiste omitir la práctica. Confirma tu decisión y pulsa Guardar mi registro y continuar. Una práctica omitida no se cuenta como realizada.',
  2:'Hoy vas a reconocer en qué contextos cambia tu respuesta. Primero, recuerda únicamente situaciones que ya hayas vivido: una erección espontánea o al despertar, una experiencia individual y una experiencia con pareja. Para cada contexto, elige si la respuesta apareció con facilidad, fue variable, hubo dificultad o no puedes evaluarla. Si ese contexto no se presentó, marca «No evaluable». No necesitas buscar una experiencia nueva para responder. Después, elige qué aspecto reconoces más: iniciar la erección, mantenerla, recuperarla, ninguna dificultad o no evaluable. Estas observaciones sirven para conocerte; por sí solas no establecen una causa. Cuando termines, confirma que revisaste tus contextos y pulsa «Guardar práctica y continuar».',
  3:'Vamos a notar la tensión y volver a una sensación cómoda. Primero, siéntate o recuéstate con apoyo y deja que tu respiración siga su ritmo natural. Observa si estás apretando la mandíbula, elevando los hombros o tensando el abdomen. Marca lo que notes; también puedes indicar que no identificas tensión. Después, afloja con suavidad donde te resulte cómodo, sin empujar ni hacer fuerza. Elige un apoyo para tu atención: el contacto de tus manos, el peso del cuerpo sobre la superficie o un sonido del ambiente. Quédate con esa sensación y vuelve a ella cuando aparezca una preocupación por tu respuesta. No busques provocar una erección. El cronómetro es opcional y no hay un tiempo mínimo para guardar. Si aparece dolor, mareo o malestar, detén la práctica. Al terminar, confirma que practicaste a tu ritmo y pulsa «Guardar práctica y continuar».',
  4:"Hoy vas a practicar cómo volver a las sensaciones cuando aparezca la necesidad de comprobar tu respuesta. Busca un momento tranquilo. Elige un contacto cómodo, por ejemplo una mano sobre el antebrazo; si participas con pareja, acuerden juntos lo que resulta agradable. Después, elige en pantalla dónde pondrás la atención: temperatura, contacto o ritmo. Explora esa sensación a tu ritmo. Si aparece «¿cómo estoy respondiendo?», reconoce el pensamiento y vuelve suavemente a lo que sientes. No necesitas provocar una erección ni conseguir una firmeza determinada. Al terminar, indica si pudiste volver a la sensación, si te costó o si no apareció una comprobación. El cronómetro es opcional. Si algo incomoda, puedes detenerte. Confirma que realizaste la práctica y pulsa «Guardar práctica y continuar».",
  5:"Hoy vas a reconocer qué facilita tu respuesta y qué suele frenarla. Usa experiencias que ya hayas vivido; no necesitas hacer una prueba. Primero, elige hasta tres facilitadores que reconozcas, como un contacto agradable, un ritmo cómodo, privacidad o conexión. Después, marca hasta dos factores que suelen dificultarte la experiencia, como prisa, cansancio, estrés o presión por responder. Si todavía no identificas alguno de estos grupos, elige «Aún no lo identifico». No tienes que llenar todas las opciones. Por último, escoge un solo ajuste pequeño para una próxima ocasión. Puede ser disponer de privacidad, dar más tiempo o expresar una preferencia. Si aún no lo sabes, elige seguir observando sin forzar. Confirma que revisaste tu mapa y pulsa «Guardar práctica y continuar».",
  6:"Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.",
- 7:"Reconoce qué has aprendido esta semana sin evaluar tu firmeza. Marca los avances que identificas o indica que aún estás empezando. Después elige una idea para fortalecer tu confianza y un siguiente paso concreto para tus próximas experiencias. Puedes observar tu progreso sin compararte ni buscar perfección. Guarda tus tres respuestas y regresa a Hoy.",
+ 7:"Revisa qué reconoces de esta semana sin evaluar tu firmeza. Marca únicamente los cambios que identifiques; si todavía no identificas cambios, puedes elegir Aún estoy empezando. Después elige una idea que quieras tener presente y un siguiente paso para una experiencia voluntaria. No necesitas confirmar una mejora. Guarda tus tres respuestas y regresa a Hoy.",
  8:"En una próxima experiencia íntima voluntaria, conserva un estímulo agradable sin exigirte firmeza constante. Puedes ajustar solo una variable o hacer una pausa. Recuerda posiciones que te resultan cómodas, identifica si alguna favorece tu respuesta y elige una estrategia. No es necesario provocar una erección ni medirla hoy. El cronómetro es opcional. Si alguna postura produce dolor, detente.",
  9:"Si durante una experiencia íntima disminuye la firmeza, recuerda que la respuesta puede fluctuar. Evita convertir la variación en una prueba. Conserva la calma; ajusta una sola cosa del estímulo, prueba una posición que te resulte cómoda o haz una pausa. Retoma únicamente si te sientes cómodo y lo deseas. Elige una estrategia para tu próxima experiencia y guárdala sin evaluar hoy tu firmeza.",
  10:"Después de una experiencia sexual difícil, reconoce si temes que se repita, vigilas demasiado tu erección, evitas nuevas experiencias o sientes que debes demostrar algo. También puedes marcar que no identificas ninguna señal. No necesitas provocar una erección ni hacer una prueba. Elige una única estrategia flexible para tu próxima experiencia, o recuerda que consultar a un profesional es apropiado si una dificultad aparece de forma nueva o persiste. Guarda tu plan y regresa a Hoy."
 };
 const definitions={
- 1:{title:'Reconoce tu punto de partida',summary:'Observa una experiencia reciente y elige la firmeza que recuerdas, o «No evaluable».'},
+ 1:{title:'Reconoce tu punto de partida',summary:'Registra tu decisión sobre la práctica de atención. La valoración de firmeza es voluntaria: puedes puntuar, elegir «No evaluable» o continuar sin puntuar.'},
  2:{title:'Reconoce tus contextos',summary:'Reconoce cómo cambia tu respuesta en situaciones que ya has vivido.'},
  3:{title:'Reconoce y suelta la tensión',summary:'Observa la tensión, suelta con suavidad y elige una sensación para tu atención.'},
  4:{title:'Vuelve a las sensaciones',summary:'Elige una sensación y vuelve a ella cuando notes que estás comprobando tu respuesta.'},
  5:{title:'Reconoce lo que te ayuda',summary:'Reconoce facilitadores e inhibidores y elige un ajuste pequeño para una próxima ocasión.'},
- 6:{title:'Activa tu respuesta con estímulos que funcionan',summary:'Identifica estímulos agradables que favorecen tu respuesta y elige cuáles incorporar a tu próxima experiencia.'},
- 7:{title:'Reconoce tu progreso',summary:'Identifica avances, fortalece una idea de confianza y define tu siguiente paso sin medir la firmeza.'},
+ 6:{title:'Explora tu respuesta a los estímulos',summary:'Recuerda estímulos que te resulten agradables y elige cuáles te gustaría considerar en una próxima experiencia voluntaria.'},
+ 7:{title:'Revisa tu experiencia y tu siguiente paso',summary:'Registra los cambios que reconozcas o que aún estás empezando. Elige una idea y un siguiente paso sin medir la firmeza ni confirmar una mejoría.'},
  8:{title:'Sostener la erección sin perseguir firmeza constante',summary:'Reconoce posiciones favorables, adapta una condición sin presión y elige una estrategia para una próxima experiencia.'},
  9:{title:'Qué hacer cuando disminuye la firmeza',summary:'Practica una secuencia de ajustes simples, sin presión, y elige tu estrategia cuando la firmeza fluctúe.'},
  10:{title:'Prevención después de una caída',summary:'Identifica señales de preocupación o evitación y elige un plan para continuar sin exigirte una erección perfecta.'}
@@ -71,7 +71,18 @@ function valid(record,day){
  // identificador de sesión para no atribuirles resultados de otras prácticas.
  if(lesson===1){
   if(record.erectionLesson!=null&&record.erectionLesson!==1)return false;
-  return record.ehs===null?record.ehsEvaluable===false:Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true;
+  const omitted=record.ehsStatus==='omitted'&&record.ehsOmitted===true&&record.ehs===null&&record.ehsEvaluable===null;
+  const notEvaluable=record.ehs===null&&record.ehsEvaluable===false&&record.ehsOmitted!==true&&(record.ehsStatus==null||record.ehsStatus==='not_evaluable');
+  const measured=Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true&&record.ehsOmitted!==true&&(record.ehsStatus==null||record.ehsStatus==='recorded');
+  if(!omitted&&!notEvaluable&&!measured)return false;
+  // Los registros históricos siguen siendo legibles. La versión con salida
+  // voluntaria valida por separado la conclusión y la realización física.
+  if(record.completionAccepted===true||record.ehsStatus!=null){
+   if(record.completionAccepted!==true||!['maintained','returned','difficult','omitted'].includes(record.attentionPracticeOutcome))return false;
+   const practiced=record.attentionPracticeOutcome!=='omitted';
+   return record.attentionPracticeCompleted===practiced&&record.completed===practiced&&record.activityStatus===(practiced?'completed':'omitted');
+  }
+  return true;
  }
  if(record.erectionLesson!==lesson)return false;
  if(lesson===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);
@@ -125,11 +136,13 @@ function choices(name,options,type='radio'){
  return '<div class="spm-erection-options">'+options.map(([value,label])=>'<label class="spm-erection-option"><input type="'+type+'" name="'+name+'" value="'+value+'"><span>'+label+'</span></label>').join('')+'</div>';
 }
 function task(day){
- if(day===1)return '<fieldset><legend>¿Qué firmeza recuerdas?</legend><p class="spm-erection-hint">Usa una experiencia que ya hayas vivido.</p>'+(window.SPM_FIRMNESS_GUIDE?.html()||'')+choices('ehs',[
+ if(day===1)return '<fieldset><legend>¿Qué firmeza recuerdas? · valoración voluntaria</legend><p class="spm-erection-hint">Usa una experiencia que ya hayas vivido o elige continuar sin puntuar.</p>'+(window.SPM_FIRMNESS_GUIDE?.html()||'')+choices('ehs',[
   ['4','<b>4</b> Erección completa'],['3','<b>3</b> Erección incompleta, pero permite penetración'],['2','<b>2</b> Hay rigidez, pero no es suficiente para la penetración'],['1','<b>1</b> Aumento de tamaño, pero no es una erección']
  ])+'<div class="spm-erection-alternatives">'+choices('ehs',[
-  ['0','Sin respuesta eréctil'],['na','No evaluable']
- ])+'</div></fieldset>';
+  ['0','Sin respuesta eréctil'],['na','No evaluable'],['omitted','Continuar sin puntuar']
+ ])+'</div></fieldset><details><summary>Leer práctica de atención</summary><ol><li>Busca privacidad. Elige una sensación, un recuerdo o un contacto que te resulte agradable y seguro. No necesitas conseguir una erección.</li><li>Observa un detalle del estímulo: su textura, temperatura, ritmo o la sensación que despierta. Deja que tu respiración siga su ritmo natural. No compruebes la firmeza.</li><li>Si aparece la idea de evaluar cómo respondes, reconócela y dirige tu atención otra vez al estímulo. Puedes hacer una pausa, cambiarlo o terminar cuando lo desees.</li></ol></details><fieldset><legend>Tu decisión sobre la práctica de atención</legend>'+choices('attentionPracticeOutcome',[
+  ['maintained','Pude mantener la atención'],['returned','Me distraje y volví'],['difficult','Me costó volver'],['omitted','Preferí omitir la práctica']
+ ])+'</fieldset>';
  if(day===2)return '<fieldset><legend>1. Recuerda tus contextos</legend><div class="spm-erection-contexts">'+[['spontaneous','Espontánea o al despertar'],['solo','Experiencia individual'],['partner','Experiencia con pareja']].map(([key,label])=>'<label><span>'+label+'</span><select name="context-'+key+'" required><option value="">Elige una opción</option><option value="easy">Con facilidad</option><option value="variable">Variable</option><option value="difficult">Con dificultad</option><option value="not_evaluable">No evaluable</option></select></label>').join('')+'</div></fieldset><fieldset><legend>2. ¿Qué aspecto reconoces más?</legend>'+choices('responseAspect',[
   ['initiate','Iniciar la erección'],['maintain','Mantenerla'],['recover','Recuperarla'],['none','Ninguna dificultad'],['not_evaluable','No evaluable']
  ])+'</fieldset>';
@@ -158,26 +171,27 @@ function optional(day){
 function restore(s,form){
  const prior=s.prior;
  for(const key of ['anxiety','confidence'])if(prior[key]!==null&&score(prior[key]))form.elements.namedItem(key).value=String(prior[key]);
- if(s.day===1){
-  const value=prior.ehsEvaluable===true&&Number.isInteger(prior.ehs)&&prior.ehs>=0&&prior.ehs<=4?String(prior.ehs):prior.erectionPracticeVersion===1&&prior.ehs===null&&prior.ehsEvaluable===false?'na':null;
+ if(s.lesson===1){
+  const value=prior.ehsStatus==='omitted'&&prior.ehsOmitted===true&&prior.ehs===null&&prior.ehsEvaluable===null?'omitted':prior.ehsEvaluable===true&&Number.isInteger(prior.ehs)&&prior.ehs>=0&&prior.ehs<=4?String(prior.ehs):prior.erectionPracticeVersion===1&&prior.ehs===null&&prior.ehsEvaluable===false?'na':null;
   if(value!==null)form.querySelector('[name="ehs"][value="'+value+'"]').checked=true;
- }else if(s.day===2){
+  if(['maintained','returned','difficult','omitted'].includes(prior.attentionPracticeOutcome))form.querySelector('[name="attentionPracticeOutcome"][value="'+prior.attentionPracticeOutcome+'"]').checked=true;
+ }else if(s.lesson===2){
   for(const key of contexts)if(contextValues.includes(prior.contexts?.[key]))form.elements.namedItem('context-'+key).value=prior.contexts[key];
   if(aspects.includes(prior.responseAspect))form.querySelector('[name="responseAspect"][value="'+prior.responseAspect+'"]').checked=true;
- }else if(s.day===3){
+ }else if(s.lesson===3){
   if(Array.isArray(prior.tensionAreas)&&prior.tensionAreas.every(area=>areas.includes(area))&&(!prior.tensionAreas.includes('none')||prior.tensionAreas.length===1))for(const area of prior.tensionAreas)form.querySelector('[name="tensionArea"][value="'+area+'"]').checked=true;
   if(anchors.includes(prior.sensoryAnchor))form.querySelector('[name="sensoryAnchor"][value="'+prior.sensoryAnchor+'"]').checked=true;
- }else if(s.day===4){
+ }else if(s.lesson===4){
   if(senses.includes(prior.attentionSense))form.querySelector('[name="attentionSense"][value="'+prior.attentionSense+'"]').checked=true;
   if(experiences.includes(prior.practiceExperience))form.querySelector('[name="practiceExperience"][value="'+prior.practiceExperience+'"]').checked=true;
- }else if(s.day===5){
+ }else if(s.lesson===5){
   // New selections never infer a category from the mixed legacy stimuli list.
   for(const [name,options,max] of [['erectionFacilitators',facilitators,3],['erectionInhibitors',inhibitors,2]])if(selection(prior[name],options,max))for(const value of prior[name])form.querySelector('[name="'+name+'"][value="'+value+'"]').checked=true;
   if(adjustments.includes(prior.microAdjustment))form.querySelector('[name="microAdjustment"][value="'+prior.microAdjustment+'"]').checked=true;
  }
- if([3,4].includes(s.day)){
+ if([3,4].includes(s.lesson)){
   if(typeof prior.finalFeeling==='string'&&prior.finalFeeling.length<=1000)form.elements.namedItem('finalFeeling').value=prior.finalFeeling;
-  if((s.day===3||prior.erectionPracticeVersion===1)&&Number.isSafeInteger(prior.seconds)&&prior.seconds>=0){s.clock.total=prior.seconds*1000;s.clock.used=true;}
+  if((s.lesson===3||prior.erectionPracticeVersion===1)&&Number.isSafeInteger(prior.seconds)&&prior.seconds>=0){s.clock.total=prior.seconds*1000;s.clock.used=true;}
   drawTimer(s);
  }
  // Confirmation always belongs to this deliberate save, even on reopening.
@@ -187,13 +201,20 @@ function recordFrom(s,form){
  const number=name=>{const value=form.elements.namedItem(name).value;return value===''?null:/^(?:[0-9]|10)$/.test(value)?Number(value):undefined;};
  const checked=name=>form.querySelector('[name="'+name+'"]:checked')?.value;
  const selected=name=>[...form.querySelectorAll('[name="'+name+'"]:checked')].map(input=>input.value);
- const record={...s.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:s.day,activity:definition(s.day).title,confirmed:form.elements.namedItem('confirmed').checked,anxiety:number('anxiety'),confidence:number('confidence'),date:new Date().toISOString()};
- if(s.day===1){const value=checked('ehs');record.ehs=value==='na'?null:/^[0-4]$/.test(value||'')?Number(value):undefined;record.ehsEvaluable=value==='na'?false:value===undefined?undefined:true;}
- else if(s.day===2){record.contexts=Object.fromEntries(contexts.map(key=>[key,form.elements.namedItem('context-'+key).value]));record.responseAspect=checked('responseAspect');}
- else if(s.day===3){record.tensionAreas=selected('tensionArea');record.sensoryAnchor=checked('sensoryAnchor');}
- else if(s.day===4){record.attentionSense=checked('attentionSense');record.practiceExperience=checked('practiceExperience');}
- else if(s.day===5){record.erectionFacilitators=selected('erectionFacilitators');record.erectionInhibitors=selected('erectionInhibitors');record.microAdjustment=checked('microAdjustment');}
- if([3,4].includes(s.day)){record.finalFeeling=form.elements.namedItem('finalFeeling').value.trim();record.seconds=s.clock.used?Math.floor(elapsed(s)/1000):null;}
+ const record={...s.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:s.day,erectionLesson:s.lesson,activity:definition(s.day).title,confirmed:form.elements.namedItem('confirmed').checked,anxiety:number('anxiety'),confidence:number('confidence'),date:new Date().toISOString()};
+ if(s.lesson===1){
+  const value=checked('ehs'),outcome=checked('attentionPracticeOutcome'),practiced=['maintained','returned','difficult'].includes(outcome);
+  record.ehs=value==='na'||value==='omitted'?null:/^[0-4]$/.test(value||'')?Number(value):undefined;
+  record.ehsEvaluable=value==='omitted'?null:value==='na'?false:value===undefined?undefined:true;
+  record.ehsOmitted=value==='omitted';record.ehsStatus=value==='omitted'?'omitted':value==='na'?'not_evaluable':value===undefined?undefined:'recorded';
+  record.attentionPracticeOutcome=outcome;record.attentionPracticeCompleted=practiced;record.attentionPracticeSeconds=null;
+  record.completionAccepted=true;record.completed=practiced;record.activityStatus=practiced?'completed':'omitted';record.erectionLesson=1;
+ }
+ else if(s.lesson===2){record.contexts=Object.fromEntries(contexts.map(key=>[key,form.elements.namedItem('context-'+key).value]));record.responseAspect=checked('responseAspect');}
+ else if(s.lesson===3){record.tensionAreas=selected('tensionArea');record.sensoryAnchor=checked('sensoryAnchor');}
+ else if(s.lesson===4){record.attentionSense=checked('attentionSense');record.practiceExperience=checked('practiceExperience');}
+ else if(s.lesson===5){record.erectionFacilitators=selected('erectionFacilitators');record.erectionInhibitors=selected('erectionInhibitors');record.microAdjustment=checked('microAdjustment');}
+ if([3,4].includes(s.lesson)){record.finalFeeling=form.elements.namedItem('finalFeeling').value.trim();record.seconds=s.clock.used?Math.floor(elapsed(s)/1000):null;}
  return record;
 }
 function limitMessage(form){
@@ -203,15 +224,15 @@ function limitMessage(form){
 async function save(s,form){
  if(s.saving||!matches(s))return;
  const record=recordFrom(s,form);
- const limit=s.day===5?limitMessage(form):'';
+ const limit=s.lesson===5?limitMessage(form):'';
  if(limit){message(s,limit);return;}
- if(!valid(record,s.day)){message(s,s.day===5?'Elige tus factores o «Aún no lo identifico» en cada grupo, selecciona un ajuste y confirma que revisaste tu mapa.':s.day===4?'Elige una sensación, registra qué ocurrió y confirma que realizaste la práctica.':'Elige tus respuestas y confirma que realizaste la observación. Puedes usar «No evaluable» cuando corresponda.');form.reportValidity();return;}
+ if(!valid(record,s.day)){message(s,s.lesson===1?'Elige puntuar, No evaluable o Continuar sin puntuar; registra tu decisión sobre la atención y confírmala.':s.lesson===5?'Elige tus factores o «Aún no lo identifico» en cada grupo, selecciona un ajuste y confirma que revisaste tu mapa.':s.lesson===4?'Elige una sensación, registra qué ocurrió y confirma que realizaste la práctica.':'Elige tus respuestas y confirma que realizaste la observación. Puedes usar «No evaluable» cuando corresponda.');form.reportValidity();return;}
  s.saving=true;const button=form.querySelector('[data-erection-save]');button.disabled=true;message(s,'Guardando tu práctica…');pauseTimer(s);stopAudio(s);
  try{
   // There is no asynchronous work between this final check and the scoped save.
   if(!matches(s))return;
   await window.SPM_DAILY_PRACTICE.saveActivity('main',record,s.scope,s.day);
-  if(matches(s)){s.prior=record;message(s,'Práctica guardada. Regresaste a Hoy.');button.textContent='Práctica guardada ✓';}
+  if(matches(s)){s.prior=record;message(s,record.activityStatus==='omitted'?'Decisión guardada. La práctica omitida no se cuenta como realizada.':'Registro guardado.');button.textContent='Registro guardado ✓';}
  }catch{
   if(!matches(s))return;
   s.saving=false;button.disabled=false;message(s,'No pudimos guardar. Tus respuestas siguen aquí; reintenta. El día no ha avanzado.');
@@ -219,28 +240,28 @@ async function save(s,form){
 }
 function render(s){
  const item=definition(s.day),player=window.SPM_CHECKPOINT_AUDIO?.markup({src:item.audioSrc,text:item.script,label:'Escuchar guía'})||'<details><summary>Leer indicaciones</summary><p>'+esc(item.script)+'</p></details>';
- const confirmation={1:'Confirmo que hice esta observación.',2:'Confirmo que revisé los contextos que he vivido.',3:'Confirmo que practiqué a mi ritmo, sin forzar.',4:'Confirmo que realicé la práctica a mi ritmo.',5:'Confirmo que revisé mi mapa y elegí un ajuste.'}[s.day];
- shell(s,'<form data-erection-form>'+player+task(s.day)+optional(s.day)+'<label class="spm-erection-confirm"><input type="checkbox" name="confirmed" required><span>'+confirmation+'</span></label><div class="spm-erection-actions"><button type="submit" class="btn pri" data-erection-save>Guardar práctica y continuar</button>'+back+'</div><p data-erection-status role="status" aria-live="polite"></p></form>');
+ const confirmation={1:'Confirmo que estas respuestas reflejan mi decisión de hoy.',2:'Confirmo que revisé los contextos que he vivido.',3:'Confirmo que practiqué a mi ritmo, sin forzar.',4:'Confirmo que realicé la práctica a mi ritmo.',5:'Confirmo que revisé mi mapa y elegí un ajuste.'}[s.lesson];
+ shell(s,'<form data-erection-form>'+player+task(s.lesson)+optional(s.lesson)+'<label class="spm-erection-confirm"><input type="checkbox" name="confirmed" required><span>'+confirmation+'</span></label><div class="spm-erection-actions"><button type="submit" class="btn pri" data-erection-save>'+(s.lesson===1?'Guardar mi registro y continuar':'Guardar práctica y continuar')+'</button>'+back+'</div><p data-erection-status role="status" aria-live="polite"></p></form>');
  const form=s.panel.querySelector('form');restore(s,form);
  const transcript=form.querySelector('[data-checkpoint-audio-transcript]>summary');if(transcript)transcript.textContent='Leer indicaciones';
  window.SPM_CHECKPOINT_AUDIO?.bind(form);
  window.SPM_FIRMNESS_GUIDE?.bind(form);
  form.addEventListener('submit',event=>{event.preventDefault();save(s,form);});
- if(s.day===3){
+ if(s.lesson===3){
   form.querySelectorAll('[name="tensionArea"]').forEach(input=>input.addEventListener('change',()=>{
    if(!input.checked)return;
    if(input.value==='none')form.querySelectorAll('[name="tensionArea"]').forEach(other=>{if(other!==input)other.checked=false;});
    else form.querySelector('[name="tensionArea"][value="none"]').checked=false;
   }));
  }
- if(s.day===5)for(const name of ['erectionFacilitators','erectionInhibitors'])form.querySelectorAll('[name="'+name+'"]').forEach(input=>input.addEventListener('change',()=>{
+ if(s.lesson===5)for(const name of ['erectionFacilitators','erectionInhibitors'])form.querySelectorAll('[name="'+name+'"]').forEach(input=>input.addEventListener('change',()=>{
   if(input.checked){
    if(input.value==='unknown')form.querySelectorAll('[name="'+name+'"]').forEach(other=>{if(other!==input)other.checked=false;});
    else form.querySelector('[name="'+name+'"][value="unknown"]').checked=false;
   }
   message(s,limitMessage(form));
  }));
- if([3,4].includes(s.day)){
+ if([3,4].includes(s.lesson)){
   form.querySelector('[data-erection-timer-toggle]').addEventListener('click',()=>{
    if(!matches(s)||s.saving)return;
    if(s.clock.started!==null)pauseTimer(s);
@@ -268,8 +289,10 @@ async function load(s){
 async function open(a){
  stop();const c=context(),actual=assignment(c),host=document.getElementById('spmDailyWorkspace');
  if(!scope(c)||!supports(c,a)||!supports(c,actual)||!allowed(c,actual)||!host?.isConnected)return false;
+ // The preserved inline form covers sessions 1–5. Sessions 6–10 must use their approved touch controller.
+ if(lessonOf(c.day)>5)return false;
  styles();
- const s={token:sequence,scope:scope(c),day:Number(c.day),host,panel:null,prior:{},request:0,saving:false,clock:{total:0,started:null,interval:null,used:false}};
+ const s={token:sequence,scope:scope(c),day:Number(c.day),lesson:lessonOf(c.day),host,panel:null,prior:{},request:0,saving:false,clock:{total:0,started:null,interval:null,used:false}};
  current=s;if(!matches(s,false)){stop();return false;}return load(s);
 }
 function styles(){

@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: Programa real y visor de 28 días usan exactamente los mismos veintitrés controladores aprobados
+ok 1 - Programa real y visor de 28 días usan exactamente los mismos veintitrés controladores aprobados
+  ---
+  duration_ms: 1.662059
+  type: 'test'
+  ...
+# Subtest: Los dos recorridos tienen los estilos de las versiones vigentes
+ok 2 - Los dos recorridos tienen los estilos de las versiones vigentes
+  ---
+  duration_ms: 0.378211
+  type: 'test'
+  ...
+# Subtest: Hoy muestra miniatura real y una sola actividad vigente
+ok 3 - Hoy muestra miniatura real y una sola actividad vigente
+  ---
+  duration_ms: 0.776702
+  type: 'test'
+  ...
+# Subtest: La ruta antigua de 28 ejercicios no se abre en ningún día
+ok 4 - La ruta antigua de 28 ejercicios no se abre en ningún día
+  ---
+  duration_ms: 0.242125
+  type: 'test'
+  ...
+# Subtest: Focalización y demás módulos conservan sus rutas y pausas
+ok 5 - Focalización y demás módulos conservan sus rutas y pausas
+  ---
+  duration_ms: 0.429679
+  type: 'test'
+  ...
+# Subtest: La lámina EHS reutilizada y su visor médico se conservan en la versión aprobada
+ok 6 - La lámina EHS reutilizada y su visor médico se conservan en la versión aprobada
+  ---
+  duration_ms: 0.782111
+  type: 'test'
+  ...
+# Subtest: El calendario abre Hoy y muestra el cierre canónico; no marca completado por fuera del cierre atómico
+ok 7 - El calendario abre Hoy y muestra el cierre canónico; no marca completado por fuera del cierre atómico
+  ---
+  duration_ms: 2.764823
+  type: 'test'
+  ...
+# Subtest: Erección días 1–4: los cuatro recursos funcionan en pantalla completa con alerta accesible en todos los recorridos
+ok 8 - Erección días 1–4: los cuatro recursos funcionan en pantalla completa con alerta accesible en todos los recorridos
+  ---
+  duration_ms: 1.112399
+  type: 'test'
+  ...
+# Subtest: Fullscreen móvil conserva ancho completo y desplazamiento vertical
+ok 9 - Fullscreen móvil conserva ancho completo y desplazamiento vertical
+  ---
+  duration_ms: 0.327655
+  type: 'test'
+  ...
+# Subtest: internal reports and server sources are denied before the filesystem fallback
+ok 10 - internal reports and server sources are denied before the filesystem fallback
+  ---
+  duration_ms: 2.470959
+  type: 'test'
+  ...
+# Subtest: the public scoring policy and shipped reviewer modules remain reachable
+ok 11 - the public scoring policy and shipped reviewer modules remain reachable
+  ---
+  duration_ms: 8.181889
+  type: 'test'
+  ...
+# Subtest: all tracked database and audit files stay outside the public HTTP boundary
+ok 12 - all tracked database and audit files stay outside the public HTTP boundary
+  ---
+  duration_ms: 15.34288
+  type: 'test'
+  ...
+# Subtest: deployment exclusion patterns retain only the required public Supabase policy
+ok 13 - deployment exclusion patterns retain only the required public Supabase policy
+  ---
+  duration_ms: 8.420709
+  type: 'test'
+  ...
+# Subtest: existing commercial pause routes remain intact
+ok 14 - existing commercial pause routes remain intact
+  ---
+  duration_ms: 0.366323
+  type: 'test'
+  ...
+# Subtest: Día 1 conserva la pantalla 6 hasta el toque final
+ok 15 - Día 1 conserva la pantalla 6 hasta el toque final
+  ---
+  duration_ms: 1.246411
+  type: 'test'
+  ...
+# Subtest: Día 2 retorna sin comprobar m.valid después de guardar
+ok 16 - Día 2 retorna sin comprobar m.valid después de guardar
+  ---
+  duration_ms: 0.307124
+  type: 'test'
+  ...
+# Subtest: Las revisiones simulan Hoy, en lugar de reiniciar automáticamente
+ok 17 - Las revisiones simulan Hoy, en lugar de reiniciar automáticamente
+  ---
+  duration_ms: 0.217419
+  type: 'test'
+  ...
+# Subtest: Día 1 usa EHS-4 propio y el acceso público sigue pausado
+ok 18 - Día 1 usa EHS-4 propio y el acceso público sigue pausado
+  ---
+  duration_ms: 0.933539
+  type: 'test'
+  ...
+# Subtest: Guardar días 1 a 4 no desmonta la pantalla antes del retorno propio del módulo
+ok 19 - Guardar días 1 a 4 no desmonta la pantalla antes del retorno propio del módulo
+  ---
+  duration_ms: 6.781235
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 196.996792

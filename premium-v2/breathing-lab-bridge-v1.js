@@ -86,7 +86,7 @@ async function open(opts={}){
  if(modal&&!await close(false))return false;
  const c=ctx();if(!c)return false;returnToDesire=opts.returnToDesire===true;
  scope=scopeOf(c);day=Math.min(28,Math.max(1,Number(c.day)||1));origin=['erectile','ejaculation','desire','dailyPlan'].includes(opts.origin)?opts.origin:'library';state={};dirty=saved=0;
- mode=origin==='library'?'library':'daily';launchStep=mode==='library'&&opts.practice==='guided'?11:null;activity=mode==='daily'?window.SPM_DAILY_SUPPORT?.activity('breathing',Number(opts.day)||day,c)||null:null;
+ mode=origin==='library'?'library':'daily';launchStep=mode==='library'&&opts.practice==='guided'?11:null;activity=mode==='daily'?(opts.activity?.kind==='breathing'?{...opts.activity,day}:window.SPM_DAILY_PRACTICE?.contentAssignment?.('breathing',c)||window.SPM_DAILY_SUPPORT?.activity('breathing',Number(opts.day)||day,c)||null):null;
  lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-breathing-modal';modal.dataset.breathingMode=mode;modal.setAttribute('aria-label','Respiración diafragmática SPM');
  modal.innerHTML='<header><button type="button" data-breathing-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':origin==='desire'?'Deseo':'mi programa')+'</button><span role="status" data-breathing-status>Cargando tu progreso…</span><button type="button" data-breathing-retry hidden>Reintentar guardado</button></header><main></main>';
  document.body.appendChild(modal);modal.showModal();modal.querySelector('[data-breathing-close]').onclick=close;modal.querySelector('[data-breathing-retry]').onclick=()=>flush().catch(()=>{});modal.addEventListener('cancel',e=>{e.preventDefault();close();});
@@ -98,7 +98,7 @@ async function open(opts={}){
   window.SPM_BREATHING_LAB_HOST={flush,close,recordDaily:async()=>{
    if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
    if(origin!=='dailyPlan'||returnToDesire)return true;
-   const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='breathing');
+   const assigned=window.SPM_DAILY_PRACTICE?.contentAssignment?.('breathing')||window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='breathing');
    if(!assigned)return true;
    try{
     const sessions=JSON.parse(state['spmb-sessions']||'[]');
@@ -110,7 +110,7 @@ async function open(opts={}){
    }catch{status('No pudimos guardar la actividad. Reintenta antes de salir.',true);return false;}
   },openControl:async()=>{if(await close(false))window.SPM_EJACULATORY_CONTROL?.open?.(day);},getState:()=>token===generation&&scopeOf(ctx())===captured?clone(state):{},write:(k,v)=>token===generation&&write(k,v),openLibrary:async()=>{if(await close(false))return open({origin:'library'});return false;},getContext:()=>({day,origin,mode,activity,launchStep,restriction:token===generation&&scopeOf(ctx())===captured?restriction(ctx()):'urgent'})};
   const frame=document.createElement('iframe');frame.title='Respiración diafragmática · Respiración diafragmática';frame.allow='autoplay';frame.src='breathing-lab/index.html?v=20261123-breathing-narration4&origin='+(['dailyPlan','erectile','ejaculation'].includes(origin)?'dailyPlan':'library');
-   const firstPractice=origin==='dailyPlan'&&day===1&&c.primary==='erection'&&activity?.id==='breath-start';
+   const firstPractice=origin==='dailyPlan'&&(activity?.sourceActivityId||activity?.id)==='breath-start';
    const guide=firstPractice?window.SPM_PELVIC_GUIDANCE?.firstPractice?.():null;
    // El iframe conserva la altura completa: el audio forma parte del scroll de la práctica.
    if(guide?.audioSrc&&guide?.script&&window.SPM_CHECKPOINT_AUDIO?.markup)inlineFirstPracticeAudio(frame,guide,token);

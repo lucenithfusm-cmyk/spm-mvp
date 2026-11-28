@@ -1,0 +1,292 @@
+TAP version 13
+# erection: 23 preguntas; insights tras 4, 8, 12, 16
+# ejaculation: 22 preguntas; insights tras 4, 8, 12, 16
+# desire: 20 preguntas; insights tras 4, 8, 12, 16
+# confidence: 21 preguntas; insights tras 4, 8, 12, 16
+# wellbeing: 20 preguntas; insights tras 4, 8, 12, 16
+# optimization: 29 preguntas; insights tras 4, 8, 12, 16
+# Subtest: welcome, anonymous assessment and audiovisual offer: erection
+ok 1 - welcome, anonymous assessment and audiovisual offer: erection
+  ---
+  duration_ms: 580.269004
+  type: 'test'
+  ...
+# Subtest: welcome, anonymous assessment and audiovisual offer: ejaculation
+ok 2 - welcome, anonymous assessment and audiovisual offer: ejaculation
+  ---
+  duration_ms: 242.127774
+  type: 'test'
+  ...
+# Subtest: welcome, anonymous assessment and audiovisual offer: desire
+ok 3 - welcome, anonymous assessment and audiovisual offer: desire
+  ---
+  duration_ms: 136.169553
+  type: 'test'
+  ...
+# Subtest: welcome, anonymous assessment and audiovisual offer: confidence
+ok 4 - welcome, anonymous assessment and audiovisual offer: confidence
+  ---
+  duration_ms: 129.239674
+  type: 'test'
+  ...
+# Subtest: welcome, anonymous assessment and audiovisual offer: wellbeing
+ok 5 - welcome, anonymous assessment and audiovisual offer: wellbeing
+  ---
+  duration_ms: 164.509428
+  type: 'test'
+  ...
+# Subtest: welcome, anonymous assessment and audiovisual offer: optimization
+ok 6 - welcome, anonymous assessment and audiovisual offer: optimization
+  ---
+  duration_ms: 263.361598
+  type: 'test'
+  ...
+# Subtest: commercial es: no autoplay, full approved text, and ordered scene passages
+ok 7 - commercial es: no autoplay, full approved text, and ordered scene passages
+  ---
+  duration_ms: 378.617357
+  type: 'test'
+  ...
+# Subtest: commercial en: no autoplay, full approved text, and ordered scene passages
+ok 8 - commercial en: no autoplay, full approved text, and ordered scene passages
+  ---
+  duration_ms: 90.189795
+  type: 'test'
+  ...
+# Subtest: commercial pause repeats current paragraph and closing invalidates continuation
+ok 9 - commercial pause repeats current paragraph and closing invalidates continuation
+  ---
+  duration_ms: 60.988141
+  type: 'test'
+  ...
+# Subtest: commercial text navigation and continuation stay usable without speech API
+ok 10 - commercial text navigation and continuation stay usable without speech API
+  ---
+  duration_ms: 40.607159
+  type: 'test'
+  ...
+# Subtest: back from the first question returns to goals, survives reload, and rebuilds the chosen route
+ok 11 - back from the first question returns to goals, survives reload, and rebuilds the chosen route
+  ---
+  duration_ms: 621.929618
+  type: 'test'
+  ...
+# Subtest: exploration resumes as prevention and supports switching back to multiple goals
+ok 12 - exploration resumes as prevention and supports switching back to multiple goals
+  ---
+  duration_ms: 476.234337
+  type: 'test'
+  ...
+# Subtest: each five-option question uses one matching scale and keeps its numeric answer when language changes
+ok 13 - each five-option question uses one matching scale and keeps its numeric answer when language changes
+  ---
+  duration_ms: 257.222071
+  type: 'test'
+  ...
+# Subtest: only visitors with a draft see its clear action and cancelling preserves their choices
+ok 14 - only visitors with a draft see its clear action and cancelling preserves their choices
+  ---
+  duration_ms: 51.357235
+  type: 'test'
+  ...
+# Subtest: first completion shows the cover, guidance and audiovisual offer in one document
+ok 15 - first completion shows the cover, guidance and audiovisual offer in one document
+  ---
+  duration_ms: 158.253135
+  type: 'test'
+  ...
+# Subtest: returning completed visitor keeps the next step and can review, correct, or restart safely
+ok 16 - returning completed visitor keeps the next step and can review, correct, or restart safely
+  ---
+  duration_ms: 327.438596
+  type: 'test'
+  ...
+# Subtest: saved pre-payment return allows correction and invalidates the old assessment receipt
+ok 17 - saved pre-payment return allows correction and invalidates the old assessment receipt
+  ---
+  duration_ms: 189.975049
+  type: 'test'
+  ...
+# Subtest: offer avoids duplicate reassessment CTAs; privacy is visible only on the first welcome
+ok 18 - offer avoids duplicate reassessment CTAs; privacy is visible only on the first welcome
+  ---
+  duration_ms: 179.277744
+  type: 'test'
+  ...
+# Subtest: urgent flags remain visible and cannot be bypassed by reopening the assessment
+ok 19 - urgent flags remain visible and cannot be bypassed by reopening the assessment
+  ---
+  duration_ms: 280.07655
+  type: 'test'
+  ...
+# Subtest: English return screen retains review, privacy and one-time payment information
+ok 20 - English return screen retains review, privacy and one-time payment information
+  ---
+  duration_ms: 171.179821
+  type: 'test'
+  ...
+# Subtest: returning without a valid session goes to sign-in before checkout
+ok 21 - returning without a valid session goes to sign-in before checkout
+  ---
+  duration_ms: 181.30422
+  type: 'test'
+  ...
+# Subtest: return messaging follows the selected goal in all six domains without changing answers
+ok 22 - return messaging follows the selected goal in all six domains without changing answers
+  ---
+  duration_ms: 823.165495
+  type: 'test'
+  ...
+# Subtest: returning stays silent; blocked speech can retry by gesture without stealing another click
+ok 23 - returning stays silent; blocked speech can retry by gesture without stealing another click
+  ---
+  duration_ms: 184.656675
+  type: 'test'
+  ...
+# Subtest: voice stops on backgrounding, review and exit; returning never resumes it automatically
+ok 24 - voice stops on backgrounding, review and exit; returning never resumes it automatically
+  ---
+  duration_ms: 191.391943
+  type: 'test'
+  ...
+# Subtest: new buyer creates access and continues directly to Wompi: success
+ok 25 - new buyer creates access and continues directly to Wompi: success
+  ---
+  duration_ms: 126.572927
+  type: 'test'
+  ...
+# Subtest: new buyer creates access and continues directly to Wompi: retry
+ok 26 - new buyer creates access and continues directly to Wompi: retry
+  ---
+  duration_ms: 111.846349
+  type: 'test'
+  ...
+# Subtest: new buyer creates access and continues directly to Wompi: confirm
+ok 27 - new buyer creates access and continues directly to Wompi: confirm
+  ---
+  duration_ms: 123.617631
+  type: 'test'
+  ...
+# Subtest: es: four insights with immediate navigation, no polling or repeated answers
+ok 28 - es: four insights with immediate navigation, no polling or repeated answers
+  ---
+  duration_ms: 593.957289
+  type: 'test'
+  ...
+# Subtest: en: four insights with immediate navigation, no polling or repeated answers
+ok 29 - en: four insights with immediate navigation, no polling or repeated answers
+  ---
+  duration_ms: 26.514719
+  type: 'test'
+  ...
+# Subtest: resume keeps milestones; reloading an open insight does not lose it; new assessment resets
+ok 30 - resume keeps milestones; reloading an open insight does not lose it; new assessment resets
+  ---
+  duration_ms: 35.739943
+  type: 'test'
+  ...
+# Subtest: audio does not advance; changing language keeps the pending step; Escape advances once
+ok 31 - audio does not advance; changing language keeps the pending step; Escape advances once
+  ---
+  duration_ms: 22.921425
+  type: 'test'
+  ...
+# Subtest: visible Continue button, image and background all dismiss the insight and restore focus
+ok 32 - visible Continue button, image and background all dismiss the insight and restore focus
+  ---
+  duration_ms: 271.433075
+  type: 'test'
+  ...
+# Subtest: audio control does not advance; Escape closes and cancels delayed audio
+ok 33 - audio control does not advance; Escape closes and cancels delayed audio
+  ---
+  duration_ms: 29.04649
+  type: 'test'
+  ...
+# Subtest: reading the complete Insight never dismisses it or starts voice
+ok 34 - reading the complete Insight never dismisses it or starts voice
+  ---
+  duration_ms: 21.250755
+  type: 'test'
+  ...
+# Subtest: only a server-confirmed production approval with a plan offers the private welcome
+ok 35 - only a server-confirmed production approval with a plan offers the private welcome
+  ---
+  duration_ms: 267.599459
+  type: 'test'
+  ...
+# Subtest: a verified paid buyer sees the pause reassurance and notice without an immediate welcome
+ok 36 - a verified paid buyer sees the pause reassurance and notice without an immediate welcome
+  ---
+  duration_ms: 33.163494
+  type: 'test'
+  ...
+# Subtest: a failed pause lookup preserves a verified payment and access without claiming the program is ready
+ok 37 - a failed pause lookup preserves a verified payment and access without claiming the program is ready
+  ---
+  duration_ms: 12.569311
+  type: 'test'
+  ...
+# Subtest: an approved-looking URL alone never unlocks the program or skips server lookup
+ok 38 - an approved-looking URL alone never unlocks the program or skips server lookup
+  ---
+  duration_ms: 14.656372
+  type: 'test'
+  ...
+# Subtest: new visitor
+ok 39 - new visitor
+  ---
+  duration_ms: 2.86875
+  type: 'test'
+  ...
+# Subtest: buyer with expired session
+ok 40 - buyer with expired session
+  ---
+  duration_ms: 0.935522
+  type: 'test'
+  ...
+# Subtest: authenticated buyer
+ok 41 - authenticated buyer
+  ---
+  duration_ms: 2.635327
+  type: 'test'
+  ...
+# Subtest: new authenticated account
+ok 42 - new authenticated account
+  ---
+  duration_ms: 2.119889
+  type: 'test'
+  ...
+# Subtest: another unpaid account on a remembered device
+ok 43 - another unpaid account on a remembered device
+  ---
+  duration_ms: 1.839717
+  type: 'test'
+  ...
+# Subtest: access check error never resells to an authenticated user
+ok 44 - access check error never resells to an authenticated user
+  ---
+  duration_ms: 1.434816
+  type: 'test'
+  ...
+# Subtest: network failure never resells to an authenticated user
+ok 45 - network failure never resells to an authenticated user
+  ---
+  duration_ms: 1.324299
+  type: 'test'
+  ...
+# Subtest: entry script loads before assessment, private app and confirmed payment handlers
+ok 46 - entry script loads before assessment, private app and confirmed payment handlers
+  ---
+  duration_ms: 0.458712
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4914.46109

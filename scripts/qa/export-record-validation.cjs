@@ -1,0 +1,18 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..'),h=require('../../tests/helpers/agenda-harness.cjs')();
+const file='premium-v2/erection-practice-v1.js',source=fs.readFileSync(path.join(root,file),'utf8');
+const names=['contexts','contextValues','aspects','areas','anchors','senses','experiences','facilitators','inhibitors','adjustments','stimuli','progressMarkers','confidenceIdeas','nextSteps','positions','positionStrategies','responseStrategies','preventionSignals','preventionStrategies'];
+const enums=Object.fromEntries(names.map(name=>{const match=source.match(new RegExp('const '+name+'=(\\[[^;]+\\]);'));if(!match)throw Error('Missing source enum '+name);return [name,vm.runInNewContext(match[1])];}));
+const calendarToLesson=Object.fromEntries(vm.runInNewContext(source.match(/const approvedDays=new Map\((\[[^;]+\])\);/)[1]));
+const connection=Object.fromEntries(Object.entries(h.window.SPM_CONNECTION_CONTENT.activities).map(([day,a])=>[day,{fields:a.fields,maxTopics:a.max||null,topics:(a.topics||[]).map(t=>t.label)}]));
+const files=[file,'premium-v2/conexion-satisfaccion/actividades.js','premium-v2/conexion-satisfaccion/pantalla.js','premium-v2/program-checkpoint-v1.js','premium-v2/daily-practice-v1.js'];
+const out={version:'20261127',sources:files.map(file=>({file,sha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex')})),
+ generic:{validator:'SPM_DAILY_PRACTICE.recordSatisfies',conditions:['completed === true','activityStatus is absent, null or completed (legacy absent values remain accepted)','activityKind absent or exactly the assigned kind','scenario exactly the assignment scenario when specified'],kinds:['confidence','desire','breathing','worksheet','response','ejaculation','sensate','recovery','video','ep-checkpoint'],note:'These kinds have no additional field validator in the existing closure predicate. Individual screens validate their own interactions before saving.'},
+ identity:{version:'spm-20261127-v1',requiredExact:['scheduleVersion','assignmentId','contentId','contentVersion','scheduledDay'],legacy:'Historical records retain their original IDs and do not require newly introduced identity fields.'},
+ erection:{calendarToLesson,enums,validator:source.slice(source.indexOf('function valid(record,day){'),source.indexOf('\nfunction assignment(c)'))},
+ connection:{days:connection,validator:'SPM_CONNECTION.complete: connectionDay must equal source day; topics must meet maxTopics exactly with unique allowed labels; visible fields must satisfy their original enum, 0–10 nullable scale, chosen topic or nonempty <=400-character text; optional undefined/empty fields pass; mode No aplica hides all fields except mode; field.when is shown only on matching mode.'},
+ checkpoint:{metrics:h.window.SPM_PROGRAM_CHECKPOINT.metrics.map(([key])=>key),versions:{1:{scaleMax:10},2:{scaleMax:4,requiresScaleMax:true}},reflectionMax:2000,continuityMax:2000,requiresAllMetricKeys:true,nullableMetrics:true,legacyCheckpoint:'Optional preserved v1 record, allowed only under v2 and validated recursively.'},
+ pelvic:{common:{completed:true,day:'scheduled day',activityId:'assigned ID',intent:'assigned pelvicIntent'},'daily-relax':{practiceId:'percibe',origin:'dailyPlan'},scheduled:{source:'pelvic-classic-v2'}},
+ wellness:{tipId:'Exact assigned tip.id (wellnessId in the versioned manifest, tipId in legacy export)'}};
+fs.writeFileSync(path.join(root,'docs/qa/spm-record-validation-20261127.json'),JSON.stringify(out,null,2)+'\n');
+console.log('Exported source enums, ten erection sessions,',Object.keys(connection).length,'Connection schemas and original closure criteria.');

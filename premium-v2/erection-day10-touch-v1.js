@@ -7,7 +7,7 @@ if(window.SPM_ED_DAY10_TOUCH)return;
 const IMAGES=[1,2].map(n=>'/premium-v2/assets/erection-day10/spm-de-day10-screen-0'+n+'.webp');
 const GUIDES=[
  'Después de una experiencia en la que tu firmeza disminuyó, quizá te preocupes por lo que pueda suceder la próxima vez. Es importante reconocer esas señales sin convertirlas en una prueba. Algunas personas comienzan a vigilar su erección, a evitar encuentros o a exigirse demostrar que pueden responder. Otras no notan estos cambios. Selecciona solo lo que reconozcas en ti. No necesitas provocar una erección para responder. Una experiencia aislada no predice necesariamente la siguiente.',
- 'Ahora vas a preparar un plan para proteger tus avances. Elige una acción que puedas recordar si reaparece la preocupación. Si te descubres anticipando un fallo, recuerda que una sola experiencia no define tu respuesta. Si vuelves a vigilarte, retoma alguna herramienta que ya hayas aprendido. Si has comenzado a evitar la intimidad, puedes recuperar experiencias agradables a tu ritmo y sin metas obligatorias. Si la dificultad es nueva, persiste o empeora, conviene consultar a un profesional de salud. Guarda tu elección y continúa tu ruta de hoy. La prevención significa prepararte para responder con flexibilidad, no garantizar una erección perfecta.'
+ 'Ahora vas a preparar un plan para responder si reaparece la preocupación. Elige una acción que puedas recordar si reaparece la preocupación. Si te descubres anticipando un fallo, recuerda que una sola experiencia no define tu respuesta. Si vuelves a vigilarte, retoma alguna herramienta que ya hayas aprendido. Si has comenzado a evitar la intimidad, puedes recuperar experiencias agradables a tu ritmo y sin metas obligatorias. Si la dificultad es nueva, persiste o empeora, conviene consultar a un profesional de salud. Guarda tu elección y continúa tu ruta de hoy. La prevención significa prepararte para responder con flexibilidad, no garantizar una erección perfecta.'
 ];
 const SIGNALS=[
  ['fear_repeat','Temo que vuelva a ocurrir',[76,1084,1005,1198],[949,1143]],
@@ -29,7 +29,7 @@ const rect=(x1,y1,x2,y2)=>`left:${(x1/1080*100).toFixed(4)}%;top:${(y1/1920*100)
 let active=null;
 function stopVoice(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voice=null;
  const b=m.host?.querySelector('[data-ed10-action="audio"]');
  b?.classList.remove('playing');b?.setAttribute('aria-pressed','false');
@@ -59,7 +59,7 @@ function speak(m){
   const btn=m.host.querySelector('[data-ed10-action="audio"]');btn?.classList.add('playing');btn?.setAttribute('aria-pressed','true');
   u.onend=()=>{if(m.voice===u)stopVoice(m)};
   u.onerror=()=>{if(m.voice===u){stopVoice(m);status(m,'No se pudo reproducir la guía. Intenta nuevamente.')}};
-  window.speechSynthesis.speak(u);
+  window.SPM_VOICE.speak(u);
  }catch{stopVoice(m);status(m,'No se pudo reproducir la guía.')}
 }
 function hit(box,action,label,{value=null,selected=false,audio=false,disabled=false}={}){
@@ -77,7 +77,7 @@ function render(m){
  }
  hits+=hit([60,1797,1023,1896],m.page===1?'next':'save',m.page===1?'Continuar':'Guardar y continuar mi ruta de hoy',{disabled:m.saving});
  const nav=`<nav class="spm-ed10-toolbar" aria-label="Navegación del día ${m.calendarDay}"><button type="button" data-ed10-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>Pantalla ${m.page} de 2 · Día ${m.calendarDay}</span><button type="button" data-ed10-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed10-session spm-er-fullscreen" data-ed10-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: prevención después de una caída, pantalla ${m.page} de 2"><div class="spm-ed10-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Pantalla aprobada ${m.page} de 2">${hits}${checks}</div>${nav}<p class="spm-ed10-status" data-ed10-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed10-session spm-er-fullscreen" data-ed10-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: prevención después de una caída, pantalla ${m.page} de 2"><div class="spm-ed10-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Pantalla aprobada ${m.page} de 2">${hits}${checks}</div>${nav}${window.SPM_VOICE?.transcript(GUIDES[m.page-1])||''}<p class="spm-ed10-status" data-ed10-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
 }
 function choose(m,key){
  if(m.page===1){
@@ -125,5 +125,5 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope='',
  return true;
 }
 window.addEventListener('pagehide',stop);
-window.SPM_ED_DAY10_TOUCH={mount,pause,stop,images:IMAGES.slice(),guides:GUIDES.slice(),voiceMode:'device-default-pending-Leni',fields:['warningSignals','preventionStrategy'],signals:SIGNAL_KEYS.slice(),strategies:STRATEGY_KEYS.slice()};
+window.SPM_ED_DAY10_TOUCH={mount,pause,stop,images:IMAGES.slice(),guides:GUIDES.slice(),voiceMode:'device-default',fields:['warningSignals','preventionStrategy'],signals:SIGNAL_KEYS.slice(),strategies:STRATEGY_KEYS.slice()};
 })();

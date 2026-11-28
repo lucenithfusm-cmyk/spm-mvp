@@ -13,8 +13,8 @@ const CHANNEL={'visual':'visual-explore','tactile':'sensory-focus','auditory':'v
 const NOTE='desireWeek2TouchDay';
 const ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?.userId&&c?.planId?String(c.userId)+':'+String(c.planId):'';
-const main=c=>window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.id==='main');
-const eligible=(c,o)=>o?.origin==='dailyPlan'&&c?.primary==='desire'&&DAYS.has(Number(c.day));
+const main=c=>window.SPM_DAILY_PRACTICE?.contentAssignment?.('desire',c)||window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.kind==='desire');
+const eligible=(c,o)=>o?.origin==='dailyPlan'&&(c?.primary==='desire'||c?.scheduleVersion==='spm-20261127-v1')&&main(c)?.kind==='desire'&&DAYS.has(Number(main(c)?.sourceDay||c.day));
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const text=v=>typeof v==='string'?v.slice(0,400):'';
 const number=v=>v===null?null:Number.isInteger(v)&&v>=0&&v<=10?v:null;
@@ -29,9 +29,9 @@ function clean(day,src){const v=object(src),data={
  page:Math.max(1,Math.min(3,Number(v.page)||1))};return data;
 }
 let current=null;
-function allowed(m){if(!m||current!==m||m.iframe&&(!m.iframe.isConnected||!m.wrap?.isConnected))return false;const c=ctx(),a=main(c);if(!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.day||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
+function allowed(m){if(!m||current!==m||m.iframe&&(!m.iframe.isConnected||!m.wrap?.isConnected))return false;const c=ctx(),a=main(c);if((c?.scheduleVersion||'legacy')!==m.scheduleVersion||(main(c)?.assignmentId||null)!==(m.assignmentId||null)||!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.scheduledDay||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
  if(a?.kind!=='desire'||window.SPM_DAILY_PRACTICE?.restricted?.(c,a))return false;
- const active=window.SPM_DAILY_PRACTICE?.active?.();return !active||(active.id==='main'&&active.scope===m.scope&&Number(active.day)===m.day);
+ const active=window.SPM_DAILY_PRACTICE?.active?.();return !active||(active.id===m.activityId&&active.scope===m.scope&&Number(active.day)===m.scheduledDay);
 }
 function send(m,type,fields={}){if(m.iframe?.isConnected&&m.iframe.contentWindow)m.iframe.contentWindow.postMessage({type,sid:m.sid,day:m.day,...fields},location.origin)}
 function dispose(m){if(!m)return;clearTimeout(m.timer);window.removeEventListener('message',m.onMessage);m.iframe?.remove();m.wrap?.remove();if(current===m)current=null}
@@ -42,12 +42,12 @@ function addSession(p,m){const now=new Date().toISOString(),day=m.day,v=m.latest
  const reflection=[v.note,v.next,v.good,v.adjust,v.repeat,v.memory1,v.memory2,v.memory3].filter(Boolean).join(' · ').slice(0,950);
  const before=day===9||day===11?v.metricBefore:day===12?v.expected:null;
  const after=day===9||day===11?v.metricAfter:day===10?v.utility:day===12?v.actual:day===13?v.confidence:day===8?v.metricAfter:null;
- p.sessions=[...all,{id:'desire-week2-d'+day+'-touch-v1',day,date:now.slice(0,10),practiceId:id,variant:'solo',status:'completed',activeSec:Math.round(v.timer.elapsed||0),metricKey,metricLabel:day===14?'Revisión cualitativa semana 2':day===13?'Confianza':day===11?'Presión antes/después':day===10?'Utilidad de la idea':'Deseo y observación',before,after,reflection}];
+ p.sessions=[...all,{id:'desire-week2-d'+day+'-touch-v1',day,sourceDay:day,scheduledDay:m.scheduledDay,assignmentId:m.assignmentId,date:now.slice(0,10),practiceId:id,variant:'solo',status:'completed',activeSec:Math.round(v.timer.elapsed||0),metricKey,metricLabel:day===14?'Revisión cualitativa semana 2':day===13?'Confianza':day===11?'Presión antes/después':day===10?'Utilidad de la idea':'Deseo y observación',before,after,reflection}];
  }
  p.dayDone={...object(p.dayDone),[day]:object(p.dayDone)[day]||now.slice(0,10)};
  // Nunca se cambia el checkpoint oficial del día 14 ni su comparación 0–4.
 }
-function enqueue(m,completed=false){const job=async()=>{if(!allowed(m))throw Error('Contexto cambiado');const bundle=await records.read(m.scope);if(!allowed(m))throw Error('Contexto cambiado durante el guardado');const p=parse(bundle['spm-desire-program']);p.detailNotes={...object(p.detailNotes),[NOTE+m.day]:JSON.stringify(m.latest)};if(completed)addSession(p,m);await records.save({...bundle,'spm-desire-program':JSON.stringify(p)},m.scope,m.day)};
+function enqueue(m,completed=false){const job=async()=>{if(!allowed(m))throw Error('Contexto cambiado');const bundle=await records.read(m.scope);if(!allowed(m))throw Error('Contexto cambiado durante el guardado');const p=parse(bundle['spm-desire-program']);p.detailNotes={...object(p.detailNotes),[NOTE+m.day]:JSON.stringify(m.latest)};if(completed)addSession(p,m);await records.save({...bundle,'spm-desire-program':JSON.stringify(p)},m.scope,m.scheduledDay)};
  m.queue=m.queue.catch(()=>{}).then(job);return m.queue;
 }
 function autosave(m){if(!allowed(m)||!m.latest)return;clearTimeout(m.timer);m.timer=setTimeout(()=>void enqueue(m).catch(()=>send(m,'SPM_WEEK2_ERROR',{message:'No pudimos guardar el avance. Puedes reintentar.'})),850)}
@@ -57,8 +57,8 @@ function returnToToday(m){dispose(m);if(m.host.isConnected)window.SPM_DAILY_PRAC
 async function closeActive(m){if(!allowed(m)||m.busy)return false;m.busy=true;try{await flush(m);if(!allowed(m))return false;returnToToday(m);return true}catch{send(m,'SPM_WEEK2_ERROR',{message:'No se pudo guardar el avance. Reintenta sin cerrar.'});return false}finally{m.busy=false}}
 async function complete(m){if(!allowed(m)||m.busy||!m.latest)return false;m.busy=true;const v=m.latest;v.completed=true;
  try{clearTimeout(m.timer);await enqueue(m,true);if(!allowed(m))return false;
-  const ok=await window.SPM_DAILY_PRACTICE.saveActivity('main',{day:m.day,confirmed:true,source:'desire-lab',practiceId:sessionId(m.day,v),desireWeek2TouchVersion:1,activeSec:Math.round(v.timer.elapsed||0)},m.scope,m.day);
-  if(ok===false)throw Error('No se pudo registrar el resultado');send(m,'SPM_WEEK2_DONE');returnToToday(m);window.SPM_DAILY_PRACTICE?.showContinuation?.();return true;
+  const ok=await window.SPM_DAILY_PRACTICE.saveActivity(m.activityId,{day:m.day,confirmed:true,source:'desire-lab',practiceId:sessionId(m.day,v),desireWeek2TouchVersion:1,activeSec:Math.round(v.timer.elapsed||0)},m.scope,m.scheduledDay);
+  if(ok===false)throw Error('No se pudo registrar el resultado');if(!allowed(m))return false;send(m,'SPM_WEEK2_DONE');returnToToday(m);window.SPM_DAILY_PRACTICE?.showContinuation?.();return true;
  }catch{v.completed=false;send(m,'SPM_WEEK2_ERROR',{message:'No se pudo completar el guardado. Conserva esta pantalla para reintentar.'});return false}finally{m.busy=false}}
 async function openOfficialCheckpoint(m){if(m.day!==14||!allowed(m)||m.busy)return false;
  const c=ctx(),a=window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(x=>x.kind==='program-checkpoint');
@@ -86,11 +86,11 @@ async function open(opts={}){
  // Un cambio externo de día/cuenta o un workspace desmontado invalida esta sesión.
  // Se elimina sin guardar sus respuestas en el contexto nuevo.
  if(current&&!allowed(current))dispose(current);
- const c=ctx();if(!eligible(c,opts))return legacyOpen(opts);const scope=scopeOf(c),day=Number(c.day);if(!scope)return false;
+ const c=ctx();if(!eligible(c,opts))return legacyOpen(opts);const scope=scopeOf(c),day=Number(main(c)?.sourceDay||c.day),scheduledDay=Number(c.day),activityId=main(c).id,assignmentId=main(c).assignmentId;if(!scope)return false;
  if(current&&!await closeActive(current))return false;
  if(document.querySelector('.spm-desire-modal[open]')&&await legacyClose()===false)return false;
  const host=document.getElementById('spmDailyWorkspace');if(!host?.isConnected)return false;
- const m={scope,day,host,sid:window.crypto?.randomUUID?.()||'spmweek2-'+Math.random().toString(36).slice(2),wrap:null,iframe:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,checkpointVerified:false,timer:0,onMessage:null};current=m;
+ const m={scope,day,scheduledDay,activityId,assignmentId,scheduleVersion:c.scheduleVersion||'legacy',host,sid:window.crypto?.randomUUID?.()||'spmweek2-'+Math.random().toString(36).slice(2),wrap:null,iframe:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,checkpointVerified:false,timer:0,onMessage:null};current=m;
  if(!allowed(m)){current=null;return false}
  const wrap=document.createElement('section');wrap.className='spm-ds-week2-root';wrap.setAttribute('aria-label','Deseo, día '+day+' interactivo');
  const iframe=document.createElement('iframe');iframe.title='Deseo · Día '+day;iframe.allow='autoplay';iframe.src='/premium-v2/desire-week2-v1/index.html?spm=central&day='+day+'&sid='+encodeURIComponent(m.sid)+'&v=20261120-audio-fullscreen1';

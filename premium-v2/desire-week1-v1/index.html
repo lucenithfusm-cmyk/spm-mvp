@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es" class="spm-desire-early-view">
-<head>
+<head><script src="/premium-v2/device-voice-v1.js?v=20261127-technical"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#728f79">
@@ -60,7 +60,7 @@ const texts={
   '6-1':'Hoy vamos a recorrer tu cuerpo desde la cabeza hasta las piernas. Acomódate sentado o recostado. El objetivo es reconocer comodidad y tensión, no entrenar músculos ni comprobar una respuesta sexual. Si quieres, indica cómo está tu comodidad ahora.',
   '6-2':'Toca las regiones de la figura, de frente o de espalda, para escuchar la guía de cada etapa. El recorrido de referencia dura cinco minutos. Puedes pausar o terminar antes. Afloja sin apretar ni contraer el piso pélvico.',
   '6-3':'Observa qué zona te resultó cómoda y si hubo algún ajuste de postura que te ayudó. Puedes registrar tu comodidad al terminar. Hoy recuerda aflojar hombros y mandíbula en dos momentos del día.',
-  '7-1':'Hoy vas a revisar la primera semana. Recuerda una experiencia agradable y otra que te gustaría adaptar. No necesitas tener registros perfectos: tus observaciones personales ya son útiles.',
+  '7-1':'Hoy vas a revisar la primera semana. Describe lo que recuerdes, qué te resultó útil y qué prefieres adaptar. Si no recuerdas una experiencia o aún no puedes valorarla, puedes indicarlo en tu reflexión.',
   '7-2':'En tu lista de excitación, marca los estímulos que reconoces como agradables. Después añade hasta cinco prioridades y ordénalas con las flechas. Puedes modificar la lista cuando cambien tus preferencias.',
   '7-3':'Elige algo que quieras repetir o explorar durante la segunda semana. Tu experiencia puede cambiar de un día a otro y el plan puede adaptarse a eso.'
 };
@@ -196,8 +196,8 @@ function setDay(day){
  pauseBoth();stopVoice();data.day=day;render(false);
 }
 let spoken=null;
-function stopVoice(){try{window.speechSynthesis?.cancel();}catch{} spoken=null;}
-function speak(text){if(!text)return;try{if(!('speechSynthesis'in window)){inform('La voz del dispositivo no está disponible. Puedes leer las instrucciones de la pantalla.');return;}window.speechSynthesis.cancel();const msg=new SpeechSynthesisUtterance(text);msg.lang='es-CO';msg.rate=.91;msg.pitch=1.0;const voices=window.speechSynthesis.getVoices();msg.voice=voices.find(v=>v.lang==='es-CO')||voices.find(v=>v.lang.startsWith('es'))||null;spoken=msg;msg.onerror=e=>{if(spoken===msg&&e.error!=='canceled'&&e.error!=='interrupted')inform('No se pudo reproducir la voz. La guía está disponible en pantalla.');};window.speechSynthesis.speak(msg);}catch{inform('La narración no está disponible en este dispositivo.');}}
+function stopVoice(){try{window.SPM_VOICE?.cancel();}catch{} spoken=null;}
+function speak(text){if(!text)return;try{if(!('speechSynthesis'in window)){inform('La voz del dispositivo no está disponible. Puedes leer las instrucciones de la pantalla.');return;}window.SPM_VOICE.cancel();const msg=new SpeechSynthesisUtterance(text);msg.lang='es-CO';msg.rate=.91;msg.pitch=1.0;spoken=msg;msg.onerror=e=>{if(spoken===msg&&e.error!=='canceled'&&e.error!=='interrupted')inform('No se pudo reproducir la voz. La guía está disponible en pantalla.');};window.SPM_VOICE.speak(msg);}catch{inform('La narración no está disponible en este dispositivo.');}}
 function pauseTimer(k){const t=data[k].timer;if(!t.running)return;t.running=false;t.anchor=0;save();syncTimer();}
 function pauseBoth(){pauseTimer('d4');pauseTimer('d6');}
 function startTimer(){const k=timerKey(),t=data[k].timer;if(t.running)return;if(t.elapsed>=300){inform('Este cronómetro terminó. Pulsa reiniciar si quieres repetirlo.');return;}t.started=true;t.running=true;t.anchor=Date.now();save();if(k==='d4')speak(phases4[Math.min(3,Math.floor(t.elapsed/75))]);else if(data.d6.region===null){data.d6.region=0;speak(regions[0][1]);}else speak(regions[data.d6.region][1]);syncTimer();}

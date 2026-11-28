@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "routes": [
     {
+      "src": "^/(?:docs|tests|scripts|labs|\\.github)(?:/.*)?$",
+      "status": 404
+    },
+    {
+      "src": "^/supabase(?:$|/(?!functions/_shared/assessment-policy\\.js$).*)$",
+      "status": 404
+    },
+    {
       "src": "^/(?:index\\.html|Index\\.html|preview-v21\\.html)?$",
       "dest": "/premium-v2/program-paused.html",
       "headers": {

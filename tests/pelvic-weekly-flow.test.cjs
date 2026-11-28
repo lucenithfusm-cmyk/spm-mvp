@@ -14,18 +14,21 @@ test('calendar: exactly one Lab per week across all six domains; strength remain
    if(labs.length){labDays.push(day);assert.equal(labs[0].pelvicIntent,'daily-relax');assert.equal(labs[0].optional,true);}
    if(strength.length){strengthDays.push(day);assert.ok(strength.every(a=>a.pelvicPreference==='classic'));}
   }
-  assert.deepEqual(labDays,DAYS,primary);
+  assert.deepEqual(labDays,primary==='ejaculation'?[3,10,18,24]:DAYS,primary);
   assert.deepEqual(strengthDays,[2,6,9,13,16,20,23,27],primary);
  }
 });
 function lesson(day,restriction='relax'){
  const dom=new JSDOM('<!doctype html><html><head></head><body><div id="root"></div></body></html>',{url:'https://spm.test/premium-v2/pelvic-floor-lab/index.html',runScripts:'outside-only',pretendToBeVisual:true});
- const w=dom.window,store={},accepted=[];const ctx={day,origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab',restriction};
+ const w=dom.window,store={},accepted=[],spoken=[];const ctx={day,origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab',restriction};
  let now=0,tick=null,interval=0;
  Object.defineProperty(w.performance,'now',{value:()=>now,configurable:true});
  w.setInterval=fn=>{tick=fn;return ++interval};
  w.clearInterval=()=>{tick=null};
  w.HTMLMediaElement.prototype.play=async function(){};w.HTMLMediaElement.prototype.pause=function(){};
+ w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;this.voice=null;}};
+ w.speechSynthesis={speak:u=>{spoken.push(u);u.onstart?.();},cancel(){},resume(){},getVoices:()=>[],addEventListener(){}};
+ w.eval(read('premium-v2/device-voice-v1.js'));
  w.SPM_PELVIC_LAB_HOST={
   getContext:()=>({...ctx}),
   getState:()=>JSON.parse(JSON.stringify(store)),
@@ -37,7 +40,7 @@ function lesson(day,restriction='relax'){
  const button=selector=>{const el=w.document.querySelector(selector);assert.ok(el,'Missing selector '+selector);return el};
  const click=selector=>button(selector).click();
  const advance=ms=>{now=ms;tick?.();};
- return {w,ctx,store,accepted,button,click,advance,close:()=>dom.window.close()};
+ return {w,ctx,store,accepted,spoken,button,click,advance,close:()=>dom.window.close()};
 }
 test('first weekly training: recognition GIF, audio affordance, survey, posture, automatic cues and closing',async()=>{
  const h=lesson(3);try{
@@ -61,7 +64,7 @@ test('first weekly training: recognition GIF, audio affordance, survey, posture,
   assert.match(h.button('.pf-weekly-card h1').textContent,/Práctica registrada/);
  }finally{h.close()}
 });
-for(const [day,expected,choice,key] of [[10,'¿Qué notaste?',null,null],[17,'Elige un apoyo para soltar','hands','anchor'],[24,'¿Qué puedo percibir?','support','perception']]){
+for(const [day,expected,choice,key] of [[10,'¿Qué notaste?',null,null],[17,'Elige un apoyo para soltar','hands','anchor'],[18,'Elige un apoyo para soltar','hands','anchor'],[24,'¿Qué puedo percibir?','support','perception']]){
  test('weekly '+day+' begins at posture and ends with '+expected,async()=>{
   const h=lesson(day);try{
    assert.match(h.button('.pf-weekly-card h1').textContent,/Tu objetivo de esta sesión/);
@@ -75,42 +78,49 @@ for(const [day,expected,choice,key] of [[10,'¿Qué notaste?',null,null],[17,'El
    if(key)h.click('[data-choice="'+key+'"][data-value="'+choice+'"]');
    for(const name of ['release','discomfort','tension'])h.click('[data-choice="'+name+'"][data-value="'+(name==='release'?'yes':'no')+'"]');
    h.click('[data-action="save"]');await Promise.resolve();
-   assert.equal(h.accepted.length,1);assert.equal(h.accepted[0].weekly.week,DAYS.indexOf(day)+1);
+   assert.equal(h.accepted.length,1);assert.equal(h.accepted[0].weekly.week,(day===18?3:DAYS.indexOf(day)+1));
    if(key)assert.equal(h.accepted[0].weekly[key],choice);
   }finally{h.close()}
  });
 }
 
-test('short spoken guidance plays at each stage and a reminder interrupts long silence',()=>{
+test('short standard-voice cues read the approved text at each stage',()=>{
  const h=lesson(3);try{
-  h.click('[data-action="audio-intro"]');
-  assert.match(h.w.document.querySelector('audio').src,/0866a25f4275485087bea2d218bf537e/);
+  assert.equal(h.spoken.length,0,'opening the practice does not narrate');
+  h.click('[data-action="audio-intro"]');assert.match(h.spoken.at(-1).text,/En esta primera sesión/);
   h.click('[data-action="continue-recognition"]');
   h.click('[data-choice="awareness"][data-value="yes"]');h.click('[data-action="to-position"]');
-  h.click('[data-action="audio-posture"]');
-  assert.match(h.w.document.querySelector('audio').src,/277c349917f246c8999a67329fc7b911/);
-  h.click('[data-action="start"]');
-  assert.match(h.w.document.querySelector('audio').src,/58adf76160ec4a70aa26875b01cec6cf/);
-  h.advance(13000);assert.match(h.w.document.querySelector('audio').src,/3f3dddf3209340bea0fe1f1bf2c6d473/);
-  h.advance(28000);assert.match(h.w.document.querySelector('audio').src,/31e4323736fe4372b877fe498e1a188b/);
-  h.advance(38000);assert.match(h.w.document.querySelector('audio').src,/857ca74c564b4d9c817c8e251868c46a/);
+  h.click('[data-action="audio-posture"]');assert.match(h.spoken.at(-1).text,/Antes de empezar, elige una postura/);
+  h.click('[data-action="start"]');assert.match(h.spoken.at(-1).text,/^Percibe\./);
+  h.advance(13000);assert.match(h.spoken.at(-1).text,/^Respira\./);
+  h.advance(28000);assert.match(h.spoken.at(-1).text,/^Continúa respirando/);
+  h.advance(38000);assert.match(h.spoken.at(-1).text,/^Suelta\./);
+  assert.ok(h.spoken.every(u=>u.voice===null&&u.lang==='es-CO'));
+  assert.equal(h.w.document.querySelector('audio'),null);
  }finally{h.close()}
 });
-test('week-three questionnaire is accessible as soon as the final automatic phase begins',async()=>{
+test('a voluntary early finish can be registered after required answers without waiting for a timer',async()=>{
  const h=lesson(17);try{
   h.click('[data-action="continue-recognition"]');h.click('[data-action="start"]');
-  assert.equal(h.button('[data-action="to-evaluation"]').disabled,true);
-  h.advance(38000);
   assert.equal(h.button('[data-action="to-evaluation"]').disabled,false);
-  h.click('[data-action="to-evaluation"]');
+  h.advance(2000);h.click('[data-action="to-evaluation"]');
   assert.equal(h.button('.pf-weekly-card h1').textContent,'Elige un apoyo para soltar');
-  assert.ok(h.button('[data-choice="anchor"][data-value="hands"]'));
   assert.equal(h.button('[data-action="save"]').disabled,true);
   h.click('[data-choice="anchor"][data-value="hands"]');
   for(const name of ['release','discomfort','tension'])h.click('[data-choice="'+name+'"][data-value="'+(name==='release'?'yes':'no')+'"]');
   h.click('[data-action="save"]');await Promise.resolve();
-  assert.equal(h.accepted.length,1);
-  assert.equal(h.accepted[0].weekly.week,3);
+  assert.equal(h.accepted.length,1);assert.equal(h.accepted[0].weekly.week,3);
+  assert.equal(h.accepted[0].weekly.endedEarly,true);assert.equal(h.accepted[0].weekly.guidedSeconds,2);
+ }finally{h.close()}
+});
+test('stopping for discomfort never completes a practice and late narration cannot save it',async()=>{
+ const h=lesson(10);try{
+  h.click('[data-action="continue-recognition"]');h.click('[data-action="start"]');
+  const late=h.spoken.at(-1).onend;h.advance(2000);h.click('[data-action="stop"]');late();await Promise.resolve();
+  assert.match(h.button('.pf-weekly-card h1').textContent,/Has detenido/);
+  assert.equal(h.w.document.querySelector('[data-action="save"]'),null);
+  assert.equal(h.w.document.querySelector('[data-action="to-evaluation"]'),null);
+  assert.equal(h.accepted.length,0);assert.deepEqual(h.store,{});
  }finally{h.close()}
 });
 test('introductory audio exists in every weekly practice and can be read without playing',()=>{
@@ -133,28 +143,23 @@ test('weekly practice is blocked on safety review and cannot register',()=>{
 });
 test('the previous daily Lab surface is replaced and the public site stays paused',()=>{
  const html=read('premium-v2/pelvic-floor-lab/index.html'),calendar=read('premium-v2/daily-resource-plan-v1.js'),today=read('premium-v2/daily-practice-v1.js');
- assert.match(html,/pelvic-weekly-flow-v1\.js/);assert.match(calendar,/labDays=\[3,10,17,24\]/);
+ assert.match(read('labs/pelvic-floor/src/main.tsx'),/pelvic-weekly-flow-v1\.js/);assert.doesNotMatch(html,/<script[^>]*src=["'][^"']*pelvic-weekly-flow/);assert.match(html,/device-voice-v1\.js/);assert.match(calendar,/labDays=.*3,10,18,24.*3,10,17,24/);
  assert.doesNotMatch(calendar,/Lab has a different purpose from the contraction module\. It stays/);
  assert.match(today,/pelvicIntent\(a\)==='scheduled'\?window\.SPM_PELVIC_GUIDANCE/);
  assert.match(read('premium-v2/program-paused.html'),/Estamos afinando tu experiencia/);
 });
 
 
-test('gold weekly voice controls reflect play, pause, resume, switching and completion without changing playback',()=>{
+test('weekly voice controls reflect pause and resume from the current paragraph',()=>{
  const h=lesson(3);try{
-  const audio=h.w.document.querySelector('audio');let paused=true,ended=false;
-  Object.defineProperty(audio,'paused',{get:()=>paused});Object.defineProperty(audio,'ended',{get:()=>ended});
-  audio.play=async()=>{paused=false;ended=false;audio.dispatchEvent(new h.w.Event('playing'))};
-  audio.pause=()=>{paused=true;audio.dispatchEvent(new h.w.Event('pause'))};
   const intro=h.button('[data-action="audio-intro"]'),zone=h.button('[data-action="audio-zone"]');
   assert.ok(intro.querySelector('.pf-weekly-speaker[aria-hidden="true"]'));
-  assert.equal(h.button('[data-action="continue-recognition"]').hasAttribute('aria-pressed'),false);
   assert.equal(intro.getAttribute('aria-pressed'),'false');
   intro.click();assert.equal(intro.getAttribute('aria-pressed'),'true');assert.match(intro.textContent,/Pausar explicación/);
-  audio.currentTime=9;intro.click();assert.equal(intro.getAttribute('aria-pressed'),'false');assert.match(intro.textContent,/Continuar explicación/);
-  intro.click();assert.equal(intro.getAttribute('aria-pressed'),'true');assert.equal(audio.currentTime,9,'resuming keeps the existing narration position');
+  const text=h.spoken.at(-1).text;intro.click();assert.equal(intro.getAttribute('aria-pressed'),'false');assert.match(intro.textContent,/Reanudar desde este párrafo/);
+  intro.click();assert.equal(intro.getAttribute('aria-pressed'),'true');assert.equal(h.spoken.at(-1).text,text);
   zone.click();assert.equal(intro.getAttribute('aria-pressed'),'false');assert.match(intro.textContent,/Escuchar introducción/);assert.equal(zone.getAttribute('aria-pressed'),'true');
-  ended=true;paused=true;audio.dispatchEvent(new h.w.Event('ended'));
+  for(let n=0;n<10&&h.w.SPM_VOICE.speaking;n++)h.spoken.at(-1).onend();
   assert.equal(zone.getAttribute('aria-pressed'),'false');assert.match(zone.textContent,/Escuchar ubicación/);
  }finally{h.close()}
 });

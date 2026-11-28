@@ -1,0 +1,558 @@
+[
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Guion de conversación o escrito individual.",
+    "after": "Prepara un guion breve para expresar qué deseas y qué prefieres evitar. Puedes escribirlo para ti o usarlo en una conversación, si decides compartirlo.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Fase II, o repetir/adaptar fase I sin castigo.",
+    "after": "Sigue la guía de Focalización II cuando esté disponible. Si prefieres repetir o adaptar la fase I, elige esa opción y sigue sus instrucciones.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Revisa tu diario y escribe qué funcionó.",
+    "after": "Revisa tus registros de esta semana. Escribe qué te resultó útil, qué no te resultó útil o qué todavía no puedes valorar.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Checkpoint central (en lab: simulación rotulada).",
+    "after": "Revisión voluntaria en tu programa. Compara los registros disponibles sin exigir una mejoría.",
+    "occurrences": 2,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Escribe 3 evidencias propias de interés reciente.",
+    "after": "Revisa los tres campos de interés o curiosidad. Puedes describir un recuerdo o indicar que aún no identificas una experiencia.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/erection-daily-plan-v1.js",
+    "before": "Recuerda una experiencia o habilidad de esta semana y registra la evidencia que te ayuda a confiar. Deja sin evaluar lo que no aplique; no necesitas provocar una respuesta sexual.",
+    "after": "Revisa una experiencia o habilidad de esta semana. Registra lo que reconoces, lo que no cambió o lo que aún no puedes valorar. No necesitas provocar una respuesta sexual.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-engine.ts",
+    "before": "La fase II aún no se abre: repetimos la fase I sin castigo.",
+    "after": "La fase II aún no está disponible. Puedes consultar o repetir la fase I según sus indicaciones.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Abre Progreso 28 días, revisa el diario y vuelve a la práctica. Escribe algo que te sirvió y algo que quieras adaptar.",
+    "after": "Abre Progreso 28 días, revisa el diario y vuelve a la práctica. Escribe qué te resultó útil, qué no te resultó útil o qué todavía no puedes valorar; después identifica lo que quieras mantener o adaptar.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Busca tres momentos recientes de interés o curiosidad. Escribe qué estaba pasando y qué te ayudó en cada uno.",
+    "after": "Revisa los tres campos de interés o curiosidad. Describe lo que recuerdes y las condiciones de cada experiencia; si no identificas una, escribe que aún no puedes valorarla.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Completa la revisión del día 14 en tu programa principal. Aquí puedes repasar tus prácticas de Deseo y escribir lo que has observado.",
+    "after": "La revisión del día 14 es voluntaria. Puedes abrirla en tu programa principal o repasar tus prácticas de Deseo y escribir lo que has observado.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Completa la revisión del día 28 en tu programa principal. Después consulta tus registros de Deseo y elige qué prácticas quieres continuar.",
+    "after": "La revisión del día 28 es voluntaria. Puedes abrirla en tu programa principal y comparar los datos disponibles. Consulta tus registros de Deseo y elige qué prácticas quieres continuar.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/confianza-nuevas/activities.js",
+    "before": "Revisa tus avances, tus retos y un ajuste para la próxima semana. Toca una pregunta y escribe tu reflexión.",
+    "after": "Revisa qué cambió, qué se mantuvo igual y qué aún no puedes valorar. Toca cada pregunta y escribe tu reflexión y un ajuste que quieras considerar.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/confianza-nuevas/activities.js",
+    "before": "¿Qué ha mejorado en tu confianza y en tu respuesta sexual?",
+    "after": "¿Qué cambios, ausencia de cambios o dudas reconoces en tu confianza y en tu respuesta sexual?",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/confianza-nuevas/activities.js",
+    "before": "¿Qué vas a ajustar para seguir avanzando?",
+    "after": "¿Qué quieres mantener o ajustar en tu siguiente práctica?",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Hoy recordarás tres momentos reales de curiosidad, interés o conexión, incluso si fueron pequeños. Reconocer esas evidencias ayuda a elegir qué detalles repetir.",
+    "after": "Hoy revisarás tres campos sobre curiosidad, interés o cercanía. Puedes describir experiencias que recuerdes o escribir que aún no identificas una experiencia; no necesitas inventar interés ni una mejoría.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Recuerda una señal pequeña que merezca la pena recuperar.",
+    "after": "Revisa lo que observaste, incluso si no identificas cambios o todavía no puedes valorarlo.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Observa qué te funcionó y decide qué mantener o ajustar.",
+    "after": "Revisa qué te resultó útil, qué no y qué todavía no puedes valorar. Elige qué mantener o ajustar.",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/program-paused.html",
+    "before": "<p><strong>Tu compra seguirá vigente.</strong> Cuando habilitemos nuevamente el programa, podrás ingresar con tu usuario y contraseña y comenzar tu ruta desde el <strong>día 1, con tus 28 días completos disponibles</strong>.</p>",
+    "after": "<p><strong>Tu compra seguirá vigente.</strong> Cuando habilitemos nuevamente el programa, podrás ingresar con tu usuario y contraseña. Si aún no has comenzado, tendrás tu ruta de <strong>28 días completos</strong> disponible desde el día 1. Si ya empezaste, conservarás tus registros y podrás continuar desde tu avance guardado.</p>",
+    "occurrences": 1,
+    "status": "changed",
+    "reason": "Anexo 02: modalidad, respuesta real sin mejora obligatoria, voluntariedad y continuidad."
+  },
+  {
+    "file": "premium-v2/ep-bloque/voice.js",
+    "before": "Durante cinco minutos, lleva la atención a la respiración, al contacto o a una sensación. Toca una de las tres imágenes para escuchar cómo hacerlo. Cuando estés cómodo, pulsa Iniciar práctica.",
+    "after": "El cronómetro ofrece cinco minutos como referencia. Toca una imagen para conocer cómo dirigir la atención a la respiración, al contacto o a una sensación. Si decides practicar, pulsa Iniciar práctica. Puedes pulsar Siguiente antes de que termine el tiempo; escuchar o dejar correr el cronómetro no demuestra por sí solo que hayas practicado.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/ep-bloque/voice.js",
+    "before": "La confianza mejora cuando se apoya en experiencias concretas. Recuerda una respuesta corporal, una habilidad aprendida o una situación que manejaste mejor. Marca los avances que reconoces.",
+    "after": "Revisa una experiencia corporal o una habilidad que hayas observado. Marca los cambios que reconozcas o indica que aún no identificas cambios o no puedes valorarlos. Después puntúa tu confianza actual; no necesitas inventar un avance.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/ep-bloque/voice.js",
+    "before": "Piensa en cómo te gustaría hablar con tu pareja sobre el ritmo, las pausas y lo que te resulta agradable. Elige una frase para escuchar un ejemplo que puedas decir con tus propias palabras.",
+    "after": "Puedes preparar esta reflexión a solas o pensar en una conversación que quieras compartir. Elige una frase sobre el ritmo, las pausas o lo que te resulta agradable y escucha el ejemplo. Después registra tu comodidad para expresarla, sin obligación de tener un encuentro ni de decirla a otra persona.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Completa tu Línea de Base SPM: confianza, satisfacción, deseo y la métrica principal de tu perfil. Si aplica, registra EHS o control eyaculatorio reciente. Añade un registro breve de hábitos: verduras/frutas, bebidas azucaradas, ultraprocesados, alcohol y regularidad de comidas.",
+    "after": "Esta valoración inicial es voluntaria. Revisa Confianza sexual, Satisfacción sexual, Deseo sexual y Ansiedad de desempeño en los campos de la pantalla. Usa la escala mostrada y «No evaluable / No aplica» cuando corresponda. En Registro breve de hábitos puedes anotar frecuencias o dejar campos sin registrar. Pulsa Guardar y finalizar para conservar tus respuestas; puedes volver al recorrido sin completar la valoración.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Marca cuánto bajó tu tensión.",
+    "after": "Registra la tensión que observaste antes y después, aunque no haya disminuido.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Elige qué variable mejoró, cuál sigue interfiriendo y qué práctica fue más útil. En nutrición marca el área con mayor margen: vegetales/frutas, bebidas azucaradas, ultraprocesados, alcohol o regularidad.",
+    "after": "Describe qué cambió, qué se mantuvo igual y qué todavía no puedes valorar. Identifica qué práctica te resultó útil o qué prefieres ajustar. En nutrición revisa vegetales/frutas, bebidas azucaradas, ultraprocesados, alcohol o regularidad.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Identifica tres señales reales de capacidad conservada o progreso: una respuesta corporal, una habilidad aprendida y una situación manejada mejor.",
+    "after": "Revisa tres aspectos: una respuesta corporal, una habilidad aprendida y una situación que recuerdes. Describe únicamente lo que reconoces; puedes indicar ausencia de cambios o que aún no puedes valorarlo.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Registra qué cambio funcionó y cuál alimento te resulta más fácil mantener.",
+    "after": "Registra qué ocurrió al cambiar el ritmo, aunque no identifiques una mejora, y qué alimento te resulta compatible con tus hábitos e indicaciones.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "premium-v2/modules.js",
+    "before": "Revisa experiencias reales o simuladas y qué habilidades lograste usar.",
+    "after": "Revisa experiencias reales o imaginadas e indica cuál estás describiendo. Registra qué habilidades pudiste usar, cuáles no o qué aún no puedes valorar.",
+    "status": "changed",
+    "reason": "Claridad de guía, voluntariedad, distinción entre observación/realización y respuesta sin progreso."
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Busca tres momentos recientes en los que notaste interés, curiosidad o ganas de acercarte. Pueden ser detalles pequeños, como disfrutar una caricia, una imagen o una conversación.",
+    "after": "Revisa tres momentos o situaciones relacionados con interés, curiosidad o cercanía. Describe solo lo que recuerdes; puedes indicar que no identificas una experiencia o que aún no puedes valorarla.",
+    "status": "changed_reviewed",
+    "reason": "Evitar evidencia positiva obligatoria en las copias activas de la misma práctica.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.js",
+    "before": "Busca tres momentos recientes en los que notaste interés, curiosidad o ganas de acercarte. Pueden ser detalles pequeños, como disfrutar una caricia, una imagen o una conversación.",
+    "after": "Revisa tres momentos o situaciones relacionados con interés, curiosidad o cercanía. Describe solo lo que recuerdes; puedes indicar que no identificas una experiencia o que aún no puedes valorarla.",
+    "status": "changed_reviewed",
+    "reason": "Evitar evidencia positiva obligatoria en las copias activas de la misma práctica.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.json",
+    "before": "Busca tres momentos recientes en los que notaste interés, curiosidad o ganas de acercarte. Pueden ser detalles pequeños, como disfrutar una caricia, una imagen o una conversación.",
+    "after": "Revisa tres momentos o situaciones relacionados con interés, curiosidad o cercanía. Describe solo lo que recuerdes; puedes indicar que no identificas una experiencia o que aún no puedes valorarla.",
+    "status": "changed_reviewed",
+    "reason": "Evitar evidencia positiva obligatoria en las copias activas de la misma práctica.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "En cada recuerdo, identifica qué estaba pasando y qué te resultó agradable. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "after": "Si recuerdas una experiencia, identifica qué estaba pasando y cómo te resultó. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "status": "changed_reviewed",
+    "reason": "No presuponer recuerdo ni disfrute.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.js",
+    "before": "En cada recuerdo, identifica qué estaba pasando y qué te resultó agradable. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "after": "Si recuerdas una experiencia, identifica qué estaba pasando y cómo te resultó. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "status": "changed_reviewed",
+    "reason": "No presuponer recuerdo ni disfrute.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.json",
+    "before": "En cada recuerdo, identifica qué estaba pasando y qué te resultó agradable. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "after": "Si recuerdas una experiencia, identifica qué estaba pasando y cómo te resultó. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+    "status": "changed_reviewed",
+    "reason": "No presuponer recuerdo ni disfrute.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "labs/desire/src/lib/desire-curriculum.ts",
+    "before": "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+    "after": "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
+    "status": "changed_reviewed",
+    "reason": "Revisión sin forzar utilidad ni inventar experiencia; conserva historia sin copiar otras dimensiones.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.js",
+    "before": "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+    "after": "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
+    "status": "changed_reviewed",
+    "reason": "Revisión sin forzar utilidad ni inventar experiencia; conserva historia sin copiar otras dimensiones.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week4-v1/catalog.json",
+    "before": "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+    "after": "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
+    "status": "changed_reviewed",
+    "reason": "Revisión sin forzar utilidad ni inventar experiencia; conserva historia sin copiar otras dimensiones.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week1-v1/index.html",
+    "before": "Hoy vas a revisar la primera semana. Recuerda una experiencia agradable y otra que te gustaría adaptar. No necesitas tener registros perfectos: tus observaciones personales ya son útiles.",
+    "after": "Hoy vas a revisar la primera semana. Describe lo que recuerdes, qué te resultó útil y qué prefieres adaptar. Si no recuerdas una experiencia o aún no puedes valorarla, puedes indicarlo en tu reflexión.",
+    "status": "changed_reviewed",
+    "reason": "Permitir ausencia de experiencia sin exigir resultado favorable.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Recuerda qué estaba ocurriendo y qué te ayudó en cada uno de tres momentos. Puede ser una conversación, una mirada, un contacto agradable o una situación.",
+    "after": "En los tres campos, describe qué recuerdas y cómo te resultó. Puedes escribir que no identificas una experiencia o que aún no puedes valorarla, sin inventar un cambio favorable.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de los tres pasos del día13.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Guarda tu reflexión y luego realiza el seguimiento del día catorce cuando corresponda. La imagen de semana completada se mostrará como cierre solo cuando la evaluación oficial esté registrada.",
+    "after": "Guarda tu reflexión. La evaluación del día catorce es voluntaria y puedes abrirla desde Hoy cuando quieras responder. La imagen de referencia de la evaluación solo confirma un registro si realmente se guardó.",
+    "status": "changed_reviewed",
+    "reason": "Evaluación voluntaria; ilustración no prueba guardado.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week2-v1/app.js",
+    "before": "Recuerda realizar la evaluación oficial del día 14 en SPM Central.",
+    "after": "La evaluación del día 14 es voluntaria. Puedes abrirla desde Hoy cuando decidas responder.",
+    "status": "changed_reviewed",
+    "reason": "Eliminar recordatorio como deuda obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/narration.js",
+    "before": "Identifica algo que te resultó agradable y algo que quieras adaptar.",
+    "after": "Identifica qué te resultó agradable, qué no o qué todavía no puedes valorar.",
+    "status": "changed_reviewed",
+    "reason": "Síntesis no exige disfrute.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/narration.js",
+    "before": "Escribe algo que te sirvió y algo que quieras adaptar. Si te ayuda, consulta Tu lista de excitación o Detalles por canal; son recursos opcionales.",
+    "after": "Escribe qué te resultó útil, qué no y qué aún no puedes valorar. Si te ayuda, consulta Tu lista de excitación o Detalles por canal; son recursos opcionales.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de E12 con guion activo Semana3.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "labs/breathing/src/lib/breath-data.ts",
+    "before": "Cuando notes nervios o intensidad alta, alarga la exhalación. Un minuto basta para empezar a notar el cambio.",
+    "after": "Cuando notes nervios o intensidad alta, puedes practicar la exhalación más larga sin forzarla. Un minuto es la referencia de esta práctica; observa cómo te sientes, sin esperar un cambio determinado.",
+    "status": "changed_reviewed",
+    "reason": "Conservar referencia de tiempo sin garantizar efecto.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "labs/breathing/src/lib/breath-data.ts",
+    "before": "Cinco minutos para una regulación más profunda. Si te distraes, vuelve al ritmo sin juzgarte.",
+    "after": "Esta sesión propone cinco minutos como referencia. Si te distraes, vuelve al ritmo sin juzgarte; puedes terminar antes si lo necesitas.",
+    "status": "changed_reviewed",
+    "reason": "No prometer regulación más profunda por duración.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/erection-day4-touch-v1.js",
+    "before": "Has terminado tu ejercicio de atención eréctil. Elige lo que mejor describa la experiencia: pude volver a la sensación, me costó regresar o no apareció la comprobación. No buscamos una erección perfecta ni vamos a repetir la escala de firmeza. Guarda tu respuesta y vuelve a las actividades que aún tienes en la ruta de hoy.",
+    "after": "Si realizaste la práctica, elige lo que mejor describa tu experiencia: pude volver a la sensación, me costó regresar o no apareció la comprobación. No vamos a repetir la escala de firmeza. Guarda tu respuesta para volver a Hoy. Si no practicaste, puedes volver a Hoy sin registrar una realización.",
+    "status": "changed_reviewed",
+    "reason": "Llegar a pantalla no demuestra práctica.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/erection-day10-touch-v1.js",
+    "before": "Ahora vas a preparar un plan para proteger tus avances.",
+    "after": "Ahora vas a preparar un plan para responder si reaparece la preocupación.",
+    "status": "changed_reviewed",
+    "reason": "No presuponer avances.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/confianza-nuevas/activities.js",
+    "before": "24:{title:'Tu progreso empieza a verse'",
+    "after": "24:{title:'Revisa qué ha cambiado y qué se mantiene'",
+    "status": "changed_reviewed",
+    "reason": "Título neutral; imagen aprobada conserva texto histórico y requiere revisión visual si se desea cambiar.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-resources.js",
+    "before": "'Confío porque sé cómo actuar','I trust my ability to respond'",
+    "after": "'Mi confianza y mis respuestas','My confidence and responses'",
+    "status": "changed_reviewed",
+    "reason": "Recurso no presume confianza adquirida.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-resources.js",
+    "before": "Registra al recordar la experiencia; no hace falta evaluarte durante el encuentro. Deja vacío lo que no aplique.",
+    "after": "Registra solo una experiencia que recuerdes; no hace falta evaluarte durante el encuentro. Las puntuaciones y las evidencias son opcionales. Un campo vacío queda sin registrar y no se convierte en cero. Marca únicamente las experiencias que reconozcas.",
+    "status": "changed_reviewed",
+    "reason": "No confundir campo ausente con No aplica ni exigir evidencia positiva.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-resources.js",
+    "before": "Record when reflecting on the experience; you do not need to monitor yourself during intimacy. Leave anything that does not apply blank.",
+    "after": "Record only an experience you remember; you do not need to monitor yourself during intimacy. Scores and evidence are optional. A blank field remains unrecorded and is not converted to zero. Select only experiences you recognize.",
+    "status": "changed_reviewed",
+    "reason": "Misma precisión de dato ausente en inglés.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-resources.js",
+    "before": "'También es progreso','This is progress too'",
+    "after": "'Experiencias que reconozco · opcional','Experiences I recognize · optional'",
+    "status": "changed_reviewed",
+    "reason": "El grupo de evidencias es opcional y no representa progreso obligatorio.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/ejaculatory-startstop-v2.js",
+    "before": "Al tocar Guardar sesión desde Hoy, el registro se conserva en tu programa SPM de 28 días. Al abrir esta práctica desde Hoy, sus resultados se guardan en tu programa de 28 días.",
+    "after": "Al tocar Guardar sesión desde Hoy, el registro se conserva en tu programa SPM de 28 días.",
+    "status": "changed_reviewed",
+    "reason": "Integrar duplicado literal del mismo cierre sin eliminar técnica repetida.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/ejaculatory-startstop-v2.js",
+    "before": "Ahora avanzarás a la técnica Stop Start de control eyaculatorio. Después de practicar la pausa con compresión, entrenarás a reconocer cómo aumenta la excitación y a detener la estimulación sin presionar, antes del punto de no retorno.",
+    "after": "Esta sesión presenta la técnica Stop Start de control eyaculatorio. Trabaja el reconocimiento del aumento de excitación y la pausa de la estimulación sin compresión, antes del punto de no retorno.",
+    "status": "changed_reviewed",
+    "reason": "No dar por realizada una práctica previa; técnica conservada.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/ejaculatory-combined-v1.js",
+    "before": "Semana tres: integra lo aprendido. Ya reconociste el ascenso de la excitación y practicaste la pausa, con y sin compresión.",
+    "after": "Semana tres: esta sesión retoma el reconocimiento del ascenso de la excitación y la pausa de la estimulación.",
+    "status": "changed_reviewed",
+    "reason": "No inferir cumplimiento previo desde el día del calendario.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-checkpoint-touch-v1.js",
+    "before": "Este es tu seguimiento del día catorce. Piensa en cómo te has sentido durante los últimos siete días.",
+    "after": "El seguimiento del día catorce es voluntario. Puedes responder ahora o volver a Hoy sin completarlo. Si decides responder, piensa en cómo te has sentido durante los últimos siete días.",
+    "status": "changed_reviewed",
+    "reason": "Voluntariedad explícita en la narración del seguimiento.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/spm-checkpoint-touch-v1.js",
+    "before": "Llegaste al día veintiocho. Vas a revisar cómo te encuentras ahora y podrás comparar tus respuestas con las anteriores.",
+    "after": "La evaluación del día veintiocho es voluntaria. Puedes revisar tu informe con los datos disponibles o responder para añadir esta valoración. Si decides responder, revisarás cómo te encuentras ahora y podrás comparar únicamente dimensiones equivalentes con registros anteriores.",
+    "status": "changed_reviewed",
+    "reason": "Evaluación opcional; comparaciones solo equivalentes.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "labs/pelvic-floor/src/lib/pf-data.ts",
+    "before": "Responde según tu experiencia. No hay valores elegidos por ti.",
+    "after": "Responde según tu experiencia. No hay valores preseleccionados.",
+    "status": "changed_reviewed",
+    "reason": "Corregir ambigüedad: el usuario sí elige sus respuestas; no se prefijan.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.json",
+    "before": "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+    "after": "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 6
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.json",
+    "before": "Reconoce qué te sirvió y qué quieres adaptar.",
+    "after": "Revisa qué fue útil, qué no y qué aún no puedes valorar.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.json",
+    "before": "Recuerda una experiencia agradable y otra que quieras adaptar.",
+    "after": "Describe lo que recuerdes, aunque no identifiques algo útil o aún no puedas valorarlo.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.json",
+    "before": "Algo que me sirvió",
+    "after": "Lo que reconocí de mi experiencia",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 2
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.json",
+    "before": "Una experiencia o un detalle útil",
+    "after": "Qué fue útil, qué no o qué aún no puedo valorar",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.js",
+    "before": "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+    "after": "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 6
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.js",
+    "before": "Reconoce qué te sirvió y qué quieres adaptar.",
+    "after": "Revisa qué fue útil, qué no y qué aún no puedes valorar.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.js",
+    "before": "Recuerda una experiencia agradable y otra que quieras adaptar.",
+    "after": "Describe lo que recuerdes, aunque no identifiques algo útil o aún no puedas valorarlo.",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.js",
+    "before": "Algo que me sirvió",
+    "after": "Lo que reconocí de mi experiencia",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 2
+  },
+  {
+    "file": "premium-v2/desire-week3-v1/screens.js",
+    "before": "Una experiencia o un detalle útil",
+    "after": "Qué fue útil, qué no o qué aún no puedo valorar",
+    "status": "changed_reviewed",
+    "reason": "Coherencia de guion alternativo y rótulo semanal; campo histórico conservado, no representa mejoría obligatoria.",
+    "occurrences_replaced": 1
+  },
+  {
+    "file": "premium-v2/program-checkpoint-v1.js",
+    "before": "Vamos a conocer tu punto de partida. Este registro",
+    "after": "Esta valoración inicial es voluntaria. Puedes responder ahora o volver a Hoy sin completarla. Este registro",
+    "status": "changed_reviewed",
+    "reason": "Voluntariedad explícita también en guion del formulario alternativo."
+  },
+  {
+    "file": "premium-v2/program-checkpoint-v1.js",
+    "before": "Este seguimiento te ayuda a revisar cómo te sientes ahora e identificar qué prácticas te resultan útiles.",
+    "after": "El seguimiento del día catorce es voluntario. Puedes responder ahora o volver a Hoy sin completarlo. Revisa cómo te sientes y qué fue útil, qué no o qué todavía no puedes valorar.",
+    "status": "changed_reviewed",
+    "reason": "Voluntariedad explícita también en guion del formulario alternativo."
+  },
+  {
+    "file": "premium-v2/program-checkpoint-v1.js",
+    "before": "Llegaste a la jornada veintiocho. Es momento de revisar cómo te sientes y elegir qué prácticas quieres conservar en tu vida diaria.",
+    "after": "La evaluación de la jornada veintiocho es voluntaria. Tu informe está disponible con los registros existentes. Si decides añadir esta valoración, revisa cómo te sientes y qué prácticas quieres conservar en tu vida diaria.",
+    "status": "changed_reviewed",
+    "reason": "Voluntariedad explícita también en guion del formulario alternativo."
+  },
+  {
+    "file": "premium-v2/sensate-premium-v1.js",
+    "key": "FOCUSI_CLOSE",
+    "before": "Terminaste la práctica. Recuerda qué sensación te ayudó a estar presente y qué fue agradable. No necesitas medir una respuesta sexual. Registra cómo te sentiste y vuelve a tu día.",
+    "after": "Llegaste al cierre de la guía. Si realizaste la práctica, registra cómo te sentiste y qué sensaciones reconociste, aunque no hayas notado cambios. No necesitas medir una respuesta sexual. Si solo consultaste las indicaciones, eso no significa que hayas realizado la práctica. Vuelve a tu día cuando termines.",
+    "status": "changed",
+    "reason": "La guía no acredita realización física ni presume un resultado favorable; no cambia técnica/dosis/escala ni cierre."
+  }
+]

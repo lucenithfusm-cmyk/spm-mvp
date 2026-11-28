@@ -12,15 +12,16 @@ const LABELS={
  '2':['Rigidez insuficiente','Apareció rigidez, pero no fue suficiente para la penetración.'],
  '3':['Rigidez incompleta','La firmeza permitió penetración, aunque no fue completa.'],
  '4':['Erección completa','La firmeza fue completa durante la experiencia que recuerdas.'],
- 'na':['No evaluable','No has tenido una experiencia reciente que permita valorar la firmeza. No significa ausencia de respuesta.']
+ 'na':['No evaluable','No has tenido una experiencia reciente que permita valorar la firmeza. No significa ausencia de respuesta.'],
+ 'omitted':['Valoración omitida','Elegiste continuar sin puntuar. No se registra un cero ni una respuesta «No evaluable».']
 };
 const TEXT={
- 1:'Bienvenido a Erección y firmeza. En este primer día reconocerás tu punto de partida y practicarás una habilidad sencilla: dirigir la atención a un estímulo agradable sin comprobar la erección. No necesitas provocar ninguna respuesta sexual. Primero revisa tu firmeza reciente; luego continúa con la práctica.',
- 2:'Vamos a reconocer tu punto de partida. Recuerda una experiencia reciente, sin provocar una erección ni hacer una prueba. Mira la lámina y elige la descripción que corresponde a lo que viviste. Cuatro: erección completa. Tres: erección incompleta, pero con firmeza suficiente para la penetración. Dos: hay rigidez, pero no es suficiente para la penetración. Uno: aumento de tamaño, pero no es una erección. Si en esa experiencia no hubo respuesta, elige Sin respuesta eréctil. Si no tuviste una experiencia que puedas valorar, elige No evaluable. Son opciones diferentes. El dibujo es orientativo: el ángulo no determina tu nivel. Puedes ampliar la imagen para verla mejor.',
+ 1:'Bienvenido a Erección y firmeza. En esta actividad puedes reconocer tu punto de partida y dirigir la atención a un estímulo agradable sin comprobar la erección. No necesitas provocar ninguna respuesta sexual. La valoración de firmeza es voluntaria: puedes elegir Continuar sin puntuar. Después revisa la guía de atención y registra cómo fue o si preferiste omitir la práctica.',
+ 2:'La valoración de firmeza es voluntaria. Si decides responder, recuerda una experiencia reciente sin provocar una erección ni hacer una prueba. Mira la lámina y elige la descripción que corresponde a lo que viviste. Cuatro: erección completa. Tres: erección incompleta, pero con firmeza suficiente para la penetración. Dos: hay rigidez, pero no es suficiente para la penetración. Uno: aumento de tamaño, pero no es una erección. Cero: en esa experiencia no hubo respuesta eréctil. Si no tuviste una experiencia que puedas valorar, elige No evaluable. Si prefieres no registrar la medición, pulsa Continuar sin puntuar. Las tres situaciones son diferentes y se conservan por separado. El dibujo es orientativo: el ángulo no determina tu nivel. Puedes ampliar la imagen para verla mejor.',
  3:'Comprende tu respuesta. La erección es una respuesta en la que participan el flujo sanguíneo, las señales del sistema nervioso y el contexto emocional. No depende solo de tu voluntad. Una experiencia aislada no define tu capacidad sexual. Pulsa una de las tres tarjetas para escuchar cada explicación.',
  4:'La práctica de atención ya está explicada en esta pantalla: elige un estímulo agradable, observa sus detalles y vuelve a él con calma si te distraes. Escucha las instrucciones de cada paso si lo deseas. Realiza la actividad a tu ritmo, sin cronómetro y sin comprobar la firmeza. Cuando termines, pulsa Continuar al registro. Si no realizaste la práctica, podrás indicarlo en la siguiente pantalla.',
- 5:'Reconoce cómo fue tu práctica, sin calificarte. Puedes indicar si mantuviste la atención, si te distrajiste y volviste, si te costó regresar o si preferiste omitirla. Elige lo que realmente ocurrió. Tu punto de partida ya se registrará con la respuesta de firmeza que seleccionaste.',
- 6:'Tu punto de partida ha quedado registrado. Reconociste tu firmeza reciente y elegiste cómo fue la práctica de atención. Hoy puedes continuar con las demás actividades de tu ruta. Mañana seguirás explorando los contextos donde tu respuesta suele ser mejor.'
+ 5:'Indica lo que ocurrió con la práctica de atención: si mantuviste la atención, si te distrajiste y volviste, si te costó regresar o si preferiste omitirla. Guarda tu decisión con el botón Guardar mi punto de partida y continuar. La firmeza solo se registra si decidiste puntuarla; omitir la medición no equivale a cero ni a No evaluable.',
+ 6:'Tu registro se guardó. Se conservaron por separado tu decisión sobre la valoración de firmeza y tu respuesta sobre la práctica de atención. Si omitiste la práctica, no se cuenta como realizada. Pulsa Continuar mi ruta de hoy para volver a tus actividades.'
 };
 const EXPLAIN={
  blood:'Flujo sanguíneo. Durante la erección aumenta la entrada de sangre al tejido eréctil y cambia su capacidad para mantener la firmeza. No necesitas medirla durante esta práctica.',
@@ -41,7 +42,7 @@ function stopVoice(m){
  if(!m)return;
  try{m.player?.pause?.();if(m.player)m.player.currentTime=0}catch{}
  m.player=null;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel()}catch{}
  m.voiceKey=null;
  m.host.querySelectorAll('.spm-ed1-hit.playing').forEach(b=>b.classList.remove('playing'));
 }
@@ -58,15 +59,8 @@ function voice(m,key,text,preferRecording=false){
  function tts(){
   if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){m.notice='Audio no disponible en este dispositivo. Puedes leer las indicaciones.';updateStatus(m);finished();return}
   const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.94;u.pitch=1;u.volume=1;
-  const voices=window.speechSynthesis.getVoices?.()||[];
-  const spanish=voices.filter(v=>/^es(?:-|$)/i.test(v.lang||''));
-  const voiceMatch=spanish.find(v=>/^es-co$/i.test(v.lang||'')&&/female|mujer|paulina|sofia|helena|maria|luciana|monica/i.test(v.name||''))||spanish.find(v=>/^es-co$/i.test(v.lang||''))||spanish.find(v=>/female|mujer|paulina|sofia|helena|maria/i.test(v.name||''))||spanish[0];
-  if(voiceMatch)u.voice=voiceMatch;
   u.onend=finished;u.onerror=finished;
-  try{window.speechSynthesis.speak(u);marked()}catch{finished();m.notice='No se pudo iniciar la narración; puedes leer la indicación.';updateStatus(m)}
- }
- if(preferRecording && window.Audio){
-   try{const a=new Audio(EHS_AUDIO);m.player=a;a.preload='auto';a.onended=finished;a.onerror=()=>{if(m.voiceKey===key){m.player=null;tts()}};const playing=a.play();marked();if(playing?.catch)playing.catch(()=>{if(m.voiceKey===key){m.player=null;tts()}});return}catch{}
+  try{window.SPM_VOICE.speak(u,{owner:key==='end'?successOverlay:m.host});marked()}catch{finished();m.notice='No se pudo iniciar la narración; puedes leer la indicación.';updateStatus(m)}
  }
  tts();
 }
@@ -89,8 +83,9 @@ function stage(m){let hits='',more='';
   hits+=hotspot([21,739,909,824],'ehs','Elegir No evaluable',{value:'na',selected:m.ehs==='na'});
   hits+=hotspot([369,1122,780,1202],'open-ehs','Ampliar lámina médica de firmeza');
   hits+=hotspot([23,1398,913,1515],'next','Continuar a comprender la respuesta');
-  let note=m.ehs===null?['Elige una respuesta','Selecciona 0–4 o No evaluable. El nivel 4 dibujado en la imagen es un ejemplo visual; no queda seleccionado automáticamente.']:LABELS[m.ehs];
-  more+=`<div class="spm-ed1-choice-summary" role="status" aria-live="polite"><span>${m.ehs===null?'SIN SELECCIÓN':m.ehs==='na'?'NO EVALUABLE':'NIVEL '+esc(m.ehs)+' SELECCIONADO'}</span><strong>${esc(note[0])}</strong><p>${esc(note[1])}</p></div>`;
+  let note=m.ehs===null?['Valoración voluntaria','Selecciona 0–4, No evaluable o Continuar sin puntuar. El nivel 4 dibujado en la imagen es un ejemplo visual; no queda seleccionado automáticamente.']:LABELS[m.ehs];
+  more+=`<div class="spm-ed1-choice-summary" role="status" aria-live="polite"><span>${m.ehs===null?'SIN SELECCIÓN':m.ehs==='omitted'?'SIN PUNTUAR':m.ehs==='na'?'NO EVALUABLE':'NIVEL '+esc(m.ehs)+' SELECCIONADO'}</span><strong>${esc(note[0])}</strong><p>${esc(note[1])}</p></div>`;
+  more+=`<button type="button" class="spm-ed1-skip-score" style="${rect(45,1540,895,1650)}" data-ed1-act="omit-ehs">Continuar sin puntuar</button>`;
  }else if(m.screen===3){
   hits+=hotspot([180,319,735,412],'audio','Escuchar explicación de la respuesta eréctil',{audio:'science'});
   hits+=hotspot([26,834,905,1002],'explain','Escuchar sobre flujo sanguíneo',{value:'blood',audio:'blood'});
@@ -117,7 +112,7 @@ function stage(m){let hits='',more='';
   }
   more+=`<div class="spm-ed1-answer-label" role="status">${m.outcome===null?'Toca una respuesta para seleccionarla. La primera es ilustrativa.':`Tu respuesta: ${esc(OUTCOME_LABELS[m.outcome])}`}</div>`;
  }
- return `<section class="spm-ed1-session spm-er-fullscreen" data-ed1-session data-screen="${m.screen}" aria-label="Erección y firmeza, día 1, pantalla ${m.screen} de 6"><div class="spm-ed1-canvas" style="background-image:url(&quot;${IMAGES[m.screen-1]}&quot;)" role="group" aria-label="Lámina aprobada ${m.screen} de 6"><span class="spm-ed1-sr">${m.screen} de 6</span>${hits}${more}</div>${nav(m)}<p class="spm-ed1-status" data-ed1-status role="status" aria-live="polite">${esc(m.notice)}</p>${dialogs()}</section>`;
+ return `<section class="spm-ed1-session spm-er-fullscreen" data-ed1-session data-screen="${m.screen}" aria-label="Erección y firmeza, día 1, pantalla ${m.screen} de 6"><div class="spm-ed1-canvas" style="background-image:url(&quot;${IMAGES[m.screen-1]}&quot;)" role="group" aria-label="Lámina aprobada ${m.screen} de 6"><span class="spm-ed1-sr">${m.screen} de 6</span>${hits}${more}</div>${nav(m)}${window.SPM_VOICE?.transcript([TEXT[m.screen],...(m.screen===3?Object.values(EXPLAIN):m.screen===4?STEPS.map(row=>row.join(". ")):[])].join("\n\n"))||''}<p class="spm-ed1-status" data-ed1-status role="status" aria-live="polite">${esc(m.notice)}</p>${dialogs()}</section>`;
 }
 function dialogs(){
  return `<dialog class="spm-ed1-dialog spm-ed1-ehs-dialog" data-ed1-ehs-dialog aria-label="Lámina médica ampliada de firmeza"><button type="button" data-ed1-act="close-ehs">× Cerrar</button><h3>Firmeza de la erección · lámina educativa</h3><img src="${GUIDE_IMAGE}" alt="Lámina educativa EHS-4: grados 4, 3, 2 y 1. Para registrar 0 o No evaluable, utiliza las opciones propias de la pantalla 2." loading="lazy"><p>La imagen es orientativa. Selecciona el nivel por su descripción, no por el ángulo de la ilustración.</p></dialog>`;
@@ -125,11 +120,11 @@ function dialogs(){
 function updateStatus(m){const p=m?.host?.querySelector('[data-ed1-status]');if(p)p.textContent=m.notice||'';}
 function required(m,text){m.notice=text;updateStatus(m);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}
 function paint(m){if(!m||!m.host.isConnected)return;m.host.innerHTML=stage(m);m.panel=m.host.querySelector('[data-ed1-session]');}
-function go(m,next){if(!m||!m.valid()||m.busy)return;stopVoice(m);if(next===3&&m.ehs===null){required(m,'Elige un nivel de firmeza o No evaluable para continuar.');return;}m.screen=Math.max(1,Math.min(5,next));m.notice='';paint(m);window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);}
+function go(m,next){if(!m||!m.valid()||m.busy)return;stopVoice(m);if(next===3&&m.ehs===null){required(m,'La valoración es voluntaria. Elige un nivel, No evaluable o Continuar sin puntuar.');return;}m.screen=Math.max(1,Math.min(5,next));m.notice='';paint(m);window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host);}
 function showSuccess(m){
  if(successOverlay){successOverlay.remove();successOverlay=null}
  const layer=document.createElement('section');layer.className='spm-ed1-success-overlay';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');layer.setAttribute('aria-label','Práctica registrada, continuar ruta de hoy');
- layer.innerHTML=`<div class="spm-ed1-success-canvas" style="background-image:url(&quot;${IMAGES[5]}&quot;)">${m.outcome==='omitted'?'<div class="spm-ed1-omitted-message"><strong>Punto de partida registrado</strong><span>Omitiste la práctica de atención. No se registró como realizada.</span></div>':''}<button type="button" style="${rect(727,208,851,342)}" data-ed1-success-audio aria-label="Escuchar cierre de la práctica" class="spm-ed1-hit audio"></button><button type="button" style="${rect(22,1270,919,1451)}" data-ed1-success-close aria-label="Continuar mi ruta de hoy" class="spm-ed1-hit"></button></div>`;
+ layer.innerHTML=`<div class="spm-ed1-success-canvas" style="background-image:url(&quot;${IMAGES[5]}&quot;)">${m.outcome==='omitted'?'<div class="spm-ed1-omitted-message"><strong>Punto de partida registrado</strong><span>Omitiste la práctica de atención. No se registró como realizada.</span></div>':''}<button type="button" style="${rect(727,208,851,342)}" data-ed1-success-audio aria-label="Escuchar cierre de la práctica" class="spm-ed1-hit audio"></button><button type="button" style="${rect(22,1270,919,1451)}" data-ed1-success-close aria-label="Continuar mi ruta de hoy" class="spm-ed1-hit"></button></div>${window.SPM_VOICE?.transcript(TEXT[6])||''}`;
  document.body.appendChild(layer);successOverlay=layer;
  // La pantalla 6 permanece hasta que la persona pulse Continuar o Escape.
  let returned=false;
@@ -152,10 +147,10 @@ function showSuccess(m){
 }
 async function save(m){
  if(m.busy||!m.valid())return;
- if(m.ehs===null){required(m,'Para registrar tu punto de partida, selecciona un nivel o No evaluable en la pantalla 2.');return}
+ if(m.ehs===null){required(m,'En la pantalla 2 elige un nivel, No evaluable o Continuar sin puntuar. La medición es voluntaria.');return}
  if(m.outcome===null){required(m,'Selecciona cómo fue tu práctica o si preferiste omitirla.');return}
- const ehs=m.ehs==='na'?null:Number(m.ehs);
- const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,activity:'Reconoce tu punto de partida',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),ehs,ehsEvaluable:m.ehs!=='na',attentionPracticeOutcome:m.outcome,attentionPracticeCompleted:m.outcome!=='omitted',attentionPracticeSeconds:null,lessonFormat:'six-approved-touch-screens',sensateModuleCompleted:null};
+ const ehs=m.ehs==='na'||m.ehs==='omitted'?null:Number(m.ehs);
+ const record={...m.prior,source:'erection-practice-v1',erectionPracticeVersion:1,day:1,activity:'Reconoce tu punto de partida',confirmed:true,anxiety:null,confidence:null,date:new Date().toISOString(),ehs,ehsEvaluable:m.ehs==='omitted'?null:m.ehs!=='na',ehsOmitted:m.ehs==='omitted',ehsStatus:m.ehs==='omitted'?'omitted':m.ehs==='na'?'not_evaluable':'recorded',attentionPracticeOutcome:m.outcome,attentionPracticeCompleted:m.outcome!=='omitted',attentionPracticeSeconds:null,completionAccepted:true,activityStatus:m.outcome==='omitted'?'omitted':'completed',completed:m.outcome!=='omitted',lessonFormat:'six-approved-touch-screens',sensateModuleCompleted:null};
  m.busy=true;m.notice='Guardando tu sesión de hoy…';updateStatus(m);const b=m.host.querySelector('[data-ed1-act="save"]');if(b)b.disabled=true;stopVoice(m);
  try{await m.save(record);
   // La pantalla de cierre espera el toque explícito después de confirmar el guardado.
@@ -169,7 +164,7 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}
  if(!host||typeof onSave!=='function')return false;
  stop();
  const old=prior&&typeof prior==='object'?prior:{};
- const ehs=old.ehsEvaluable===false&&old.ehs===null?'na':old.ehsEvaluable===true&&Number.isInteger(old.ehs)&&old.ehs>=0&&old.ehs<=4?String(old.ehs):null;
+ const ehs=old.ehsOmitted===true&&old.ehsStatus==='omitted'&&old.ehsEvaluable===null&&old.ehs===null?'omitted':old.ehsEvaluable===false&&old.ehs===null?'na':old.ehsEvaluable===true&&Number.isInteger(old.ehs)&&old.ehs>=0&&old.ehs<=4?String(old.ehs):null;
  const outcome=OUTCOMES.includes(old.attentionPracticeOutcome)?old.attentionPracticeOutcome:null;
  const m={host,prior:{...old},valid,save:onSave,onBack,scope,screen:1,ehs,outcome,player:null,voiceKey:null,notice:'',busy:false};
  instance=m;paint(m);
@@ -181,6 +176,7 @@ function mount({host,prior={},valid=()=>true,save:onSave,onBack=()=>{},scope=''}
   if(action==='next'){go(m,m.screen+1);return}
   if(action==='audio'){const key=b.dataset.ed1Audio;voice(m,key,TEXT[m.screen],m.screen===2);return}
   if(action==='ehs'){m.ehs=b.dataset.value;m.notice='';stopVoice(m);paint(m);return}
+  if(action==='omit-ehs'){m.ehs='omitted';m.notice='';go(m,3);return}
   if(action==='open-ehs'){const dialog=host.querySelector('[data-ed1-ehs-dialog]');if(dialog.showModal)dialog.showModal();else dialog.setAttribute('open','');return}
   if(action==='close-ehs'){const dialog=host.querySelector('[data-ed1-ehs-dialog]');if(dialog?.close)dialog.close();else dialog?.removeAttribute('open');return}
   if(action==='explain'){const key=b.dataset.value;voice(m,key,EXPLAIN[key]);return}

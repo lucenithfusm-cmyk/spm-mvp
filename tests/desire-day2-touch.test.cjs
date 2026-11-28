@@ -28,6 +28,7 @@ function environment(){
  const document={hidden:false,addEventListener(){},querySelector(){return null;},getElementById:id=>id==='spmDailyWorkspace'?host:null};
  const window={speechSynthesis:speech,SpeechSynthesisUtterance:class{constructor(t){this.text=t;}},addEventListener(){}};
  const sandbox={window,document,AbortController,Date,JSON,console,setTimeout,clearTimeout};
+ require('./helpers/device-voice-fixture.cjs').installOn(window,sandbox.SpeechSynthesisUtterance);
  vm.runInNewContext(controller,sandbox);
  return {host,window,document,sandbox,voiced};
 }
@@ -95,7 +96,7 @@ test('context without a recalled moment permits explicit deferral, never invents
 });
 test('final action is required; 7 map factors and session pattern-observe saved idempotently',async()=>{
  const e=environment(),m=await mount(e);goToEnd(e.host);
- e.host.click('audio','guide');assert.match(e.voiced.at(-1),/Ponlo en práctica|ponlo en práctica/);
+ e.host.click('audio','guide');assert.match(e.voiced.join(' '),/Ponlo en práctica|ponlo en práctica/);
  e.host.click('field','reflection');e.host.saveField('Quiero recuperar privacidad y conversación.');
  e.host.click('save');await wait();const p=m.program;
  assert.equal(m.backs,1);assert.equal(m.callbacks.length,1);assert.equal(p.detailNotes.keep,'original');

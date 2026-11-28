@@ -14,7 +14,7 @@ function setup(){
  w.setInterval=fn=>{tick=fn;return 1;};w.clearInterval=()=>{tick=null;};
  w.speechSynthesis={cancel(){},speak(){}};w.SpeechSynthesisUtterance=function(text){this.text=text;};
  w.Audio=function(){return {src:'',currentTime:0,play(){audioEvents.push('play:'+this.src);return Promise.resolve()},pause(){audioEvents.push('pause')}};};
- w.eval(source);w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));w.eval(source);w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
  const options={origin:'dailyPlan',intent:'scheduled',activityId:'support-pelvic',readiness:()=>restriction,onResult:r=>{results.push(r);return true;},onClose:()=>closes++};
  const open=()=>w.SPM_PELVIC_V2.open(options);
  const select=step=>w.document.querySelector('[data-step="'+step+'"]').click();
@@ -77,7 +77,7 @@ test('the strength timer displays real contraction, release and rest stages but 
   h.open();h.select(5);
   assert.ok(h.w.document.querySelector('#pv2VisualCue'));
   assert.ok(h.w.document.querySelector('#pv2CueToggle'));
-  assert.equal(h.w.document.querySelector('#pv2CueToggle').getAttribute('aria-pressed'),'true');
+  assert.equal(h.w.document.querySelector('#pv2CueToggle').getAttribute('aria-pressed'),'false');
   h.w.document.querySelector('#pv2Start').click();
   assert.equal(h.w.document.querySelector('[data-pv2-state="CONTRAE"]').classList.contains('on'),true);
   for(let i=0;i<5;i++)h.tick();
@@ -197,23 +197,20 @@ test('original unboxed speaker pulses and toggles on every page',()=>{
   b.click();assert.equal(b.classList.contains('on'),false);assert.equal(b.getAttribute('aria-pressed'),'false');
  }finally{h.close();}
 });
-test('Iniciar automatically voices first contraction, pauses and resumes without Lab runtime assets',()=>{
+test('Iniciar uses the standard voice for a cue; pause, resume and mute leave records unchanged',()=>{
  const h=setup();try{
-  h.open();h.select(5);
+  const spoken=[];let canceled=0;
+  h.w.speechSynthesis.speak=u=>{spoken.push(u);u.onstart?.();};h.w.speechSynthesis.cancel=()=>{canceled++;};
+  h.open();h.select(5);assert.equal(spoken.length,0);
   const start=h.w.document.querySelector('#pv2Start'),toggle=h.w.document.querySelector('#pv2CueToggle');
-  assert.equal(toggle.getAttribute('aria-pressed'),'true');
-  start.click();
-  assert.ok(h.audioEvents.some(x=>x==='play:assets/audio/pelvic/strength-cues/contrae.mp3'),'voice plays on the same Iniciar gesture');
+  assert.equal(toggle.getAttribute('aria-pressed'),'false');start.click();assert.equal(spoken.length,0,'starting the timer does not opt in to speech');toggle.click();assert.equal(toggle.getAttribute('aria-pressed'),'true');
+  assert.equal(spoken.at(-1).text,'Contrae.');assert.equal(spoken.at(-1).lang,'es-CO');assert.ok(!spoken.at(-1).voice);
   assert.equal(h.w.document.querySelector('#pv2Phase').textContent,'CONTRAE');
-  start.click();assert.equal(h.w.document.querySelector('#pv2Start').textContent,'Iniciar');
-  assert.equal(h.audioEvents.at(-1),'pause');
-  start.click();
-  assert.equal(h.audioEvents.filter(x=>x.startsWith('play:')).length,2);
-  toggle.click();
-  assert.equal(toggle.getAttribute('aria-pressed'),'false');
-  assert.equal(h.audioEvents.at(-1),'pause');
-  h.w.document.querySelector('#pv2Reset').click();
-  assert.equal(h.writes.length,0);assert.equal(h.results.length,0);
+  let before=canceled;start.click();assert.equal(h.w.document.querySelector('#pv2Start').textContent,'Iniciar');assert.ok(canceled>before);
+  start.click();assert.equal(spoken.length,2);before=canceled;toggle.click();
+  assert.equal(toggle.getAttribute('aria-pressed'),'false');assert.ok(canceled>before);
+  assert.ok(!h.audioEvents.some(x=>x.startsWith('play:')),'no historical recording is used');
+  h.w.document.querySelector('#pv2Reset').click();assert.equal(h.writes.length,0);assert.equal(h.results.length,0);
  }finally{h.close();}
 });
 test('final white poster cannot show baked legacy navigation in the visible crop and real controls fit',()=>{

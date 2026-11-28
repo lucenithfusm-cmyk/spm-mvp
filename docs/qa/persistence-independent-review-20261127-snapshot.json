@@ -1,0 +1,38 @@
+{
+  "findings": [
+    {
+      "id": "PERSIST-01",
+      "severity": "P2",
+      "status": "fixed_with_regression_verified",
+      "function": "spm_guard_activity daily_practice"
+    },
+    {
+      "id": "PERSIST-02",
+      "severity": "P2",
+      "status": "fixed_with_regression_verified",
+      "function": "spm_guard_receipt"
+    }
+  ],
+  "hosted_claim": false,
+  "initial_reviewed_files_sha256": {
+    "supabase/sql/spm-atomic-progress-body.sql": "022a363f6cc40483108769e2237f5dfa56925c7db6c989fe627b2dc13b0424b3",
+    "premium-v2/app-live.js": "67c051e5a4003b2257db5d52ed7755e9e7b6fdaa518f046ca63100be70d57a75",
+    "tests/atomic-progress-database.test.cjs": "fc03cc98b1a1a0f39958b7d38a31afb3399835705ba424f54bd1cd06afbbef1b",
+    "tests/live-progress-postgres.test.cjs": "35f3ebf9f93fe9bf89eb74e2847f6d0f0500ef54c89effd7b9bddc61166a0680"
+  },
+  "corrected_files_sha256": {
+    "supabase/sql/spm-atomic-progress-body.sql": "9b962127b7f5f9a289d4493dfb7426ba0ae49f2fc5fcfaf89ada85f1bb7f0d1f",
+    "supabase/migrations/20261127203151_spm_versioned_agenda_atomic_progress.sql": "f1a58aa247a9fcfcd6e1d0d788c94ed4e2f9a831c02eeddf80fef03ba5a4a02a",
+    "tests/atomic-progress-database.test.cjs": "f83a5517635f016d8716730c7b952e27a8631ffab170d46c644f3c05324942a9",
+    "tests/live-progress-postgres.test.cjs": "d9e9dad709d1c388550ebf65f59a9003b5319fbb0c4247d560248ff8238069e3",
+    "premium-v2/app-live.js": "597ab7f40241b6df199f916c3742c635a682ef095fcc9fcc4bea7a7060a340e3"
+  },
+  "final_tests": {
+    "passed": 28,
+    "failed": 0,
+    "sql": 16,
+    "live_adapter_and_coach": 12,
+    "log": "docs/qa/persistence-independent-fixed-20261127.tap"
+  },
+  "verdict": "No additional blocker identified in reviewed local scope; hosted Auth/PostgREST and independent-connection concurrency not certified."
+}

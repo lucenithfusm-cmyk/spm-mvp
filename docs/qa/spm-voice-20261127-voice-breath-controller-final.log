@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/scratch/349f79528487/spm-mvp/labs/breathing
+
+ ✓ src/lib/breath-playback.test.js (38 tests) 23ms
+
+ Test Files  1 passed (1)
+      Tests  38 passed (38)
+   Start at  16:02:29
+   Duration  564ms (transform 134ms, setup 0ms, collect 172ms, tests 23ms, environment 0ms, prepare 112ms)
+

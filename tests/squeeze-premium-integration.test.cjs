@@ -11,7 +11,7 @@ function harness(day=1){
  w.SPM_DAILY_PRACTICE={restricted:()=>false,assignments:()=>[{id:'main',kind:'ejaculation'}],async saveActivity(id,v,scope,d){assert.equal(scope,'qa-squeeze:ep-plan');assert.equal(d,ctx.day);saves.push({id,v,scope,d})},open(x){home.push(x)}};
  w.speechSynthesis={cancel(){},getVoices(){return[]},speak(){}};
  w.SpeechSynthesisUtterance=function(v){this.text=v};
- w.eval(src);
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));w.eval(src);
  const api=w.SPM_SQUEEZE_V1,host=w.document.querySelector('#spmSqueezeV1'),ui=host.shadowRoot;
  return{w,api,host,ui,ctx,saves,home,close(){api.close(false);w.close()}};
 }
@@ -112,10 +112,10 @@ test('the final button fits its intended mobile label and retains a full accessi
 test('audio stages contain a focused intro, numeric scale, all five precise clinical steps, and concise controls and saving',()=>{
  const h=harness(),spoken=[];
  try{
-  h.w.speechSynthesis.speak=u=>spoken.push(u.text);
+  let passage='';h.w.speechSynthesis.speak=u=>{passage+=(passage?' ':'')+u.text;u.onstart?.();u.onend?.();};
   h.api.open(1,{origin:'dailyPlan'});
   for(let i=0;i<5;i++){
-   h.ui.querySelector('#listen').click();
+   passage='';h.ui.querySelector('#listen').click();spoken.push(passage);
    if(i<4)h.ui.querySelector('#next').click();
   }
   assert.equal(spoken.length,5);

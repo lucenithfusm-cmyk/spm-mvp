@@ -1,0 +1,10 @@
+{
+  "name": "spm-technical-qa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reproducible local QA dependencies; no production runtime changes",
+  "devDependencies": {
+    "@electric-sql/pglite": "0.6.1",
+    "jsdom": "26.1.0"
+  }
+}

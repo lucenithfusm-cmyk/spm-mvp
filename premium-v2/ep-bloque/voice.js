@@ -1,11 +1,11 @@
 // Fragmentos de la ruta EP y del seguimiento intermedio, adaptados a los controles visibles.
 const EP_DAY_VOICE={
- 4:'Durante cinco minutos, lleva la atención a la respiración, al contacto o a una sensación. Toca una de las tres imágenes para escuchar cómo hacerlo. Cuando estés cómodo, pulsa Iniciar práctica.',
+ 4:'El cronómetro ofrece cinco minutos como referencia. Toca una imagen para conocer cómo dirigir la atención a la respiración, al contacto o a una sensación. Si decides practicar, pulsa Iniciar práctica. Puedes pulsar Siguiente antes de que termine el tiempo; escuchar o dejar correr el cronómetro no demuestra por sí solo que hayas practicado.',
  7:'Piensa en una situación concreta de esta semana. Elige la frase que mejor describe tu experiencia y después valora el cambio que percibiste.',
  9:'Reconocer cómo sube tu excitación te ayuda a identificar tu propio ritmo. Primero marca tu excitación del cero al diez. Después toca la imagen que corresponde a tu firmeza.',
- 13:'La confianza mejora cuando se apoya en experiencias concretas. Recuerda una respuesta corporal, una habilidad aprendida o una situación que manejaste mejor. Marca los avances que reconoces.',
+ 13:'Revisa una experiencia corporal o una habilidad que hayas observado. Marca los cambios que reconozcas o indica que aún no identificas cambios o no puedes valorarlos. Después puntúa tu confianza actual; no necesitas inventar un avance.',
  14:'Revisión intermedia del control eyaculatorio. Recuerda cómo te fue esta última semana. Registra el tiempo aproximado solo si hubo una experiencia naturalmente evaluable. Después indica cómo te has sentido en general.',
- 18:'Piensa en cómo te gustaría hablar con tu pareja sobre el ritmo, las pausas y lo que te resulta agradable. Elige una frase para escuchar un ejemplo que puedas decir con tus propias palabras.',
+ 18:'Puedes preparar esta reflexión a solas o pensar en una conversación que quieras compartir. Elige una frase sobre el ritmo, las pausas o lo que te resulta agradable y escucha el ejemplo. Después registra tu comodidad para expresarla, sin obligación de tener un encuentro ni de decirla a otra persona.',
  20:'Diseña un plan breve para una experiencia que surja de forma natural. Elige una prioridad que dependa de ti y después indica qué tan preparado te sientes para ponerla en práctica.',
  25:'Un día difícil no borra lo que has aprendido. Reconoce qué situaciones suelen dificultarte el control. Después elige la estrategia que te haya servido en una ocasión concreta.',
  27:'En este ensayo tú eliges cómo combinar ritmo, pausa y atención. Marca tu objetivo y después indica qué tan preparado te sientes hoy.'
@@ -31,6 +31,8 @@ const EP_SCALES={
  preparacion:['Nada preparado','Poco preparado','Moderadamente preparado','Preparado','Muy preparado']
 };
 function epChoiceSpeech(key,value,index){
+ if(key==='avances'&&value==='No identifico cambios')return 'Registras que no identificas cambios. Esta respuesta no indica que hayas realizado una práctica ni exige una mejoría.';
+ if(key==='avances'&&value==='Aún no puedo valorarlo')return 'Registras que todavía no puedes valorar un cambio. No se convierte en una puntuación de cero.';
  if(EP_CHOICE_VOICE[key])return EP_CHOICE_VOICE[key][index];
  if(EP_SCALES[key])return EP_SCALES[key][index]+'. '+({progreso:'Compara cómo te sentías al comenzar la semana con cómo te sientes hoy.',confianza:'Piensa en la experiencia concreta que respalda tu respuesta.',experiencia:'Ten en cuenta el control, la tranquilidad y la satisfacción que has percibido.',comodidad:'Puedes empezar con una frase corta y elegir un momento tranquilo.',preparacion:'Puedes ajustar el plan a cómo te sientes hoy.'})[key];
  if(key==='IELT')return ['Menos de un minuto.','Entre uno y dos minutos.','Entre dos y cinco minutos.','Más de cinco minutos.'][index]+' Es una estimación de tiempo. Tu experiencia global se registra por separado.';

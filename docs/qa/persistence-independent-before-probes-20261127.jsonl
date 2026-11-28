@@ -1,0 +1,2 @@
+{"case":"direct_update_closed_summary","accepted":true,"stored":{"reason":"changed-by-direct-api","dayStatus":"open","operationId":"daa7d3bd-8f38-493c-9f6e-d9110604e7f1","realizedCount":999,"scheduleVersion":"other"}}
+{"case":"direct_receipt_forged_revision","actualRevision":1,"returnedRevision":900,"accepted":true}

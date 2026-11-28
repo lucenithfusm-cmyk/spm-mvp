@@ -9,10 +9,12 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const touch=read('premium-v2/desire-day1-touch-v1.js');
 const styles=read('premium-v2/desire-day1-touch-v1.css');
 const review=read('premium-v2/desire-day1-review/index.html');
+assert.match(review,/src="\.\.\/desire-day1-touch-v1\.js/,'the reviewer loads the same current controller');
+const reviewContent=review+'\n'+touch;
 const source=read('labs/desire/src/components/desire/DesireCycle.tsx');
 const curr=read('labs/desire/src/lib/desire-curriculum.ts');
 test('Los audios nombran exactamente los botones de la imagen aprobada',()=>{
-  for(const s of [touch,source,review]){
+  for(const s of [touch,source,reviewContent]){
     assert.match(s,/toca directamente «Me dan ganas»/);
     assert.match(s,/toca directamente «Me voy conectando»/);
     assert.match(s,/Escucha ambas opciones/);
@@ -20,7 +22,7 @@ test('Los audios nombran exactamente los botones de la imagen aprobada',()=>{
   }
 });
 test('Narraciones adultas con ejemplos variados y sin telas ni tazas',()=>{
-  for(const s of [touch,source,review]){
+  for(const s of [touch,source,reviewContent]){
     assert.match(s,/hormigueo suave/);
     assert.match(s,/acaricia lentamente su cabello/);
     assert.doesNotMatch(s,/taza tibia|tela suave sobre tus manos/);
@@ -44,5 +46,5 @@ test('Guarda sesiones originales sin crear un segundo programa',()=>{
   assert.match(touch,/presence-5/);
   assert.match(touch,/explore-new-stimulus/);
   assert.match(touch,/SPM_DESIRE_DAY1_TOUCH/);
-  assert.match(read('premium-v2/desire-day1-bridge-v1.js'),/c\?\.primary==='desire'&&Number\(c\.day\)===1/);
+  assert.match(read('premium-v2/desire-day1-bridge-v1.js'),/Number\(mainAssignment\(c\)\?\.sourceDay\|\|c.day\)===1/);
 });

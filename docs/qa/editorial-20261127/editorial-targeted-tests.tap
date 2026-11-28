@@ -1,0 +1,628 @@
+TAP version 13
+# Subtest: SPM Deseo 4–7: assets, estados, cierre real y aislamiento
+ok 1 - SPM Deseo 4–7: assets, estados, cierre real y aislamiento
+  ---
+  duration_ms: 128.614036
+  type: 'test'
+  ...
+# Subtest: review renders original image screens with a day-specific clinical activity (8–14)
+ok 2 - review renders original image screens with a day-specific clinical activity (8–14)
+  ---
+  duration_ms: 10.232729
+  type: 'test'
+  ...
+# Subtest: days 8–13 are functional, selectable and record independently without coercive scoring
+ok 3 - days 8–13 are functional, selectable and record independently without coercive scoring
+  ---
+  duration_ms: 6.220185
+  type: 'test'
+  ...
+# Subtest: day 14 never pretends the official checkpoint is recorded
+ok 4 - day 14 never pretends the official checkpoint is recorded
+  ---
+  duration_ms: 2.025686
+  type: 'test'
+  ...
+# Subtest: central week 2 bridge respects route, day-9 channel and saves real practiceId
+ok 5 - central week 2 bridge respects route, day-9 channel and saves real practiceId
+  ---
+  duration_ms: 66.447653
+  type: 'test'
+  ...
+# Subtest: bridge safely delegates days 1–7 and protects checkpoint data
+ok 6 - bridge safely delegates days 1–7 and protects checkpoint data
+  ---
+  duration_ms: 76.316452
+  type: 'test'
+  ...
+# Subtest: changing day releases an expired session without saving its answers to the next day
+ok 7 - changing day releases an expired session without saving its answers to the next day
+  ---
+  duration_ms: 64.327464
+  type: 'test'
+  ...
+# Subtest: a removed iframe cannot complete a day and the same day can be reopened
+ok 8 - a removed iframe cannot complete a day and the same day can be reopened
+  ---
+  duration_ms: 142.52872
+  type: 'test'
+  ...
+# Subtest: standalone opens all seven days and restores an unfinished individual route without completing it
+ok 9 - standalone opens all seven days and restores an unfinished individual route without completing it
+  ---
+  duration_ms: 532.325802
+  type: 'test'
+  ...
+# Subtest: unavailable local storage cannot prevent opening, navigation or explicit completion in review
+ok 10 - unavailable local storage cannot prevent opening, navigation or explicit completion in review
+  ---
+  duration_ms: 21.665518
+  type: 'test'
+  ...
+# Subtest: central waits for its authenticated parent and never reads or writes review storage
+ok 11 - central waits for its authenticated parent and never reads or writes review storage
+  ---
+  duration_ms: 18.481064
+  type: 'test'
+  ...
+# Subtest: central initialization arriving before screen data still opens the assigned day when data arrives
+ok 12 - central initialization arriving before screen data still opens the assigned day when data arrives
+  ---
+  duration_ms: 22.979881
+  type: 'test'
+  ...
+# Subtest: central connection timeout offers a usable retry and rejects standalone central-mode URLs
+ok 13 - central connection timeout offers a usable retry and rejects standalone central-mode URLs
+  ---
+  duration_ms: 50.208031
+  type: 'test'
+  ...
+# Subtest: unanswered scales and comfort stay distinct from selected zero and explicit N/A
+ok 14 - unanswered scales and comfort stay distinct from selected zero and explicit N/A
+  ---
+  duration_ms: 15.659747
+  type: 'test'
+  ...
+# Subtest: repeating phase I on assigned day 19 retains day 19 and the real day 16 history
+ok 15 - repeating phase I on assigned day 19 retains day 19 and the real day 16 history
+  ---
+  duration_ms: 24.054317
+  type: 'test'
+  ...
+# Subtest: phase II current readiness and partner consent are required before progressing
+ok 16 - phase II current readiness and partner consent are required before progressing
+  ---
+  duration_ms: 22.40229
+  type: 'test'
+  ...
+# Subtest: completion waits for the host, recovers from a save failure and retries the same record
+ok 17 - completion waits for the host, recovers from a save failure and retries the same record
+  ---
+  duration_ms: 25.334484
+  type: 'test'
+  ...
+# Subtest: lost completion or close replies release the waiting state without losing the draft
+ok 18 - lost completion or close replies release the waiting state without losing the draft
+  ---
+  duration_ms: 23.318662
+  type: 'test'
+  ...
+# Subtest: editing a per-channel note preserves typed clinical preferences and unrelated program fields
+ok 19 - editing a per-channel note preserves typed clinical preferences and unrelated program fields
+  ---
+  duration_ms: 23.69202
+  type: 'test'
+  ...
+# Subtest: daily context selections do not overwrite prior conditions and aggregate reflection remains bounded
+ok 20 - daily context selections do not overwrite prior conditions and aggregate reflection remains bounded
+  ---
+  duration_ms: 32.867509
+  type: 'test'
+  ...
+# Subtest: the narration table covers the actual 33 screens and 42 concise interactive messages
+ok 21 - the narration table covers the actual 33 screens and 42 concise interactive messages
+  ---
+  duration_ms: 0.485463
+  type: 'test'
+  ...
+# Subtest: guides remain specific across the previously repeated day 16, 20 and 21 steps
+ok 22 - guides remain specific across the previously repeated day 16, 20 and 21 steps
+  ---
+  duration_ms: 101.37142
+  type: 'test'
+  ...
+# Subtest: the day 18 solo route and closure never require a conversation with a partner
+ok 23 - the day 18 solo route and closure never require a conversation with a partner
+  ---
+  duration_ms: 20.244694
+  type: 'test'
+  ...
+# Subtest: choice and phase buttons use their own brief guide; deselection and clinical answers stay silent
+ok 24 - choice and phase buttons use their own brief guide; deselection and clinical answers stay silent
+  ---
+  duration_ms: 50.767806
+  type: 'test'
+  ...
+# Subtest: missing optional narration data preserves a usable guide and control fallback
+ok 25 - missing optional narration data preserves a usable guide and control fallback
+  ---
+  duration_ms: 27.178536
+  type: 'test'
+  ...
+# Subtest: 31 screens retain all original variants, usable controls and their web assets
+ok 26 - 31 screens retain all original variants, usable controls and their web assets
+  ---
+  duration_ms: 2.911573
+  type: 'test'
+  ...
+# Subtest: all seven days open without storage and no data is manufactured in alternative routes
+ok 27 - all seven days open without storage and no data is manufactured in alternative routes
+  ---
+  duration_ms: 433.501516
+  type: 'test'
+  ...
+# Subtest: day 24 records six independent nullable values and never creates before/after
+ok 28 - day 24 records six independent nullable values and never creates before/after
+  ---
+  duration_ms: 72.508087
+  type: 'test'
+  ...
+# Subtest: plans preserve all composed text within 400 and never overwrite a manual final reflection
+ok 29 - plans preserve all composed text within 400 and never overwrite a manual final reflection
+  ---
+  duration_ms: 53.737387
+  type: 'test'
+  ...
+# Subtest: continuity permits one or two exact goals, preserves 300-character notes and separate personal actions
+ok 30 - continuity permits one or two exact goals, preserves 300-character notes and separate personal actions
+  ---
+  duration_ms: 17.509397
+  type: 'test'
+  ...
+# Subtest: day 22 executes a real assigned practice, keeps one attempt and requires explicit confirmation
+ok 31 - day 22 executes a real assigned practice, keeps one attempt and requires explicit confirmation
+  ---
+  duration_ms: 14.873781
+  type: 'test'
+  ...
+# Subtest: fantasy and frequency records preserve their own metric ranges in the day 22 runner
+ok 32 - fantasy and frequency records preserve their own metric ranges in the day 22 runner
+  ---
+  duration_ms: 59.001789
+  type: 'test'
+  ...
+# Subtest: central validates origin/session, avoids preview storage, protects duplicate saves and recovers same attempt
+ok 33 - central validates origin/session, avoids preview storage, protects duplicate saves and recovers same attempt
+  ---
+  duration_ms: 28.317664
+  type: 'test'
+  ...
+# Subtest: day 28 report handoff saves step 2 without completing or faking checkpoint data
+ok 34 - day 28 report handoff saves step 2 without completing or faking checkpoint data
+  ---
+  duration_ms: 20.888726
+  type: 'test'
+  ...
+# Subtest: audio is distributed without duplicated whole introductions on days 24 and 26
+ok 35 - audio is distributed without duplicated whole introductions on days 24 and 26
+  ---
+  duration_ms: 24.22546
+  type: 'test'
+  ...
+# Subtest: best activators exclude local/pressure/reflections and never manufacture a second suggestion
+ok 36 - best activators exclude local/pressure/reflections and never manufacture a second suggestion
+  ---
+  duration_ms: 0.369818
+  type: 'test'
+  ...
+# Subtest: touch expansion never overlaps another control at 320, 390 or 490 pixels
+ok 37 - touch expansion never overlaps another control at 320, 390 or 490 pixels
+  ---
+  duration_ms: 3.521934
+  type: 'test'
+  ...
+# Subtest: blocked historic top activators are not filled from lower-ranked practices
+ok 38 - blocked historic top activators are not filled from lower-ranked practices
+  ---
+  duration_ms: 0.255455
+  type: 'test'
+  ...
+# Subtest: day 22 monthly frequency can retain a decimal without silently rounding it
+ok 39 - day 22 monthly frequency can retain a decimal without silently rounding it
+  ---
+  duration_ms: 31.410591
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición 0 y decisión maintained sin audio ni espera
+ok 40 - DE01 conserva medición 0 y decisión maintained sin audio ni espera
+  ---
+  duration_ms: 207.714008
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición 0 y decisión omitted sin audio ni espera
+ok 41 - DE01 conserva medición 0 y decisión omitted sin audio ni espera
+  ---
+  duration_ms: 50.92954
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición na y decisión maintained sin audio ni espera
+ok 42 - DE01 conserva medición na y decisión maintained sin audio ni espera
+  ---
+  duration_ms: 37.97194
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición na y decisión omitted sin audio ni espera
+ok 43 - DE01 conserva medición na y decisión omitted sin audio ni espera
+  ---
+  duration_ms: 40.676421
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición omitted y decisión maintained sin audio ni espera
+ok 44 - DE01 conserva medición omitted y decisión maintained sin audio ni espera
+  ---
+  duration_ms: 62.490283
+  type: 'test'
+  ...
+# Subtest: DE01 conserva medición omitted y decisión omitted sin audio ni espera
+ok 45 - DE01 conserva medición omitted y decisión omitted sin audio ni espera
+  ---
+  duration_ms: 27.888486
+  type: 'test'
+  ...
+# Subtest: DE01 exige decisión expresa y no transforma un dato ausente en omisión
+ok 46 - DE01 exige decisión expresa y no transforma un dato ausente en omisión
+  ---
+  duration_ms: 50.181521
+  type: 'test'
+  ...
+# Subtest: DE01 rechaza estados contradictorios y conserva datos tras error de guardado
+ok 47 - DE01 rechaza estados contradictorios y conserva datos tras error de guardado
+  ---
+  duration_ms: 59.46915
+  type: 'test'
+  ...
+# Subtest: DE01 formulario alternativo conserva omisiones expresas sin atribuir práctica
+ok 48 - DE01 formulario alternativo conserva omisiones expresas sin atribuir práctica
+  ---
+  duration_ms: 26.626783
+  type: 'test'
+  ...
+# Subtest: Conexión distingue ceros, No aplica y falta de datos sin comparar otras dimensiones
+ok 49 - Conexión distingue ceros, No aplica y falta de datos sin comparar otras dimensiones
+  ---
+  duration_ms: 19.979324
+  type: 'test'
+  ...
+# Subtest: Conexión día 13 permite elegir modalidad antes del mapa y no infiere pareja
+ok 50 - Conexión día 13 permite elegir modalidad antes del mapa y no infiere pareja
+  ---
+  duration_ms: 16.80819
+  type: 'test'
+  ...
+# Subtest: Conexión día 21 No aplica no exige campos ocultos y los cues 10/13 cumplen objetivos distintos
+ok 51 - Conexión día 21 No aplica no exige campos ocultos y los cues 10/13 cumplen objetivos distintos
+  ---
+  duration_ms: 8.726306
+  type: 'test'
+  ...
+# Subtest: Confianza día 13 acepta sin cambios de forma exclusiva, conservando escala de confianza
+ok 52 - Confianza día 13 acepta sin cambios de forma exclusiva, conservando escala de confianza
+  ---
+  duration_ms: 24.168229
+  type: 'test'
+  ...
+# Subtest: Confianza día 24 permite guardar una observación sin mejoría
+ok 53 - Confianza día 24 permite guardar una observación sin mejoría
+  ---
+  duration_ms: 15.554137
+  type: 'test'
+  ...
+# Subtest: seis imágenes originales aprobadas, íntegras en formato WebP
+ok 54 - seis imágenes originales aprobadas, íntegras en formato WebP
+  ---
+  duration_ms: 7.263369
+  type: 'test'
+  ...
+# Subtest: reemplazo sólo en día 1 sin alterar el resto de Erección y firmeza
+ok 55 - reemplazo sólo en día 1 sin alterar el resto de Erección y firmeza
+  ---
+  duration_ms: 0.257549
+  type: 'test'
+  ...
+# Subtest: voz estándar y guiones táctiles por pantalla, sin reproducir la grabación histórica
+ok 56 - voz estándar y guiones táctiles por pantalla, sin reproducir la grabación histórica
+  ---
+  duration_ms: 0.382266
+  type: 'test'
+  ...
+# Subtest: la EHS distingue selección real, No evaluable y omisión explícita
+ok 57 - la EHS distingue selección real, No evaluable y omisión explícita
+  ---
+  duration_ms: 0.161924
+  type: 'test'
+  ...
+# Subtest: registro explícito y sin falsos completados, confirmación solamente después de guardar
+ok 58 - registro explícito y sin falsos completados, confirmación solamente después de guardar
+  ---
+  duration_ms: 0.146571
+  type: 'test'
+  ...
+# Subtest: las rutas comerciales siguen pausadas
+ok 59 - las rutas comerciales siguen pausadas
+  ---
+  duration_ms: 0.23202
+  type: 'test'
+  ...
+# Subtest: pantalla 5: ningún chulito fijo, solo círculo azul en la opción marcada
+ok 60 - pantalla 5: ningún chulito fijo, solo círculo azul en la opción marcada
+  ---
+  duration_ms: 0.248996
+  type: 'test'
+  ...
+# Subtest: EHS-4 de la pantalla 2 está copiada como recurso propio e independiente
+ok 61 - EHS-4 de la pantalla 2 está copiada como recurso propio e independiente
+  ---
+  duration_ms: 1.381784
+  type: 'test'
+  ...
+# Subtest: Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómetro
+ok 62 - Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómetro
+  ---
+  duration_ms: 1.284258
+  type: 'test'
+  ...
+# Subtest: La pantalla 6 solo cierra al tocar el CTA o pulsar Escape, nunca por tiempo
+ok 63 - La pantalla 6 solo cierra al tocar el CTA o pulsar Escape, nunca por tiempo
+  ---
+  duration_ms: 0.49019
+  type: 'test'
+  ...
+# Subtest: direct erection supports the ten approved calendar slots and preserves session identity
+ok 64 - direct erection supports the ten approved calendar slots and preserves session identity
+  ---
+  duration_ms: 116.869688
+  type: 'test'
+  ...
+# Subtest: calendar day six uses session three; later sessions require their approved touch controller
+ok 65 - calendar day six uses session three; later sessions require their approved touch controller
+  ---
+  duration_ms: 144.035965
+  type: 'test'
+  ...
+# Subtest: each preserved form opens on its scheduled day with optional device voice and no default scores or confirmation
+ok 66 - each preserved form opens on its scheduled day with optional device voice and no default scores or confirmation
+  ---
+  duration_ms: 216.914395
+  type: 'test'
+  ...
+# Subtest: all five practices require fresh explicit confirmation and save only main without advancing the day
+ok 67 - all five practices require fresh explicit confirmation and save only main without advancing the day
+  ---
+  duration_ms: 213.617105
+  type: 'test'
+  ...
+# Subtest: day one requires a firmness choice and preserves zero separately from not evaluable
+ok 68 - day one requires a firmness choice and preserves zero separately from not evaluable
+  ---
+  duration_ms: 60.576555
+  type: 'test'
+  ...
+# Subtest: the approved guide can be enlarged and closed without selecting, saving or changing the practice
+ok 69 - the approved guide can be enlarged and closed without selecting, saving or changing the practice
+  ---
+  duration_ms: 22.076968
+  type: 'test'
+  ...
+# Subtest: the descending firmness choices preserve every stored grade and the separate absence state
+ok 70 - the descending firmness choices preserve every stored grade and the separate absence state
+  ---
+  duration_ms: 126.601115
+  type: 'test'
+  ...
+# Subtest: session 2 (calendar day 3) requires explicit context and response choices while all not-evaluable answers remain valid
+ok 71 - session 2 (calendar day 3) requires explicit context and response choices while all not-evaluable answers remain valid
+  ---
+  duration_ms: 50.011735
+  type: 'test'
+  ...
+# Subtest: session 3 (calendar day 6) keeps none exclusive and permits explicit completion without starting a timer
+ok 72 - session 3 (calendar day 6) keeps none exclusive and permits explicit completion without starting a timer
+  ---
+  duration_ms: 29.596454
+  type: 'test'
+  ...
+# Subtest: session 4 (calendar day 9) requires a chosen sensation and experience while its timer remains optional and supports stay separate
+ok 73 - session 4 (calendar day 9) requires a chosen sensation and experience while its timer remains optional and supports stay separate
+  ---
+  duration_ms: 25.706625
+  type: 'test'
+  ...
+# Subtest: session 4 (calendar day 9) counts only active optional timer time and can save after pausing and resuming
+ok 74 - session 4 (calendar day 9) counts only active optional timer time and can save after pausing and resuming
+  ---
+  duration_ms: 33.308284
+  type: 'test'
+  ...
+# Subtest: session 5 (calendar day 12) enforces selection limits and keeps unknown exclusive in each group without inferring an adjustment
+ok 75 - session 5 (calendar day 12) enforces selection limits and keeps unknown exclusive in each group without inferring an adjustment
+  ---
+  duration_ms: 40.21911
+  type: 'test'
+  ...
+# Subtest: session 5 (calendar day 12) preserves legacy text and mixed stimuli through a failed save without preselecting new answers
+ok 76 - session 5 (calendar day 12) preserves legacy text and mixed stimuli through a failed save without preselecting new answers
+  ---
+  duration_ms: 25.170747
+  type: 'test'
+  ...
+# Subtest: record validation rejects malformed answers and mismatched days without coercing missing values
+ok 77 - record validation rejects malformed answers and mismatched days without coercing missing values
+  ---
+  duration_ms: 9.722529
+  type: 'test'
+  ...
+# Subtest: reopening restores each day answers and scores while requiring a new confirmation
+ok 78 - reopening restores each day answers and scores while requiring a new confirmation
+  ---
+  duration_ms: 150.724241
+  type: 'test'
+  ...
+# Subtest: a failed save retains the form and answers; retry preserves unknown existing metadata
+ok 79 - a failed save retains the form and answers; retry preserves unknown existing metadata
+  ---
+  duration_ms: 26.413912
+  type: 'test'
+  ...
+# Subtest: a failed history read offers retry without allowing unseen records to be overwritten
+ok 80 - a failed history read offers retry without allowing unseen records to be overwritten
+  ---
+  duration_ms: 16.842461
+  type: 'test'
+  ...
+# Subtest: a deferred history response cannot render after its account, day, safety, assignment, active practice or host changes
+ok 81 - a deferred history response cannot render after its account, day, safety, assignment, active practice or host changes
+  ---
+  duration_ms: 86.640769
+  type: 'test'
+  ...
+# Subtest: a previously rendered form cannot save after its account, day, safety, assignment, active practice or host changes
+ok 82 - a previously rendered form cannot save after its account, day, safety, assignment, active practice or host changes
+  ---
+  duration_ms: 162.401473
+  type: 'test'
+  ...
+# Subtest: the optional active-practice API is not required when the authoritative assignment and scope are valid
+ok 83 - the optional active-practice API is not required when the authoritative assignment and scope are valid
+  ---
+  duration_ms: 48.065148
+  type: 'test'
+  ...
+# Subtest: pausing session 3 (calendar day 6) freezes audio and elapsed time while preserving the current form and its ability to save
+ok 84 - pausing session 3 (calendar day 6) freezes audio and elapsed time while preserving the current form and its ability to save
+  ---
+  duration_ms: 2236.73546
+  type: 'test'
+  ...
+# Subtest: stopping or leaving session 3 (calendar day 6) stops its optional timer and audio without saving or advancing
+ok 85 - stopping or leaving session 3 (calendar day 6) stops its optional timer and audio without saving or advancing
+  ---
+  duration_ms: 3358.336794
+  type: 'test'
+  ...
+# Subtest: recipe gift is immediately available without an email, eligibility check or cloud records
+ok 86 - recipe gift is immediately available without an email, eligibility check or cloud records
+  ---
+  duration_ms: 270.856721
+  type: 'test'
+  ...
+# Subtest: download and open links point directly to the existing PDF and the cover is available
+ok 87 - download and open links point directly to the existing PDF and the cover is available
+  ---
+  duration_ms: 74.301543
+  type: 'test'
+  ...
+# Subtest: all six food categories still open and return to the recipe gift without duplicates
+ok 88 - all six food categories still open and return to the recipe gift without duplicates
+  ---
+  duration_ms: 140.396738
+  type: 'test'
+  ...
+# Subtest: reopening Nutrition from the library or daily practice keeps one gift and both links
+ok 89 - reopening Nutrition from the library or daily practice keeps one gift and both links
+  ---
+  duration_ms: 112.641568
+  type: 'test'
+  ...
+# Subtest: manual cues, pause and visibility changes stop the clock and return the visual to rest without completing
+ok 90 - manual cues, pause and visibility changes stop the clock and return the visual to rest without completing
+  ---
+  duration_ms: 476.423825
+  type: 'test'
+  ...
+# Subtest: intentional completion has no minimum and requires explicit answers before offering only a fresh scoped perception result
+ok 91 - intentional completion has no minimum and requires explicit answers before offering only a fresh scoped perception result
+  ---
+  duration_ms: 110.047324
+  type: 'test'
+  ...
+# Subtest: a failed host close keeps the iframe usable with its guide, clock and audio paused and no result
+ok 92 - a failed host close keeps the iframe usable with its guide, clock and audio paused and no result
+  ---
+  duration_ms: 96.250668
+  type: 'test'
+  ...
+# Subtest: interrupting can record a difficulty without completing, while a rejected write preserves answers for one retry
+ok 93 - interrupting can record a difficulty without completing, while a rejected write preserves answers for one retry
+  ---
+  duration_ms: 160.378341
+  type: 'test'
+  ...
+# Subtest: a stale-day save is rejected and a safety review removes the practice instead of resuming it
+ok 94 - a stale-day save is rejected and a safety review removes the practice instead of resuming it
+  ---
+  duration_ms: 64.228124
+  type: 'test'
+  ...
+# Subtest: all sixteen screens stay reachable without a contraction action in ready, awareness, relax or review
+ok 95 - all sixteen screens stay reachable without a contraction action in ready, awareness, relax or review
+  ---
+  duration_ms: 1015.406118
+  type: 'test'
+  ...
+# Subtest: flags and the local No lo sé observation cannot overwrite strength screening or recommend progression
+ok 96 - flags and the local No lo sé observation cannot overwrite strength screening or recommend progression
+  ---
+  duration_ms: 72.789099
+  type: 'test'
+  ...
+# Subtest: Las posturas usan fotos SPM y conservan la selección accesible
+ok 97 - Las posturas usan fotos SPM y conservan la selección accesible
+  ---
+  duration_ms: 1.816451
+  type: 'test'
+  ...
+# Subtest: Las dos fotos del build son WebP y conservan exactamente los bytes aprobados de fuente
+ok 98 - Las dos fotos del build son WebP y conservan exactamente los bytes aprobados de fuente
+  ---
+  duration_ms: 1.094832
+  type: 'test'
+  ...
+# Subtest: La web carga sus recursos vigentes y conserva la pausa pública
+ok 99 - La web carga sus recursos vigentes y conserva la pausa pública
+  ---
+  duration_ms: 0.716
+  type: 'test'
+  ...
+# Subtest: a gift contains the PDF and no questionnaire/profile information
+ok 100 - a gift contains the PDF and no questionnaire/profile information
+  ---
+  duration_ms: 16.869872
+  type: 'test'
+  ...
+# Subtest: retries use the same idempotency key and exact email payload
+ok 101 - retries use the same idempotency key and exact email payload
+  ---
+  duration_ms: 11.54549
+  type: 'test'
+  ...
+# Subtest: uncertain delivery after the deduplication window is never blindly resent
+ok 102 - uncertain delivery after the deduplication window is never blindly resent
+  ---
+  duration_ms: 0.675529
+  type: 'test'
+  ...
+# Subtest: timeouts and retryable failures stay pending; sender errors require review
+ok 103 - timeouts and retryable failures stay pending; sender errors require review
+  ---
+  duration_ms: 1.689268
+  type: 'test'
+  ...
+1..103
+# tests 103
+# suites 0
+# pass 103
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7769.43812

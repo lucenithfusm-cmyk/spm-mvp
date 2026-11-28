@@ -3,7 +3,7 @@ import {PelvicLab} from './components/PelvicLab';
 import './styles.css';
 import {host} from './lib/pf-host';
 const ctx=host?.getContext();
-const weekly=ctx?.origin==='dailyPlan'&&ctx?.intent==='daily-relax'&&ctx?.activityId==='pelvic-daily-lab'&&[3,10,17,24].includes(ctx.day);
+const weekly=ctx?.origin==='dailyPlan'&&ctx?.intent==='daily-relax'&&ctx?.activityId==='pelvic-daily-lab'&&[3,10,17,18,24].includes(ctx.sourceDay ?? ctx.day);
 if(weekly){
  const script=document.createElement('script');script.src='./pelvic-weekly-flow-v1.js?v=20261114-pf-split1';document.body.append(script);
 }else{

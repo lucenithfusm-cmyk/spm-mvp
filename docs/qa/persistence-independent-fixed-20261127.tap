@@ -1,0 +1,36 @@
+✔ las seis rutas completan 28 jornadas con el SQL real, sin día 29 (4216.348281ms)
+✔ regresiones legacy: los siete días sin requisitos cierran sin inventar realizaciones (954.199322ms)
+✔ jornada voluntaria exige confirmación, conserva omisión y permite cero, algunas o todas las opcionales (49.237354ms)
+✔ catálogo ausente, requisito pendiente, versión incorrecta y pausa urgente no producen cierre (27.977777ms)
+✔ DE01 permite EHS omitido y decisión de no practicar sin sumarla como realizada (8.959112ms)
+✔ reintento y dos solicitudes de cierre tienen un solo efecto; reuse distinto de operación se rechaza (8.586901ms)
+✔ guardado idempotente, conflicto entre ediciones y null/0 permanecen distintos (10.305404ms)
+✔ fallo de actualización revierte cierre y avance en la misma transacción (13.825577ms)
+✔ RLS y disparadores rechazan cuenta ajena, anónimo y escrituras que saltan el cierre (11.623995ms)
+✔ la persistencia sobre disco sobrevive cerrar y reabrir PostgreSQL, con ciclo final recuperable (183.702805ms)
+✔ registros inválidos no se convierten en realizados; EHS, Conexión y checkpoint conservan sus escalas (70.973561ms)
+✔ el catálogo de evaluación vacío o malformado bloquea el cierre sin fingir carga completa (18.912004ms)
+✔ la recuperación y corrección de seguridad existentes siguen funcionando por su RPC de servidor (18.29961ms)
+✔ el resumen daily_practice de un cierre es inmutable, incluso ante UPDATE idéntico y operación válida (21.840594ms)
+✔ recibos directos exigen resultado y petición canónicos y no canjean la operación de otra actividad (28.645545ms)
+✔ la RPC normaliza solo campos de servidor antes de crear y repetir un recibo verificable (9.263222ms)
+✔ app-live → PostgreSQL: cierre voluntario confirmado y restauración desde otra sesión (2989.238881ms)
+✔ respuesta perdida tras guardar: reintentar recupera el mismo recibo y revisión (96.432266ms)
+✔ respuesta perdida tras cerrar: el reintento avanza exactamente una jornada (112.763486ms)
+✔ dos sesiones: la edición desactualizada se rechaza y se recupera antes de guardar de nuevo (111.150141ms)
+✔ la respuesta tardía de guardado no cruza cuentas ni restaura datos ajenos (116.474097ms)
+✔ salir y entrar en la misma cuenta invalida lecturas anteriores por sesión (66.230733ms)
+✔ registros de Biblioteca persisten separados y nunca cierran el día (58.69572ms)
+✔ Coach exige respuestas explícitas: abrir y guardar vacío no fabrica observaciones (66.948627ms)
+✔ Coach conserva cero, no evaluable y no realizado sin cerrar la jornada ni promediar null (51.352226ms)
+✔ Coach con respuesta perdida recupera el mismo UUID y un único registro persistido al reintentar (45.788169ms)
+✔ Coach no conserva respuestas ni aplica una confirmación tardía después de cambiar de cuenta (71.822673ms)
+✔ reintentar un resumen semanal no duplica el Coach; cada jornada cuenta una vez y null sigue sin puntuación (57.671744ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5807.945722

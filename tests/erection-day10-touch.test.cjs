@@ -36,15 +36,15 @@ test('Pantalla 2: plan anticipatorio de una opción, sin volver al protocolo de 
  assert.match(touch.guides[1],/conviene consultar a un profesional de salud/);
  assert.doesNotMatch(touch.guides[1],/plan en cuatro pasos|Prueba otra posición/);
 });
-test('Guías completas de la fuente con voz nativa, sin sustituir Leni por otra voz comercial',()=>{
+test('Guías completas con la voz estándar del dispositivo sin proveedor impuesto',()=>{
  const touch=api();
  assert.equal(touch.guides.length,2);
- assert.equal(touch.voiceMode,'device-default-pending-Leni');
+ assert.equal(touch.voiceMode,'device-default');
  assert.match(js,/new window\.SpeechSynthesisUtterance\(GUIDES\[m\.page-1\]\)/);
  assert.match(js,/u\.lang='es-CO'/);
- assert.match(js,/window\.speechSynthesis\.speak\(u\)/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(u\)/);
  assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|u\.voice\s*=/);
- assert.match(js,/window\.speechSynthesis\?\.cancel/);
+ assert.match(js,/window\.SPM_VOICE\?\.cancel/);
 });
 test('Avisos de respuesta obligatoria centrados, con contexto y botón Entendido',()=>{
  assert.match(js,/SPM_ERECTION_TOUCH_VIEW\?\.warn\?\.\(m\.host,msg\)/);

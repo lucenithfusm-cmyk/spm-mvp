@@ -28,7 +28,7 @@ const STEP_HITS=[[43,532,819,704],[43,706,819,863],[43,876,819,1036],[43,1048,81
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const rect=(x1,y1,x2,y2)=>`left:${(x1/864*100).toFixed(4)}%;top:${(y1/1536*100).toFixed(4)}%;width:${((x2-x1)/864*100).toFixed(4)}%;height:${((y2-y1)/1536*100).toFixed(4)}%`;
 let active=null;
-function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.voice=null;m.host?.querySelectorAll('.spm-ed9-hit.audio.playing,.spm-ed9-hit.step.playing').forEach(el=>{el.classList.remove('playing');el.setAttribute('aria-pressed','false')});}
+function stopVoice(m){if(!m)return;try{window.SPM_VOICE?.cancel?.()}catch{}m.voice=null;m.host?.querySelectorAll('.spm-ed9-hit.audio.playing,.spm-ed9-hit.step.playing').forEach(el=>{el.classList.remove('playing');el.setAttribute('aria-pressed','false')});}
 function stop(){const m=active;active=null;if(m){stopVoice(m);m.events?.abort?.()}}
 function pause(){if(active)stopVoice(active)}
 function message(m,v){m.status=String(v||'');const el=m.host?.querySelector('[data-ed9-status]');if(el)el.textContent=m.status}
@@ -46,7 +46,7 @@ function speak(m,text,key){
   const btn=m.host?.querySelector(`[data-ed9-voice-key="${key}"]`);btn?.classList.add('playing');btn?.setAttribute('aria-pressed','true');
   utterance.onend=()=>{if(m.voice===utterance)stopVoice(m)};
   utterance.onerror=()=>{if(m.voice===utterance){stopVoice(m);message(m,'No se pudo reproducir la guía. Puedes intentarlo nuevamente.')}};
-  window.speechSynthesis.speak(utterance);
+  window.SPM_VOICE.speak(utterance);
  }catch{stopVoice(m);message(m,'No fue posible reproducir la guía.')}
 }
 function hit(bounds,action,label,{value=null,selected=false,disabled=false,audio=false,step=false,voiceKey=null}={}){
@@ -70,7 +70,7 @@ function render(m){
   hits+=hit([32,1333,835,1458],'save','Guardar y continuar mi ruta de hoy',{disabled:m.saving});
  }
  const nav=`<nav class="spm-ed9-toolbar" aria-label="Navegación Día 24"><button type="button" data-ed9-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed9-action="guide" aria-label="Escuchar guía de esta pantalla">🔊 Escuchar guía</button><button type="button" data-ed9-action="exit">Salir</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed9-session spm-er-fullscreen" data-ed9-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: qué hacer cuando disminuye la firmeza, pantalla ${m.page} de 3"><div class="spm-ed9-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Imagen premium aprobada de la pantalla ${m.page}">${hits}${marks}${extra}</div>${nav}<p class="spm-ed9-status" data-ed9-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed9-session spm-er-fullscreen" data-ed9-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: qué hacer cuando disminuye la firmeza, pantalla ${m.page} de 3"><div class="spm-ed9-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Imagen premium aprobada de la pantalla ${m.page}">${hits}${marks}${extra}</div>${nav}${window.SPM_VOICE?.transcript([GUIDES[m.page-1],...STEPS.map(row=>row[1])].join("\n\n"))||''}<p class="spm-ed9-status" data-ed9-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
 }
 function move(m,next){if(m.saving||!m.valid())return;stopVoice(m);m.page=Math.min(3,Math.max(1,next));m.status='';render(m);window.SPM_ERECTION_TOUCH_VIEW?.resetScroll(m.host)}
 async function save(m){

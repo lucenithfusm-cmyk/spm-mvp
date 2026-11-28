@@ -1,0 +1,28 @@
+✔ las seis rutas completan 28 jornadas con el SQL real, sin día 29 (4874.6082ms)
+✔ regresiones legacy: los siete días sin requisitos cierran sin inventar realizaciones (672.050056ms)
+✔ jornada voluntaria exige confirmación, conserva omisión y permite cero, algunas o todas las opcionales (45.616542ms)
+✔ catálogo ausente, requisito pendiente, versión incorrecta y pausa urgente no producen cierre (164.085495ms)
+✔ DE01 permite EHS omitido y decisión de no practicar sin sumarla como realizada (94.669937ms)
+✔ reintento y dos solicitudes de cierre tienen un solo efecto; reuse distinto de operación se rechaza (14.355196ms)
+✔ guardado idempotente, conflicto entre ediciones y null/0 permanecen distintos (11.756437ms)
+✔ fallo de actualización revierte cierre y avance en la misma transacción (15.234111ms)
+✔ RLS y disparadores rechazan cuenta ajena, anónimo y escrituras que saltan el cierre (11.854255ms)
+✔ la persistencia sobre disco sobrevive cerrar y reabrir PostgreSQL, con ciclo final recuperable (193.29644ms)
+✔ registros inválidos no se convierten en realizados; EHS, Conexión y checkpoint conservan sus escalas (67.241129ms)
+✔ el catálogo de evaluación vacío o malformado bloquea el cierre sin fingir carga completa (17.798838ms)
+✔ la recuperación y corrección de seguridad existentes siguen funcionando por su RPC de servidor (17.973421ms)
+✔ app-live → PostgreSQL: cierre voluntario confirmado y restauración desde otra sesión (3571.849174ms)
+✔ respuesta perdida tras guardar: reintentar recupera el mismo recibo y revisión (119.81256ms)
+✔ respuesta perdida tras cerrar: el reintento avanza exactamente una jornada (77.921936ms)
+✔ dos sesiones: la edición desactualizada se rechaza y se recupera antes de guardar de nuevo (117.971871ms)
+✔ la respuesta tardía de guardado no cruza cuentas ni restaura datos ajenos (103.208043ms)
+✔ salir y entrar en la misma cuenta invalida lecturas anteriores por sesión (70.452755ms)
+✔ registros de Biblioteca persisten separados y nunca cierran el día (57.38837ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6358.070778

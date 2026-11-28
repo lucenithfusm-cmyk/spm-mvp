@@ -13,8 +13,8 @@ const RANK=['partner-visual','touch','words','massage','fantasy','foreplay','amb
 const NOTE='desireWeek1TouchDay';
 const context=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?.userId&&c?.planId?String(c.userId)+':'+String(c.planId):'';
-const main=c=>window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.id==='main');
-const eligible=(c,opts)=>opts?.origin==='dailyPlan'&&c?.primary==='desire'&&DAYS.includes(Number(c?.day));
+const main=c=>window.SPM_DAILY_PRACTICE?.contentAssignment?.('desire',c)||window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.kind==='desire');
+const eligible=(c,opts)=>opts?.origin==='dailyPlan'&&(c?.primary==='desire'||c?.scheduleVersion==='spm-20261127-v1')&&main(c)?.kind==='desire'&&DAYS.includes(Number(main(c)?.sourceDay||c?.day));
 const safeStr=x=>typeof x==='string'?x.slice(0,400):'';
 const clamp=(v,max)=>Math.max(0,Math.min(max,Number(v)||0));
 const chosen=(v,allowed,max)=>Array.isArray(v)?[...new Set(v.filter(x=>allowed.includes(x)))].slice(0,max):[];
@@ -33,10 +33,10 @@ let opened=null;
 function permitted(m){
  if(!m||opened!==m)return false;
  const c=context(),a=main(c);
- if(!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.day||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
+ if((c?.scheduleVersion||'legacy')!==m.scheduleVersion||(main(c)?.assignmentId||null)!==(m.assignmentId||null)||!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.scheduledDay||scopeOf(c)!==m.scope||!m.host.isConnected)return false;
  if(a?.kind!=='desire'||window.SPM_DAILY_PRACTICE?.restricted?.(c,a))return false;
  const activity=window.SPM_DAILY_PRACTICE?.active?.();
- return !activity||(activity.id==='main'&&activity.scope===m.scope&&Number(activity.day)===m.day);
+ return !activity||(activity.id===m.activityId&&activity.scope===m.scope&&Number(activity.day)===m.scheduledDay);
 }
 function send(m,type,other={}){
  if(m.frame?.isConnected&&m.frame.contentWindow)m.frame.contentWindow.postMessage({type,sid:m.sid,...other},window.location.origin);
@@ -52,7 +52,7 @@ function addSession(p,m){
  const day=m.day,v=m.latest,now=new Date().toISOString(),id=PRACTICES[day];
  const existing=Array.isArray(p.sessions)?p.sessions:[];
  if(!existing.some(x=>x?.day===day&&x?.practiceId===id&&x?.status==='completed')){
-  p.sessions=[...existing,{id:'desire-week1-d'+day+'-touch-v1',day,date:now.slice(0,10),practiceId:id,variant:'solo',status:'completed',activeSec:day===4||day===6?Math.round(v.timer?.elapsed||0):0,metricKey:day===4?'pressure':day===6?'satisfaction':'desire',metricLabel:day===4?'Presión antes/después':day===6?'Comodidad corporal':day===5?'Mapa aceleradores y frenos':'Síntesis semana 1',before:day===4||day===6?v.before??null:null,after:day===4||day===6?v.after??null:null,reflection:safeStr(day===4||day===6?v.reflection:day===5?v.note:[v.good,v.adjust,v.next].filter(Boolean).join(' | '))}];
+  p.sessions=[...existing,{id:'desire-week1-d'+day+'-touch-v1',day,sourceDay:day,scheduledDay:m.scheduledDay,assignmentId:m.assignmentId,date:now.slice(0,10),practiceId:id,variant:'solo',status:'completed',activeSec:day===4||day===6?Math.round(v.timer?.elapsed||0):0,metricKey:day===4?'pressure':day===6?'satisfaction':'desire',metricLabel:day===4?'Presión antes/después':day===6?'Comodidad corporal':day===5?'Mapa aceleradores y frenos':'Síntesis semana 1',before:day===4||day===6?v.before??null:null,after:day===4||day===6?v.after??null:null,reflection:safeStr(day===4||day===6?v.reflection:day===5?v.note:[v.good,v.adjust,v.next].filter(Boolean).join(' | '))}];
  }else p.sessions=existing;
  p.dayDone={...(p.dayDone||{}),[day]:(p.dayDone||{})[day]||now.slice(0,10)};
  if(day===5){
@@ -73,7 +73,7 @@ function write(m,completed=false){
   const p=parse(bundle['spm-desire-program']);
   p.detailNotes={...(p.detailNotes&&typeof p.detailNotes==='object'?p.detailNotes:{}),[NOTE+m.day]:JSON.stringify(m.latest)};
   if(completed)addSession(p,m);
-  await records.save({...bundle,'spm-desire-program':JSON.stringify(p)},m.scope,m.day);
+  await records.save({...bundle,'spm-desire-program':JSON.stringify(p)},m.scope,m.scheduledDay);
  };
  m.queue=m.queue.catch(()=>{}).then(job);
  return m.queue;
@@ -110,9 +110,9 @@ async function complete(m){
   m.latest.completed=true;
   await write(m,true);
   if(!permitted(m))return false;
-  const ok=await window.SPM_DAILY_PRACTICE.saveActivity('main',{day:m.day,confirmed:true,source:'desire-lab',practiceId:PRACTICES[m.day],desireWeek1TouchVersion:1,activeSec:m.day===4||m.day===6?Math.round(m.latest.timer?.elapsed||0):null},m.scope,m.day);
+  const ok=await window.SPM_DAILY_PRACTICE.saveActivity(m.activityId,{day:m.day,confirmed:true,source:'desire-lab',practiceId:PRACTICES[m.day],desireWeek1TouchVersion:1,activeSec:m.day===4||m.day===6?Math.round(m.latest.timer?.elapsed||0):null},m.scope,m.scheduledDay);
   if(ok===false)throw Error('No se pudo completar el día.');
-  send(m,'SPM_WEEK1_DONE');returnToToday(m);
+  if(!permitted(m))return false;send(m,'SPM_WEEK1_DONE');returnToToday(m);
   window.SPM_DAILY_PRACTICE?.showContinuation?.();
   return true;
  }catch{
@@ -145,11 +145,11 @@ async function onMessage(m,e){
 async function open(opts={}){
  const c=context();
  if(!eligible(c,opts))return prevOpen(opts);
- const scope=scopeOf(c),day=Number(c.day),host=document.getElementById('spmDailyWorkspace');
+ const scope=scopeOf(c),day=Number(main(c)?.sourceDay||c.day),scheduledDay=Number(c.day),activityId=main(c).id,assignmentId=main(c).assignmentId,host=document.getElementById('spmDailyWorkspace');
  if(!scope||!host?.isConnected)return false;
  if(opened&&!await closeSelected(opened))return false;
  if(document.querySelector('.spm-desire-modal[open]')&&await prevClose()===false)return false;
- const m={scope,day,host,sid:window.crypto?.randomUUID?.()||Math.random().toString(36).slice(2)+'spmweek1',frame:null,wrap:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,wait:0,onMessage:null};
+ const m={scope,day,scheduledDay,activityId,assignmentId,scheduleVersion:c.scheduleVersion||'legacy',host,sid:window.crypto?.randomUUID?.()||Math.random().toString(36).slice(2)+'spmweek1',frame:null,wrap:null,queue:Promise.resolve(),latest:null,busy:false,loading:false,wait:0,onMessage:null};
  opened=m;
  if(!permitted(m)){opened=null;return false}
  const wrap=document.createElement('section');wrap.className='spm-ds-week1-root';wrap.setAttribute('aria-label','Deseo día '+day+' interactivo');

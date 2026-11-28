@@ -7,7 +7,7 @@
 - Central requires the same-origin authenticated `SPM_PELVIC_LAB_HOST` bridge. It stores module state in the active user's plan through existing RLS; never use browser localStorage for Lab health data. Lovable's separate review project remains a demo.
 - One calendar: the existing 28-day pelvic training remains intact. Lab saves never complete a calendar day or advance it. Clinical review in SPM pauses practices; education remains available. Existing relaxation guards also apply inside the Lab.
 - Keep developer simulation and dosage editors out of the Central patient interface. Do not add or change prescribed dosage without clinical approval.
-- Official audio is pre-rendered Lenny (HeyGen voice 050c403a43e047c796f8a6257ed2533e). Narration generated at 0.95x, short phase cues at 1x; playback rate stays 1. No browser TTS.
+- Current user decision (2026-11-27) supersedes the previous Lenny rule: all narration and cues use the standard device voice through `SPM_VOICE`; preserve approved text. No name/gender selection or new recording provider. Historical audio provenance remains available, not an active playback fallback.
 - Audio lives in `public/audio/pf/`; provenance and durations are in `audio-provenance.json`. Asset paths must be relative for the Central subdirectory.
-- Reuse one audio element. Start from a user gesture; stop on pause, reset, navigation, visibility loss and unmount. Narration cannot interrupt a running timed practice.
+- Use the single shared voice coordinator. Start from an explicit user gesture; stop on pause, reset, navigation, visibility loss and unmount. Narration cannot interrupt a running timed practice. Pause/resume restarts the current paragraph and must say so.
 - An interrupted practice must not be marked completed or recommended for progression. Red flags cannot produce a progression recommendation.

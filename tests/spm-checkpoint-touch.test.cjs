@@ -17,7 +17,7 @@ function testHarness(){
    assert.equal(id,'program-checkpoint');assert.equal(scope,'u-demo:p-demo');assert.equal(day,c.day);
    writes.push(JSON.parse(JSON.stringify(record)));rows[day]=JSON.parse(JSON.stringify(record));return true;
  }};
- for(const src of ['erection-fullscreen-v1.js','spm-checkpoint-touch-v1.js','checkpoint-audio-v1.js','program-checkpoint-v1.js'])w.eval(read(src));
+ for(const src of ['device-voice-v1.js','practice-audio-v1.js','erection-fullscreen-v1.js','spm-checkpoint-touch-v1.js','checkpoint-audio-v1.js','program-checkpoint-v1.js'])w.eval(read(src));
  return{w,c,rows,writes,close:()=>w.close()};
 }
 function score(w,key,value){const button=w.document.querySelector('[data-ck-action="score"][data-metric="'+key+'"][data-value="'+value+'"]');assert.ok(button,'touch target '+key+':'+value);button.click();}
@@ -90,7 +90,7 @@ test('Día 28: preview with available report, then saves only one checkpoint wit
 test('No introduce una segunda base de datos ni voces de proveedor',()=>{
  const js=read('spm-checkpoint-touch-v1.js'),base=read('program-checkpoint-v1.js');
  assert.doesNotMatch(js,/localStorage\.|new window\.Audio\(|(?:utterance|u)\.voice\s*=/);
- assert.match(js,/window\.speechSynthesis\.speak\(u\)/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(u/);
  assert.match(base,/legacySnapshot\(prior\)/);
  assert.match(base,/comparison\(available\)/);
  assert.match(base,/archivedRecords\(available\)/);

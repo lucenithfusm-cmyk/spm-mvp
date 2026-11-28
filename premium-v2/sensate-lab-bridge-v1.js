@@ -41,7 +41,7 @@ async function open(opts={}){
  if(modal&&!await close(false))return false;
  const c=ctx();if(!c)return false;
  scope=scopeOf(c);day=Math.min(28,Math.max(1,Number(c.day)||1));origin=['erectile','ejaculation','dailyPlan'].includes(opts.origin)?opts.origin:'library';state={};dirty=saved=0;
- mode=origin==='library'?'library':'daily';activity=mode==='daily'?window.SPM_DAILY_SUPPORT?.activity('sensate',Number(opts.day)||day,c)||null:null;
+ mode=origin==='library'?'library':'daily';activity=mode==='daily'?(opts.activity?.kind==='sensate'?{...opts.activity,day}:window.SPM_DAILY_PRACTICE?.contentAssignment?.('sensate',c)||window.SPM_DAILY_SUPPORT?.activity('sensate',Number(opts.day)||day,c)||null):null;
  lastFocus=document.activeElement;modal=document.createElement('dialog');modal.className='spm-sensate-modal';modal.setAttribute('aria-label','Focalización sensorial SPM');
  modal.dataset.sensateApproved=String(activity?.practiceId==='sf-i-1');
  modal.innerHTML='<header><button type="button" data-sensate-close>← Volver a '+(origin==='erectile'?'DE':origin==='ejaculation'?'EP':'mi programa')+'</button><span role="status" data-sensate-status>Cargando tu progreso…</span><button type="button" data-sensate-retry hidden>Reintentar guardado</button></header><main></main>';
@@ -54,7 +54,7 @@ async function open(opts={}){
   window.SPM_SENSATE_LAB_HOST={flush,close,recordDaily:async()=>{
    if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)return false;
    if(origin!=='dailyPlan')return true;
-   const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='sensate');
+   const assigned=window.SPM_DAILY_PRACTICE?.contentAssignment?.('sensate')||window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='sensate');
    if(!assigned)return true;
    try{
     const entries=JSON.parse(state['spm-sensate-records']||'[]');
@@ -67,7 +67,7 @@ async function open(opts={}){
   },isDailyCompleted:async()=>{
    if(origin!=='dailyPlan')return false;
    if(token!==generation||scopeOf(ctx())!==captured||Number(ctx()?.day)!==day)throw Error('La sesión cambió');
-   const assigned=window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='sensate');
+   const assigned=window.SPM_DAILY_PRACTICE?.contentAssignment?.('sensate')||window.SPM_DAILY_PRACTICE?.assignments?.().find(a=>a.kind==='sensate');
    if(!assigned||!window.SPM_DAILY_RECORDS?.read)throw Error('No es posible comprobar la práctica');
    const rows=await window.SPM_DAILY_RECORDS.read(captured,day);
    if(token!==generation||scopeOf(ctx())!==captured)return false;

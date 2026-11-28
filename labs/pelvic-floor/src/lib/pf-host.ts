@@ -2,6 +2,7 @@ import { useMemo, useSyncExternalStore } from 'react';
 
 export type Restriction = 'review' | 'relax' | 'awareness' | 'ready';
 export type HostContext = {
+  sourceDay?: number;
   day: number;
   origin: 'dailyPlan' | 'erectile' | 'library';
   restriction: Restriction;

@@ -39,11 +39,11 @@ const GRID_LAST={
 };
 const GUIDES={
  14:[
-  'Este es tu seguimiento del día catorce. Piensa en cómo te has sentido durante los últimos siete días. Usa la escala de cero a cuatro: cero, ausencia; uno, bajo; dos, aceptable; tres, satisfactorio; y cuatro, sin dificultades. Si no pudiste observar la firmeza o el control eyaculatorio, marca No evaluable. Esa respuesta es diferente de cero. Completa los cuatro primeros aspectos con lo que ya has vivido, sin hacer una prueba nueva, y pulsa Continuar.',
+  'El seguimiento del día catorce es voluntario. Puedes responder ahora o volver a Hoy sin completarlo. Si decides responder, piensa en cómo te has sentido durante los últimos siete días. Usa la escala de cero a cuatro: cero, ausencia; uno, bajo; dos, aceptable; tres, satisfactorio; y cuatro, sin dificultades. Si no pudiste observar la firmeza o el control eyaculatorio, marca No evaluable. Esa respuesta es diferente de cero. Completa los cuatro primeros aspectos con lo que ya has vivido, sin hacer una prueba nueva, y pulsa Continuar.',
   'Ahora revisa tu comodidad durante la intimidad, tu descanso y la claridad que tienes sobre cómo practicar. Responde con la misma escala de cero a cuatro o marca No evaluable cuando corresponda. Puedes escribir qué te ha ayudado esta semana y cuál práctica quieres seguir trabajando. Ambas notas son opcionales. Al finalizar, guarda el seguimiento para que forme parte de tu informe de evolución.'
   ],
   28:[
-  'Llegaste al día veintiocho. Vas a revisar cómo te encuentras ahora y podrás comparar tus respuestas con las anteriores. Piensa en los últimos siete días y marca la firmeza, el control eyaculatorio, el interés sexual y la confianza usando la escala de cero a cuatro. Si un aspecto no se presentó o no pudiste observarlo, marca No evaluable. Eso es diferente de ausencia. No necesitas provocar una experiencia nueva ni medir tu respuesta. Cuando termines, pulsa Continuar.',
+  'La evaluación del día veintiocho es voluntaria. Puedes revisar tu informe con los datos disponibles o responder para añadir esta valoración. Si decides responder, revisarás cómo te encuentras ahora y podrás comparar únicamente dimensiones equivalentes con registros anteriores. Piensa en los últimos siete días y marca la firmeza, el control eyaculatorio, el interés sexual y la confianza usando la escala de cero a cuatro. Si un aspecto no se presentó o no pudiste observarlo, marca No evaluable. Eso es diferente de ausencia. No necesitas provocar una experiencia nueva ni medir tu respuesta. Cuando termines, pulsa Continuar.',
   'Para completar tu evaluación final, marca tu comodidad durante la intimidad, tu descanso y la claridad sobre cómo practicar. Después puedes anotar qué actividad quieres seguir practicando y cuándo la integrarás a tu rutina; estas respuestas abiertas son opcionales. Pulsa Ver mi informe final para revisar una vista previa con los registros disponibles. Al guardar, la evaluación se incorpora a la comparación de los días uno, catorce y veintiocho. Lo aprendido continúa contigo y puede seguir formando parte de tu vida diaria.'
   ]
 };
@@ -54,7 +54,7 @@ const savedValue=(m,k)=>Object.hasOwn(m.metrics,k)?m.metrics[k]:undefined;
 let current=null;
 function stopSpeech(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voice=null;
  m.host?.querySelector('[data-ck-action="audio"]')?.classList.remove('playing');
  m.host?.querySelector('[data-ck-action="audio"]')?.setAttribute('aria-pressed','false');
@@ -88,7 +88,7 @@ function audio(m){
   const b=m.root.querySelector('[data-ck-action="audio"]');b?.classList.add('playing');b?.setAttribute('aria-pressed','true');
   u.onend=()=>{if(m.voice===u)stopSpeech(m)};
   u.onerror=()=>{if(m.voice===u){stopSpeech(m);status(m,'No se pudo reproducir la guía. Vuelve a intentarlo.')}};
-  window.speechSynthesis.speak(u);
+  window.SPM_VOICE.speak(u);
  }catch{stopSpeech(m);status(m,'No se pudo reproducir la guía.')}
 }
 function hit(xy,action,label,opts={}){

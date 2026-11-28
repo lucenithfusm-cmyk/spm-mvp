@@ -19,7 +19,7 @@ function harness(initialDay=8,initialPrimary='ejaculation'){
  w.speechSynthesis={cancel(){},getVoices(){return[]},speak(){}};
  w.SpeechSynthesisUtterance=function(t){this.text=t};
  w.matchMedia=()=>({matches:false,addEventListener(){}});
- w.eval(source);
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));w.eval(source);
  const host=w.document.querySelector('#spmStartStopV2'),ui=host.shadowRoot,api=w.SPM_STARTSTOP_V2;
  return {w,dom,host,ui,api,ctx,events,close(){api?.close(false);w.close()}};
 }

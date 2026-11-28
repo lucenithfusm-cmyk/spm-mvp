@@ -1,0 +1,15 @@
+# Deployment files only; these exclusions do not change the Git repository.
+/docs/
+/scripts/
+/tests/
+/labs/
+/.github/
+
+# The browser and synthetic reviewer use this one public scoring policy.
+# Database migrations, SQL bodies and Edge Function sources stay off Vercel.
+/supabase/*
+!/supabase/functions/
+/supabase/functions/*
+!/supabase/functions/_shared/
+/supabase/functions/_shared/*
+!/supabase/functions/_shared/assessment-policy.js

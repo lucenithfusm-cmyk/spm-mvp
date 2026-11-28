@@ -312,7 +312,20 @@ En producción, datos de salud deben usar almacenamiento autenticado y seguro; l
 Antes de realizar cambios grandes, consultar este documento y mantener coherencia con estas decisiones. Si una nueva decisión modifica una regla anterior, actualizar este archivo para que quede como fuente de verdad del producto.
 
 
-## 21. Voz oficial y arquitectura de audio SPM
+## 21. Voz estándar del dispositivo · decisión vigente del 27/11/2026
+
+Por instrucción expresa de Lucenith, todas las narraciones usan la voz estándar del dispositivo. Esta decisión sustituye las prioridades anteriores de Lenny, grabaciones y voces por género, también en personajes y videos narrados. Los textos aprobados y los activos históricos se conservan como procedencia.
+
+- Un único coordinador, `premium-v2/device-voice-v1.js`, controla las narraciones de Central y sus visores del mismo origen. `SpeechSynthesisUtterance.voice` no se asigna por defecto; se solicita español `es-CO`.
+- No seleccionar nombres, proveedor, género ni tono de personaje. La voz estándar varía entre dispositivos. Solo una elección explícita de recuperación puede cambiar a otra voz española disponible en ese equipo.
+- Inicio por acción de escuchar/reanudar; cola exclusiva, cancelación al salir/cambiar sesión y callbacks descartados por generación. Pausa recuperable con el rótulo «Reanudar desde este párrafo».
+- Toda narración conserva texto legible. Los errores ofrecen lectura y reintento; escuchar no es requisito, registro de práctica ni cierre de jornada.
+- Las locuciones incrustadas requieren guion íntegro y sincronización por segmentos. El inventario de 27/11 identifica piezas sin esas fuentes como pendientes concretos; no se silencian con un resumen incompleto ni se declaran migradas.
+- No encargar voces nuevas, no añadir otro proveedor TTS ni habilitar micrófono. La voz del navegador puede usar un servicio local o remoto del sistema.
+
+### Historia sustituida (conservada para procedencia; no vigente)
+
+### Política histórica anterior
 
 Voz oficial SPM para narración clínica masculina: **Lenny — Clear & Professional** (HeyGen).
 
@@ -327,6 +340,7 @@ Voz oficial SPM para narración clínica masculina: **Lenny — Clear & Professi
 - Mantener IDs de audio estables y desacoplados de la UI para poder sustituir/regenerar archivos sin reescribir la lógica.
 
 Esta decisión sustituye cualquier selección automática de voz por dispositivo como estrategia de producción.
+
 
 
 ## 22. Regla editorial de autoría y atribución
@@ -344,6 +358,6 @@ La directora clínica aprobó el contenido educativo, conciencia muscular, respi
 
 Se mantienen dos recursos complementarios: **Pelvic Floor Lab (conciencia y relajación)** y el **entrenamiento pélvico existente con su calendario de 28 días**. El Lab no crea otro calendario ni sustituye el entrenamiento actual; registrar una práctica educativa no completa automáticamente el día del programa.
 
-La integración conserva los 16 pasos y las imágenes originales. Usa 26 audios oficiales Lenny (16 explicaciones y 10 indicaciones breves). Se conserva la velocidad de narración generada a 0.95x; las indicaciones breves caben dentro de sus fases sin alterar los tiempos aprobados.
+La integración conserva los 16 pasos y las imágenes originales. Históricamente usó 26 audios Lenny (16 explicaciones y 10 indicaciones breves); desde la decisión del 27/11 sus mismos textos se reproducen con la voz estándar del dispositivo. La duración variable de la voz no modifica los tiempos clínicos aprobados.
 
 El avance del Lab se guarda por usuario, plan y día mediante la sesión de SPM y las políticas RLS existentes. Los controles de simulación y edición de dosificación de la revisión de Lovable no forman parte de la interfaz del paciente en Central. La publicación definitiva se registra después de superar la revisión de integración y el control de aprobación aplicable a la rama principal.

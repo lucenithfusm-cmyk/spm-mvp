@@ -1,3 +1,15 @@
+# SPM · Política vigente de voz, 27 de noviembre de 2026
+
+La orden actual de Lucenith sustituye la decisión de 17/11 reproducida abajo. Todas las narraciones deben usar la voz estándar del dispositivo, sin filtro de nombre, género ni proveedor, incluido el contenido hablado de videos. No existe una excepción vigente para Lenny ni para un personaje.
+
+Implementación: `device-voice-v1.js`, coordinador compartido por pantallas e iframes de igual origen. Español `es-CO` por defecto, sin asignar `voice`. Recuperación por elección explícita de variante/voz expuesta por el dispositivo, texto equivalente, reintento por gesto, cancelación por generación y reanudación desde párrafo. Escuchar no escribe progreso.
+
+El inventario y la matriz `spm-voice-20261127-*` distinguen migración de controles, guiones existentes y piezas audiovisuales pendientes de transcripción/material fuente. Las pruebas de eventos no acreditan audio audible ni Safari/iOS o Android reales. Mantener los resultados no comprobados expresos.
+
+---
+
+## Historia (política sustituida, no vigente)
+
 # SPM Digital Wellness · Política de narración aprobada
 
 **Decisión de dirección clínica y editorial, 17 de noviembre de 2026.**

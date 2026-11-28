@@ -146,7 +146,7 @@ export function generateToday(s: DesireState, dayIn: unknown = 1, o: TodayOpts =
   let main = cd.practiceId, mainWhy = '';
   if (main === '@channel') { const c = pickChannel(s, o, ok); main = c.id; mainWhy = c.why; }
   if (main === '@best') { main = (o.best ?? []).find(ok) ?? r.assignedPractices.find(ok) ?? 'responsive-window'; mainWhy = o.best?.length ? 'Es la práctica con mejor utilidad en tus registros.' : 'Aún no hay registros suficientes: usamos tu ruta asignada.'; }
-  if (main === 'sensate-2' && !s2ok) { main = 'sensate-1'; mainWhy = 'La fase II aún no se abre: repetimos la fase I sin castigo.'; }
+  if (main === 'sensate-2' && !s2ok) { main = 'sensate-1'; mainWhy = 'La fase II aún no está disponible. Puedes consultar o repetir la fase I según sus indicaciones.'; }
   if (!ok(main)) main = 'presence-5';
   const ids = [main], whys: Record<string, string> = { [main]: mainWhy };
   if (day === 22) {

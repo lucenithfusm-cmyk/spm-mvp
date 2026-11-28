@@ -31,7 +31,7 @@ test('Tres narraciones completas, voz estándar del dispositivo sin Rocío/Sofí
  assert.match(touch.guides[1],/evitar posiciones incómodas o dolorosas/);
  assert.match(touch.guides[2],/continúa con las actividades de hoy/);
  assert.match(js,/new window\.SpeechSynthesisUtterance\(GUIDES\[m\.page-1\]\)/);
- assert.match(js,/window\.speechSynthesis\.speak\(u\)/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(u\)/);
  assert.doesNotMatch(js,/new window\.Audio\(|\.voice\s*=\s*voices\.find\(/);
  assert.match(js,/stopVoice\(m\);pauseTimer\(m\);m\.page=/);
  const clinical=read('premium-v2/erection-practice-v1.js');

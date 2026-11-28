@@ -31,21 +31,24 @@ test('reemplazo sólo en día 1 sin alterar el resto de Erección y firmeza',()=
  assert.match(live,/erection-day1-bridge-v1\.js/);
  assert.equal(live.split('erection-day1-touch-v1.js').length-1,1);
 });
-test('audio original de escala sin cortes y audios táctiles propios por pantalla',()=>{
- assert.match(moduleSource,/erection-day-1-ehs-20261113\.mp3/);
+test('voz estándar y guiones táctiles por pantalla, sin reproducir la grabación histórica',()=>{
+ assert.match(moduleSource,/SPM_VOICE\.speak/);
+ assert.match(moduleSource,/SPM_VOICE\?\.cancel/);
+ assert.doesNotMatch(moduleSource,/new Audio\(/);
  assert.doesNotMatch(moduleSource,/currentTime\s*=\s*[1-9]/);
  for(const key of ['intro','ehs','science','practice','review','end','blood','nerves','emotions'])assert.ok(moduleSource.includes(key));
  // Las tres narraciones se generan con claves dinámicas ('step'+i), no con literales step0/1/2.
  assert.match(moduleSource,/const STEPS=\[/);
  assert.match(moduleSource,/audio:'step'\+i/);
  assert.match(moduleSource,/SpeechSynthesisUtterance/);
- assert.match(moduleSource,/window\.speechSynthesis\?\.cancel/);
  assert.match(style,/\.spm-ed1-hit\.audio/);
 });
-test('la EHS exige selección real y distingue 0 de No evaluable',()=>{
+test('la EHS distingue selección real, No evaluable y omisión explícita',()=>{
  assert.match(moduleSource,/if\(next===3&&m\.ehs===null\)/);
- assert.match(moduleSource,/m\.ehs==='na'\?null:Number\(m\.ehs\)/);
- assert.match(moduleSource,/ehsEvaluable:m\.ehs!=='na'/);
+ assert.match(moduleSource,/data-ed1-act="omit-ehs"/);
+ assert.match(moduleSource,/ehsStatus/);
+ assert.match(moduleSource,/ehsOmitted/);
+ assert.match(moduleSource,/completionAccepted:true/);
  assert.match(moduleSource,/El nivel 4 dibujado en la imagen es un ejemplo visual/);
 });
 test('registro explícito y sin falsos completados, confirmación solamente después de guardar',()=>{
@@ -80,7 +83,7 @@ test('EHS-4 de la pantalla 2 está copiada como recurso propio e independiente',
  assert.match(moduleSource,/data-ed1-ehs-dialog/);
  assert.match(moduleSource,/action==='open-ehs'/);
  assert.match(moduleSource,/action==='close-ehs'/);
- assert.ok(moduleSource.includes("ehsEvaluable:m.ehs!=='na'"));
+ assert.ok(moduleSource.includes('ehsEvaluable:'));
 });
 
 test('Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómetro',()=>{
@@ -96,9 +99,9 @@ test('Día 1: pantalla 4 conduce a la pantalla 5, sin modal antiguo ni cronómet
  assert.ok(moduleSource.includes("attentionPracticeCompleted:m.outcome!=='omitted'"));
  const viewer=fs.readFileSync(path.join(root,'premium-v2/program-review-v1.js'),'utf8');
  const viewerHtml=fs.readFileSync(path.join(root,'premium-v2/revision-programas-28-dias.html'),'utf8');
- assert.ok(live.includes('erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1'));
- assert.ok(viewer.includes('erection-day1-touch-v1.js?v=20261117-d1-cierre-manual1'));
- assert.ok(viewerHtml.includes('erection-day1-touch-v1.css?v=20261117-d1-directo5-v1'));
+ assert.match(live,/erection-day1-touch-v1\.js\?v=/);
+ assert.match(viewer,/erection-day1-touch-v1\.js\?v=/);
+ assert.match(viewerHtml,/erection-day1-touch-v1\.css\?v=/);
 });
 
 test('La pantalla 6 solo cierra al tocar el CTA o pulsar Escape, nunca por tiempo',()=>{

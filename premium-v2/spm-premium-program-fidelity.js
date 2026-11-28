@@ -7,7 +7,7 @@ const style=document.createElement('style');style.textContent=`
 @media(max-width:760px){.spmFxGrid,.spmFxHero{grid-template-columns:1fr}.spmFxNav{position:static;display:flex;overflow-x:auto;gap:4px}.spmFxNav b{display:none}.spmFxNav button{min-width:155px}.spmIntroSteps{grid-template-columns:1fr 1fr}.spmFxCalendar{gap:3px}.spmFxDay{padding:6px 2px;font-size:10px}.ecPremiumStats{grid-template-columns:1fr 1fr}.spmIntroBody h2{font-size:25px}}
 `;document.head.appendChild(style);
 
-function speak(text){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.9;const vs=speechSynthesis.getVoices();u.voice=vs.find(v=>/es-CO/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null;speechSynthesis.speak(u)}catch(e){}}
+function speak(text){try{window.SPM_VOICE.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.9;window.SPM_VOICE.speak(u)}catch(e){}}
 
 // Legacy classic pelvic introduction removed: the seven-step SPM V2 is the only strength interface.
 const EC_SESSIONS=[1,3,5,8,10,12,15,17,19,22,24,26];

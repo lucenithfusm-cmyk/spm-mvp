@@ -24,7 +24,7 @@ test('radios táctiles azul solo tras selección; no preselección fija',()=>{
  assert.match(css,/pointer-events:none/);assert.doesNotMatch(html,/checked="checked"/);
 });
 test('audio día 2 intacto, otros audios no recortados y sin superposiciones',()=>{
- assert.match(js,/erection-day-2-20261113\.mp3/);assert.match(js,/SpeechSynthesisUtterance/);assert.match(js,/speechSynthesis\?\.cancel/);
+ assert.match(js,/erection-day-2-20261113\.mp3/);assert.match(js,/SpeechSynthesisUtterance/);assert.match(js,/SPM_VOICE\?\.cancel/);
  assert.match(js,/1:'Reconoce tus contextos/);assert.match(js,/2:'Ahora identifica/);assert.match(js,/3:'Identifica tu dificultad/);assert.match(js,/4:'Ponlo en práctica/);
 });
 test('la segunda sesión se guarda el día 3 sin afectar otros módulos',()=>{

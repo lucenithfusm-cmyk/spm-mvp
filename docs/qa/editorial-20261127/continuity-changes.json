@@ -1,0 +1,121 @@
+{
+  "file": "premium-v2/daily-practice-v1.js",
+  "sha256_before": "52b97050a2402ade0493e3bc8307edc8776d74b4e7092e85f53bd9e093f248f7",
+  "sha256_after": "00f6d5d4096126761beb97ae4eda173eb070cefce47925523eb9371fba108661",
+  "changes": [
+    {
+      "before": "Te falta guardar el registro de la práctica principal.",
+      "after": "Falta guardar uno o más registros requeridos de esta jornada.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "pantallas táctiles con audios y registro.</p><small>Esta sesión se abre aquí, no en un enlace de revisión.",
+      "after": "pantallas con instrucciones y registro.</p><small>Puedes escuchar las guías o leerlas a tu ritmo.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "El registro de la práctica principal está guardado. Puedes cerrar la jornada.",
+      "after": "Los registros requeridos están guardados. Puedes cerrar la jornada.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Recorrido cerrado. Puedes consultar tu informe y seguir practicando.",
+      "after": "Recorrido cerrado. Puedes consultar tu informe y los recursos.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "El control mejora cuando reconoces la excitación antes del punto de inevitabilidad. No se trata de mantenerte siempre en un nivel bajo, sino de aprender a modular la excitación.",
+      "after": "Reconocer la excitación antes del punto de inevitabilidad forma parte del aprendizaje del control. Puedes observar cómo cambia tu excitación, sin exigirte mantenerla siempre en un nivel bajo.",
+      "source_occurrences": 2,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "La intensidad de los estímulos, la prisa y las expectativas pueden influir en cómo aumenta tu excitación. Reconocer tus propios aceleradores te ayuda a comprender tu patrón.",
+      "after": "La intensidad de los estímulos, la prisa y las expectativas pueden influir en cómo aumenta tu excitación. Reconocer tus propios aceleradores puede ayudarte a comprender tu patrón.",
+      "source_occurrences": 2,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Una pausa acordada puede formar parte de un encuentro satisfactorio. La comunicación ayuda a reducir expectativas y permite que ambos se sientan cómodos, sin convertir el encuentro en una prueba.",
+      "after": "Una pausa acordada puede formar parte de un encuentro satisfactorio. Hablar de lo que cada persona quiere puede ayudarles a ajustar sus expectativas y a expresar cómo se sienten.",
+      "source_occurrences": 2,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Anticipar el fracaso puede aumentar la presión. Volver la atención a las sensaciones presentes puede ayudarte a reconocer tu respuesta sin vigilar constantemente el resultado.",
+      "after": "La preocupación por cómo resultará un encuentro puede aumentar la presión. Volver la atención a las sensaciones presentes puede ayudarte a reconocer tu respuesta sin vigilar constantemente el resultado.",
+      "source_occurrences": 2,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Agradece un gesto concreto de tu pareja que te haya hecho sentir cuidado. La conexión también se construye fuera de la intimidad.",
+      "after": "Si recuerdas un gesto de tu pareja que te hizo sentir cuidado, puedes agradecérselo. La conexión también se construye fuera de la intimidad.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Reconoce un gesto de cuidado que tuviste contigo hoy.",
+      "after": "Si hoy tuviste un gesto de cuidado contigo, puedes recordarlo.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Recuerda una experiencia cómoda de esta semana. Comparte qué te gustó sin convertirla en una exigencia para la próxima vez.",
+      "after": "Si recuerdas una experiencia cómoda, comparte qué te gustó sin convertirla en una exigencia para la próxima vez.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Anota un detalle agradable de la semana que quieras conservar.",
+      "after": "Si identificas un detalle agradable de la semana, puedes anotarlo para recordarlo.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Hoy puedes compartir algo que has aprendido sobre ti. Dos semanas son una oportunidad para observar y seguir aprendiendo, no un examen de resultados.",
+      "after": "Hoy puedes compartir lo que has observado sobre ti, incluidos cambios, ausencia de cambios o aspectos que todavía no puedes valorar.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Anota un aprendizaje, aunque todavía no notes cambios.",
+      "after": "Anota algo que hayas observado, o indica que todavía no puedes valorarlo.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Describe una sensación agradable de hoy, sin puntuarla.",
+      "after": "Si reconoces una sensación agradable hoy, puedes describirla sin puntuarla.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Recupera un detalle del ambiente que les haya ayudado a conectar. Repítelo como invitación, no como fórmula obligatoria.",
+      "after": "Si recuerdas un detalle del ambiente que les ayudó a conectar, puedes proponer repetirlo si ambos quieren.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Elige una forma de conexión que te haya resultado agradable y propón repetirla si ambos quieren. No busques reproducir exactamente una respuesta.",
+      "after": "Si alguna forma de conexión te resultó agradable, puedes proponer repetirla si ambos quieren. No busques reproducir exactamente una respuesta.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Comparte algo que has reconocido de tu cuerpo y una práctica que quieras seguir realizando. Lleva ese aprendizaje a tu vida diaria con constancia y sin exigirte una respuesta determinada.",
+      "after": "Puedes compartir lo que has observado sobre tu cuerpo, incluidos los aspectos que todavía no puedes valorar. Si identificas una práctica útil, decide si quieres seguir realizándola a tu ritmo.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    },
+    {
+      "before": "Elige una práctica que te haya resultado útil y un momento realista para retomarla.",
+      "after": "Si alguna práctica te resultó útil, elige un momento realista para retomarla. También puedes indicar que todavía no sabes cuál elegir.",
+      "source_occurrences": 1,
+      "reason": "Describe la acción o el estado real y admite ausencia de experiencia/cambios; no modifica técnica, escala, dosis ni regla de cierre."
+    }
+  ]
+}

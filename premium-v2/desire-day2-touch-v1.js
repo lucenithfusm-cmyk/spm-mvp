@@ -108,19 +108,19 @@
     const previous=m.host.querySelector('.spm-ds2-session');
     const scrollTop=previous?.dataset?.ds2Page===String(m.page)?(previous.scrollTop||0):0;
     const page=m.page,[w,h]=DIMENSIONS[page-1];
-    m.host.innerHTML=`<section class="spm-ds2-session" data-ds2-page="${page}" aria-label="Deseo, día 2, pantalla ${page} de 6"><div class="spm-ds2-art"><img src="${esc(m.images[page-1])}" width="${w}" height="${h}" alt="" draggable="false" loading="eager">${orbital(page)}${hotspots(m)}</div><nav class="spm-ds2-nav" aria-label="Navegación de las seis pantallas"><button type="button" data-ds2-action="back">← ${page===1?'Actividades de hoy':'Anterior'}</button><span>${page} de 6</span><button type="button" data-ds2-action="${page===6?'save':'next'}">${page===6?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds2-bottom"><button type="button" data-ds2-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds2-action="audio" data-ds2-value="guide">🔊 Escuchar guía</button></div><p class="spm-ds2-status" role="status" aria-live="polite">${esc(m.message||'')}</p>${selectionAlert(m)}${fieldModal(m)}</section>`;
+    m.host.innerHTML=`<section class="spm-ds2-session" data-ds2-page="${page}" aria-label="Deseo, día 2, pantalla ${page} de 6"><div class="spm-ds2-art"><img src="${esc(m.images[page-1])}" width="${w}" height="${h}" alt="" draggable="false" loading="eager">${orbital(page)}${hotspots(m)}</div><nav class="spm-ds2-nav" aria-label="Navegación de las seis pantallas"><button type="button" data-ds2-action="back">← ${page===1?'Actividades de hoy':'Anterior'}</button><span>${page} de 6</span><button type="button" data-ds2-action="${page===6?'save':'next'}">${page===6?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds2-bottom"><button type="button" data-ds2-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds2-action="audio" data-ds2-value="guide">🔊 Escuchar guía</button></div>${window.SPM_VOICE?.transcript([GUIDE[page],...(page===1?INTRO:page===2?FACILITATORS:page===3?INFLUENCE.slice(0,4):page===4?INFLUENCE.slice(4):page===6?PLANS:[]).map(item=>item.speech)].join("\n\n"))||''}<p class="spm-ds2-status" role="status" aria-live="polite">${esc(m.message||'')}</p>${selectionAlert(m)}${fieldModal(m)}</section>`;
     const current=m.host.querySelector('.spm-ds2-session');
     if(current)current.scrollTop=scrollTop;
   }
   function announce(m,text){m.message=text;const el=m.host?.querySelector('.spm-ds2-status');if(el)el.textContent=text;}
   function alert(m,detail='',allowDefer=false){m.alert={detail,allowDefer};render(m);m.host.querySelector('[data-ds2-action="dismiss"]')?.focus?.();}
-  function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.speaking=null;}
+  function stopVoice(m){if(!m)return;try{window.SPM_VOICE?.cancel?.()}catch{}m.speaking=null;}
   function speak(m,key,text){if(!text||!m.valid())return;
     if(m.speaking===key){stopVoice(m);return;}stopVoice(m);
     if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){announce(m,'Este navegador no ofrece voz de dispositivo; puedes leer las indicaciones en pantalla.');return;}
     const u=new window.SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.97;u.pitch=1;
     u.onend=()=>{if(m.speaking===key)m.speaking=null;};u.onerror=e=>{if(m.speaking===key){m.speaking=null;if(!['interrupted','canceled'].includes(e?.error))announce(m,'No se pudo reproducir la voz. Puedes continuar leyendo la pantalla.');}};
-    m.speaking=key;try{window.speechSynthesis.speak(u)}catch{m.speaking=null;announce(m,'No se pudo iniciar la voz del dispositivo.');}
+    m.speaking=key;try{window.SPM_VOICE.speak(u)}catch{m.speaking=null;announce(m,'No se pudo iniciar la voz del dispositivo.');}
   }
   function serialize(m){return {page:m.page,factor:m.factor,plan:m.plan,seen:{...m.seen},context:{...m.context},details:[...m.details],contextDeferred:m.contextDeferred,completed:m.completed,version:VERSION};}
   function saveTx(m,apply){const task=async()=>{
@@ -149,8 +149,8 @@
     const pending=INFLUENCE.filter(f=>!m.seen[f.id]);if(pending.length){alert(m,'Debes recorrer las dos partes del Mapa de influencia y valorar o marcar N/A en los siete factores.');return false;}
     if(!m.details.length&&!m.contextDeferred){alert(m,'Elige uno o dos detalles o marca que aún no puedes identificarlos.',true);return false;}
     if(!m.plan){alert(m,'Elige una de las cuatro acciones para guardar tu práctica.');return false;}return true;}
-  async function exit(m){if(m.busy)return;stopVoice(m);clearTimeout(m.pending);m.busy=true;
-    try{await saveTx(m);m.onBack?.();}catch{announce(m,'No fue posible guardar tu avance. Puedes reintentar sin perder las selecciones.');}finally{m.busy=false;}}
+  async function exit(m){if(m.busy)return false;stopVoice(m);clearTimeout(m.pending);m.busy=true;
+    try{await saveTx(m);m.onBack?.();return true;}catch{announce(m,'No fue posible guardar tu avance. Puedes reintentar sin perder las selecciones.');return false;}finally{m.busy=false;}}
   function previous(m){if(m.page===1){void exit(m);return;}move(m,m.page-1);}
   function updateCompleted(m,p){const now=new Date().toISOString(),list=Array.isArray(p.sessions)?p.sessions:[];
     const ids=INFLUENCE.map(f=>f.label+': '+(m.influence[f.id]===null?'N/A':m.influence[f.id])).join(' · ');
@@ -233,5 +233,5 @@
   }
   function stop(){const m=active;active=null;if(!m)return;clearTimeout(m.pending);stopVoice(m);m.events.abort();}
   function pause(){if(active)stopVoice(active);}
-  window.SPM_DESIRE_DAY2_TOUCH={mount,stop,pause,images:IMAGES.slice(),curriculum:'pattern-observe',mapKeys:INFLUENCE.map(f=>f.id),voice:'es-CO estándar del dispositivo',version:VERSION};
+  window.SPM_DESIRE_DAY2_TOUCH={mount,stop,close:()=>active?exit(active):Promise.resolve(true),pause,images:IMAGES.slice(),curriculum:'pattern-observe',mapKeys:INFLUENCE.map(f=>f.id),voice:'es-CO estándar del dispositivo',version:VERSION};
 })();

@@ -13,7 +13,7 @@ test('Programa real y visor de 28 días usan exactamente los mismos veintitrés 
  assert.equal(appScripts.length,23);
  assert.deepEqual(reviewScripts,appScripts);
  assert.ok(appScripts.findIndex(v=>v.startsWith('spm-active-module-release-v1.js?'))>appScripts.findIndex(v=>v.startsWith('erection-day10-bridge-v1.js?')));
- assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261119-w34-review1');
+ assert.equal(appScripts.at(-1),'daily-practice-v1.js?v=20261127-technical');
 });
 test('Los dos recorridos tienen los estilos de las versiones vigentes',()=>{
  for(const css of ['erection-day1-touch-v1.css','erection-day2-touch-v1.css','erection-day3-touch-v1.css','erection-day4-touch-v1.css','erection-day5-touch-v1.css','erection-day6-touch-v1.css','erection-day7-touch-v1.css','erection-day8-touch-v1.css','erection-day9-touch-v1.css','erection-day10-touch-v1.css','spm-approved-entry-v1.css']){
@@ -66,11 +66,11 @@ test('La lámina EHS reutilizada y su visor médico se conservan en la versión 
  assert.match(previous,/function ehsHtml\(/);
  assert.match(previous,/if\(type==='final'\)return ehsHtml\(\)/);
 });
-test('No se borra el botón de sincronización del calendario; se oculta solo para los días sustituidos',()=>{
+test('El calendario abre Hoy y muestra el cierre canónico; no marca completado por fuera del cierre atómico',()=>{
  const app=read('premium-v2/app-live.js');
  const route=read('premium-v2/erectile-function-route.js');
  assert.match(app,/class="btn pri doneBtn"/);
- assert.match(app,/card\.querySelector\('\.doneBtn'\)\.textContent='Completado ✓'/);
+ assert.ok(app.includes("done?'Día cerrado ✓':'Abrir mi jornada'"));assert.match(app,/function completeDay\(/);assert.match(app,/SPM_DAILY_PRACTICE\?\.open/);
  assert.ok(route.includes('const slot=window.SPM_ERECTION_10_SCHEDULE?.slot(d)'));
  assert.match(route,/legacySave\.style\.display='none'/);
  assert.match(route,/obsolete\.style\.display='none'/);

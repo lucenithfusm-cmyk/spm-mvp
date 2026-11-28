@@ -55,12 +55,12 @@ test('Advertencias de selección faltante son modales centrados y accesibles, no
 test('Tres guías con voz predeterminada del dispositivo; ninguna voz de proveedor se impone',()=>{
  assert.equal(touch.voiceMode,'device-default');
  assert.equal(touch.guides.length,3);
- assert.match(touch.guides[0],/progreso/);
+ assert.match(touch.guides[0],/Revisa tu experiencia/);assert.match(touch.guides[0],/no identificas cambios/);
  assert.match(touch.guides[1],/confianza/);
  assert.match(touch.guides[2],/siguiente paso/);
  assert.match(js,/new window\.SpeechSynthesisUtterance\(GUIDES\[key-1\]\)/);
- assert.match(js,/window\.speechSynthesis\.speak\(u\)/);
- assert.match(js,/speechSynthesis\?\.cancel/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(u\)/);
+ assert.match(js,/SPM_VOICE\?\.cancel/);
  assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|u\.voice=/);
  assert.doesNotMatch(preview,/new Audio\(|voices\.find\(|u\.voice=/);
 });

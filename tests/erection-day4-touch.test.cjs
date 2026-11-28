@@ -29,7 +29,7 @@ test('zonas táctiles y guías de pantalla y de los tres pasos con pulso',()=>{
  assert.match(js,/const STEPS=\[/);
  assert.match(js,/talk\(m,'step'\+index,STEPS\[index\]\)/);
  assert.match(js,/SpeechSynthesisUtterance/);
- assert.match(js,/speechSynthesis\?\.cancel/);
+ assert.match(js,/SPM_VOICE\?\.cancel/);
  assert.match(js,/if\(m\.sense===v\)over\+=marker/);
  assert.match(js,/if\(m\.result===v\)over\+=marker/);
  assert.match(css,/\.spm-ed4-check/);
@@ -67,9 +67,12 @@ test('La sesión 4 se abre el día 9 desde Hoy y la revisión general',()=>{
  const central=read('premium-v2/program-review-v1.js');
  const html=read('premium-v2/revision-programas-28-dias.html');
  const old=read('premium-v2/erectile-function-route.js');
- assert.match(central,/erection-day4-touch-v1\.js\?v=20261117-erection10x28-v1/);
- assert.match(central,/erection-day4-bridge-v1\.js\?v=20261117-erection10x28-v1/);
- assert.match(html,/erection-day4-touch-v1\.css\?v=20261117-approved3/);
+ for(const name of ['erection-day4-touch-v1.js','erection-day4-bridge-v1.js']){
+  const url=[...live.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]).find(v=>v.startsWith(name+'?v='));
+  assert.ok(url,name+' debe tener versión en Live');assert.ok(central.includes("'"+url+"'"),name+' debe coincidir en revisión');
+  if(name==='erection-day4-touch-v1.js'){assert.equal(url,name+'?v=20261127-technical');assert.ok(review.includes('src="'+url+'"'));}
+ }
+ const stylesheet=live.match(/href="(erection-day4-touch-v1\.css\?v=[^"]+)"/)?.[1];assert.ok(stylesheet);assert.ok(html.includes('href="'+stylesheet+'"'));
  assert.ok(old.includes("if(c?.primary==='erection'&&window.SPM_DAILY_PRACTICE?.open)"));
  assert.ok(old.includes('const slot=window.SPM_ERECTION_10_SCHEDULE?.slot(d)'));
 });

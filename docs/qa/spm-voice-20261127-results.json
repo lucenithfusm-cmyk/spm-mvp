@@ -1,0 +1,171 @@
+{
+  "version": "spm-voice-20261127-qa-v1",
+  "baseline": "c27bbbba0292513b898d0684a30a95cd1e4e6449",
+  "status": "implemented_and_locally_tested; physical_acceptance_and_video_sources_pending",
+  "test_groups": [
+    {
+      "suite": "Contrato e integración de voz",
+      "file": "docs/qa/spm-voice-20261127-voice-contract-final.tap",
+      "tests_passed": 76,
+      "tests_failed": 0,
+      "sha256": "0fefac857126976180e786e9fb887e997b796b0a36f354e4771a126f53358339",
+      "execution": "local actual application/controller code; synthetic native voice events; no acoustic playback claim"
+    },
+    {
+      "suite": "Pantallas y regresiones existentes",
+      "file": "docs/qa/spm-voice-20261127-voice-surfaces-final.tap",
+      "tests_passed": 247,
+      "tests_failed": 0,
+      "sha256": "b02e406062c6be77aa43bd700b05a084b644557b8852ee7d8ac354a922f7f921",
+      "execution": "local actual application/controller code; synthetic native voice events; no acoustic playback claim"
+    },
+    {
+      "suite": "Controlador de Respiración / Vitest",
+      "file": "docs/qa/spm-voice-20261127-voice-breath-controller-final.log",
+      "tests_passed": 38,
+      "tests_failed": 0,
+      "sha256": "2242c85d65d791f9c90d77306c26e84e5928f6f6d414a83263f949893d87b55b",
+      "execution": "local actual application/controller code; synthetic native voice events; no acoustic playback claim"
+    }
+  ],
+  "total_tests_passed": 361,
+  "total_tests_failed": 0,
+  "source_inventory": {
+    "file": "docs/qa/spm-voice-20261127-inventory.json",
+    "source_files": 90,
+    "call_candidates": 279,
+    "linked_text_candidates": 965,
+    "narrated_video_entries": 13,
+    "missing_transcript_videos": 12,
+    "local_video_assets_probed": 17,
+    "scope": "candidate trace; does not assert every expression is reachable or every spoken phrase has been acoustically accepted"
+  },
+  "builds": [
+    {
+      "lab": "breathing",
+      "index": "premium-v2/breathing-lab/index.html",
+      "sha256": "cb83670a69ae0783de49ecab96746e17b74f1cc864a9244ad28ebcd0f48057a6",
+      "scripts": [
+        "/premium-v2/device-voice-v1.js?v=20261127-technical",
+        "./assets/index-jG_XMQk8.js"
+      ],
+      "device_coordinator_loaded": true
+    },
+    {
+      "lab": "pelvic-floor",
+      "index": "premium-v2/pelvic-floor-lab/index.html",
+      "sha256": "1f9dac19426325578bfc62b34c086d89ca9799848a39f30251af2d54a6362aa9",
+      "scripts": [
+        "/premium-v2/device-voice-v1.js?v=20261127-technical",
+        "./assets/index-UtNoVM_L.js"
+      ],
+      "device_coordinator_loaded": true
+    },
+    {
+      "lab": "desire",
+      "index": "premium-v2/desire-lab/index.html",
+      "sha256": "fe89a380084b5a44da25fc0cded098ece174156c31513e6e32afa0a9593be658",
+      "scripts": [
+        "/premium-v2/device-voice-v1.js?v=20261127-technical",
+        "./assets/index-m4bu1fWk.js"
+      ],
+      "device_coordinator_loaded": true
+    },
+    {
+      "lab": "sensate",
+      "index": "premium-v2/sensate-lab/index.html",
+      "sha256": "0ddefc47fbb4f3f4d2cfea55927f29742e24d1c664f27d548df641808b5c837a",
+      "scripts": [
+        "/premium-v2/device-voice-v1.js?v=20261127-technical",
+        "../sensate-premium-v1.js?v=20261127-technical"
+      ],
+      "device_coordinator_loaded": true
+    }
+  ],
+  "criteria": [
+    {
+      "id": "A01",
+      "status": "automation_passed; physical_pending",
+      "evidence": [
+        "default native voice remains null, including a default voice named Sofía",
+        "explicit Spanish recovery selection and reset; no named/gender priority",
+        "common, checkpoint, 26 pelvic texts, 27 breath IDs and migrated surface contracts"
+      ],
+      "remaining": "Audible output per device and every reachable route/day."
+    },
+    {
+      "id": "A02",
+      "status": "automation_passed",
+      "evidence": [
+        "empty initial voice list still starts default; voiceschanged only refreshes availability",
+        "8-second start watchdog releases stalled preparation; no total narration duration cap"
+      ],
+      "remaining": "Confirm device-specific voiceschanged timing on iOS/Android."
+    },
+    {
+      "id": "A03",
+      "status": "automation_passed; physical_pending",
+      "evidence": [
+        "missing API, not-allowed, unavailable language, failed start, readable full script, manual retry/recovery",
+        "legacy onerror cancel cleanup preserves common recovery panel; lifecycle cancellation still clears it"
+      ],
+      "remaining": "Real OS/browser language and hardware error cases."
+    },
+    {
+      "id": "A04",
+      "status": "automation_passed",
+      "evidence": [
+        "generation guards, replacing long narration, owner removal, account/day events, hidden document, same-origin iframe removal",
+        "muted media does not cancel accompanying narration; unmuted media is exclusive"
+      ],
+      "remaining": "Real backgrounding and process suspension on mobile."
+    },
+    {
+      "id": "A05",
+      "status": "automation_passed; physical_pending",
+      "evidence": [
+        "full text and punctuation preserved across chunks",
+        "pause cancels current paragraph; resume repeats that paragraph and label explains it",
+        "valid onend only advances text chunks; no total-duration timer"
+      ],
+      "remaining": "Pause/resume/listen through a long guide on physical iOS and Android."
+    },
+    {
+      "id": "A06",
+      "status": "partial; source_and_acoustic_dependencies",
+      "evidence": [
+        "final breathing demo uses six exact published sentences, original frames, manual advancement, no autoplay",
+        "original complete movement remains muted; starting voice and movement are exclusive; visible media retry",
+        "commercial/recovery reuse approved written scripts with device voice and preserved illustrations"
+      ],
+      "remaining": "Twelve Library videos lack a complete supplied narration transcript. Original mixed audio must be checked for useful ambient layers. The final breathing transcript is identical to the published baseline, but not acoustically compared against all 38.4 seconds."
+    },
+    {
+      "id": "A07",
+      "status": "pending_physical_listening",
+      "evidence": [
+        "Conexión uses shared controller and complete published scripts; generic contract tests pass"
+      ],
+      "remaining": "Listen to full guides for Conexión days 1, 13 and 28 on actual target devices; inspect controls, error recovery and exit. A simulation cannot close this criterion."
+    },
+    {
+      "id": "A08",
+      "status": "automation_passed",
+      "evidence": [
+        "audio start/end/error/cancel and video action listening do not write practice completion",
+        "existing safety, account/day scope, null values and explicit save assertions remain in regression suites",
+        "weekly pelvic early stop goes to explicit evaluation; interruption does not create completed result"
+      ],
+      "remaining": "Confirm actual production persistence together with backend QA; reviewer memory is not database evidence."
+    }
+  ],
+  "physical_device_results": {
+    "Safari_iOS": "not_performed",
+    "Chrome_Android": "not_performed",
+    "Conexión_1_13_28_real_listening": "not_performed"
+  },
+  "database_or_auth_claim": "none; these tests do not certify remote persistence, RLS or authenticated E2E",
+  "final_inventory_sha256": "bf09a1e1eaf75d13572d1cb72718068ad1a0bba43f548aad7608e00fa0034428",
+  "test_evidence_timing": "The three focused voice logs reflect the implementation test run. Final source/asset hashes below were refreshed after the final editorial-only builds. The root complete-suite report verifies the combined final snapshot.",
+  "editorial_corpus_sha256": "6b3c666ddff137015610b7cb79d75cd2137758f17f442275c14b87ff474f7013"
+}

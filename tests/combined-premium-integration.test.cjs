@@ -14,7 +14,7 @@ function harness(day=15,data={}){
  w.SPM_DAILY_PRACTICE={restricted:()=>false,assignments:()=>[{id:'main',kind:'ejaculation'}],async saveActivity(id,rec,scope,d){writes.push({id,rec,scope,d})},open(){}};
  w.speechSynthesis={cancel(){},getVoices(){return[]},speak(){}};
  w.SpeechSynthesisUtterance=function(t){this.text=t};
- w.eval(src);
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));w.eval(src);
  const host=w.document.querySelector('#spmCombinedV1'),ui=host?.shadowRoot,api=w.SPM_COMBINED_V1;
  return{w,ctx,api,host,ui,writes,close(){api?.close(false);w.close()}};
 }
