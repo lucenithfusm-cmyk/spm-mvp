@@ -26,6 +26,16 @@ function open({host,day,prior={},save,exit}){
  }
  function refresh(){controls.forEach(update=>update());}
  if(a.rect){const [x,y,w,h,dy]=a.rect;pick(a.choices,i=>[x,y+dy*i,w,h],'choice',false,day===12);}
+ if(day===24){
+  const alternatives=['No identifico cambios','Aún no puedo valorarlo'];
+  const b=button('Otra respuesta',7,90.6,86,6.5,()=>{
+   const panel=document.createElement('section');panel.className='conf-editor';
+   const title=document.createElement('strong');title.textContent='Registra lo que reconoces';panel.append(title);
+   for(const value of alternatives){const option=document.createElement('button');option.type='button';option.textContent=value;option.onclick=()=>{data.choice=value;refresh();panel.remove();say(value+'. No necesitas registrar una mejoría para guardar esta reflexión.');};panel.append(option);}
+   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Volver';cancel.onclick=()=>panel.remove();panel.append(cancel);stage.append(panel);panel.querySelector('button').focus();
+  },'choice solid');b.textContent='Otra respuesta · sin cambios o sin valorar';
+  controls.push(()=>b.setAttribute('aria-pressed',String(alternatives.includes(data.choice))));refresh();
+ }
  if(day===12){['Preparación y enfoque','Práctica guiada','Cierre y registro'].forEach((text,i)=>button(text,38,76.6+i*2.8,54,2.7,()=>{const j=a.choices.indexOf(data.choice);if(j<0)return warn('Elige tu prioridad para escuchar la ruta.');say([a.cues[j],['Ensaya cómo bajarías el ritmo al notar esa señal.','Vuelve a la respiración cuando aparezca una expectativa.','Lleva la atención a un gesto que te ayude a sentir confianza.'][j],'Recuerda qué te ayudó y guarda tu prioridad.'][i]);}));}
  if(day===15){['Práctica individual','Contexto controlado','Experiencia compartida'].forEach((v,i)=>button(v,4+i*31,41,29,19,()=>say(['Practica a solas, sin prisa.','Prueba la misma habilidad en una situación familiar.','Si ambos se sienten cómodos, traslada la práctica a un momento compartido.'][i])));}
  if(day===21){data.notes||={};a.choices.forEach((v,i)=>{const edit=()=>{say(a.cues[i]);editor(a.cues[i],data.notes[i],value=>{data.notes[i]=value;refresh();});};button(v,3.6+i*32,41,30.5,19,edit);const b=button(a.cues[i],6,66.7+i*6.75,88,6.3,edit);controls.push(()=>b.setAttribute('aria-pressed',String(!!data.notes[i])));});refresh();}

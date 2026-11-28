@@ -183,7 +183,7 @@ export const SCREENS: Screen[] = [
     "audioId": "pf.s14.progress",
     "kicker": "Tu registro",
     "title": "Registra cómo quedaste",
-    "lead": "Responde según tu experiencia. No hay valores elegidos por ti.",
+    "lead": "Responde según tu experiencia. No hay valores preseleccionados.",
     "trainer": "Tómate un momento para registrar lo que notaste. Elige tu nivel de tensión y cómo fue soltar la zona. No hay una respuesta correcta ni necesitas mostrar una mejoría. Si no sabes cómo describirlo, puedes volver a observar con calma antes de guardar. Tus registros anteriores te ayudan a reconocer diferencias entre prácticas; una sola respuesta no establece un diagnóstico. En el programa, el registro se guarda en tu cuenta. Guardar esta observación no completa por sí solo un día de tu ruta. Para cerrar la actividad de hoy, vuelve al plan y utiliza su confirmación.",
     "steps": [
       "Elige tu respuesta",

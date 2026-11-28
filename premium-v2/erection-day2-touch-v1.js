@@ -25,7 +25,7 @@
  let active=null;
  const contextMap=x=>Object.fromEntries(CONTEXTS.map(([k])=>[k,RESPONSES.some(([v])=>v&&v===x?.[k])?x[k]:'']));
  function cleanup(m){if(!m)return;stopVoice(m);m.events?.abort?.();m.events=null;}
- function stopVoice(m){if(!m)return;try{m.player?.pause?.();if(m.player)m.player.currentTime=0}catch{}m.player=null;try{window.speechSynthesis?.cancel?.()}catch{}m.voiceKey=null;m.host?.querySelectorAll?.('.spm-ed2-hit.playing').forEach(b=>b.classList.remove('playing'));}
+ function stopVoice(m){if(!m)return;try{m.player?.pause?.();if(m.player)m.player.currentTime=0}catch{}m.player=null;try{window.SPM_VOICE?.cancel?.()}catch{}m.voiceKey=null;m.host?.querySelectorAll?.('.spm-ed2-hit.playing').forEach(b=>b.classList.remove('playing'));}
  function stop(){const m=active;active=null;cleanup(m)}
  function pause(){if(active)stopVoice(active)}
  function announce(m,key,txt,{original=false}={}){
@@ -37,18 +37,10 @@
   const speech=()=>{
    if(!window.speechSynthesis||typeof window.SpeechSynthesisUtterance!=='function'){m.message='La narración no está disponible en este navegador. Lee las instrucciones de la pantalla.';status(m);finish();return;}
    const u=new SpeechSynthesisUtterance(txt);u.lang='es-CO';u.rate=.97;u.pitch=1;
-   const v=window.speechSynthesis.getVoices?.()||[];
-   u.voice=v.find(x=>/^es-co$/i.test(x.lang)&&/mujer|female|paulina|sofia|helena|maria|monica/i.test(x.name))||v.find(x=>/^es-co$/i.test(x.lang))||v.find(x=>/^es/i.test(x.lang))||null;
+
    u.onend=finish;u.onerror=finish;
-   try{window.speechSynthesis.speak(u);target?.classList.add('playing')}catch{finish();m.message='No se pudo reproducir la indicación.';status(m)}
+   try{window.SPM_VOICE.speak(u);target?.classList.add('playing')}catch{finish();m.message='No se pudo reproducir la indicación.';status(m)}
   };
-  if(original && typeof window.Audio==='function'){
-   try{
-    const a=new Audio(ORIGINAL_DAY2_AUDIO);m.player=a;a.preload='none';a.onended=finish;
-    a.onerror=()=>{if(m.voiceKey===key){m.player=null;speech()}};
-    const pending=a.play();target?.classList.add('playing');pending?.catch?.(()=>{if(m.voiceKey===key){m.player=null;speech()}});return;
-   }catch{}
-  }
   speech();
  }
  function button(coords,act,label,options={}){
@@ -83,7 +75,7 @@
    hits+=button([49,1701,1032,1833],'save','Guardar y continuar mi ruta de hoy',{disabled:m.busy});
   }
   const toolbar=`<nav class="spm-ed2-toolbar" aria-label="Navegación de Erección y firmeza día 2"><button type="button" data-ed2-act="back">${page===1?'← Volver a Hoy':'← Anterior'}</button><span>${page} de 4 · Día ${m.calendarDay}</span>${page===2?'<button type="button" data-ed2-act="audio" data-ed2-audio="guide" aria-label="Escuchar guía de condiciones">🔊 Guía</button>':'<button type="button" data-ed2-act="exit">Salir a Hoy</button>'}</nav>`;
-  m.host.innerHTML=`<section class="spm-ed2-session spm-er-fullscreen" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+  m.host.innerHTML=`<section class="spm-ed2-session spm-er-fullscreen" data-ed2-session data-screen="${page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${page} de 4"><div class="spm-ed2-artwork" role="group" aria-label="Pantalla aprobada ${page} de 4" style="background-image:url(&quot;${IMAGES[page-1]}&quot;)">${hits}${form}${over}</div>${toolbar}${window.SPM_VOICE?.transcript([NARRATION[page],...(page===1?Object.values(CONTEXT_CUES):[])].join("\n\n"))||''}<p class="spm-ed2-status" data-ed2-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  }
  function status(m){const p=m?.host?.querySelector('[data-ed2-status]');if(p)p.textContent=m.message||'';}
  function required(m,text){m.message=text;status(m);window.SPM_ERECTION_TOUCH_VIEW?.warn(m.host,text)}

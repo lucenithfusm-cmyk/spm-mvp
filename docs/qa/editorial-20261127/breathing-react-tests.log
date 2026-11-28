@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /workspace/scratch/349f79528487/spm-mvp/labs/breathing
+
+ ✓ src/components/BreathingLab.test.tsx (10 tests) 404ms
+ ✓ src/components/breath/DailyBreathingJourney.test.tsx (32 tests) 770ms
+
+ Test Files  2 passed (2)
+      Tests  42 passed (42)
+   Start at  16:18:37
+   Duration  2.07s (transform 494ms, setup 0ms, collect 942ms, tests 1.17s, environment 792ms, prepare 179ms)
+

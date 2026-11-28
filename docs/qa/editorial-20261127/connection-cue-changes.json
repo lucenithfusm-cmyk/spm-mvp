@@ -1,0 +1,52 @@
+[
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Piensa en una caricia que sí te produce placer sexual. Puede ser un beso en el cuello, el contacto piel con piel o una caricia en los genitales. ¿En qué zona la disfrutas? ¿Qué presión o ritmo te gusta? Ponlo en palabras: «Me gusta que me toques aquí, más despacio». También puedes reconocerlo cuando te tocas a solas.",
+    "after": "Recuerda un contacto que hayas disfrutado a solas o con otra persona. Nombra la zona de tu cuerpo y el tipo de contacto. Si se trata de estimulación del pene, puedes decirlo de forma directa. Describe la presión o el ritmo que reconoces en esa experiencia, sin tener que realizarlo ahora.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Recuerda cómo era el lugar la última vez que pudiste concentrarte en el placer. ¿Te gusta ver el cuerpo de tu pareja con la luz encendida? ¿O disfrutas más con luz baja? Si estar pendiente de la puerta o del teléfono te distrae, concreta lo que necesitas: «Quiero cerrar la puerta y tener un rato para nosotros».",
+    "after": "Recuerda las condiciones de una experiencia de placer a solas o compartida: privacidad, iluminación o ausencia de interrupciones. Identifica qué te permite prestar atención a las sensaciones y qué te distrae. Puedes expresar una condición concreta que necesites, sin asumir la preferencia de otra persona.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Piensa en cómo reconoces que ambos desean el encuentro. Quizás disfrutas que tu pareja tome la iniciativa, te mire mientras te besa o te diga qué le gusta. ¿Qué te hace sentir deseado? Ensaya cómo pedirlo: «Me gusta cuando tú empiezas el beso». Y si en algún momento necesitas parar, puedes decirlo con la misma claridad.",
+    "after": "Si recuerdas una experiencia compartida, identifica qué te ayudó a expresar deseo o cercanía y qué dijo la otra persona. Puedes escribir una preferencia propia o cómo pedir una pausa. Si haces esta reflexión a solas, identifica qué cercanía o comunicación te gustaría poder expresar, sin atribuirle deseos a otra persona.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Un abrazo al llegar a casa o tomarse de la mano pueden ser suficientes por sí mismos. ¿Qué gesto disfrutarían hoy los dos?",
+    "after": "Un abrazo o tomarse de la mano pueden expresar cercanía sin expectativa sexual. Identifica qué gesto te gustaría a ti; si involucra a otra persona, recoge su respuesta antes de suponer que lo desea.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Piensa en algo que te gustaría contar fuera de la cama, por ejemplo, cuándo te sientes más cerca de tu pareja. ¿En qué momento podrían hablar con calma?",
+    "after": "Piensa en algo que te gustaría expresar fuera de un encuentro sexual, por ejemplo, una necesidad o una muestra de aprecio. Si decides compartirlo, busca un momento acordado para conversar.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "¿Qué aprendiste de una experiencia reciente?",
+    "after": "¿Qué reconoces en una experiencia que recuerdes? No tiene que ser reciente.",
+    "reason": "Modalidad individual visible, precisión del referente y no atribuir deseos ajenos.",
+    "status": "changed"
+  },
+  {
+    "content_id": "connection.13.topic.closeness",
+    "file": "premium-v2/conexion-satisfaccion/actividades.js",
+    "before": "Recuerda un gesto que te hizo sentir deseado: que tu pareja iniciara un beso, te mirara durante el encuentro o te dijera qué le estaba gustando.",
+    "after": "Piensa qué cercanía necesitas para expresar tu ritmo sexual. Puede ser disponer de tiempo para hablar, expresar una preferencia o escuchar lo que la otra persona te ha dicho. Identifica lo que necesitas tú, sin atribuirle una respuesta a tu pareja.",
+    "reason": "E13: conservar recuerdo de disfrute en día 10; día 13 reflexiona sobre necesidades y ritmo.",
+    "status": "changed"
+  }
+]

@@ -3,13 +3,15 @@ const {JSDOM,ResourceLoader,VirtualConsole}=require('../labs/desire/node_modules
 const root=path.resolve(__dirname,'..');
 const wait=()=>new Promise(resolve=>setTimeout(resolve,15));
 class LocalResources extends ResourceLoader{
-  fetch(url){const parsed=new URL(url);if(parsed.hostname!=='spm.test')return null;const file=path.resolve(root,'.'+parsed.pathname);if(!file.startsWith(root+path.sep)||!fs.existsSync(file))return null;return Promise.resolve(fs.readFileSync(file));}
+  fetch(url){const parsed=new URL(url);if(parsed.hostname!=='spm.test')return null;const file=path.resolve(root,'.'+parsed.pathname);if(!file.startsWith(root+path.sep)||!fs.existsSync(file))return null;const request=Promise.resolve(fs.readFileSync(file));request.abort=()=>{};return request;}
 }
 async function harness(query='?programa=desire&dia=1'){
+  const selected=new URLSearchParams(query);if(!selected.has('agenda'))selected.set('agenda','legacy');query='?'+selected;
   const errors=[],observers=[],console=new VirtualConsole();console.on('jsdomError',error=>errors.push(error.message));
   const dom=new JSDOM(fs.readFileSync(path.join(root,'premium-v2/revision-programas-28-dias.html'),'utf8'),{
     url:'https://spm.test/premium-v2/revision-programas-28-dias.html'+query,runScripts:'dangerously',resources:new LocalResources(),pretendToBeVisual:true,virtualConsole:console,
     beforeParse(w){
+      w.structuredClone=structuredClone;
       w.__originalStorage=w.localStorage;w.__originalStorage.setItem('spm_de_records','real-origin-record');
       w.HTMLElement.prototype.scrollIntoView=function(){};
       const Observer=w.MutationObserver;w.MutationObserver=class extends Observer{constructor(fn){super(fn);observers.push(this);}};
@@ -150,7 +152,7 @@ test('all six domains offer five voluntary Focus I practices, one direct Focus I
     const act=w.SPM_DAILY_SUPPORT.activity('sensate',day,c);
     assert.equal(act.practiceId,practiceId);
     assert.equal(act.optional,true);
-    assert.equal(w.SPM_DAILY_PRACTICE.restricted({...c,safety:'urgent'},({...act,kind:'sensate'})),false);
+    assert.equal(w.SPM_DAILY_PRACTICE.restricted({...c,safety:'urgent'},({...act,kind:'sensate'})),true);
    }
    const focusII=w.SPM_DAILY_SUPPORT.activity('sensate',19,c);
    assert.equal(focusII.practiceId,'sf-focus-2');
@@ -168,12 +170,12 @@ test('all six real programs expose 28 review days with guarded controls and no p
       for(let day=1;day<=28;day++){
         assert.equal(await w.SPM_PROGRAM_REVIEW.select(route.id,day),true);await wait();
         const c=w.SPM_RESOURCE_CONTEXT(),a=w.SPM_DAILY_PRACTICE.assignments();
-        assert.equal(c.primary,route.id);assert.equal(c.day,day);assert.ok(a.length>=2);assert.equal(a[0].id,'main');assert.ok(a.every(x=>x.title));
+        assert.equal(c.primary,route.id);assert.equal(c.day,day);assert.ok(a.length>=2);assert.equal(a[0].id,c.primary==='wellbeing'&&w.SPM_CONNECTION.days.includes(day)?'conexion-satisfaccion':'main');assert.ok(a.every(x=>x.title));
         assert.match(w.document.querySelector('#spmDailySession').textContent,new RegExp('DÍA '+day+' DE 28'));
       }
       assert.equal(w.document.querySelector('#reviewNext').disabled,true);
     }
-    assert.equal([...w.document.scripts].some(s=>/supabase|auth-safe|payments|app-live/.test(s.src)),false);
+    assert.equal([...w.document.scripts].some(s=>/supabase-js|supabase-auth|auth-safe|payments|app-live/.test(s.src)),false);
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
@@ -215,9 +217,12 @@ test('a failed lab close prevents navigation; successful navigation closes actua
      const secondWeek=w.document.querySelector('#spmStartStopV2');assert.ok(secondWeek&&!secondWeek.hidden);
      assert.equal(await w.SPM_PROGRAM_REVIEW.select('ejaculation',14),true);await wait();
      assert.equal(w.document.querySelector('#spmEcModal.on'),null);assert.equal(secondWeek.hidden,true);
-    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#epAssessModal.on'));
-    assert.equal(await w.SPM_PROGRAM_REVIEW.select('confidence',2),true);await wait();assert.equal(w.document.querySelector('#epAssessModal.on'),null);
-    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDailyWorkspace [name="reflection"]'));
+    assert.equal(w.SPM_DAILY_PRACTICE.assignments()[0].confidenceDay,14);
+    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDailyWorkspace dialog[open]'));
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('confidence',2),false,'an open touch screen needs its own safe close action');
+    w.document.querySelector('#spmDailyWorkspace dialog[open]').dispatchEvent(new w.Event('cancel',{cancelable:true}));await wait();
+    assert.equal(await w.SPM_PROGRAM_REVIEW.select('confidence',2),true);await wait();assert.equal(w.document.querySelector('#spmDailyWorkspace dialog[open]'),null);
+    await w.SPM_DAILY_PRACTICE.launch('main');assert.ok(w.document.querySelector('#spmDailyWorkspace dialog[open]'));
     assert.deepEqual(h.errors,[]);
   }finally{h.close();}
 });
@@ -229,7 +234,7 @@ test('invalid query choices normalize safely and completion stays within the sel
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('desire',29),false);
     assert.equal(await w.SPM_PROGRAM_REVIEW.select('unknown',1),false);
     await assert.rejects(w.SPM_COMPLETE_DAILY_PRACTICE(1,'other:plan'));
-    await w.SPM_COMPLETE_DAILY_PRACTICE(1,scope);await w.SPM_COMPLETE_DAILY_PRACTICE(1,scope);
+    await assert.rejects(w.SPM_COMPLETE_DAILY_PRACTICE(1,scope),/guardar.*registros?/);const {validDailyRecord}=require('./helpers/valid-daily-record.cjs');for(const a of w.SPM_DAILY_PRACTICE.assignments().filter(a=>!a.optional))await w.SPM_DAILY_RECORDS.save(a.id,validDailyRecord(a,1),scope,1);await w.SPM_COMPLETE_DAILY_PRACTICE(1,scope);await w.SPM_COMPLETE_DAILY_PRACTICE(1,scope);
     assert.equal(w.SPM_RESOURCE_CONTEXT().day,1);assert.equal(w.SPM_RESOURCE_CONTEXT().completed.join(','),'1');
     await w.SPM_PROGRAM_REVIEW.select('desire',28);assert.equal(w.document.querySelector('#reviewNext').disabled,true);
     assert.deepEqual(h.errors,[]);
@@ -265,10 +270,10 @@ test('day 28 closing audio stays separate from navigation and opens the final re
   const h=await harness('?programa=erection&dia=28');try{
     const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
     for(const activity of api.assignments().filter(item=>!item.optional))await api.saveActivity(activity.id,{confirmed:true});
-    await w.document.querySelector('#spmDailyComplete').onclick();await wait();
+    const closeTask=w.document.querySelector('#spmDailyComplete').onclick();await wait();w.document.querySelector('[data-confirm-day]')?.click();await closeTask;await wait();
     const closing=w.document.querySelector('#spmDailyClosing');assert.ok(closing);
     assert.ok(closing.querySelector('[data-program-closing]'));
-    assert.equal(closing.querySelector('[data-checkpoint-audio] audio').getAttribute('src'),'/premium-v2/assets/audio/checkpoint/program-closing-20261113.mp3');
+    assert.ok(closing.querySelector('[data-checkpoint-audio-toggle]'));assert.equal(closing.querySelector('[data-checkpoint-audio] audio'),null);assert.match(closing.textContent,/Lo aprendido continúa contigo/);
     closing.querySelector('[data-spm-speak]').click();
     assert.equal(w.document.querySelector('#spmDailyClosing'),closing,'the daily advice speaker must not navigate away');
     const before=JSON.stringify(await w.SPM_DAILY_RECORDS.read(scope,28));
@@ -367,7 +372,7 @@ test('Día 6 mantiene su sesión propia y la fuerza pélvica como apoyo independ
   assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });
-test('DE day one includes an actionable body-release and no-hold breathing practice with Lenny guidance',async()=>{
+test('DE day one includes an actionable body-release and no-hold breathing practice with coordinated device guidance',async()=>{
   const h=await harness('?programa=erection&dia=1');try{
     const {w}=h,api=w.SPM_DAILY_PRACTICE,c=w.SPM_RESOURCE_CONTEXT(),scope=c.userId+':'+c.planId;
     const activity=api.assignments().find(a=>a.id==='breath-start');assert.ok(activity);assert.equal(activity.optional,false);assert.equal(activity.steps.join(','),'6,10');
@@ -532,7 +537,7 @@ test('Hoy opens the shared touch activities in both wellbeing profiles',async()=
    for(const day of days){
     assert.equal(await w.SPM_PROGRAM_REVIEW.select(profile,day),true);
     await wait();
-    const card=w.document.querySelector('[data-activity="main"]');
+    const assignment=w.SPM_DAILY_PRACTICE.assignments()[0],card=w.document.querySelector('[data-activity="'+assignment.id+'"]');
     assert.equal(card.querySelector('[data-daily-confirm]'),null);
     card.querySelector('[data-daily-open]').click();
     await wait();

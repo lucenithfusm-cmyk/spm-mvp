@@ -21,7 +21,8 @@ function open({host,day,prior={},save,exit,profile}){
  stage.setAttribute('aria-label',titles[index]);stage.style.backgroundImage='url(ep-bloque/d'+day+'.webp)';
  host.append(dialog);dialog.append(stage);dialog.showModal();
  if(profile!=='ejaculation'){const owner=document.createElement('span');owner.className='confidence-owner';owner.textContent='Confianza y ansiedad de desempeño';stage.append(owner);}
- const answers=structuredClone(prior.answers||{}),groups=new Set();
+ const answers=structuredClone(prior.answers||{}),groups=new Set(),optionPainters=new Map();
+ const noChange=['No identifico cambios','Aún no puedo valorarlo'];
  let timer=null,end=0,remaining=prior.secondsRemaining??300,busy=false;
  function close(){clearInterval(timer);window.SPM_PRACTICE_AUDIO.stop(dialog);dialog.remove();}
  dialog.oncancel=e=>{e.preventDefault();if(!busy){close();exit();}};
@@ -49,15 +50,16 @@ function open({host,day,prior={},save,exit,profile}){
   groups.add(key);
   const controls=items.map((name,i)=>{
    const b=btn(String(name),...rect(i),()=>{
-    if(multi){const set=new Set(answers[key]||[]);if(set.has(name))set.delete(name);else set.add(name);answers[key]=[...set];}
+    if(multi){const set=new Set(answers[key]||[]);if(set.has(name))set.delete(name);else{if(key==='avances'){if(noChange.includes(name))set.clear();else noChange.forEach(value=>set.delete(value));}set.add(name);}answers[key]=[...set];}
     else answers[key]=name;
-    paint();onChange?.(name);
+    for(const refresh of optionPainters.get(key)||[])refresh();onChange?.(name);
     if(!multi||answers[key].includes(name))narrate(epChoiceSpeech(key,name,i));
     else window.SPM_PRACTICE_AUDIO.stop();
    },'choice '+style);
    if(style.includes('solid'))b.textContent=name;return b;
   });
   function paint(){controls.forEach((b,i)=>b.setAttribute('aria-pressed',String(multi?(answers[key]||[]).includes(items[i]):answers[key]===items[i])));}
+  if(!optionPainters.has(key))optionPainters.set(key,[]);optionPainters.get(key).push(paint);
   paint();
  }
  function scale(y,label,neutral=false){
@@ -88,7 +90,7 @@ function open({host,day,prior={},save,exit,profile}){
   options('excitacion',Array.from({length:11},(_,i)=>i),i=>[6.9+i*7.84,55.25,7.7,4.1],false,'solid level',angle);
   options('EHS',[1,2,3,4],i=>[6.5+22.1*i,70,20.8,17]);btn('Ver EHS',72,65.6,21,4.2,()=>{notice('Toca para volver a la actividad.',true);narrate('La escala EHS describe cuatro grados de firmeza. Cierra esta lámina y toca cada imagen para escuchar su explicación.');});
  }
- if(day===13){options('avances',labels[13],grid(47),true);scale(74,'confianza',true);}
+ if(day===13){options('avances',labels[13],grid(47),true);options('avances',noChange,i=>[6+i*45,64.5,43,6.5],true,'solid');scale(74,'confianza',true);}
  if(day===14){
   options('IELT',labels[14],i=>[4+i*23.3,51.7,22.6,8.7],false,'solid');
   const na=btn('No evaluable',34,60,32,2.4,()=>{answers.IELT='No evaluable';narrate('No evaluable esta semana. Puedes registrar tu experiencia global sin indicar un tiempo.');stage.querySelectorAll('.choice.solid').forEach(b=>b.setAttribute('aria-pressed','false'));na.setAttribute('aria-pressed','true');},'na');na.textContent='No evaluable';na.setAttribute('aria-pressed',String(answers.IELT==='No evaluable'));

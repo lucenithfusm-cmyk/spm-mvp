@@ -35,7 +35,7 @@ function stopAudio(m){
  if(!m)return;
  try{m.player?.pause?.();if(m.player)m.player.currentTime=0}catch{}
  m.player=null;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voiceKey=null;
  m.host?.querySelectorAll?.('.spm-ed3-hit.playing').forEach(el=>el.classList.remove('playing'));
 }
@@ -62,18 +62,10 @@ function speak(m,key,text,preferOriginal=false){
   }
   const utterance=new SpeechSynthesisUtterance(text);
   utterance.lang='es-CO';utterance.rate=.94;utterance.pitch=1;utterance.volume=1;
-  const voices=window.speechSynthesis.getVoices?.()||[];
-  utterance.voice=voices.find(v=>/^es-co$/i.test(v.lang)&&/female|mujer|paulina|sofia|helena|maria|monica/i.test(v.name))||voices.find(v=>/^es-co$/i.test(v.lang))||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
+
   utterance.onend=done;utterance.onerror=done;
-  try{window.speechSynthesis.speak(utterance);mark()}catch{done();status(m,'No se pudo reproducir el audio. Puedes leer las instrucciones.')}
+  try{window.SPM_VOICE.speak(utterance);mark()}catch{done();status(m,'No se pudo reproducir el audio. Puedes leer las instrucciones.')}
  };
- if(preferOriginal&&typeof Audio==='function'){
-  try{
-   const audio=new Audio(ORIGINAL_AUDIO);m.player=audio;audio.preload='none';audio.onended=done;
-   audio.onerror=()=>{if(m.voiceKey===key){m.player=null;tts()}};
-   const result=audio.play();mark();result?.catch?.(()=>{if(m.voiceKey===key){m.player=null;tts()}});return;
-  }catch{}
- }
  tts();
 }
 function hotspot(box,act,label,options={}){
@@ -112,7 +104,7 @@ function render(m){
   hits+=hotspot([27,1402,831,1507],'save','Guardar y volver a Hoy',{disabled:m.busy});
  }
  const toolbar=`<nav class="spm-ed3-toolbar" aria-label="Navegación Erección y firmeza, día 3"><button type="button" data-ed3-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed3-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed3-session spm-er-fullscreen" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed3-session spm-er-fullscreen" data-ed3-session data-screen="${m.page}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${m.page} de 3"><div class="spm-ed3-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Lámina médica aprobada ${m.page} de 3">${hits}${over}</div>${toolbar}${window.SPM_VOICE?.transcript([GUIDE[m.page],...STEPS].join("\n\n"))||''}<p class="spm-ed3-status" data-ed3-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(m.page===2)timerUI(m);
 }
 function move(m,target){if(!m||!m.valid()||m.busy)return;

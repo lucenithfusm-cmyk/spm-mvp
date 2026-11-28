@@ -1,0 +1,37 @@
+{
+  "baseline": "c27bbbba0292513b898d0684a30a95cd1e4e6449",
+  "agenda_version": "spm-20261127-v1",
+  "routes": 6,
+  "calendar_cells": 168,
+  "assignment_occurrences": 585,
+  "unique_content_ids": 141,
+  "linked_content_ids": 137,
+  "unlinked_content_ids": [
+    {
+      "id": "video:sensory-focus",
+      "title": "Video · Foco sensorial: volver a las sensaciones",
+      "status": "pending_video_script_and_timeline"
+    },
+    {
+      "id": "video:partner-communication",
+      "title": "Video · Comunicación con la pareja sin presión",
+      "status": "pending_video_script_and_timeline"
+    },
+    {
+      "id": "video:anxiety-regulation",
+      "title": "Video · Respiración para regulación de ansiedad",
+      "status": "pending_video_script_and_timeline"
+    },
+    {
+      "id": "video:breathing-guided",
+      "title": "Video · Respiración diafragmática guiada",
+      "status": "pending_video_script_and_timeline"
+    }
+  ],
+  "supplemental_content_units": 69,
+  "source_packets": 171,
+  "spanish_text_units": 6948,
+  "changed": 350,
+  "reviewed_unchanged": 6598,
+  "extract_errors": []
+}

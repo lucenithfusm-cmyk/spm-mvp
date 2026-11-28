@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: original Focus curriculum, transversal days and approved medical scene assets remain intact
+ok 1 - original Focus curriculum, transversal days and approved medical scene assets remain intact
+  ---
+  duration_ms: 3.134591
+  type: 'test'
+  ...
+# Subtest: day 19 assigns only Focus II for DE, EP and desire with no eligibility gate
+ok 2 - day 19 assigns only Focus II for DE, EP and desire with no eligibility gate
+  ---
+  duration_ms: 52.698296
+  type: 'test'
+  ...
+# Subtest: intro has one playable voice control, the five-screen layout starts at 1/5, and no decorative hotspots
+ok 3 - intro has one playable voice control, the five-screen layout starts at 1/5, and no decorative hotspots
+  ---
+  duration_ms: 374.13898
+  type: 'test'
+  ...
+# Subtest: screen 2 selection opens separate 3/5 explanatory paths directly, no extra checkbox
+ok 4 - screen 2 selection opens separate 3/5 explanatory paths directly, no extra checkbox
+  ---
+  duration_ms: 85.986972
+  type: 'test'
+  ...
+# Subtest: all five full-width explanatory controls speak the corresponding existing clinical instructions
+ok 5 - all five full-width explanatory controls speak the corresponding existing clinical instructions
+  ---
+  duration_ms: 130.072431
+  type: 'test'
+  ...
+# Subtest: screen 4 alone starts voiced automatic practice, includes silence explanation, and advances every minute
+ok 6 - screen 4 alone starts voiced automatic practice, includes silence explanation, and advances every minute
+  ---
+  duration_ms: 91.46535
+  type: 'test'
+  ...
+# Subtest: partner route uses existing non-genital A/B turn instructions in both 3/5 and 4/5
+ok 7 - partner route uses existing non-genital A/B turn instructions in both 3/5 and 4/5
+  ---
+  duration_ms: 109.336959
+  type: 'test'
+  ...
+# Subtest: both modalities use precisely the same screen 5 evaluation and save through existing host
+ok 8 - both modalities use precisely the same screen 5 evaluation and save through existing host
+  ---
+  duration_ms: 152.90043
+  type: 'test'
+  ...
+# Subtest: Focus I: cinco sesiones independientes, la primera conserva cinco imágenes originales táctiles y las demás no cambian
+ok 9 - Focus I: cinco sesiones independientes, la primera conserva cinco imágenes originales táctiles y las demás no cambian
+  ---
+  duration_ms: 281.227688
+  type: 'test'
+  ...
+# Subtest: Focus II: ocho imágenes aprobadas sin pérdida, seis etapas y sin duplicar Focalización I
+ok 10 - Focus II: ocho imágenes aprobadas sin pérdida, seis etapas y sin duplicar Focalización I
+  ---
+  duration_ms: 31.089732
+  type: 'test'
+  ...
+# Subtest: Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso sin falsos registros
+ok 11 - Focus II: dos rutas táctiles exclusivas convergen y conservan su progreso sin falsos registros
+  ---
+  duration_ms: 396.300228
+  type: 'test'
+  ...
+# Subtest: Focus II: acceso sin prerrequisitos y salida anticipada no simula práctica completada
+ok 12 - Focus II: acceso sin prerrequisitos y salida anticipada no simula práctica completada
+  ---
+  duration_ms: 50.642624
+  type: 'test'
+  ...
+# Subtest: day-23 communication practice remains available independently
+ok 13 - day-23 communication practice remains available independently
+  ---
+  duration_ms: 26.016331
+  type: 'test'
+  ...
+# Subtest: all six SPM routes can open Focus I and II without restriction banners or approval gates
+ok 14 - all six SPM routes can open Focus I and II without restriction banners or approval gates
+  ---
+  duration_ms: 266.723218
+  type: 'test'
+  ...
+# Subtest: failed final daily completion keeps the same record for retry and does not claim success
+ok 15 - failed final daily completion keeps the same record for retry and does not claim success
+  ---
+  duration_ms: 95.980163
+  type: 'test'
+  ...
+# Subtest: standalone video remains day-16 optional, never an embedded focalization duplicate
+ok 16 - standalone video remains day-16 optional, never an embedded focalization duplicate
+  ---
+  duration_ms: 0.643271
+  type: 'test'
+  ...
+# Subtest: Focalización I sesión 1: 5 lienzos táctiles, navegación, audios y salida sin guardado involuntario
+ok 17 - Focalización I sesión 1: 5 lienzos táctiles, navegación, audios y salida sin guardado involuntario
+  ---
+  duration_ms: 69.394483
+  type: 'test'
+  ...
+# Subtest: Focalización I sesión 1: secuencia de cinco audios mantiene pausa y cancela al cambiar pantalla
+ok 18 - Focalización I sesión 1: secuencia de cinco audios mantiene pausa y cancela al cambiar pantalla
+  ---
+  duration_ms: 16.631448
+  type: 'test'
+  ...
+# Subtest: Focalización I sesión 1: estilos táctiles de cinco láminas respetan 941×1672 y audio accesible
+ok 19 - Focalización I sesión 1: estilos táctiles de cinco láminas respetan 941×1672 y audio accesible
+  ---
+  duration_ms: 1.084556
+  type: 'test'
+  ...
+# Subtest: Focalización I sesión 1: los cinco recursos aprobados son únicos y no mezcla fotografías comerciales
+ok 20 - Focalización I sesión 1: los cinco recursos aprobados son únicos y no mezcla fotografías comerciales
+  ---
+  duration_ms: 21.079892
+  type: 'test'
+  ...
+# Subtest: sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica íntima
+ok 21 - sesión 2: cuatro láminas, botones táctiles y audio, sin falsa práctica íntima
+  ---
+  duration_ms: 62.811729
+  type: 'test'
+  ...
+# Subtest: sesión 3: cuatro imágenes aprobadas, cinco audios, botones táctiles y guardado de aprendizaje independiente
+ok 22 - sesión 3: cuatro imágenes aprobadas, cinco audios, botones táctiles y guardado de aprendizaje independiente
+  ---
+  duration_ms: 78.405932
+  type: 'test'
+  ...
+# Subtest: sesión 4: cuatro imágenes completas, interacción táctil, audios correctos y finalización única
+ok 23 - sesión 4: cuatro imágenes completas, interacción táctil, audios correctos y finalización única
+  ---
+  duration_ms: 87.860063
+  type: 'test'
+  ...
+# Subtest: sesión 4: audios menos repetitivos y halo en los 18 botones narrados
+ok 24 - sesión 4: audios menos repetitivos y halo en los 18 botones narrados
+  ---
+  duration_ms: 24.010304
+  type: 'test'
+  ...
+# Subtest: sesión 5: cuatro láminas aprobadas, 18 audios táctiles y guardado seguro sin duplicidad
+ok 25 - sesión 5: cuatro láminas aprobadas, 18 audios táctiles y guardado seguro sin duplicidad
+  ---
+  duration_ms: 82.327239
+  type: 'test'
+  ...
+# Subtest: Sesión 1: el botón Cerrar sustituye Volver luego, guarda aprendizaje y retorna a Hoy sin continuación
+ok 26 - Sesión 1: el botón Cerrar sustituye Volver luego, guarda aprendizaje y retorna a Hoy sin continuación
+  ---
+  duration_ms: 97.66121
+  type: 'test'
+  ...
+# Subtest: Vista de revisión: Cerrar realmente oculta la sesión y muestra Hoy en vez de dejar el iframe visible
+ok 27 - Vista de revisión: Cerrar realmente oculta la sesión y muestra Hoy en vez de dejar el iframe visible
+  ---
+  duration_ms: 23.948461
+  type: 'test'
+  ...
+# Subtest: CSS de sesión 1 tapa el texto Volver luego original con un botón visual Cerrar
+ok 28 - CSS de sesión 1 tapa el texto Volver luego original con un botón visual Cerrar
+  ---
+  duration_ms: 0.881891
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3190.444926

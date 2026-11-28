@@ -4,6 +4,8 @@ function harness(lang='es'){
  const dom=new JSDOM(`<html lang="${lang}"><button id="qNext">Next</button></html>`,{url:'https://spm.test',runScripts:'outside-only'}),w=dom.window;
  let pending=new Map(),seq=0,plays=0;w.setTimeout=f=>{pending.set(++seq,f);return seq};w.clearTimeout=id=>pending.delete(id);
  w.SPM_INSIGHT_AUDIO={es:{1:'one.mp3'},en:{1:'one.mp3'}};w.Audio=class{play(){plays++;return Promise.resolve()}pause(){}};
+ w.speechSynthesis={getVoices:()=>[],cancel(){},speak(u){plays++;u.onstart?.();}};w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));
  w.eval(fs.readFileSync('premium-v2/evaluation-refresh-v1.js','utf8'));
  const $=s=>w.document.querySelector(s);let continued=0;
  function advance(id){w.SPM_INSIGHT_FLOW.advance(id,()=>continued++)}

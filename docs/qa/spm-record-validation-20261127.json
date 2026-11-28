@@ -1,0 +1,590 @@
+{
+  "version": "20261127",
+  "sources": [
+    {
+      "file": "premium-v2/erection-practice-v1.js",
+      "sha256": "c3f84557b04a6f8c71929da308f7c26e49b0c8c1404470cd4445dc4bf4e226ac"
+    },
+    {
+      "file": "premium-v2/conexion-satisfaccion/actividades.js",
+      "sha256": "767659db3ffb15a66c368888ad3278d47e93a0cb5f0981ffeba006399e242280"
+    },
+    {
+      "file": "premium-v2/conexion-satisfaccion/pantalla.js",
+      "sha256": "910ba6939b2d54502ef6f1bd114947f3ef4d1d9fe0808a1dde4c535bb0038100"
+    },
+    {
+      "file": "premium-v2/program-checkpoint-v1.js",
+      "sha256": "1dd97db95f5a21cf17e37559dc35fdb0af2c47e1fc7afdb1dcdd22b4bee9100b"
+    },
+    {
+      "file": "premium-v2/daily-practice-v1.js",
+      "sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f"
+    }
+  ],
+  "generic": {
+    "validator": "SPM_DAILY_PRACTICE.recordSatisfies",
+    "conditions": [
+      "completed === true",
+      "activityStatus is absent, null or completed (legacy absent values remain accepted)",
+      "activityKind absent or exactly the assigned kind",
+      "scenario exactly the assignment scenario when specified"
+    ],
+    "kinds": [
+      "confidence",
+      "desire",
+      "breathing",
+      "worksheet",
+      "response",
+      "ejaculation",
+      "sensate",
+      "recovery",
+      "video",
+      "ep-checkpoint"
+    ],
+    "note": "These kinds have no additional field validator in the existing closure predicate. Individual screens validate their own interactions before saving."
+  },
+  "identity": {
+    "version": "spm-20261127-v1",
+    "requiredExact": [
+      "scheduleVersion",
+      "assignmentId",
+      "contentId",
+      "contentVersion",
+      "scheduledDay"
+    ],
+    "legacy": "Historical records retain their original IDs and do not require newly introduced identity fields."
+  },
+  "erection": {
+    "calendarToLesson": {
+      "1": 1,
+      "3": 2,
+      "6": 3,
+      "9": 4,
+      "12": 5,
+      "15": 6,
+      "18": 7,
+      "21": 8,
+      "24": 9,
+      "27": 10
+    },
+    "enums": {
+      "contexts": [
+        "spontaneous",
+        "solo",
+        "partner"
+      ],
+      "contextValues": [
+        "easy",
+        "variable",
+        "difficult",
+        "not_evaluable"
+      ],
+      "aspects": [
+        "initiate",
+        "maintain",
+        "recover",
+        "none",
+        "not_evaluable"
+      ],
+      "areas": [
+        "jaw",
+        "shoulders",
+        "abdomen",
+        "none"
+      ],
+      "anchors": [
+        "hands",
+        "support",
+        "sound",
+        "unknown"
+      ],
+      "senses": [
+        "temperature",
+        "contact",
+        "rhythm"
+      ],
+      "experiences": [
+        "returned",
+        "difficult",
+        "no_checking"
+      ],
+      "facilitators": [
+        "contact",
+        "imagination",
+        "anticipation",
+        "novelty",
+        "rhythm",
+        "privacy",
+        "connection",
+        "solo",
+        "unknown"
+      ],
+      "inhibitors": [
+        "pressure",
+        "rush",
+        "fatigue",
+        "stress",
+        "privacy",
+        "unknown"
+      ],
+      "adjustments": [
+        "privacy",
+        "time",
+        "rhythm",
+        "communicate",
+        "observe"
+      ],
+      "stimuli": [
+        "contacto",
+        "audio",
+        "visual",
+        "ambiente",
+        "fantasias",
+        "otros"
+      ],
+      "progressMarkers": [
+        "contextos",
+        "tension",
+        "ayuda",
+        "estimulos",
+        "empezando"
+      ],
+      "confidenceIdeas": [
+        "sin_perfeccion",
+        "calma",
+        "entrenarse",
+        "condiciones",
+        "presion"
+      ],
+      "nextSteps": [
+        "repetir_contexto",
+        "mas_tiempo",
+        "menos_estres",
+        "mantener_estimulo",
+        "observar_patron"
+      ],
+      "positions": [
+        "tu_encima",
+        "pareja_encima",
+        "de_lado",
+        "sentado",
+        "de_pie",
+        "otra"
+      ],
+      "positionStrategies": [
+        "maintain_stimulus",
+        "favor_position",
+        "switch_position",
+        "pause",
+        "observe"
+      ],
+      "responseStrategies": [
+        "calm",
+        "stimulus",
+        "position",
+        "pause",
+        "sequence"
+      ],
+      "preventionSignals": [
+        "fear_repeat",
+        "checking",
+        "avoidance",
+        "pressure",
+        "none"
+      ],
+      "preventionStrategies": [
+        "reframe",
+        "refocus",
+        "reconnect",
+        "consult",
+        "maintain"
+      ]
+    },
+    "validator": "function valid(record,day){\n const lesson=lessonOf(day);\n if(!record||Array.isArray(record)||!lesson||record.erectionPracticeVersion!==1||record.day!==Number(day)||record.confirmed!==true||!score(record.anxiety)||!score(record.confidence))return false;\n // Día 1 conserva el registro histórico EHS. Los días reubicados exigen el\n // identificador de sesión para no atribuirles resultados de otras prácticas.\n if(lesson===1){\n  if(record.erectionLesson!=null&&record.erectionLesson!==1)return false;\n  const omitted=record.ehsStatus==='omitted'&&record.ehsOmitted===true&&record.ehs===null&&record.ehsEvaluable===null;\n  const notEvaluable=record.ehs===null&&record.ehsEvaluable===false&&record.ehsOmitted!==true&&(record.ehsStatus==null||record.ehsStatus==='not_evaluable');\n  const measured=Number.isInteger(record.ehs)&&record.ehs>=0&&record.ehs<=4&&record.ehsEvaluable===true&&record.ehsOmitted!==true&&(record.ehsStatus==null||record.ehsStatus==='recorded');\n  if(!omitted&&!notEvaluable&&!measured)return false;\n  // Los registros históricos siguen siendo legibles. La versión con salida\n  // voluntaria valida por separado la conclusión y la realización física.\n  if(record.completionAccepted===true||record.ehsStatus!=null){\n   if(record.completionAccepted!==true||!['maintained','returned','difficult','omitted'].includes(record.attentionPracticeOutcome))return false;\n   const practiced=record.attentionPracticeOutcome!=='omitted';\n   return record.attentionPracticeCompleted===practiced&&record.completed===practiced&&record.activityStatus===(practiced?'completed':'omitted');\n  }\n  return true;\n }\n if(record.erectionLesson!==lesson)return false;\n if(lesson===2)return !!record.contexts&&contexts.every(key=>contextValues.includes(record.contexts[key]))&&aspects.includes(record.responseAspect);\n if(lesson===3)return Array.isArray(record.tensionAreas)&&record.tensionAreas.length>0&&new Set(record.tensionAreas).size===record.tensionAreas.length&&record.tensionAreas.every(area=>areas.includes(area))&&(!record.tensionAreas.includes('none')||record.tensionAreas.length===1)&&anchors.includes(record.sensoryAnchor)&&reflection(record);\n if(lesson===4)return senses.includes(record.attentionSense)&&experiences.includes(record.practiceExperience)&&reflection(record);\n  if(lesson===5)return selection(record.erectionFacilitators,facilitators,3)&&selection(record.erectionInhibitors,inhibitors,2)&&adjustments.includes(record.microAdjustment);\n if(lesson===6)return Array.isArray(record.erectionStimuli)&&record.erectionStimuli.length>=1&&record.erectionStimuli.length<=6&&new Set(record.erectionStimuli).size===record.erectionStimuli.length&&record.erectionStimuli.every(value=>stimuli.includes(value));\n if(lesson===7)return Array.isArray(record.erectionProgress)&&record.erectionProgress.length>=1&&record.erectionProgress.length<=4&&new Set(record.erectionProgress).size===record.erectionProgress.length&&record.erectionProgress.every(value=>progressMarkers.includes(value))&&(!record.erectionProgress.includes('empezando')||record.erectionProgress.length===1)&&confidenceIdeas.includes(record.erectionConfidenceStatement)&&nextSteps.includes(record.erectionNextStep);\n if(lesson===8)return Array.isArray(record.erectionFavorablePositions)&&record.erectionFavorablePositions.length>=1&&record.erectionFavorablePositions.length<=6&&new Set(record.erectionFavorablePositions).size===record.erectionFavorablePositions.length&&record.erectionFavorablePositions.every(value=>positions.includes(value)||value==='no_evaluable')&&(!record.erectionFavorablePositions.includes('no_evaluable')||record.erectionFavorablePositions.length===1)&&(record.erectionLessFavorablePosition==null||record.erectionLessFavorablePosition==='no_identificada'||positions.includes(record.erectionLessFavorablePosition))&&positionStrategies.includes(record.erectionChosenStrategy)&&(record.erectionPracticeStarted==null||typeof record.erectionPracticeStarted==='boolean')&&(record.erectionOptionalTimerSeconds==null||Number.isSafeInteger(record.erectionOptionalTimerSeconds)&&record.erectionOptionalTimerSeconds>=0);\n if(lesson===9)return responseStrategies.includes(record.erectionResponseStrategy)&&Array.isArray(record.erectionPlanStepsHeard)&&record.erectionPlanStepsHeard.length<=4&&new Set(record.erectionPlanStepsHeard).size===record.erectionPlanStepsHeard.length&&record.erectionPlanStepsHeard.every(n=>Number.isInteger(n)&&n>=0&&n<=3);\n if(lesson===10)return Array.isArray(record.warningSignals)&&record.warningSignals.length>=1&&record.warningSignals.length<=4&&new Set(record.warningSignals).size===record.warningSignals.length&&record.warningSignals.every(v=>preventionSignals.includes(v))&&(!record.warningSignals.includes('none')||record.warningSignals.length===1)&&preventionStrategies.includes(record.preventionStrategy);\n return false;\n}"
+  },
+  "connection": {
+    "days": {
+      "1": {
+        "fields": [
+          {
+            "key": "score0",
+            "label": "Placer",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score1",
+            "label": "Intimidad y cercanía",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score2",
+            "label": "Satisfacción personal",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score3",
+            "label": "Conexión corporal",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "priority",
+            "label": "¿Qué dimensión quieres seguir cuidando?",
+            "values": [
+              "Placer",
+              "Intimidad y cercanía",
+              "Satisfacción personal",
+              "Conexión corporal"
+            ],
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": []
+      },
+      "4": {
+        "fields": [
+          {
+            "key": "enjoy",
+            "label": "¿Qué disfrutas hoy?",
+            "optional": false
+          },
+          {
+            "key": "change",
+            "label": "¿Qué cambio reconoces?",
+            "optional": false
+          },
+          {
+            "key": "explore",
+            "label": "¿Qué te gustaría explorar o cuidar?",
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Mis preferencias",
+          "Mis necesidades",
+          "Mis expectativas",
+          "El impacto de mis relaciones",
+          "El paso del tiempo",
+          "Mis experiencias"
+        ]
+      },
+      "7": {
+        "fields": [
+          {
+            "key": "preference",
+            "label": "Una preferencia que reconozco",
+            "optional": false
+          },
+          {
+            "key": "limit",
+            "label": "Un límite que quiero respetar",
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Contacto",
+          "Ambiente",
+          "Cercanía",
+          "Experiencias"
+        ]
+      },
+      "10": {
+        "fields": [
+          {
+            "key": "explore",
+            "label": "¿Cuál te gustaría explorar?",
+            "values": "chosen",
+            "optional": true
+          }
+        ],
+        "maxTopics": 2,
+        "topics": [
+          "Contacto corporal",
+          "Besos profundos",
+          "Caricias con intención",
+          "Cercanía y conexión"
+        ]
+      },
+      "13": {
+        "fields": [
+          {
+            "key": "mode",
+            "label": "¿Desde dónde quieres hacer la actividad?",
+            "values": [
+              "Individual",
+              "En pareja"
+            ],
+            "optional": false
+          },
+          {
+            "key": "rhythm",
+            "label": "Mi ritmo y mis preferencias",
+            "optional": false
+          },
+          {
+            "key": "other",
+            "label": "Lo que mi pareja ha expresado",
+            "values": null,
+            "optional": true,
+            "when": "En pareja"
+          },
+          {
+            "key": "agreement",
+            "label": "Un acuerdo o una decisión que me resulte cómoda",
+            "optional": false
+          },
+          {
+            "key": "preferences",
+            "label": "Una preferencia sexual que quiero comunicar",
+            "values": null,
+            "optional": true
+          },
+          {
+            "key": "timing",
+            "label": "Cuándo me siento disponible para la intimidad",
+            "values": null,
+            "optional": true
+          },
+          {
+            "key": "closeness",
+            "label": "La cercanía que necesito",
+            "values": null,
+            "optional": true
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Preferencias sexuales",
+          "Tiempos y disposición",
+          "Necesidades de cercanía"
+        ]
+      },
+      "16": {
+        "fields": [
+          {
+            "key": "enjoy",
+            "label": "Disfruto cuando…",
+            "optional": false
+          },
+          {
+            "key": "wish",
+            "label": "Me gustaría…",
+            "optional": false
+          },
+          {
+            "key": "limit",
+            "label": "Prefiero evitar…",
+            "optional": false
+          },
+          {
+            "key": "phrase",
+            "label": "Elige una frase para conversar o recordar",
+            "values": [
+              "Disfruto cuando…",
+              "Me gustaría…",
+              "Prefiero evitar…"
+            ],
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Estímulos que disfruto",
+          "Ritmo y tipo de contacto",
+          "Límites que quiero respetar",
+          "Experiencias que quiero explorar"
+        ]
+      },
+      "19": {
+        "fields": [
+          {
+            "key": "action",
+            "label": "Una acción de cercanía que elijo",
+            "optional": false
+          },
+          {
+            "key": "feeling",
+            "label": "¿Cómo me sentí o cómo imagino que me sentiría?",
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Contacto físico espontáneo",
+          "Conversaciones profundas",
+          "Compartir actividades",
+          "Muestras de afecto y reconocimiento"
+        ]
+      },
+      "21": {
+        "fields": [
+          {
+            "key": "mode",
+            "label": "¿Cómo quieres responder?",
+            "values": [
+              "Experiencia reciente",
+              "Algo que recuerdo",
+              "No aplica"
+            ],
+            "optional": false
+          },
+          {
+            "key": "body",
+            "label": "¿Cómo se sintió mi cuerpo?",
+            "optional": false
+          },
+          {
+            "key": "emotion",
+            "label": "¿Cómo me sentí emocionalmente?",
+            "optional": false
+          },
+          {
+            "key": "need",
+            "label": "¿Qué necesito después?",
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Conexión emocional",
+          "Relajación y bienestar",
+          "Cercanía y complicidad"
+        ]
+      },
+      "24": {
+        "fields": [
+          {
+            "key": "first",
+            "label": "Mi primera prioridad",
+            "optional": false
+          },
+          {
+            "key": "action1",
+            "label": "Mi acción semanal para esa prioridad",
+            "optional": false
+          },
+          {
+            "key": "second",
+            "label": "Mi segunda prioridad",
+            "optional": false
+          },
+          {
+            "key": "action2",
+            "label": "Mi acción semanal para esa prioridad",
+            "optional": false
+          }
+        ],
+        "maxTopics": null,
+        "topics": [
+          "Mis metas sexuales",
+          "Hábitos que mantendré",
+          "Lo que quiero seguir mejorando"
+        ]
+      },
+      "28": {
+        "fields": [
+          {
+            "key": "score0",
+            "label": "Placer",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score1",
+            "label": "Intimidad y cercanía",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score2",
+            "label": "Satisfacción personal",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "score3",
+            "label": "Conexión corporal",
+            "values": "scale",
+            "optional": false
+          },
+          {
+            "key": "communication",
+            "label": "Comodidad para expresar preferencias (solo hoy)",
+            "values": "scale",
+            "optional": true
+          },
+          {
+            "key": "priority",
+            "label": "¿Qué dimensión quieres seguir cuidando?",
+            "values": [
+              "Placer",
+              "Intimidad y cercanía",
+              "Satisfacción personal",
+              "Conexión corporal"
+            ],
+            "optional": false
+          },
+          {
+            "key": "reflection",
+            "label": "¿Qué es lo más valioso que te llevas?",
+            "values": null,
+            "optional": true
+          }
+        ],
+        "maxTopics": null,
+        "topics": []
+      }
+    },
+    "validator": "SPM_CONNECTION.complete: connectionDay must equal source day; topics must meet maxTopics exactly with unique allowed labels; visible fields must satisfy their original enum, 0–10 nullable scale, chosen topic or nonempty <=400-character text; optional undefined/empty fields pass; mode No aplica hides all fields except mode; field.when is shown only on matching mode."
+  },
+  "checkpoint": {
+    "metrics": [
+      "firmness",
+      "control",
+      "desire",
+      "confidence",
+      "comfort",
+      "sleep",
+      "skill"
+    ],
+    "versions": {
+      "1": {
+        "scaleMax": 10
+      },
+      "2": {
+        "scaleMax": 4,
+        "requiresScaleMax": true
+      }
+    },
+    "reflectionMax": 2000,
+    "continuityMax": 2000,
+    "requiresAllMetricKeys": true,
+    "nullableMetrics": true,
+    "legacyCheckpoint": "Optional preserved v1 record, allowed only under v2 and validated recursively."
+  },
+  "pelvic": {
+    "common": {
+      "completed": true,
+      "day": "scheduled day",
+      "activityId": "assigned ID",
+      "intent": "assigned pelvicIntent"
+    },
+    "daily-relax": {
+      "practiceId": "percibe",
+      "origin": "dailyPlan"
+    },
+    "scheduled": {
+      "source": "pelvic-classic-v2"
+    }
+  },
+  "wellness": {
+    "tipId": "Exact assigned tip.id (wellnessId in the versioned manifest, tipId in legacy export)"
+  }
+}

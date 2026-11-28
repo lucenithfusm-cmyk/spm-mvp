@@ -6,9 +6,10 @@ import { getDailyBreathingJourney } from './breath-daily-journey';
 
 const window = {} as { SPM_DAILY_SUPPORT: { activity: (lab: string, day: number, context: object) => DailyActivity | null } };
 runInNewContext(readFileSync(new URL('../../../../premium-v2/daily-support-plan-v1.js', import.meta.url), 'utf8'), { window });
-const assignment = (day: number, primary = 'erection') => window.SPM_DAILY_SUPPORT.activity('breathing', day, { primary });
+// This module supplies legacy content; agenda-v2 chooses its scheduled day separately.
+const assignment = (day: number, primary = 'erection') => window.SPM_DAILY_SUPPORT.activity('breathing', day, { primary, scheduleVersion: 'legacy' });
 
-test('presentation routes cover the real assignments without changing the shared calendar or source steps', () => {
+test('presentation routes cover legacy source assignments without changing their calendar or steps', () => {
   for (const primary of ['erection', 'ejaculation', 'desire']) {
     const assignedDays: number[] = [];
     for (let day = 1; day <= 28; day++) {
@@ -23,7 +24,7 @@ test('presentation routes cover the real assignments without changing the shared
         expect(journey!.stages).toHaveLength(4);
       } else expect(journey).toBeNull();
     }
-    expect(assignedDays).toEqual(primary === 'erection' ? [1, 3, 6, 10, 13, 17, 20, 24, 27] : [3, 6, 10, 13, 17, 20, 24, 27]);
+    expect(assignedDays).toEqual(primary === 'erection' ? [1, 3, 6, 10, 13, 17, 20, 24, 27] : primary === 'ejaculation' ? [3, 6, 11, 13, 17, 20, 24, 27] : [3, 6, 10, 13, 17, 20, 24, 27]);
   }
 });
 

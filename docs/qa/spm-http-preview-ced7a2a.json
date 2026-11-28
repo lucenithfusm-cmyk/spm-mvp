@@ -1,0 +1,146 @@
+{
+  "checked_at_utc": "2026-11-28T06:15:36.548Z",
+  "deployment": {
+    "id": "dpl_FZgx9ReERMnabcNJc8DaF4SjdFeD",
+    "url": "spm-premium-staging-ev3nm934l-lucenithfusm-cmyk.vercel.app",
+    "state": "READY",
+    "readyState": "READY",
+    "target": null,
+    "source": "git",
+    "githubCommitRef": "fix/spm-technical-20261127",
+    "githubCommitSha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+  },
+  "local_source_commit": "bf2015873ecd164a4d8c2af1c8fcde48c29aa0c7",
+  "local_tree": "c63ebd30871c40e37dfcdd761d3cee1cdd2f30cd",
+  "remote_source_commit": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b",
+  "source_identity_verified": true,
+  "method": "Targeted HTTP follow-up using the authorized Vercel connector. Compared UTF-8 response bodies against exact git show content at the local commit matching the deployed tree. No CUA, SPM login, Auth, payment flows, or production writes.",
+  "baseline": {
+    "remote_commit": "287b9b182640dc10908aedafe1ff0bf6cf231449",
+    "local_commit": "b6690f41e62d228705af9557569ec9de82637f71",
+    "http_checks_passed": 24,
+    "source_comparison": {
+      "paths": [
+        ".vercelignore",
+        "vercel.json",
+        "premium-v2/assessment-policy.js",
+        "premium-v2/device-voice-v1.js"
+      ],
+      "changed_paths": [],
+      "unchanged": true
+    },
+    "scope": "Prior full HTTP sample included 11 public assets, 10 excluded paths and 3 paused entry routes. The current deployment repeats the changed product asset, viewer, policy, three exclusions and two pause entries."
+  },
+  "summary": {
+    "checks": 8,
+    "passed": 8,
+    "failed": 0,
+    "public_asset_status_hash_mime_checks": 3,
+    "internal_route_404_checks": 3,
+    "commercial_pause_checks": 2
+  },
+  "checks": [
+    {
+      "path": "/premium-v2/daily-practice-v1.js",
+      "category": "allowed",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 662992,
+      "sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true,
+      "expected_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
+      "expected_bytes": 662992,
+      "expected_mime_family": "javascript",
+      "mime_match": true
+    },
+    {
+      "path": "/premium-v2/revision-programas-28-dias.html",
+      "category": "allowed",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 4802,
+      "sha256": "c1377c6e2aa0b0c65ef33886883ff047780bfd45abcd5fdf0884aa8d8eae5468",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_sha256": "c1377c6e2aa0b0c65ef33886883ff047780bfd45abcd5fdf0884aa8d8eae5468",
+      "expected_bytes": 4802,
+      "expected_mime_family": "html",
+      "mime_match": true
+    },
+    {
+      "path": "/premium-v2/assessment-policy.js",
+      "category": "allowed",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3442,
+      "sha256": "c76409e68127447be491e815574afe8fde8b68b3850088206cde2437ba989b30",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true,
+      "expected_sha256": "c76409e68127447be491e815574afe8fde8b68b3850088206cde2437ba989b30",
+      "expected_bytes": 3442,
+      "expected_mime_family": "javascript",
+      "mime_match": true
+    },
+    {
+      "path": "/docs/qa/spm-agenda-legacy-manifest.json",
+      "category": "blocked",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "714ddb5b8f7eaa98844cc7c670b158a10f419280aefa9163de71e560c07b60bd",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "path": "/supabase/functions/_shared/assessment-policy.js",
+      "category": "blocked",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "c26c91341064dc5b897ca501570aaca50005adc7f2b46f1ff176fb903ae45af9",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "path": "/supabase/migrations/20261127203151_spm_versioned_agenda_atomic_progress.sql",
+      "category": "blocked",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "6ddd136ac979c4131d83ef2858ab62ed9f0dc019d116f3290888f9053929ba5c",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "path": "/",
+      "category": "paused",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3512,
+      "sha256": "32548b28021342bd8de0c95240997bcef55b89907aa549f261c5a1f672e5fd91",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_visible_text": "Estamos afinando tu experiencia",
+      "contains_expected_text": true
+    },
+    {
+      "path": "/premium-v2/live.html",
+      "category": "paused",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3512,
+      "sha256": "32548b28021342bd8de0c95240997bcef55b89907aa549f261c5a1f672e5fd91",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_visible_text": "Estamos afinando tu experiencia",
+      "contains_expected_text": true
+    }
+  ],
+  "limitations": [
+    "These checks cover the listed URLs. They are not a scan of all possible paths or proof that excluded files were absent from the upload.",
+    "Vercel route exclusions do not change the visibility of the authorized public GitHub repository.",
+    "HTTP success does not certify visual composition, physical-device speech, live Supabase Auth/PostgREST/RLS, or payment processing.",
+    "No Auth or payment entry point was exercised against the primary backend."
+  ]
+}

@@ -44,16 +44,16 @@
   function changed() { if (!day) return; sessions[day].hasStarted = true; sessions[day].updatedAt = now(); persist(); }
   function programChanged(key) { touched.add(key); changed(); }
   function syncReflection(s) { if (s.reflectionSource !== 'manual') s.fields.reflection = C.composeReflection(s); }
-  function stopSpeech() { try { window.speechSynthesis?.cancel(); } catch {} speechControl = ''; document.querySelectorAll?.('.speaking').forEach(el=>el.classList.remove('speaking')); }
+  function stopSpeech() { try { window.SPM_VOICE?.cancel(); } catch {} speechControl = ''; document.querySelectorAll?.('.speaking').forEach(el=>el.classList.remove('speaking')); }
   function speak(text, id = '') {
     stopSpeech(); if (!text) return;
     if (!('speechSynthesis' in window)) { openText(text); return; }
     try {
       const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'es-CO'; utterance.rate = .97; utterance.pitch = 1;
-      const voices = speechSynthesis.getVoices(); utterance.voice = voices.find(v=>v.lang === 'es-CO') || voices.find(v=>v.lang.startsWith('es')) || null;
+
       speechControl = id; const button = id ? $(`[data-control="${id}"]`) : null; button?.classList.add('speaking');
       utterance.onend = utterance.onerror = () => { button?.classList.remove('speaking'); if (speechControl === id) speechControl = ''; };
-      speechSynthesis.speak(utterance);
+      window.SPM_VOICE.speak(utterance);
     } catch { notify('La voz no está disponible. Puedes abrir el texto de la guía.',true); }
   }
   const AUDIO = {

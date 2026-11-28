@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/pelvic-module-rebuild-v2.js'
       - 'premium-v2/pelvic-strength-readiness-v1.js'
       - 'premium-v2/daily-resource-plan-v1.js'
@@ -23,6 +25,8 @@ on:
       - '.github/workflows/pelvic-strength-qa.yml'
   pull_request:
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/pelvic-module-rebuild-v2.js'
       - 'premium-v2/pelvic-strength-readiness-v1.js'
       - 'premium-v2/daily-resource-plan-v1.js'
@@ -46,6 +50,8 @@ jobs:
           node-version: 22
       - run: npm ci --prefix labs/desire --no-audit --no-fund
       - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - run: npm ci --prefix scripts/qa --no-audit --no-fund
       - name: Validate scripts
         run: |
           node --check premium-v2/pelvic-module-rebuild-v2.js

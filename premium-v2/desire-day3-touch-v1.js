@@ -80,12 +80,12 @@
     const previous=m.host.querySelector('.spm-ds3-session');
     const scrollTop=previous?.dataset?.ds3Page===String(m.page)?(previous.scrollTop||0):0;
   const p=m.page;
-  m.host.innerHTML=`<section class="spm-ds3-session" data-ds3-page="${p}" data-running="${p===3&&m.timer.running}" aria-label="Deseo, día 3, pantalla ${p} de 3"><div class="spm-ds3-art"><img src="${esc(m.images[p-1])}" alt="" width="864" height="1536" draggable="false" loading="eager">${p===3?breatheVisual(m):''}${hotspots(m)}</div>${selectionAlertMarkup(m)}${extras(m)}<nav class="spm-ds3-nav" aria-label="Navegación de Deseo día 3"><button type="button" data-ds3-action="back">← ${p===1?'Actividades de hoy':'Anterior'}</button><span>${p} de 3</span><button type="button" data-ds3-action="${p===3?'finish':'next'}">${p===3?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds3-bottom"><button type="button" data-ds3-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds3-action="audio" data-ds3-value="guide">🔊 Escuchar guía</button></div><p class="spm-ds3-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
+  m.host.innerHTML=`<section class="spm-ds3-session" data-ds3-page="${p}" data-running="${p===3&&m.timer.running}" aria-label="Deseo, día 3, pantalla ${p} de 3"><div class="spm-ds3-art"><img src="${esc(m.images[p-1])}" alt="" width="864" height="1536" draggable="false" loading="eager">${p===3?breatheVisual(m):''}${hotspots(m)}</div>${selectionAlertMarkup(m)}${extras(m)}<nav class="spm-ds3-nav" aria-label="Navegación de Deseo día 3"><button type="button" data-ds3-action="back">← ${p===1?'Actividades de hoy':'Anterior'}</button><span>${p} de 3</span><button type="button" data-ds3-action="${p===3?'finish':'next'}">${p===3?'Finalizar ✓':'Siguiente →'}</button></nav><div class="spm-ds3-bottom"><button type="button" data-ds3-action="exit">Salir a Actividades de hoy</button><button type="button" data-ds3-action="audio" data-ds3-value="guide">🔊 Escuchar guía</button></div>${window.SPM_VOICE?.transcript([GUIDE[p],...(p===1?CONNECTIONS.map(item=>item.speech):p===2?ACTIONS.map(item=>item.speech):PHASES.map(item=>item.audio))].join("\n\n"))||''}<p class="spm-ds3-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
     const current=m.host.querySelector('.spm-ds3-session');
     if(current)current.scrollTop=scrollTop;
  }
  function status(m,message){m.message=message;const el=m.host?.querySelector('.spm-ds3-status');if(el)el.textContent=message;}
- function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.voiceKey=null;}
+ function stopVoice(m){if(!m)return;try{window.SPM_VOICE?.cancel?.()}catch{}m.voiceKey=null;}
  function speak(m,key,text){if(!text||!m.valid()||!m.host?.isConnected)return;
   if(m.voiceKey===key){stopVoice(m);return;}
   stopVoice(m);
@@ -93,7 +93,7 @@
   const utter=new window.SpeechSynthesisUtterance(text);utter.lang='es-CO';utter.rate=1;utter.pitch=1;
   utter.onend=()=>{if(m.voiceKey===key)m.voiceKey=null;};
   utter.onerror=e=>{if(m.voiceKey===key){m.voiceKey=null;if(!['canceled','interrupted'].includes(e?.error))status(m,'La voz no está disponible en este momento. Puedes seguir los pasos visibles.');}};
-  m.voiceKey=key;try{window.speechSynthesis.speak(utter);}catch{m.voiceKey=null;status(m,'No fue posible reproducir la indicación.');}
+  m.voiceKey=key;try{window.SPM_VOICE.speak(utter);}catch{m.voiceKey=null;status(m,'No fue posible reproducir la indicación.');}
  }
  const computedPhase=t=>Math.min(2,Math.floor(t.elapsed/100));
  function stamp(m){return {page:m.page,connection:m.connection,action:m.action,completed:m.completed===true,timer:{remaining:m.timer.remaining,elapsed:m.timer.elapsed,started:m.timer.started,finished:m.timer.finished},before:m.before,after:m.after};}
@@ -140,8 +140,8 @@
   if(m.page===2){if(!m.action){showSelectionAlert(m);return;}move(m,3);return;}
   if(m.page===3)void complete(m);
  }
- async function exit(m){if(m.busy)return;pause(m);stopVoice(m);clearTimeout(m.pending);m.busy=true;
-  try{await saveTx(m);m.onBack?.();}catch{status(m,'No se pudo guardar el avance. Puedes reintentar sin perder tus respuestas.');}finally{m.busy=false;}
+ async function exit(m){if(m.busy)return false;pause(m);stopVoice(m);clearTimeout(m.pending);m.busy=true;
+  try{await saveTx(m);m.onBack?.();return true;}catch{status(m,'No se pudo guardar el avance. Puedes reintentar sin perder tus respuestas.');return false;}finally{m.busy=false;}
  }
  function recorded(program){return (Array.isArray(program.sessions)?program.sessions:[]).find(s=>s?.day===DAY&&s.practiceId==='breath-routine'&&s.status==='completed');}
  function updateProgram(m,p){const date=new Date().toISOString();
@@ -207,5 +207,5 @@
  }
  function stop(){const m=active;active=null;if(!m)return;clearTimeout(m.pending);clearInterval(m.interval);m.interval=null;stopVoice(m);m.events.abort();}
  function pauseActive(){if(active){pause(active);stopVoice(active);}}
- window.SPM_DESIRE_DAY3_TOUCH={mount,stop,pause:pauseActive,images:IMAGES.slice(),connections:CONNECTIONS.map(x=>x.id),actions:ACTIONS.map(x=>x.id),curriculum:'breath-routine',durationSec:DURATION,voice:'voz estándar del dispositivo'};
+ window.SPM_DESIRE_DAY3_TOUCH={mount,stop,close:()=>active?exit(active):Promise.resolve(true),pause:pauseActive,images:IMAGES.slice(),connections:CONNECTIONS.map(x=>x.id),actions:ACTIONS.map(x=>x.id),curriculum:'breath-routine',durationSec:DURATION,voice:'voz estándar del dispositivo'};
 })();

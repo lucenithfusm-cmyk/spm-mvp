@@ -1,0 +1,58 @@
+[
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "Voz oficial pendiente",
+    "after": "Guía escrita disponible",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "18 pantallas · 10–15 min · tus registros se guardan solo en este dispositivo.",
+    "after": "18 pantallas · a tu ritmo · tus registros se guardan en tu programa SPM.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "Borrar registro demo",
+    "after": "Borrar registros de Respiración",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "Registro demo local: no sale de este dispositivo.",
+    "after": "Tus registros de respiración se guardan en tu programa SPM.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "Muy bien: ya usas el diafragma. Ahora trabajaremos el ritmo y la exhalación larga.",
+    "after": "Observa cómo se mueve el abdomen. Sigue el ritmo con comodidad, sin forzar la respiración.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "Cuerpo listo. La exhalación larga ahora será más fácil.",
+    "after": "Marcaste las tres zonas. Observa cómo te sientes antes de continuar.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/breathing/src/components/BreathingLab.tsx",
+    "before": "La respiración es la única función automática que también puedes dirigir. Usarla bien ayuda a bajar la activación, soltar tensión y recuperar control.",
+    "after": "Esta guía propone observar y regular la respiración de forma cómoda, sin exigir un cambio en cómo te sientes.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  },
+  {
+    "file": "labs/pelvic-floor/src/components/PelvicLab.tsx",
+    "before": "Marca únicamente lo que hayas notado. No hay una respuesta elegida por ti.",
+    "after": "Marca únicamente lo que hayas notado. No hay respuestas preseleccionadas.",
+    "status": "changed_reviewed",
+    "reason": "Texto de UI congruente con persistencia del host, voz estándar y observación real; sin cambios de dosis, escala, técnica ni estado."
+  }
+]

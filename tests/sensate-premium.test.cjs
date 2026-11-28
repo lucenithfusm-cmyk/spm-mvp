@@ -2,7 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
-const {JSDOM}=require('../labs/sensate/node_modules/jsdom');
+const {JSDOM}=require('../scripts/qa/node_modules/jsdom');
 const root=path.resolve(__dirname,'..');
 const ui=fs.readFileSync(path.join(root,'premium-v2/sensate-premium-v1.js'),'utf8');
 const pause=()=>new Promise(resolve=>setTimeout(resolve,35));
@@ -27,6 +27,7 @@ function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='
  w.clearInterval=id=>{clock.delete(id)};
  w.speechSynthesis={cancel(){},getVoices(){return []},speak(utter){spoken.push(utter.text);active=utter}};
  w.SpeechSynthesisUtterance=function(text){this.text=text};
+ w.eval(require('./helpers/device-voice-fixture.cjs').read('premium-v2/device-voice-v1.js'));
  w.eval(ui);
  const page=w.document.querySelector('#sensatePremium');
  const byAct=(act)=>page.querySelector('[data-act="'+act+'"]');
@@ -35,7 +36,7 @@ function harness({day=8,practiceId='sf-focus-1',profile='erection',restriction='
  function tick(n){for(let i=0;i<n;i++)for(const [id,obj] of [...clock]){if(clock.has(id))obj.cb()}}
  function branch(value){const b=page.querySelector('[data-act="branch"][data-value="'+value+'"]');assert.ok(b,'missing mode '+value);b.click();}
  function advanceToPractice(value='individual'){click('next');branch(value);click('next');}
- return {w,page,cfg,host,records,writes,calls,closeArgs,spoken,click,choose,tick,branch,advanceToPractice,utter(){return active},finishAudio(){const a=active;a?.onend?.()},close(){w.close()}};
+ return {w,page,cfg,host,records,writes,calls,closeArgs,spoken,click,choose,tick,branch,advanceToPractice,utter(){return active},finishAudio(){for(let n=0;n<30&&w.SPM_VOICE.speaking;n++)active?.onend?.()},close(){w.close()}};
 }
 
 test('original Focus curriculum, transversal days and approved medical scene assets remain intact',()=>{

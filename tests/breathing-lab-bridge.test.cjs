@@ -12,7 +12,7 @@ function harness(extra={}){
  return {w,writes,context:()=>c,setContext:next=>{c=next},async close(){await w.SPM_BREATHING_LAB.close();w.close();}};
 }
 test('DE + deseo and EP + deseo link to the module using the active Central day',async()=>{
- for(const primary of ['erection','ejaculation']){const h=harness({primary,day:10});try{assert.equal(h.w.SPM_BREATHING_LAB.relevant(h.context()),true);await new Promise(r=>setTimeout(r,30));assert.ok(h.w.document.querySelector('[data-breathing-daily]'));await h.w.SPM_BREATHING_LAB.open({origin:primary==='erection'?'erectile':'ejaculation',day:27});assert.equal(h.w.SPM_BREATHING_LAB_HOST.getContext().day,10);assert.match(h.w.document.querySelector('iframe').src,/origin=dailyPlan/);}finally{await h.close();}}
+ for(const primary of ['erection','ejaculation']){const day=primary==='ejaculation'?11:10,h=harness({primary,day});try{assert.equal(h.w.SPM_BREATHING_LAB.relevant(h.context()),true);await new Promise(r=>setTimeout(r,30));assert.ok(h.w.document.querySelector('[data-breathing-daily]'));await h.w.SPM_BREATHING_LAB.open({origin:primary==='erection'?'erectile':'ejaculation',day:27});assert.equal(h.w.SPM_BREATHING_LAB_HOST.getContext().day,day);assert.match(h.w.document.querySelector('iframe').src,/origin=dailyPlan/);}finally{await h.close();}}
 });
 test('a standalone primary Breathing route is relevant; unrelated profiles remain optional',async()=>{const h=harness();try{assert.equal(h.w.SPM_BREATHING_LAB.relevant({primary:'desire'}),true);assert.equal(h.w.SPM_BREATHING_LAB.relevant({primary:'unrelated'}),false);}finally{await h.close();}});
 test('module state is saved under the active user/plan and never browser local storage',async()=>{const h=harness();try{await h.w.SPM_BREATHING_LAB.open();assert.equal(h.w.SPM_BREATHING_LAB_HOST.write('spmb-step','7'),true);await h.w.SPM_BREATHING_LAB.flush();assert.equal(h.writes[0].scope,'qa:p1');assert.equal(h.writes[0].day,12);assert.equal(h.w.localStorage.length,0);assert.equal(h.writes[0].state['spmb-step'],'7');}finally{await h.close();}});
@@ -30,11 +30,11 @@ test('malformed persisted payloads are rejected',async()=>{const h=harness();try
 test('Central persistence writes only breathing resource rows and checks user, plan and day',async()=>{
  const h=harness();try{
   const app=fs.readFileSync(path.join(__dirname,'../premium-v2/app-live.js'),'utf8');const block=app.slice(app.indexOf('window.SPM_BREATHING_RECORDS='),app.indexOf('const motiveDefs='));let row,filter=[];
-  h.w.db={from:table=>{assert.equal(table,'activity_completions');return {select(){return this},eq(k,v){filter.push([k,v]);return this},order:async()=>({data:[{metadata:{state:{'spmb-step':'4'}}}]}),upsert:async(value,options)=>{row=value;assert.equal(options.onConflict,'plan_id,day_number,module_key');return {error:null}}}}};h.w.eval(block);
+  h.w.db={from:table=>{assert.equal(table,'activity_completions');return {select(){return this},eq(k,v){filter.push([k,v]);return this},order:async()=>({data:[{metadata:{state:{'spmb-step':'4'}}}]}),upsert:async(value,options)=>{row=value;assert.equal(options.onConflict,'plan_id,day_number,module_key');return {error:null}}}}};h.w.eval('const S={epoch:1};'+app.slice(app.indexOf('const contextKey='),app.indexOf('function persistenceError'))+block);
   assert.equal((await h.w.SPM_BREATHING_RECORDS.read('qa:p1'))['spmb-step'],'4');assert.deepEqual(filter,[['user_id','qa'],['plan_id','p1'],['module_key','resource:breathing_lab_state']]);
   await h.w.SPM_BREATHING_RECORDS.save({'spmb-step':'4'},'qa:p1',12);assert.equal(row.module_key,'resource:breathing_lab_state');assert.equal(row.day_number,12);assert.equal(row.user_id,'qa');assert.equal(row.plan_id,'p1');
   await assert.rejects(()=>h.w.SPM_BREATHING_RECORDS.save({'spmb-step':'4'},'qa:p1',13));await assert.rejects(()=>h.w.SPM_BREATHING_RECORDS.save({'spmb-step':'4'},'other:p1',12));
-  assert.match(app,/filter\(x=>!x.module_key\?\.startsWith\('resource:'\)\)/);
+  assert.match(app,/S\.completed=new Set\(S\.closures\.map/);
  }finally{await h.close();}
 });
 

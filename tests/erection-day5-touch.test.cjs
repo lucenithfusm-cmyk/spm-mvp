@@ -28,7 +28,7 @@ test('facilitadores 3, inhibidores 2, desconocido exclusivo, ajuste único',()=>
  assert.match(js,/m\.inhibitors\.filter\(v=>v!=='unknown'\)/);
  assert.match(js,/m\.adjustment=key/);
 });
-test('el audio original está dividido en tres pistas completas con cortes en silencios',()=>{
+test('las tres pistas históricas se conservan, pero solo se narra el guion por voz estándar',()=>{
  assert.ok(js.includes('erection-day-5-20261113.mp3'));
  assert.ok(js.includes('const AUDIO_CLIPS='));
  const context={window:{addEventListener:()=>{}}};
@@ -39,10 +39,10 @@ test('el audio original está dividido en tres pistas completas con cortes en si
   assert.ok(audio.length>200000,'clip '+n+' no está completo');
   assert.equal(context.window.SPM_ED_DAY5_TOUCH.audioClips[n-1],'/'+file);
  }
- assert.match(js,/new window\.Audio\(AUDIO_CLIPS\[m\.page-1\]\)/);
- assert.match(js,/audio\.play\(\)/);
+ assert.doesNotMatch(js,/new window\.Audio\(/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(u\)/);assert.match(js,/GUIDES\[m\.page\]/);
  assert.doesNotMatch(js,/AUDIO_SECTIONS|loadedmetadata|audio\.currentTime>=end/);
- assert.match(js,/window\.speechSynthesis\?\.cancel/);
+ assert.match(js,/window\.SPM_VOICE\?\.cancel/);
  assert.match(css,/\.spm-ed5-hit\.audio\.playing/);
 });
 test('la zona de escucha cubre toda la pastilla dorada y es prioritaria en iPhone',()=>{

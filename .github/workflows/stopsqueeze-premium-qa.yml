@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/ejaculatory-squeeze-v1.js'
       - 'premium-v2/ejaculatory-control.js'
       - 'premium-v2/live.html'
@@ -13,6 +15,8 @@ on:
       - '.github/workflows/stopsqueeze-premium-qa.yml'
   pull_request:
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/ejaculatory-squeeze-v1.js'
       - 'premium-v2/ejaculatory-control.js'
       - 'premium-v2/live.html'
@@ -29,5 +33,6 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --prefix labs/desire --no-audit --no-fund
+      - run: npm ci --prefix scripts/qa --no-audit --no-fund
       - run: node --check premium-v2/ejaculatory-squeeze-v1.js
       - run: node --test tests/squeeze-premium-integration.test.cjs

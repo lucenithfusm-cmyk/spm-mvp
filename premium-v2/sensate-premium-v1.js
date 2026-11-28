@@ -160,7 +160,7 @@ const FOCUSI_HOMEWORK={
  },
 };
 const FOCUSI_PREP='Elige un momento privado y cómodo. Sigue las cinco acciones con audio y avanza cuando te resulte natural. No existe un tiempo obligatorio. En pareja, ambos participan voluntariamente y pueden detenerse o cambiar el contacto en cualquier momento.';
-const FOCUSI_CLOSE='Terminaste la práctica. Recuerda qué sensación te ayudó a estar presente y qué fue agradable. No necesitas medir una respuesta sexual. Registra cómo te sentiste y vuelve a tu día.';
+const FOCUSI_CLOSE='Llegaste al cierre de la guía. Si realizaste la práctica, registra cómo te sentiste y qué sensaciones reconociste, aunque no hayas notado cambios. No necesitas medir una respuesta sexual. Si solo consultaste las indicaciones, eso no significa que hayas realizado la práctica. Vuelve a tu día cuando termines.';
 const FOCUSI_TITLES={
  'sf-i-1':'Reconoce tu cuerpo','sf-i-2':'Descubre lo que te gusta','sf-i-3':'Conecta sin presión',
  'sf-i-4':'Comunica lo que disfrutas','sf-i-5':'Integra y disfruta'
@@ -198,9 +198,9 @@ if(existing){entryId=existing.id||null;notification='Hay un registro previo de f
 
 function clockText(n){const x=Math.max(0,Math.floor(n));return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}
 function stopClock(){if(timer){clearInterval(timer);timer=0}running=false}
-function stopAudio(){clearTimeout(explainPauseTimer);explainPauseTimer=0;explainPlaybackToken++;window.speechSynthesis?.cancel?.();voiceActive=false;explainingAll=false;root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'))}
+function stopAudio(){clearTimeout(explainPauseTimer);explainPauseTimer=0;explainPlaybackToken++;window.SPM_VOICE?.cancel?.();voiceActive=false;explainingAll=false;root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'))}
 function speech(text,done,control){
- window.speechSynthesis?.cancel?.();voiceActive=false;
+ window.SPM_VOICE?.cancel?.();voiceActive=false;
  root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'));
  const activeControl=()=>control?root.querySelector(control):root.querySelector('[data-act=audio]');
  if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined'){
@@ -208,13 +208,11 @@ function speech(text,done,control){
   return false;
  }
  const utter=new SpeechSynthesisUtterance(text);utter.lang='es-CO';utter.rate=.96;
- const voices=window.speechSynthesis.getVoices?.()||[];
- const match=voices.find(v=>v.lang?.toLowerCase()==='es-co')||voices.find(v=>v.lang?.toLowerCase().startsWith('es'));
- if(match)utter.voice=match;
+
  voiceActive=true;
  utter.onend=()=>{voiceActive=false;root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'));if(typeof done==='function')done()};
  utter.onerror=()=>{voiceActive=false;root.querySelectorAll('[data-audio]').forEach(el=>el.classList.remove('playing'))};
- try{window.speechSynthesis.speak(utter);activeControl()?.classList.add('playing');return true}
+ try{window.SPM_VOICE.speak(utter);activeControl()?.classList.add('playing');return true}
  catch{voiceActive=false;notification='No pude iniciar el audio; abre «Leer instrucciones».';return false}
 }
 function modeTitle(){return selectedMode==='partner'?'En pareja':'Individual'}
@@ -388,7 +386,7 @@ function spmArtworkScreen(){
  return '<div class="layout sf-matte sensate-approved-layout"><div class="spm-artwork-screen spm-artwork-'+step+'" role="group" aria-label="SPM Focalización sensorial, pantalla '+step+' de 5" style="background-image:url(&quot;'+PREFIX+'focus-screen-'+step+'-canvas.svg&quot;)">'+
   '<span class="spm-art-scrim" aria-hidden="true"></span>'+
   spmApprovedButton([26,46,405,133],'close','Volver a mi programa')+
-  '<div class="spm-art-header" aria-hidden="true"><span class="spm-art-back-visual">← Volver a mi programa</span><span class="spm-art-brand"><b>SPM</b><small>FOCALIZACIÓN<br>SENSORIAL</small></span></div>'+ 
+  '<div class="spm-art-header" aria-hidden="true"><span class="spm-art-back-visual">← Volver a mi programa</span><span class="spm-art-brand"><b>SPM</b><small>FOCALIZACIÓN<br>SENSORIAL</small></span></div>'+
   '<div class="spm-art-progress" aria-label="'+step+' de 5" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="'+step+'"><i style="width:'+(step*20)+'%"></i></div>'+
   '<p class="spm-art-meta">'+(isDaily?'DÍA '+originalDay+' / 28':'BIBLIOTECA')+' · FOCALIZACIÓN I · '+step+'/5</p>'+
   '<section class="spm-art-panel">'+panels+'</section><nav class="spm-art-nav" aria-label="Navegar por focalización">'+footerBack+'<span>'+step+' / 5</span>'+footerAction+'</nav>'+

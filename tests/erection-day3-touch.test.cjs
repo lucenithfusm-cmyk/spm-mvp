@@ -30,7 +30,7 @@ test('ancla sensorial única y No lo identifiqué válido y seguro',()=>{
 });
 test('tres audios de pantalla, MP3 día 3 original, tres pasos hablados',()=>{
  assert.match(src,/erection-day-3-20261113\.mp3/);
- assert.match(src,/SpeechSynthesisUtterance/);assert.match(src,/speechSynthesis\?\.cancel/);
+ assert.match(src,/SpeechSynthesisUtterance/);assert.match(src,/SPM_VOICE\?\.cancel/);
  assert.match(src,/const GUIDE=\{/);assert.match(src,/const STEPS=\[/);
  assert.match(src,/speak\(m,'step'\+n,STEPS\[n\]\)/);
  assert.match(css,/\.spm-ed3-hit\.audio/);

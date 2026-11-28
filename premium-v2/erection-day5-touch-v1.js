@@ -1,6 +1,6 @@
 /* SPM Digital Wellness · Erección y firmeza · Sesión 5, calendario día 12.
  * Usa exactamente tres imágenes aprobadas como superficies táctiles.
- * Recupera la narración original del antiguo día 5 en tramos por pantalla.
+ * Lee los guiones aprobados con la voz estándar del dispositivo.
  */
 (()=>{'use strict';
 if(window.SPM_ED_DAY5_TOUCH)return;
@@ -49,7 +49,7 @@ function stopAudio(m){
  try{if(m.audio){m.audio.pause();m.audio.currentTime=0}}catch{}
  if(m.timer){clearInterval(m.timer);m.timer=null}
  m.audio=null;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.audioKey=null;m.host?.querySelectorAll?.('.spm-ed5-hit.playing').forEach(e=>{e.classList.remove('playing');e.setAttribute('aria-pressed','false')});
 }
 function stop(){let m=active;active=null;if(m){stopAudio(m);m.events?.abort?.()}}
@@ -62,10 +62,9 @@ function speakFallback(m,key){
   stopAudio(m);message(m,'No se pudo reproducir el audio. Puedes seguir la información de la pantalla.');return;
  }
  const u=new window.SpeechSynthesisUtterance(GUIDES[m.page]);u.lang='es-CO';u.rate=.95;
- const voices=window.speechSynthesis.getVoices?.()||[];
- u.voice=voices.find(v=>/^es-co$/i.test(v.lang)&&/female|mujer|paulina|sofia|helena|maria|monica/i.test(v.name))||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
- u.onend=()=>{if(m.audioKey===key)stopAudio(m)};u.onerror=()=>{if(m.audioKey===key)stopAudio(m)};
- try{window.speechSynthesis.speak(u)}catch{stopAudio(m);message(m,'No se pudo reproducir la guía.')}
+
+ u.onend=()=>{if(m.audioKey===key)stopAudio(m)};u.onerror=()=>{if(m.audioKey===key){stopAudio(m);message(m,'No se pudo reproducir la guía. Puedes leerla o reintentar.')}};u.oncancel=()=>{if(m.audioKey===key)stopAudio(m)};
+ try{window.SPM_VOICE.speak(u)}catch{stopAudio(m);message(m,'No se pudo reproducir la guía.')}
 }
 function play(m){
  if(!m.valid()||m.saving)return;
@@ -75,17 +74,7 @@ function play(m){
  const btn=m.host.querySelector('[data-ed5-audio]');
  btn?.classList.add('playing');
  btn?.setAttribute('aria-pressed','true');
- if(typeof window.Audio!=='function'){speakFallback(m,key);return}
- try{
-  // Un audio completo e independiente por pantalla; funciona con el toque real en Safari.
-  const audio=new window.Audio(AUDIO_CLIPS[m.page-1]);
-  m.audio=audio;
-  audio.preload='auto';
-  audio.onended=()=>{if(m.audioKey===key)stopAudio(m)};
-  audio.onerror=()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}};
-  const result=audio.play();
-  result?.catch?.(()=>{if(m.audioKey===key){m.audio=null;speakFallback(m,key)}});
- }catch{m.audio=null;speakFallback(m,key)}
+ speakFallback(m,key);
 }
 function hotspot(coords,action,label,{value=null,selected=false,audio=false,disabled=false}={}){
  return `<button type="button" class="spm-ed5-hit${selected?' selected':''}${audio?' audio':''}" style="${rect(...coords)}" data-ed5-action="${esc(action)}"${value!==null?` data-value="${esc(value)}" aria-pressed="${selected?'true':'false'}"`:''}${audio?' data-ed5-audio="true" aria-pressed="false"':''}${disabled?' disabled':''} aria-label="${esc(label)}"></button>`;
@@ -102,7 +91,7 @@ function render(m){
  // The source artwork says Día 5: correct the visible badge without altering any source pixels.
  const dayLabel=`<span class="spm-ed5-calendar-label" style="${rect(822,49,954,96)}" aria-hidden="true">Día ${m.calendarDay}</span>`;
  const toolbar=`<nav class="spm-ed5-toolbar" aria-label="Navegación de Erección y firmeza"><button type="button" data-ed5-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed5-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed5-session spm-er-fullscreen" data-ed5-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}, pantalla ${m.page} de tres"><div class="spm-ed5-artwork" role="group" aria-label="Pantalla original aprobada ${m.page} de 3" style="background-image:url(&quot;${esc(IMAGES[m.page-1])}&quot;)">${hits}${marks}${dayLabel}</div>${toolbar}<p role="status" aria-live="polite" class="spm-ed5-status" data-ed5-status>${esc(m.status)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed5-session spm-er-fullscreen" data-ed5-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}, pantalla ${m.page} de tres"><div class="spm-ed5-artwork" role="group" aria-label="Pantalla original aprobada ${m.page} de 3" style="background-image:url(&quot;${esc(IMAGES[m.page-1])}&quot;)">${hits}${marks}${dayLabel}</div>${toolbar}${window.SPM_VOICE?.transcript(GUIDES[m.page])||''}<p role="status" aria-live="polite" class="spm-ed5-status" data-ed5-status>${esc(m.status)}</p></section>`;
 }
 function setSelection(m,key){
  if(m.page===1){

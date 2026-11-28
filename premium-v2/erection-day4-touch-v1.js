@@ -18,7 +18,7 @@ const RESULTS=[
 const GUIDES={
  1:'Hoy vas a entrenar una habilidad propia de Erección y firmeza: reconocer cuándo tu atención se desplaza del estímulo hacia la preocupación por tu rigidez. No necesitas provocar una erección ni comprobarla hoy. Piensa en una experiencia cómoda y elige una sensación a la que puedas regresar si aparece una pregunta como «¿estará firme?». Puedes elegir temperatura, contacto o ritmo. Toca tu elección y continúa.',
  2:'Busca privacidad y elige una experiencia erótica cómoda o imagina un estímulo que te resulte agradable. No necesitas llegar a ninguna respuesta física. Durante unos minutos, dirige tu atención a la sensación que elegiste. Si aparece el pensamiento «¿cómo está mi erección?», reconócelo como un pensamiento, sin comprobar ni juzgar. Después vuelve a la temperatura, al contacto o al ritmo que hayas elegido. Puedes repetir ese regreso cuantas veces lo necesites. El cronómetro es opcional y puedes detener la práctica en cualquier momento si resulta incómoda.',
- 3:'Has terminado tu ejercicio de atención eréctil. Elige lo que mejor describa la experiencia: pude volver a la sensación, me costó regresar o no apareció la comprobación. No buscamos una erección perfecta ni vamos a repetir la escala de firmeza. Guarda tu respuesta y vuelve a las actividades que aún tienes en la ruta de hoy.'
+ 3:'Si realizaste la práctica, elige lo que mejor describa tu experiencia: pude volver a la sensación, me costó regresar o no apareció la comprobación. No vamos a repetir la escala de firmeza. Guarda tu respuesta para volver a Hoy. Si no practicaste, puedes volver a Hoy sin registrar una realización.'
 };
 const STEPS=[
  'Elige un estímulo agradable. Puede ser un contacto cómodo contigo mismo, un recuerdo o una fantasía erótica que te resulte agradable. Si compartes la experiencia con alguien, acuerden juntos lo que sea cómodo. No es necesario buscar una erección.',
@@ -36,7 +36,7 @@ const MAX_MS=300000;
 let active=null;
 function stopAudio(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voiceKey=null;
  m.host?.querySelectorAll?.('.spm-ed4-hit.playing').forEach(b=>b.classList.remove('playing'));
 }
@@ -61,10 +61,9 @@ function talk(m,key,script){
  }
  const u=new window.SpeechSynthesisUtterance(script);
  u.lang='es-CO';u.rate=.95;u.pitch=1;u.volume=1;
- const voices=window.speechSynthesis.getVoices?.()||[];
- u.voice=voices.find(v=>/^es-co$/i.test(v.lang)&&/female|mujer|paulina|sofia|helena|maria|monica/i.test(v.name))||voices.find(v=>/^es-co$/i.test(v.lang))||voices.find(v=>/^es(?:-|$)/i.test(v.lang))||null;
+
  u.onend=finish;u.onerror=finish;
- try{window.speechSynthesis.speak(u);target?.classList.add('playing')}catch{finish();status(m,'No se pudo iniciar la guía. Puedes leer las indicaciones de la pantalla.')}
+ try{window.SPM_VOICE.speak(u);target?.classList.add('playing')}catch{finish();status(m,'No se pudo iniciar la guía. Puedes leer las indicaciones de la pantalla.')}
 }
 function button(coords,act,label,{value=null,audio=null,selected=false,disabled=false}={}){
  return `<button type="button" class="spm-ed4-hit${selected?' selected':''}${audio?' audio':''}" style="${rect(...coords)}" data-ed4-action="${esc(act)}"${value===null?'':` data-value="${esc(value)}" aria-pressed="${selected?'true':'false'}"`}${audio===null?'':` data-ed4-audio="${esc(audio)}"`}${disabled?' disabled':''} aria-label="${esc(label)}"></button>`;
@@ -95,7 +94,7 @@ function render(m){
   hits+=button([39,1743,1041,1881],'save','Guardar y regresar a Hoy',{disabled:m.busy});
  }
  const toolbar=`<nav class="spm-ed4-toolbar" aria-label="Navegación Erección y firmeza día 4"><button type="button" data-ed4-action="back">${p===1?'← Volver a Hoy':'← Anterior'}</button><span>${p} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed4-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed4-session spm-er-fullscreen" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed4-session spm-er-fullscreen" data-ed4-session data-screen="${p}" aria-label="Erección y firmeza, día ${m.calendarDay}, pantalla ${p} de 3"><div class="spm-ed4-artwork" role="group" aria-label="Pantalla original aprobada ${p} de 3" style="background-image:url(&quot;${IMAGES[p-1]}&quot;)">${hits}${over}</div>${toolbar}${window.SPM_VOICE?.transcript([GUIDES[m.page],...STEPS].join("\n\n"))||''}<p class="spm-ed4-status" data-ed4-status role="status" aria-live="polite">${esc(m.message)}</p></section>`;
  if(p===2)clockUI(m);
 }
 function move(m,target){

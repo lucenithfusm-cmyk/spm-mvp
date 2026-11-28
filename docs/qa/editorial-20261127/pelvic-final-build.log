@@ -1,0 +1,17 @@
+
+> spm-pelvic-floor-lab@1.0.0 build
+> vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 37 modules transformed.
+rendering chunks...
+computing gzip size...
+../../premium-v2/pelvic-floor-lab/index.html                                            0.57 kB │ gzip:  0.36 kB
+../../premium-v2/pelvic-floor-lab/assets/spm-posture-reclined-20261113-Bo5q4eVY.webp    7.70 kB
+../../premium-v2/pelvic-floor-lab/assets/spm-posture-seated-20261113-b6WpF-y2.webp     10.10 kB
+../../premium-v2/pelvic-floor-lab/assets/spm-trainer-S_8BWHIQ.jpg                      86.00 kB
+../../premium-v2/pelvic-floor-lab/assets/pelvic-anatomy-Be2oguaa.jpg                  118.47 kB
+../../premium-v2/pelvic-floor-lab/assets/index-CtwQq_UH.css                            83.39 kB │ gzip: 15.72 kB
+../../premium-v2/pelvic-floor-lab/assets/index-UtNoVM_L.js                            258.17 kB │ gzip: 77.41 kB
+✓ built in 1.70s

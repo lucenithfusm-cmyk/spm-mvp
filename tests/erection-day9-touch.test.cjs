@@ -61,7 +61,7 @@ test('Narración del dispositivo en español: no se introduce voz no aprobada',(
  assert.equal(api.guides.length,3);
  assert.match(js,/new window\.SpeechSynthesisUtterance\(text\)/);
  assert.match(js,/utterance\.lang='es-CO'/);
- assert.match(js,/window\.speechSynthesis\.speak\(utterance\)/);
+ assert.match(js,/window\.SPM_VOICE\.speak\(utterance\)/);
  assert.doesNotMatch(js,/new window\.Audio\(|voices\.find\(|utterance\.voice\s*=/);
 });
 test('Controlador Día 24 guarda la sesión 9 con alcance de usuario y regresa a Hoy',()=>{

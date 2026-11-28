@@ -149,7 +149,7 @@ function Trainer({ n, text }: { n: number; text: string }) {
         <span className="bl-trainer-name">ENTRENADOR SPM</span>
         <p>“{text}”</p>
         <Button variant="ghost" className="bl-audio" aria-pressed={playing} disabled={!available} onClick={() => { if (playing) stopAudio(); else { if (audio.muted) setAudioMuted(false); playAudio(id); } }}>
-          {available ? <Volume2 size={15} /> : <VolumeX size={15} />} {available ? (playing ? 'Detener voz' : 'Escuchar') : 'Voz oficial pendiente'}
+          {available ? <Volume2 size={15} /> : <VolumeX size={15} />} {available ? (playing ? 'Detener voz' : 'Escuchar') : 'Guía escrita disponible'}
         </Button>
       </div>
     </section>
@@ -165,7 +165,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
         <div className="bl-hero-copy">
           <span className="bl-hero-index">MÓDULO · RESPIRACIÓN DIAFRAGMÁTICA</span>
           <h2>Respira <em>más lento</em>,<br />responde con más calma.</h2>
-          <p>La respiración es la única función automática que también puedes dirigir. Usarla bien ayuda a bajar la activación, soltar tensión y recuperar control.</p>
+          <p>Esta guía propone observar y regular la respiración de forma cómoda, sin exigir un cambio en cómo te sientes.</p>
           <button className="bl-btn gold" onClick={onStart}>Comenzar <ArrowRight size={16} /></button>
         </div>
       </section>
@@ -174,7 +174,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
         <Feature icon={<HeartPulse size={18} />} t="Regulación" d="Exhalaciones largas para bajar intensidad." />
         <Feature icon={<Activity size={18} />} t="Aplicación" d="Rescate, pausas y piso pélvico relajado." />
       </div>
-      <p className="bl-foot-note">18 pantallas · 10–15 min · tus registros se guardan solo en este dispositivo.</p>
+      <p className="bl-foot-note">18 pantallas · a tu ritmo · tus registros se guardan en tu programa SPM.</p>
     </>
   );
 }
@@ -202,7 +202,7 @@ function Compare() {
 
 function Locate({ onPractice }: { onPractice: () => void }) {
   const [ans, setAns] = useState<'chest' | 'abd' | 'both' | null>(null);
-  const fb = { chest: 'Es lo más habitual con tensión. En las siguientes pantallas llevarás el movimiento hacia el abdomen.', abd: 'Muy bien: ya usas el diafragma. Ahora trabajaremos el ritmo y la exhalación larga.', both: 'Buen punto de partida. El objetivo es que el abdomen guíe y el pecho acompañe casi quieto.' };
+  const fb = { chest: 'Es lo más habitual con tensión. En las siguientes pantallas llevarás el movimiento hacia el abdomen.', abd: 'Observa cómo se mueve el abdomen. Sigue el ritmo con comodidad, sin forzar la respiración.', both: 'Buen punto de partida. El objetivo es que el abdomen guíe y el pecho acompañe casi quieto.' };
   return (
     <section className="bl-card">
       <ol className="bl-ol"><li>Siéntate o recuéstate cómodo.</li><li>Una mano en el pecho, otra sobre el ombligo.</li><li>Respira como siempre durante 3–4 respiraciones.</li></ol>
@@ -248,7 +248,7 @@ function Relax() {
           <em>{i + 1}</em><div><h3>{z.t}</h3><p>{z.d}</p></div><span className="bl-zone-check">{on.includes(z.k) ? <Check size={16} /> : null}</span>
         </button>
       ))}
-      {on.length === 3 && <div className="bl-note teal"><Sparkles size={16} /> Cuerpo listo. La exhalación larga ahora será más fácil.</div>}
+      {on.length === 3 && <div className="bl-note teal"><Sparkles size={16} /> Marcaste las tres zonas. Observa cómo te sientes antes de continuar.</div>}
     </div>
   );
 }
@@ -338,9 +338,9 @@ function ProgressView({ sessions, planDone, competency, clear, goLibrary }: { se
             ))}
           </ul>
         )}
-        {sessions.length > 0 && <button className="bl-link" onClick={clear}>Borrar registro demo</button>}
+        {sessions.length > 0 && <button className="bl-link" onClick={clear}>Borrar registros de Respiración</button>}
       </section>
-      <p className="bl-foot-note">Registro demo local: no sale de este dispositivo.</p>
+      <p className="bl-foot-note">Tus registros de respiración se guardan en tu programa SPM.</p>
     </div>
   );
 }

@@ -6,7 +6,7 @@
 if(window.SPM_ED_DAY7_TOUCH)return;
 const IMAGES=[1,2,3].map(n=>'/premium-v2/assets/erection-day7/spm-de-day7-screen-0'+n+'.jpg');
 const GUIDES=[
- 'Hoy vas a reconocer tu progreso. Recuerda lo que has aprendido, sin exigirte una erección determinada. Selecciona uno o varios cambios que notes: comprender mejor tus contextos, soltar tensión, identificar lo que te ayuda o reconocer qué estímulos funcionan mejor. Si todavía estás empezando, también puedes indicarlo. Lo importante es observar con claridad tu punto actual, no evaluarte ni compararte.',
+ 'Revisa tu experiencia de esta semana sin exigirte una erección determinada. Selecciona solo los cambios que reconozcas: comprender tus contextos, soltar tensión, identificar lo que te ayuda o usar estímulos que te resulten agradables. Si todavía no identificas cambios, puedes elegir Aún estoy empezando. No necesitas confirmar una mejora ni compararte con otra persona.',
  'Ahora fortalece tu confianza. Elige una sola idea que te gustaría tener presente en tus próximas experiencias. No necesitas perfección para responder. Puedes volver al estímulo con calma, reconocer que tu respuesta puede entrenarse, preparar mejores condiciones o recordar que la presión no ayuda. Selecciona lo que más te sirva hoy.',
  'Para finalizar, define tu siguiente paso. Elige una acción concreta: repetir un contexto favorable, dedicar más tiempo a la estimulación, buscar un momento con menos estrés, mantener un estímulo útil o seguir observando tu patrón. No necesitas medir la firmeza hoy. Guarda tu elección y continúa con las otras actividades que tengas en tu ruta.'
 ];
@@ -43,7 +43,7 @@ const rect=(x1,y1,x2,y2)=>'left:'+(x1/864*100).toFixed(4)+'%;top:'+(y1/1536*100)
 let active=null;
 function stopAudio(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.utterance=null;
  m.host?.querySelector('.spm-ed7-hit.audio')?.classList.remove('playing');
  m.host?.querySelector('.spm-ed7-hit.audio')?.setAttribute('aria-pressed','false');
@@ -76,7 +76,7 @@ function speak(m){
   button?.classList.add('playing');button?.setAttribute('aria-pressed','true');
   u.onend=()=>{if(m.utterance===u)stopAudio(m)};
   u.onerror=()=>{if(m.utterance===u){stopAudio(m);message(m,'No se pudo reproducir la guía. Puedes intentar nuevamente.')}};
-  window.speechSynthesis.speak(u);
+  window.SPM_VOICE.speak(u);
  }catch{stopAudio(m);message(m,'No se pudo reproducir la guía.')}
 }
 function hit(coords,action,label,{value=null,selected=false,disabled=false,audio=false}={}){
@@ -97,7 +97,7 @@ function render(m){
  hits+=hit(p===3?[29,1406,835,1511]:[29,1399,835,1512],p===3?'save':'next',p===3?'Guardar y continuar mi ruta de hoy':'Continuar',{disabled:m.saving});
  const day='<div class="spm-ed7-calendar-day" aria-hidden="true"><span>Día '+m.calendarDay+'<small>Erección y firmeza</small></span></div>';
  const nav='<nav class="spm-ed7-toolbar" aria-label="Navegación de Erección y firmeza día 18"><button type="button" data-ed7-action="back">'+(p===1?'← Volver a Hoy':'← Anterior')+'</button><span>'+p+' de 3 · Día '+m.calendarDay+'</span><button type="button" data-ed7-action="exit">Salir a Hoy</button></nav>';
- m.host.innerHTML='<section class="spm-ed7-session spm-er-fullscreen" data-ed7-session data-screen="'+p+'" aria-label="Erección y firmeza · Día '+m.calendarDay+' · '+LABELS[p-1]+' · pantalla '+p+' de 3"><div class="spm-ed7-artwork" style="background-image:url(&quot;'+IMAGES[p-1]+'&quot;)" role="group" aria-label="Lámina aprobada '+p+' de 3">'+hits+markers+day+'</div>'+nav+'<p class="spm-ed7-status" data-ed7-status role="status" aria-live="polite">'+esc(m.note)+'</p></section>';
+ m.host.innerHTML='<section class="spm-ed7-session spm-er-fullscreen" data-ed7-session data-screen="'+p+'" aria-label="Erección y firmeza · Día '+m.calendarDay+' · '+LABELS[p-1]+' · pantalla '+p+' de 3"><div class="spm-ed7-artwork" style="background-image:url(&quot;'+IMAGES[p-1]+'&quot;)" role="group" aria-label="Lámina aprobada '+p+' de 3">'+hits+markers+day+'</div>'+nav+(window.SPM_VOICE?.transcript(GUIDES[m.page-1])||'')+'<p class="spm-ed7-status" data-ed7-status role="status" aria-live="polite">'+esc(m.note)+'</p></section>';
 }
 function refreshSelections(m){
  m.host.querySelectorAll('[data-ed7-action="select"]').forEach(b=>{

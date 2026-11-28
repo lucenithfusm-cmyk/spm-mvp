@@ -29,8 +29,9 @@ function harness(){
  return{w,writes,dailyWrites,guide,load(file){w.eval(read(file));},close(){observers.forEach(observer=>observer.disconnect());w.close();}};
 }
 
-test('the DE modal shows descending grades and a bound image without selecting or saving a response',async()=>{
+test('the isolated historical DE form retains descending grades without changing saved assessments',async()=>{
  const h=harness();try{
+  delete h.w.SPM_DAILY_PRACTICE.open; // Historical renderer only; current entry is tested below.
   const assessments={baseline:{answers:[3,4,3,4,4],score:18,date:'2026-10-01T00:00:00.000Z'}};
   h.w.localStorage.setItem('spm_de_assessments',JSON.stringify(assessments));h.load('erectile-function-route.js');
   h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});const root=h.w.document.getElementById('deContent');
@@ -46,18 +47,24 @@ test('the DE modal shows descending grades and a bound image without selecting o
  }finally{h.close();}
 });
 
-test('DE selection retains each numeric grade, evaluable zero and distinct not-evaluable null',async()=>{
+test('the isolated historical DE form retains each numeric grade, zero and not-evaluable null',async()=>{
  for(const [choice,value,evaluable] of [['4',4,true],['3',3,true],['2',2,true],['1',1,true],['0',0,true],['na',null,false]]){
   const h=harness();try{
+   delete h.w.SPM_DAILY_PRACTICE.open;
    h.load('erectile-function-route.js');h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});
+   h.w.SPM_DAILY_PRACTICE.open=()=>{}; // Restore the return target after isolating the historical renderer.
    const button=h.w.document.querySelector('#deEhs [data-ehs="'+choice+'"]');button.click();
    h.w.document.querySelector('[data-guide-enlarge]').click();assert.equal(button.getAttribute('aria-pressed'),'true');assert.equal(h.dailyWrites.length,0);
    h.w.document.getElementById('deSave').click();await tick();assert.equal(h.dailyWrites.length,1);
    const [id,record,scope,day]=h.dailyWrites[0];assert.equal(id,'main');assert.equal(scope,'qa:plan');assert.equal(day,1);assert.equal(record.ehs,value);assert.equal(record.ehsEvaluable,evaluable);
    const stored=h.w.SPM_ERECTILE_FUNCTION.records();assert.equal(stored.length,1);assert.equal(stored[0].ehs,value);assert.equal(stored[0].ehsEvaluable,evaluable);
-   h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});assert.equal(h.w.document.querySelector('#deEhs [aria-pressed="true"]').dataset.ehs,choice);assert.equal(h.dailyWrites.length,1);
+   delete h.w.SPM_DAILY_PRACTICE.open;h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});assert.equal(h.w.document.querySelector('#deEhs [aria-pressed="true"]').dataset.ehs,choice);assert.equal(h.dailyWrites.length,1);
   }finally{h.close();}
  }
+});
+
+test('the current DE entry opens Today without reviving the historical form or saving',()=>{
+ const h=harness();try{let opened=0;h.w.SPM_DAILY_PRACTICE.open=()=>opened++;h.load('erectile-function-route.js');h.w.SPM_ERECTILE_FUNCTION.open(1,{origin:'dailyPlan'});assert.equal(opened,1);assert.equal(h.w.document.querySelector('#deContent [data-guide-contract]'),null);assert.deepEqual(h.dailyWrites,[]);}finally{h.close()}
 });
 
 test('Response Tracker shows grades 4 to 1 without mutating the ascending content or adding another null state',async()=>{

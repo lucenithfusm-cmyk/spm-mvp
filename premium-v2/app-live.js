@@ -6,7 +6,43 @@ const db=PUBLIC_ASSESSMENT?null:window.supabase.createClient(SB_URL,SB_KEY);
 const E=window.ENGINE||{assessment:{questions:[]}}, M=window.SPM_MODULES||{phases:[],days:[],profiles:{}};
 const $=id=>document.getElementById(id);
 const MEDICATION_NOTE='SPM complementa tu cuidado de la salud. No reemplaza una valoración médica ni tu tratamiento. Si tienes un medicamento prescrito para la función eréctil u otra condición, participar en el programa no es motivo para suspenderlo ni cambiar su dosis. Cualquier ajuste debe acordarse con el profesional que te lo indique.';
-const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[]};
+const S={user:null,motives:[],queue:[],answers:{},qi:0,map:null,phase:1,assessmentId:null,mapId:null,planId:null,completed:new Set(),checkins:[],epoch:0,plan:null,closures:[]};
+const activityRevisions=new Map(),writeTasks=new Map(),writeFingerprints=new Map(),pendingActivityPayloads=new Map();
+function recordIntent(record){
+ const value={...record};for(const key of ['completedAt','savedAt','at'])delete value[key];
+ const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().map(k=>[k,stable(v[k])])):v;
+ return JSON.stringify(stable(value));
+}
+const contextKey=c=>c?`${c.userId}:${c.planId}`:'';
+function assertScope(expected,day,version,epoch){const c=window.SPM_RESOURCE_CONTEXT?.();if(!c||contextKey(c)!==expected||(day!=null&&Number(c.day)!==Number(day))||(version&&c.scheduleVersion!==version)||(epoch!=null&&S.epoch!==epoch))throw Error('La cuenta o el programa cambió. Vuelve a abrir tu actividad.');return c;}
+function persistenceError(error){
+ const message=String(error?.message||error||'');
+ const labels={SPM_CONTEXT_CONFLICT:'La jornada o el programa cambió. Recupera tu programa antes de continuar.',SPM_ACTIVITY_UNAVAILABLE:'Esta actividad no está disponible en la jornada actual. Revisa su indicación antes de continuar.',SPM_INVALID_ACTIVITY_RECORD:'El registro está incompleto o tiene datos incompatibles. Revisa tus respuestas antes de guardar.',SPM_RECORD_REVISION_CONFLICT:'Este registro cambió en otra pestaña. Vuelve a abrirlo para revisar la versión guardada.',SPM_PLAN_REVISION_CONFLICT:'Tu programa cambió en otra pestaña. Recupera tu día antes de continuar.',SPM_PROGRESS_RECONCILIATION_REQUIRED:'El avance guardado necesita una comprobación antes de continuar. Tus registros se conservan.',SPM_REQUIRED_ACTIVITY_PENDING:'Falta guardar uno o más registros requeridos de hoy.',SPM_VOLUNTARY_CONFIRMATION_REQUIRED:'Confirma que quieres cerrar esta jornada voluntaria.',SPM_ASSESSMENT_PENDING:'Completa las respuestas pendientes de tu evaluación para continuar.',SPM_SAFETY_PAUSE:'Tu programa mantiene una indicación de seguridad. Revisa cómo continuar.',SPM_PLAN_ACCESS_DENIED:'No pudimos confirmar el acceso a este programa. Reingresa con tu cuenta.',SPM_OPERATION_CONFLICT:'El intento de guardado cambió. Reabre el registro para recuperar su estado.'};
+ const code=Object.keys(labels).find(k=>message.includes(k));
+ const e=new Error(code?labels[code]:'No pudimos confirmar el guardado. Conserva esta pantalla y reintenta; si ya se guardó, recuperaremos el mismo registro.');e.code=code||error?.code||'SPM_SAVE_UNCONFIRMED';return e;
+}
+async function operationFor(key,payload){
+ const bytes=new TextEncoder().encode(JSON.stringify(payload));
+ const digest=await crypto.subtle.digest('SHA-256',bytes),fingerprint=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+ let prior;try{prior=JSON.parse(sessionStorage.getItem('spm-operation:'+key)||'null')}catch{}
+ if(prior?.fingerprint===fingerprint)return prior.id;
+ const id=crypto.randomUUID();try{sessionStorage.setItem('spm-operation:'+key,JSON.stringify({id,fingerprint}))}catch{}return id;
+}
+function clearOperation(key){try{sessionStorage.removeItem('spm-operation:'+key)}catch{}}
+function invalidateSession(){
+ S.epoch++;S.plan=null;S.planId=null;S.map=null;S.completed=new Set();S.checkins=[];S.closures=[];
+ S.assessmentId=null;S.mapId=null;S.answers={};S.motives=[];S.queue=[];S.qi=0;
+ activityRevisions.clear();writeTasks.clear();writeFingerprints.clear();pendingActivityPayloads.clear();window.SPM_RESTORE_COMPLETE=false;window.SPM_RESTORED_CONTEXT=null;
+ window.SPM_DEVICE_VOICE?.stop?.();window.SPM_PRACTICE_AUDIO?.stop?.();
+ restoreState.running=false;restoreState.complete=false;restoreState.hasPlan=false;
+ restoreOverlay(false);
+ ['domainGrid','whyList','dayGrid','phaseTabs','weekIntro','chart','coachDecision','spmDailyWorkspace','spmDailySession'].forEach(id=>$(id)?.replaceChildren());
+ ['scoreValue','profileTitle','profileExplain','stChecks','stAdh','stConf','stOutcome','stDecision'].forEach(id=>{if($(id))$(id).textContent='—'});
+ ['note','sleep','stress','confidence','desire','outcome','sexualActivity','completed','newFlag'].forEach(id=>{if($(id))$(id).value=''});if($('coachSave'))$('coachSave').disabled=false;if($('savedState'))$('savedState').textContent='Sin programa recuperado';
+ document.querySelectorAll('dialog[open]').forEach(dialog=>{try{dialog.close()}catch{dialog.removeAttribute('open')}});
+ nav('intake');
+ window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+}
 window.SPM_RESTORE_AUTHORITY_V3=true;
 const restoreState={running:false,complete:false,hasPlan:false};
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
@@ -36,109 +72,124 @@ async function withRetry(task,attempts=3){
 window.SPM_RESOURCE_CONTEXT=()=>{
  if(!S.user)return null;
  const r=window.SPM_RESTORED_CONTEXT;
- if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Math.min(28,Math.max(Number(r.plan.current_day)||1,Math.max(0,...(r.done||[]))+1)),answers:r.assessment?.answers||{},motives:r.assessment?.motives||[],primary:r.map?.primary_domain,secondary:r.map?.secondary_domain,safety:r.map?.safety_level||'none',flags:r.map?.safety_flags||[],completed:[...(r.done||[])],checkins:r.checkins||[]};
+ if(r?.uid===S.user.id&&r.plan?.id)return {userId:r.uid,planId:r.plan.id,day:Math.min(28,Math.max(1,Number(r.plan.current_day)||1)),scheduleVersion:r.plan.schedule_version||'legacy',planRevision:Number(r.plan.revision)||0,cycleStatus:r.plan.cycle_status||'open',planStatus:r.plan.status,answers:r.assessment?.answers||{},motives:r.assessment?.motives||[],primary:r.map?.primary_domain,secondary:r.map?.secondary_domain,safety:r.map?.safety_level||'none',flags:r.map?.safety_flags||[],completed:[...(r.done||[])],closures:r.closures||[],checkins:r.checkins||[]};
  if(!S.planId||!S.map)return null;
- return {userId:S.user.id,planId:S.planId,day:Math.min(28,Math.max(0,...S.completed)+1),answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,secondary:S.map.secondary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],checkins:[...S.checkins]};
+ return {userId:S.user.id,planId:S.planId,day:Number(S.plan?.current_day)||1,scheduleVersion:S.plan?.schedule_version||'legacy',planRevision:Number(S.plan?.revision)||0,cycleStatus:S.plan?.cycle_status||'open',planStatus:S.plan?.status||'active',answers:{...S.answers},motives:[...S.motives],primary:S.map.primary,secondary:S.map.secondary,safety:S.map.urgent.length?'urgent':S.map.review.length?'review':'none',flags:[...S.map.urgent,...S.map.review],completed:[...S.completed],closures:[...S.closures],checkins:[...S.checkins]};
 };
 // Each daily activity is saved separately; resource rows never advance the 28-day plan.
 window.SPM_DAILY_RECORDS={
  async readCheckpoints(expectedScope){
+  const epoch=S.epoch;
   const c=window.SPM_RESOURCE_CONTEXT();if(!c||expectedScope!==c.userId+':'+c.planId)throw Error('Program changed');
   const {data,error}=await db.from('activity_completions').select('day_number,metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:daily_activity:program-checkpoint').order('day_number');
-  if(error)throw error;return data||[];
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);return data||[];
  },
  async read(expectedScope,day){
+  const epoch=S.epoch;
   const c=window.SPM_RESOURCE_CONTEXT();
   if(!c||expectedScope!==c.userId+':'+c.planId)throw Error('Program changed');
-  const {data,error}=await db.from('activity_completions').select('module_key,metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('day_number',day).like('module_key','resource:daily_activity:%');
+  const {data,error}=await db.from('activity_completions').select('module_key,metadata,record_revision').eq('user_id',c.userId).eq('plan_id',c.planId).eq('day_number',day).like('module_key','resource:daily_activity:%');
   if(error)throw error;
-  return Object.fromEntries((data||[]).map(r=>[r.module_key.slice('resource:daily_activity:'.length),r.metadata]));
+  assertScope(expectedScope,null,null,epoch);
+  for(const key of pendingActivityPayloads.keys())if(key.startsWith(`${expectedScope}:${day}:`)&&!writeTasks.has(key))pendingActivityPayloads.delete(key);
+  return Object.fromEntries((data||[]).map(r=>{const id=r.module_key.slice('resource:daily_activity:'.length),revision=Number(r.record_revision)||0;activityRevisions.set(`${expectedScope}:${day}:${id}`,revision);return [id,{...r.metadata,_recordRevision:revision}]}));
  },
  async save(id,metadata,expectedScope,day){
+  const epoch=S.epoch;
   const c=window.SPM_RESOURCE_CONTEXT();
   if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
   if(!/^[a-z0-9-]{1,60}$/.test(id)||!metadata||JSON.stringify(metadata).length>25000)throw Error('Invalid activity');
-  if(window.SPM_DAILY_PRACTICE?.restricted(c,id))throw Error('Practice paused');
-  const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:daily_activity:'+id,metadata,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
-  if(error)throw error;
-  return {ok:true};
+  if(c.cycleStatus==='completed'||c.completed?.includes(day))throw Error('Esta jornada ya está cerrada. Puedes consultar tus registros y los recursos de la Biblioteca.');if(window.SPM_DAILY_PRACTICE?.restricted(c,id))throw Error('Practice paused');
+  const key=`${expectedScope}:${day}:${id}`,version=c.scheduleVersion||'legacy';
+  const a=window.SPM_DAILY_PRACTICE?.assignments(c).find(x=>x.id===id);if(!a)throw Error('Esta actividad no pertenece a tu jornada.');
+  const state=metadata.activityStatus||(metadata.completed===false?'interrupted':'completed');
+  const clean={...metadata,activityKind:a.kind,activityStatus:state,completed:state==='completed',scheduleVersion:version,...(a.assignmentId?{assignmentId:a.assignmentId,contentId:a.contentId,contentVersion:a.contentVersion,sourceDay:a.sourceDay,scheduledDay:day}:{} )};
+  delete clean.operationId;delete clean._recordRevision;
+  const intent=recordIntent(clean),pending=pendingActivityPayloads.get(key);
+  if(pending&&pending.intent!==intent)throw Error('El guardado anterior aún no está confirmado. Reabre la actividad para recuperar lo guardado antes de cambiar sus respuestas.');
+  const args=pending?.args||{p_plan_id:c.planId,p_day:day,p_activity_id:id,p_metadata:clean,p_schedule_version:version,p_expected_record_revision:activityRevisions.get(key)||0};
+  const fingerprint=JSON.stringify(args);
+  if(writeTasks.has(key)){if(writeFingerprints.get(key)!==fingerprint)throw Error('Hay un guardado en curso. Espera su confirmación antes de guardar otros cambios.');return writeTasks.get(key);}
+  pendingActivityPayloads.set(key,{intent,args});
+  const task=(async()=>{const op=await operationFor(key,args);assertScope(expectedScope,day,version,epoch);const {data,error}=await db.rpc('spm_save_activity',{...args,p_operation_id:op});if(error)throw persistenceError(error);assertScope(expectedScope,day,version,epoch);if(!data?.ok||!data.metadata||!Number.isInteger(Number(data.recordRevision)))throw persistenceError('Invalid activity response');activityRevisions.set(key,Number(data.recordRevision));pendingActivityPayloads.delete(key);clearOperation(key);return data;})();
+  writeTasks.set(key,task);writeFingerprints.set(key,fingerprint);try{return await task;}finally{if(writeTasks.get(key)===task){writeTasks.delete(key);writeFingerprints.delete(key);}}
  }
 };
 window.SPM_RESOURCE_RECORDS={
- async read(){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
- async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT();if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;}
+ async read(){const ctx=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;if(!ctx)return [];const {data,error}=await db.from('activity_completions').select('id,day_number,metadata,completed_at').eq('user_id',ctx.userId).eq('plan_id',ctx.planId).like('module_key','resource:%').order('completed_at');if(error)throw error;assertScope(contextKey(ctx),null,null,epoch);return (data||[]).map(x=>({...x.metadata,day:x.day_number,at:x.completed_at,id:x.id}));},
+ async save(record,expectedScope){const ctx=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;if(!ctx)throw new Error('No active program');if(expectedScope&&expectedScope!==ctx.userId+':'+ctx.planId)throw new Error('Program changed');if(!['response','confidence','movement','recovery','learning'].includes(record.kind)||!Number.isInteger(record.day)||record.day<1||record.day>28)throw new Error('Invalid record');const {error}=await db.from('activity_completions').insert({id:record.id,user_id:ctx.userId,plan_id:ctx.planId,day_number:record.day,module_key:'resource:'+record.kind+':'+record.id,metadata:record,completed_at:record.at});if(error)throw error;assertScope(contextKey(ctx),null,null,epoch);}
 };
 window.SPM_EP_RECORDS={
- async read(expectedScope){const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');const {data,error}=await db.from('activity_completions').select('metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:ep_checkpoint');if(error)throw error;return (data||[]).map(x=>x.metadata);},
- async save(record,expectedScope){const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.userId+':'+c.planId!==expectedScope||![1,14,28].includes(record.day)||record.day>Number(c.day))throw Error('Program changed');if(typeof record.ielt_evaluable!=='boolean'||(record.ielt_evaluable&&(!Number.isInteger(record.ielt_seconds)||record.ielt_seconds<=0||record.ielt_seconds>3599))||(record.pedt_score!==null&&(!Number.isInteger(record.pedt_score)||record.pedt_score<0||record.pedt_score>20)))throw Error('Invalid checkpoint');const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:record.day,module_key:'resource:ep_checkpoint',metadata:record,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;}
+ async read(expectedScope){const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;if(!c||c.userId+':'+c.planId!==expectedScope)throw Error('Program changed');const {data,error}=await db.from('activity_completions').select('metadata').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:ep_checkpoint');if(error)throw error;assertScope(expectedScope,null,null,epoch);return (data||[]).map(x=>x.metadata);},
+ async save(record,expectedScope){const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;if(!c||c.userId+':'+c.planId!==expectedScope||![1,14,28].includes(record.day)||record.day>Number(c.day))throw Error('Program changed');if(typeof record.ielt_evaluable!=='boolean'||(record.ielt_evaluable&&(!Number.isInteger(record.ielt_seconds)||record.ielt_seconds<=0||record.ielt_seconds>3599))||(record.pedt_score!==null&&(!Number.isInteger(record.pedt_score)||record.pedt_score<0||record.pedt_score>20)))throw Error('Invalid checkpoint');const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:record.day,module_key:'resource:ep_checkpoint',metadata:record,completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;assertScope(expectedScope,null,null,epoch);}
 };
 // The educational Lab saves its own state. It never completes a calendar day.
 window.SPM_PELVIC_RECORDS={
  async read(expectedScope){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:pelvic_lab_state').order('completed_at',{ascending:false});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return data?.[0]?.metadata?.state||{};
  },
  async save(state,expectedScope,day){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   if(!Number.isInteger(day)||day<1||day>28||!window.SPM_PELVIC_LAB?.validState(state))throw new Error('Invalid pelvic record');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:pelvic_lab_state',metadata:{source:'pelvic-floor-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return {ok:true};
  }
 };
 // Desire uses the same authenticated, RLS-protected resource persistence.
 window.SPM_DESIRE_RECORDS={
  async read(expectedScope){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:desire_lab_state').order('completed_at',{ascending:false});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return data?.[0]?.metadata?.state||{};
  },
  async save(state,expectedScope,day){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   if(!Number.isInteger(day)||day<1||day>28||!window.SPM_DESIRE_LAB?.validState(state))throw new Error('Invalid desire record');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:desire_lab_state',metadata:{source:'desire-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return {ok:true};
  }
 };
 window.SPM_SENSATE_RECORDS={
  async read(expectedScope){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:sensate_lab_state').order('completed_at',{ascending:false});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return data?.[0]?.metadata?.state||{};
  },
  async save(state,expectedScope,day){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   if(!Number.isInteger(day)||day<1||day>28||!window.SPM_SENSATE_LAB?.validState(state))throw new Error('Invalid sensate record');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:sensate_lab_state',metadata:{source:'sensate-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return {ok:true};
  }
 };
 window.SPM_BREATHING_RECORDS={
  async read(expectedScope){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   const {data,error}=await db.from('activity_completions').select('metadata,completed_at').eq('user_id',c.userId).eq('plan_id',c.planId).eq('module_key','resource:breathing_lab_state').order('completed_at',{ascending:false});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return data?.[0]?.metadata?.state||{};
  },
  async save(state,expectedScope,day){
-  const c=window.SPM_RESOURCE_CONTEXT();
+  const c=window.SPM_RESOURCE_CONTEXT(),epoch=S.epoch;
   if(!c||expectedScope!==c.userId+':'+c.planId)throw new Error('Program changed');
   if(!Number.isInteger(day)||day<1||day>28||day!==Number(c.day)||!window.SPM_BREATHING_LAB?.validState(state))throw new Error('Invalid breathing record');
   const {error}=await db.from('activity_completions').upsert({user_id:c.userId,plan_id:c.planId,day_number:day,module_key:'resource:breathing_lab_state',metadata:{source:'breathing-lab-v1',state},completed_at:new Date().toISOString()},{onConflict:'plan_id,day_number,module_key'});
-  if(error)throw error;
+  if(error)throw error;assertScope(expectedScope,null,null,epoch);
   return {ok:true};
  }
 };
@@ -153,13 +204,16 @@ function nav(id){document.querySelectorAll('.panel').forEach(p=>p.classList.togg
 function label(k){return (M.profiles?.[k]?.label_es)||({erection:'Rendimiento eréctil',ejaculation:'Control eyaculatorio',desire:'Deseo y excitación',confidence:'Confianza sexual',wellbeing:'Satisfacción y conexión',lifestyle:'Base de rendimiento'}[k]||k)}
 async function boot(){
  if(PUBLIC_ASSESSMENT){show('appScreen');renderMotives();resetForAssessment(true);return;}
- const {data:{session}}=await db.auth.getSession();
- if(session?.user){S.user=session.user; await enterApp();} else show('authScreen');
- db.auth.onAuthStateChange(async(event,session)=>{
+ const initialEpoch=S.epoch;
+ db.auth.onAuthStateChange((event,session)=>{
    window.dispatchEvent(new CustomEvent('spm:session-change',{detail:{userId:session?.user?.id||null}}));
    if(event==='PASSWORD_RECOVERY'){show('authScreen');setTimeout(finishRecovery,100);return}
-   if(session?.user&&!S.user){S.user=session.user;await enterApp()}
+   if(!session?.user){invalidateSession();S.user=null;show('authScreen');return;}
+   if(session.user.id!==S.user?.id){invalidateSession();S.user=session.user;const epoch=S.epoch;setTimeout(()=>{if(S.epoch===epoch)enterApp();},0);}
  });
+ const {data:{session}}=await db.auth.getSession();
+ if(S.epoch!==initialEpoch||S.user)return;
+ if(session?.user){S.user=session.user;await enterApp();}else show('authScreen');
 }
 async function sign(mode){
  hideMsg();const email=$('email').value.trim(), password=$('password').value;
@@ -171,7 +225,7 @@ async function sign(mode){
  btn.disabled=false;btn.textContent='Entrar';
  if(res.error){msg(res.error.message,'danger');return}
  if(mode==='signup'&&!res.data.session){msg('Cuenta creada. Revisa tu correo para confirmar y luego vuelve a entrar.','good');return}
- S.user=res.data.user;await enterApp();
+ if(S.user?.id!==res.data.user?.id){invalidateSession();S.user=res.data.user;await enterApp();}
 }
 async function resetPassword(){
  hideMsg();const email=$('email').value.trim();
@@ -193,6 +247,7 @@ async function finishRecovery(){
  msg('Contraseña actualizada correctamente. Ya puedes continuar con SPM.','good');
 }
 async function enterApp(){
+ const epoch=S.epoch,uid=S.user?.id;
  show('appScreen');$('who').textContent=S.user.email||'Usuario';renderMotives();restoreOverlay(true);
  try{
   const restored=await restore();
@@ -200,10 +255,11 @@ async function enterApp(){
   if(restored)ensureProfile().catch(error=>console.warn('SPM profile sync delayed',error));
   else if(!restoreState.hasPlan){ensureProfile().catch(()=>{});}
  }catch(error){
+  if(epoch!==S.epoch||uid!==S.user?.id)return;
   console.error('SPM authoritative restore',error);
   msg('No pudimos terminar de recuperar tu programa. Tu avance se conserva. Usa «Reintentar acceso» para continuar.','warn');
   let retry=$('spmRestoreRetry');if(!retry){retry=document.createElement('button');retry.id='spmRestoreRetry';retry.className='btn pri';retry.textContent='Reintentar acceso';$('status').after(retry);}retry.onclick=async()=>{retry.disabled=true;await enterApp();retry.disabled=false;};
- }finally{restoreOverlay(false);}
+ }finally{if(epoch===S.epoch&&uid===S.user?.id)restoreOverlay(false);}
 }
 function showAccessPending(){
  nav('intake');['ageCard','motiveCard','quizCard'].forEach(id=>$(id).hidden=true);
@@ -237,9 +293,11 @@ async function ensureProfile(){
 }
 async function restore(){
  if(restoreState.running)return restoreState.hasPlan;
+ const epoch=S.epoch,uid=S.user?.id;
+ const current=()=>{if(epoch!==S.epoch||uid!==S.user?.id)throw Error('Program changed');};
  restoreState.running=true;
  try{
-  const {data:plans}=await withRetry(()=>db.from('plans').select('*').eq('user_id',S.user.id).order('created_at',{ascending:false}));
+  const {data:plans}=await withRetry(()=>db.from('plans').select('*').eq('user_id',uid).order('created_at',{ascending:false}));current();
   if(!plans?.length){restoreState.complete=true;restoreState.hasPlan=false;showAccessPending();return false}
   const ranked=[...plans].sort((a,b)=>{
    const active=(b.status==='active')-(a.status==='active');
@@ -252,46 +310,41 @@ async function restore(){
   for(const candidate of ranked){
    if(!candidate.assessment_id||!candidate.performance_map_id)continue;
    const [ar,mr]=await Promise.all([
-    withRetry(()=>db.from('assessments').select('*').eq('id',candidate.assessment_id).eq('user_id',S.user.id).maybeSingle()),
-    withRetry(()=>db.from('performance_maps').select('*').eq('id',candidate.performance_map_id).eq('user_id',S.user.id).maybeSingle())
+    withRetry(()=>db.from('assessments').select('*').eq('id',candidate.assessment_id).eq('user_id',uid).maybeSingle()),
+    withRetry(()=>db.from('performance_maps').select('*').eq('id',candidate.performance_map_id).eq('user_id',uid).maybeSingle())
    ]);
+   current();
    if(ar.data&&mr.data){p=candidate;a=ar.data;m=mr.data;break}
   }
   if(!p)throw new Error('Se encontró tu cuenta, pero no un conjunto completo de evaluación, Performance Map y plan.');
+  const [progress,checkins]=await Promise.all([
+   withRetry(()=>db.rpc('spm_get_program_progress',{p_plan_id:p.id})),
+   withRetry(()=>db.from('daily_checkins').select('*').eq('user_id',uid).eq('plan_id',p.id).order('day_number'))
+  ]);current();
+  if(!progress.data?.plan||!Array.isArray(progress.data?.closures))throw Error('No pudimos confirmar el avance de este programa.');
+  p=progress.data.plan;S.plan=p;S.closures=progress.data.closures;
   $('spmRestoreRetry')?.remove();$('spmAccessPending')?.remove();
   S.planId=p.id;S.assessmentId=p.assessment_id;S.mapId=p.performance_map_id;
   S.motives=a.motives||[];S.answers=a.answers||{};
   S.map={scores:m.domain_scores||{},primary:m.primary_domain,secondary:m.secondary_domain,total:m.spm_score||0,urgent:m.safety_level==='urgent'?(m.safety_flags||[]):[],review:m.safety_level==='review'?(m.safety_flags||[]):[]};
-  S.completed=new Set();S.checkins=[];
+  S.completed=new Set(S.closures.map(x=>Number(x.day_number)));S.checkins=checkins.data||[];
   restoreState.complete=true;restoreState.hasPlan=true;
   window.SPM_PROGRAM_ENTRY?.remember();
   window.SPM_RESTORE_COMPLETE=true;
-  window.SPM_RESTORED_CONTEXT={db,uid:S.user.id,session:null,plan:p,assessment:a,map:m,done:S.completed,checkins:S.checkins};
+  window.SPM_RESTORED_CONTEXT={db,uid,session:null,plan:p,assessment:a,map:m,done:S.completed,closures:S.closures,checkins:S.checkins};
   ['ageCard','motiveCard','quizCard'].forEach(id=>{if($(id))$(id).hidden=true});
   ['navMap','navPlan','navCoach','navProgress'].forEach(id=>{if($(id))$(id).disabled=false});
   S.phase=Math.max(1,Math.min(4,Math.ceil((Number(p.current_day)||1)/7)));
   const welcome=new URLSearchParams(location.search).get('welcome')==='1';
-  nav(welcome?'map':'plan');renderMap();renderPlan();populateCoach();renderProgress();if(!welcome)window.SPM_DAILY_PRACTICE?.open();msg(`Tu Performance Map fue restaurado. Tu programa continúa en el día ${Number(p.current_day)||1}.`,'good');
-  hydrateProgressInBackground(p).catch(error=>console.warn('SPM progress hydration',error));
+  nav(welcome?'map':'plan');renderMap();renderPlan();populateCoach();renderProgress();if(!welcome)window.SPM_DAILY_PRACTICE?.open();msg(p.cycle_status==='completed'?'Tu ciclo está cerrado. Puedes consultar tus registros, tu informe y los recursos para continuar.':`Tu programa fue recuperado. Continúas en el día ${Number(p.current_day)||1}.`,'good');
+  window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
   return true;
- }finally{restoreState.running=false;}
+ }finally{if(epoch===S.epoch)restoreState.running=false;}
 }
 async function hydrateProgressInBackground(plan){
- const timeout=(promise,ms)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),ms))]);
- try{
-  const cr=await timeout(db.from('activity_completions').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId),5000);
-  if(!cr.error)S.completed=new Set((cr.data||[]).filter(x=>!x.module_key?.startsWith('resource:')).map(x=>x.day_number));
- }catch(error){console.warn('SPM activity hydration delayed',error)}
- try{
-  const dr=await timeout(db.from('daily_checkins').select('*').eq('user_id',S.user.id).eq('plan_id',S.planId).order('day_number'),5000);
-  if(!dr.error)S.checkins=dr.data||[];
- }catch(error){console.warn('SPM check-in hydration delayed',error)}
- if(window.SPM_RESTORED_CONTEXT?.plan?.id===plan.id){
-  window.SPM_RESTORED_CONTEXT.done=S.completed;
-  window.SPM_RESTORED_CONTEXT.checkins=S.checkins;
- }
- renderPlan();populateCoach();renderProgress();
- window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+ // Kept as a compatibility entry point; the canonical restore now awaits both reads.
+ const c=window.SPM_RESOURCE_CONTEXT();if(!c||c.planId!==plan.id)return;
+ await restore();
 }
 function resetForAssessment(force=false){
  if(!force&&(restoreState.running||restoreState.hasPlan||window.SPM_RESTORED_CONTEXT?.plan?.id))return;
@@ -346,9 +399,9 @@ async function finishAssessment(){
 function renderMap(){
  if(!S.map)return;const m=S.map;$('scoreValue').textContent=m.total;$('scoreRing').style.setProperty('--pct',m.total);$('profileTitle').textContent=label(m.primary);
  $('profileExplain').textContent=`Según tu autoevaluación, tu área prioritaria de trabajo es ${label(m.primary).toLowerCase()}${m.secondary?`, junto con ${label(m.secondary).toLowerCase()}`:''}. Estas respuestas nos ayudan a organizar tu rutina y explorar factores que pueden relacionarse con tu experiencia sexual. No establecen un diagnóstico ni confirman una causa.`;
- $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>Sin banderas mayores detectadas en este tamizaje.</b> Esto no sustituye una valoración médica.</div>';
+ $('safetyBox').innerHTML=m.urgent.length?'<div class="notice danger"><b>Prioridad de seguridad.</b> Tus respuestas incluyen una señal que requiere atención médica urgente antes de continuar.</div>':m.review.length?'<div class="notice warn"><b>Revisión profesional recomendada.</b> Hay datos que conviene revisar externamente mientras usas solo módulos seguros.</div>':'<div class="notice good"><b>No registraste señales de alerta mayores en este cuestionario.</b> Esto no sustituye una valoración médica.</div>';
  const g=$('domainGrid');g.innerHTML='';Object.entries(m.scores).filter(([k])=>['erection','ejaculation','desire','confidence','wellbeing','lifestyle'].includes(k)).forEach(([k,v])=>{g.insertAdjacentHTML('beforeend',`<div class="domain"><div class="domainHead"><b>${label(k)}</b><span>${v}/100</span></div><div class="bar"><i style="width:${v}%"></i></div></div>`)});
- $('whyList').innerHTML=`<div class="mini"><small>Driver principal</small><p>${label(m.primary)} es el dominio con mayor margen de trabajo.</p></div>${m.secondary?`<div class="mini"><small>Secundario</small><p>${label(m.secondary)} puede modificar la respuesta del driver principal.</p></div>`:''}`;
+ $('whyList').innerHTML=`<div class="mini"><small>Área prioritaria</small><p>${label(m.primary)} es el dominio con mayor margen de trabajo.</p></div>${m.secondary?`<div class="mini"><small>Secundario</small><p>${label(m.secondary)} puede influir en tu experiencia junto con el área prioritaria.</p></div>`:''}`;
  if(!PUBLIC_ASSESSMENT){
   let routine=$('spmMapRoutine');if(!routine){routine=document.createElement('section');routine.id='spmMapRoutine';routine.className='card';$('map').append(routine)}
   const work={erection:'Trabajaremos la comprensión de tu respuesta eréctil, la atención a las sensaciones y la confianza, junto con prácticas y hábitos seleccionados para tu ruta.',ejaculation:'Trabajaremos el reconocimiento de la excitación, el ritmo y las habilidades de control, con prácticas progresivas y descansos dentro de tu calendario.',desire:'Trabajaremos la exploración del deseo, el contexto, las sensaciones y la conexión, sin convertir la experiencia en una exigencia de rendimiento.',confidence:'Trabajaremos la presión de rendimiento, la atención y la confianza mediante recursos guiados y registros de tu experiencia.',wellbeing:'Trabajaremos la satisfacción, la conexión y los hábitos que apoyan tu bienestar sexual.',lifestyle:'Trabajaremos una base de hábitos y bienestar, con recomendaciones de sueño, movimiento y alimentación distribuidas durante el programa.'};
@@ -363,72 +416,90 @@ function renderPlan(){
  if(!S.map||!M.days)return;const tabs=$('phaseTabs');tabs.innerHTML='';(M.phases||[]).forEach(ph=>{const b=document.createElement('button');b.className='phaseBtn'+(S.phase===ph.id?' on':'');b.textContent=`${ph.id}. ${ph.name_es}`;b.onclick=()=>{S.phase=ph.id;renderPlan()};tabs.appendChild(b)});
  const ph=(M.phases||[]).find(x=>x.id===S.phase)||{days:[1,2,3,4,5,6,7],name_es:'Fase 1',intro_es:'Construye una línea de base segura.'};$('weekIntro').innerHTML=`<b>${ph.name_es}</b> · ${ph.intro_es}`;
  const g=$('dayGrid');g.innerHTML='';M.days.filter(x=>ph.days.includes(x.d)).forEach(day=>{const c=document.createElement('div');c.className='dayCard';const done=S.completed.has(day.d);
- c.innerHTML=`<div class="dayTop"><div class="dayNum">${day.d}</div><div><h4>${day.title_es}</h4><p>${(day.learn_es||'').slice(0,105)}…</p></div><span class="tag">${done?'Completado ✓':label(S.map.primary)}</span></div><div class="dayBody"><div class="lessonFlow"><div class="lesson"><b>Aprender</b><p>${day.learn_es||''}</p></div><div class="lesson"><b>Practicar</b><p>${day.practice_es||'Practica la habilidad principal del día sin convertirla en una prueba de desempeño.'}</p></div><div class="lesson"><b>Medir</b><p>${day.measure_es||'Registra tu experiencia siguiendo la indicación de esta actividad. Puedes indicar “no evaluable / no aplica”.'}</p></div><div class="lesson"><b>Aplicar</b><p>${day.apply_es||'Aplica la habilidad en un contexto seguro y sin presión.'}</p></div><div class="lesson"><b>Completar</b><p>${day.complete_es||'Marca la práctica al finalizar.'}</p></div></div><div class="interactive"><button class="btn pri doneBtn">${done?'Completado ✓':'Marcar práctica como completada'}</button></div></div>`;
+ c.innerHTML=`<div class="dayTop"><div class="dayNum">${day.d}</div><div><h4>${day.title_es}</h4><p>${(day.learn_es||'').slice(0,105)}…</p></div><span class="tag">${done?'Día cerrado ✓':label(S.map.primary)}</span></div><div class="dayBody"><div class="lessonFlow"><div class="lesson"><b>Aprender</b><p>${day.learn_es||''}</p></div><div class="lesson"><b>Practicar</b><p>${day.practice_es||'Practica la habilidad principal del día sin convertirla en una prueba de desempeño.'}</p></div><div class="lesson"><b>Medir</b><p>${day.measure_es||'Registra tu experiencia siguiendo la indicación de esta actividad. Puedes indicar “no evaluable / no aplica”.'}</p></div><div class="lesson"><b>Aplicar</b><p>${day.apply_es||'Aplica la habilidad en un contexto seguro y sin presión.'}</p></div><div class="lesson"><b>Completar</b><p>${day.complete_es||'Marca la práctica al finalizar.'}</p></div></div><div class="interactive"><button class="btn pri doneBtn">${done?'Día cerrado ✓':'Abrir mi jornada'}</button></div></div>`;
  c.querySelector('.dayTop').onclick=()=>c.classList.toggle('open');c.querySelector('.doneBtn').onclick=()=>completeDay(day.d,c).catch(e=>msg(e.message,'danger'));g.appendChild(c)});
 }
-async function completeDay(day,card,verifiedDaily=false){
- if(window.SPM_DAILY_PRACTICE&&!verifiedDaily){window.SPM_DAILY_PRACTICE.open();return {ok:false,pending:true};}
- if(!S.planId||!S.user)throw Error('No hay un plan activo.');
- const uid=S.user.id,pid=S.planId;
- const {error}=await db.from('activity_completions').upsert({user_id:uid,plan_id:pid,day_number:day,module_key:'daily_practice',metadata:{source:'premium-v2-live'}},{onConflict:'plan_id,day_number,module_key'});if(error)throw error;
- const next=Math.min(28,Math.max(...S.completed,day,1)+1);
- const update=await db.from('plans').update({current_day:next}).eq('id',pid).eq('user_id',uid);if(update.error)throw update.error;
- if(S.user?.id!==uid||S.planId!==pid)throw Error('Program changed');
- S.completed.add(day);
- if(window.SPM_RESTORED_CONTEXT?.plan?.id===pid){window.SPM_RESTORED_CONTEXT.done=S.completed;window.SPM_RESTORED_CONTEXT.plan.current_day=next;}
- if(card){card.querySelector('.doneBtn').textContent='Completado ✓';card.querySelector('.tag').textContent='Completado ✓';}
- renderProgress();msg(`Día ${day} guardado correctamente.`,'good');
- window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
- return {ok:true};
+async function completeDay(){
+ // Legacy calendar buttons may open Today, but never bypass its verified close.
+ window.SPM_DAILY_PRACTICE?.open();return {ok:false,pending:true};
 }
-window.SPM_COMPLETE_DAILY_PRACTICE=async(day,expectedScope)=>{
- const c=window.SPM_RESOURCE_CONTEXT();
- if(!c||expectedScope!==c.userId+':'+c.planId||Number(c.day)!==day)throw Error('Program changed');
- if(window.SPM_DAILY_PRACTICE?.restricted(c))throw Error('Practice paused');
- const required=window.SPM_DAILY_PRACTICE?.assignments(c).filter(a=>!a.optional)||[];
- const records=await window.SPM_DAILY_RECORDS.read(expectedScope,day);
- if(!required.length||required.some(a=>window.SPM_DAILY_PRACTICE.restricted(c,a)||records[a.id]?.completed!==true||(records[a.id]?.activityKind&&records[a.id].activityKind!==a.kind)))throw Error('Daily activities pending');
- const latest=window.SPM_RESOURCE_CONTEXT();
- if(!latest||expectedScope!==latest.userId+':'+latest.planId||Number(latest.day)!==day||required.some(a=>window.SPM_DAILY_PRACTICE.restricted(latest,a)))throw Error('Program changed');
- const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent)===day);
- return completeDay(day,card,true);
+window.SPM_COMPLETE_DAILY_PRACTICE=async(day,expectedScope,options={})=>{
+ const epoch=S.epoch,c=assertScope(expectedScope,day),key=`${expectedScope}:close:${day}`;
+ if(writeTasks.has(key))return writeTasks.get(key);
+ const task=(async()=>{
+  const records=await window.SPM_DAILY_RECORDS.read(expectedScope,day),latest=assertScope(expectedScope,day,c.scheduleVersion,epoch);
+  const decision=window.SPM_DAILY_PRACTICE?.closeDecision(latest,records,{recordsLoaded:true});
+  if(!decision?.allowed)throw Error(decision?.reason||'La jornada no se ha podido comprobar. Recupera tus registros antes de cerrar.');
+  const confirmed=options.confirmVoluntary===true||options.voluntaryConfirmed===true;
+  if(decision.voluntary&&!confirmed)throw Error('Confirma que quieres cerrar esta jornada voluntaria.');
+  const args={p_plan_id:c.planId,p_day:day,p_schedule_version:c.scheduleVersion,p_expected_revision:c.planRevision,p_confirm_voluntary:confirmed};
+  const operation=await operationFor(key,args);assertScope(expectedScope,day,c.scheduleVersion,epoch);
+  const {data,error}=await db.rpc('spm_close_program_day',{...args,p_operation_id:operation});
+  if(error)throw persistenceError(error);
+  assertScope(expectedScope,day,c.scheduleVersion,epoch);
+  if(!data?.ok||!data.plan||!data.closure)throw persistenceError('Invalid close response');
+  S.plan=data.plan;S.completed.add(Number(data.closure.day_number));S.closures=[...S.closures.filter(x=>Number(x.day_number)!==day),data.closure];
+  if(window.SPM_RESTORED_CONTEXT?.plan?.id===c.planId){Object.assign(window.SPM_RESTORED_CONTEXT,{plan:S.plan,done:S.completed,closures:S.closures});}
+  clearOperation(key);renderPlan();renderProgress();
+  msg(data.plan.cycle_status==='completed'?'Ciclo cerrado y guardado. Tus registros y recursos siguen disponibles.':`Día ${day} cerrado y guardado. Continúas en el día ${data.plan.current_day}.`,'good');
+  window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+  return data;
+ })();writeTasks.set(key,task);try{return await task;}finally{if(writeTasks.get(key)===task)writeTasks.delete(key);}
 };
 window.SPM_SAVE_MODULE=async function({day,moduleKey,metricValue=null,metadata={}}){
  if(!S.planId||!S.user)throw new Error('No hay un plan activo para guardar esta práctica.');
+ const expectedScope=S.user.id+':'+S.planId,epoch=S.epoch;
  const payload={user_id:S.user.id,plan_id:S.planId,day_number:day,module_key:moduleKey,metric_value:metricValue,metadata:{...metadata,source:'premium-v2-live'},completed_at:new Date().toISOString()};
- if(window.SPM_DAILY_PRACTICE)payload.module_key='resource:library:'+moduleKey;
+ payload.module_key='resource:library:'+moduleKey;
  const {error}=await db.from('activity_completions').upsert(payload,{onConflict:'plan_id,day_number,module_key'});
- if(error)throw error;
- if(window.SPM_DAILY_PRACTICE){msg('Práctica guardada. Completa tu jornada desde Hoy.','good');return {ok:true};}
- S.completed.add(day);
- const card=[...document.querySelectorAll('.dayCard')].find(x=>Number(x.querySelector('.dayNum')?.textContent||0)===day);
- if(card){const done=card.querySelector('.doneBtn'),tag=card.querySelector('.tag');if(done)done.textContent='Completado ✓';if(tag)tag.textContent='Completado ✓'}
- const next=Math.min(28,Math.max(...S.completed,1)+1);
- await db.from('plans').update({current_day:next}).eq('id',S.planId);
- renderProgress();msg(`Práctica del día ${day} guardada correctamente.`,'good');
- window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
- return{ok:true};
+ if(error)throw error;assertScope(expectedScope,null,null,epoch);
+ msg('Registro de Biblioteca guardado. El cierre de tu jornada se realiza desde Hoy.','good');return {ok:true};
 };
-function populateCoach(){const s=$('coachDay');s.innerHTML='';for(let i=1;i<=28;i++)s.insertAdjacentHTML('beforeend',`<option value="${i}">Día ${i}</option>`);if(S.completed.size)s.value=String(Math.min(28,Math.max(...S.completed)))}
-function coachDecision(v){if(v.flag)return{code:'clinical_review',text:'Pausa el entrenamiento de intensidad y busca revisión profesional externa por la nueva señal de seguridad.'};if(!v.completed||v.outcome<=3||v.stress>=8)return{code:'repeat_reduce',text:'Repite la habilidad de hoy con menor intensidad. El objetivo es consolidar, no forzar progresión.'};if(v.outcome>=7&&v.confidence>=6)return{code:'progress',text:'Buen patrón de respuesta. Puedes avanzar al siguiente día manteniendo la misma calidad de ejecución.'};return{code:'maintain',text:'Mantén la práctica actual un día más y observa consistencia antes de progresar.'}}
+function populateCoach(){const s=$('coachDay');s.innerHTML='';for(let i=1;i<=28;i++)s.insertAdjacentHTML('beforeend',`<option value="${i}">Día ${i}</option>`);s.value=String(Math.min(28,Math.max(1,Number(S.plan?.current_day)||1)))}
+function coachDecision(v){if(v.flag)return{code:'clinical_review',text:'Pausa el entrenamiento de intensidad y busca revisión profesional externa por la nueva señal de seguridad.'};if([v.outcome,v.stress,v.confidence].some(x=>x===null))return{code:null,text:'Los aspectos no evaluables se conservan sin puntuación. Consulta en Hoy las actividades y las indicaciones de tu ruta.'};if(!v.completed||v.outcome<=3||v.stress>=8)return{code:'repeat_reduce',text:'Repite la habilidad de hoy con menor intensidad. El objetivo es consolidar, no forzar progresión.'};if(v.outcome>=7&&v.confidence>=6)return{code:'progress',text:'Según este registro, puedes continuar con la práctica prevista en tu ruta. Cierra la jornada desde Hoy cuando corresponda.'};return{code:'maintain',text:'Mantén la práctica actual un día más y observa consistencia antes de progresar.'}}
 async function saveCoach(){
- if(!S.planId)return;const v={day:+$('coachDay').value,sleep:+$('sleep').value,stress:+$('stress').value,confidence:+$('confidence').value,desire:+$('desire').value,outcome:+$('outcome').value,sexual:$('sexualActivity').value==='1',completed:$('completed').value==='1',flag:$('newFlag').value==='1',note:$('note').value.trim()};const d=coachDecision(v);
- const {data,error}=await db.from('daily_checkins').insert({user_id:S.user.id,plan_id:S.planId,day_number:v.day,sleep:v.sleep,stress:v.stress,confidence:v.confidence,desire:v.desire,outcome:v.outcome,sexual_activity:v.sexual,practice_completed:v.completed,new_safety_flag:v.flag,note:v.note,coach_decision:d.text,decision_code:d.code}).select().single();
- if(error){msg(error.message,'danger');return}S.checkins.push(data);$('coachDecision').innerHTML=`<div class="notice ${d.code==='clinical_review'?'danger':'good'}"><b>Decisión del Daily Coach:</b> ${d.text}</div>`;renderProgress();await maybeWeeklyReview(v.day);msg('Check-in guardado. Tu progreso ya está persistido.','good');
+ if(!S.planId||!S.user)return;
+ const expectedScope=S.user.id+':'+S.planId,epoch=S.epoch,button=$('coachSave');if(button.disabled)return;
+ const names=['sleep','stress','confidence','desire','outcome'];
+ const values=Object.fromEntries(names.map(k=>[k,$(k).value]));
+ const day=Number($('coachDay').value);
+ if(!Number.isInteger(day)||day<1||day>28||names.some(k=>!['na',...Array.from({length:11},(_,i)=>String(i))].includes(values[k]))||['sexualActivity','completed','newFlag'].some(k=>!['0','1'].includes($(k).value))){msg('Elige una respuesta en cada campo. Puedes indicar «No evaluable o no aplica» sin asignar una puntuación.','warn');return;}
+ const v={day,...Object.fromEntries(names.map(k=>[k,values[k]==='na'?null:Number(values[k])])),sexual:$('sexualActivity').value==='1',completed:$('completed').value==='1',flag:$('newFlag').value==='1',note:$('note').value.trim()},d=coachDecision(v);
+ const payload={user_id:S.user.id,plan_id:S.planId,day_number:day,sleep:v.sleep,stress:v.stress,confidence:v.confidence,desire:v.desire,outcome:v.outcome,sexual_activity:v.sexual,practice_completed:v.completed,new_safety_flag:v.flag,note:v.note,coach_decision:d.text,decision_code:d.code},key=expectedScope+':coach:'+day;
+ button.disabled=true;
+ try{
+  const id=await operationFor(key,payload);assertScope(expectedScope,null,null,epoch);
+  let {data,error}=await db.from('daily_checkins').insert({id,...payload}).select().single();
+  if(error?.code==='23505'){
+   const prior=await db.from('daily_checkins').select('*').eq('id',id).eq('user_id',payload.user_id).eq('plan_id',payload.plan_id).maybeSingle();
+   if(!prior.error&&prior.data&&Object.keys(payload).every(k=>prior.data[k]===payload[k])){data=prior.data;error=null;}
+  }
+  assertScope(expectedScope,null,null,epoch);
+  if(error||!data)throw persistenceError(error||'Unconfirmed check-in');
+  if(!S.checkins.some(x=>x.id===data.id))S.checkins.push(data);
+  $('coachDecision').innerHTML=`<div class="notice ${d.code==='clinical_review'?'danger':'good'}"><b>Tu registro de hoy:</b> ${d.text}</div>`;renderProgress();
+  let weekly;try{weekly=await maybeWeeklyReview(day)}catch{weekly=false}assertScope(expectedScope,null,null,epoch);
+  if(weekly!==false)clearOperation(key);
+  msg(weekly===false?'Registro de hoy guardado. El resumen semanal no se ha podido actualizar; puedes reintentarlo.':'Registro de hoy guardado. El cierre de la jornada se realiza desde Hoy.',weekly===false?'warn':'good');
+  window.dispatchEvent(new CustomEvent('spm:resourcecontext'));
+ }catch(error){if(S.epoch===epoch&&contextKey(window.SPM_RESOURCE_CONTEXT?.())===expectedScope)msg('No pudimos confirmar este registro. Tus respuestas siguen aquí; reintenta el guardado.','danger');}
+ finally{if(S.epoch===epoch)button.disabled=false;}
 }
 async function maybeWeeklyReview(day){
- if(day%7!==0)return;const week=Math.ceil(day/7), rows=S.checkins.filter(x=>Math.ceil(x.day_number/7)===week);if(!rows.length)return;
- const adh=Math.round(rows.filter(x=>x.practice_completed).length/7*100),avg=k=>Math.round(rows.reduce((a,x)=>a+(Number(x[k])||0),0)/rows.length*10)/10;
+ if(day%7!==0)return;const week=Math.ceil(day/7),latest=new Map();
+ for(const row of S.checkins.filter(x=>Math.ceil(x.day_number/7)===week)){const prior=latest.get(Number(row.day_number));if(!prior||new Date(row.created_at)>=new Date(prior.created_at))latest.set(Number(row.day_number),row)}
+ const rows=[...latest.values()];if(!rows.length)return;
+ const adh=Math.round(rows.filter(x=>x.practice_completed).length/7*100),avg=k=>{const values=rows.map(x=>x[k]).filter(v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)));return values.length?Math.round(values.reduce((sum,v)=>sum+Number(v),0)/values.length*10)/10:null};
  const payload={user_id:S.user.id,plan_id:S.planId,week_number:week,adherence_pct:adh,confidence_avg:avg('confidence'),outcome_avg:avg('outcome'),summary:{checkins:rows.length},next_action:adh<60?'repetir y simplificar':'progresar según respuesta'};
- await db.from('weekly_reviews').upsert(payload,{onConflict:'plan_id,week_number'});
+ const {error}=await db.from('weekly_reviews').upsert(payload,{onConflict:'plan_id,week_number'});return !error;
 }
 function renderProgress(){
- const n=S.checkins.length,adh=S.completed.size?Math.round(S.completed.size/28*100):0,avg=k=>n?(S.checkins.reduce((a,x)=>a+(Number(x[k])||0),0)/n).toFixed(1):'—';
+ const n=S.checkins.length,adh=S.completed.size?Math.round(S.completed.size/28*100):0,avg=k=>{const values=S.checkins.map(x=>x[k]).filter(v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v)));return values.length?(values.reduce((sum,v)=>sum+Number(v),0)/values.length).toFixed(1):'—'};
  $('stChecks').textContent=n;$('stAdh').textContent=adh+'%';$('stConf').textContent=avg('confidence');$('stOutcome').textContent=avg('outcome');$('stDecision').textContent=n?(S.checkins[n-1].decision_code||'—'):'—';
- const chart=$('chart');chart.innerHTML='';S.checkins.slice(-14).forEach(x=>{const c=document.createElement('div');c.className='col';c.style.height=`${Math.max(8,(Number(x.confidence)||0)*10)}%`;c.dataset.v=`D${x.day_number}: ${x.confidence}`;chart.appendChild(c)});
+ const chart=$('chart');chart.innerHTML='';S.checkins.slice(-14).forEach(x=>{const c=document.createElement('div'),hasValue=x.confidence!==null&&x.confidence!==undefined;c.className='col';c.style.height=hasValue?`${Math.max(8,Number(x.confidence)*10)}%`:'8%';c.dataset.v=`D${x.day_number}: ${hasValue?x.confidence:'No evaluable'}`;if(!hasValue){c.dataset.missing='true';c.textContent='—';}chart.appendChild(c)});
  $('savedState').textContent=S.planId?'Guardado en la nube ✓':'Aún sin plan';
 }
-async function signOut(){await db.auth.signOut();S.user=null;restoreState.running=false;restoreState.complete=false;restoreState.hasPlan=false;window.SPM_RESTORE_COMPLETE=false;window.SPM_RESTORED_CONTEXT=null;show('authScreen');resetForAssessment(true);}
+async function signOut(){invalidateSession();S.user=null;show('authScreen');resetForAssessment(true);await db.auth.signOut();}
 document.addEventListener('DOMContentLoaded',()=>{
  $('authBtn').onclick=()=>sign('signin');$('signupBtn').onclick=()=>sign('signup');if($('forgotBtn'))$('forgotBtn').onclick=resetPassword;$('logoutBtn').onclick=signOut;
  const motiveGrid=$('motiveGrid');motiveGrid.addEventListener('click',event=>{const button=event.target.closest('button[data-motive]');if(button&&motiveGrid.contains(button))selectMotive(button.dataset.motive)});

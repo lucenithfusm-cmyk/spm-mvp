@@ -21,7 +21,7 @@ const fixture=fs.readFileSync(path.join(__dirname,'returning-user-fixture.js'),'
   assert.equal(await page.locator('#dayGrid').isVisible(),false);checks++;
   await page.locator('[data-daily-view="library"]').click();assert.equal(await page.locator('#spmDesireLabEntry').isVisible(),true);checks++;
   await page.locator('[data-daily-view="today"]').click();
-  const actualDay=await page.evaluate(()=>SPM_RESOURCE_CONTEXT().day);assert.equal(actualDay,12);assert.equal(await page.evaluate(()=>SPM_RESOURCE_CONTEXT().completed.length),0);assert.deepEqual(errors,[]);checks+=3;
+  const actualDay=await page.evaluate(()=>SPM_RESOURCE_CONTEXT().day);assert.equal(actualDay,12);assert.deepEqual(await page.evaluate(()=>SPM_RESOURCE_CONTEXT().completed),Array.from({length:11},(_,i)=>i+1),'Opening the restored day keeps only its declared historical closures');assert.deepEqual(errors,[]);checks+=3;
   await page.close();
  }
  await browser.close();console.log(`${checks} daily-entry checks passed: initial visibility, profile isolation, correct-day navigation and reduced motion.`);

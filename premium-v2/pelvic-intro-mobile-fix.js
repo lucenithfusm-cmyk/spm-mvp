@@ -25,7 +25,7 @@ if(!document.getElementById(STYLE_ID)){
   document.head.appendChild(s);
 }
 const NEW_INTRO='Bienvenido al programa de entrenamiento del piso pélvico de SPM. Antes de comenzar, aprenderás a reconocer qué músculos vas a trabajar, cómo activarlos sin involucrar abdomen, glúteos o muslos, y cómo relajarlos por completo. El objetivo no es hacer fuerza máxima. Buscamos conciencia, precisión y control. Luego realizarás una serie guiada, revisarás recomendaciones y finalmente harás una práctica autónoma con registro de progreso. Si antes de iniciar ya vienes presentando dolor pélvico, ardor, molestias urinarias o tensión persistente, es recomendable realizar primero una valoración profesional para orientar la práctica de forma adecuada.';
-function speak(){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(NEW_INTRO);u.lang='es-CO';u.rate=.9;const vs=speechSynthesis.getVoices();u.voice=vs.find(v=>/es-CO/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null;speechSynthesis.speak(u)}catch(e){}}
+function speak(){try{window.SPM_VOICE.cancel();const u=new SpeechSynthesisUtterance(NEW_INTRO);u.lang='es-CO';u.rate=.9;window.SPM_VOICE.speak(u)}catch(e){}}
 let lastOpen=false;
 function patch(){
   const o=document.getElementById('spmPelvicIntro');

@@ -391,7 +391,7 @@
       "metricLabel": "Interés hoy (0–10)",
       "safe": true,
       "steps": [
-        "Abre Progreso 28 días y revisa tu diario de sesiones. Recuerda una experiencia que te resultó agradable y otra que prefieras adaptar. Si aún no tienes registros, usa una experiencia que recuerdes de la semana.",
+        "Abre Progreso 28 días y revisa tu diario de sesiones. Describe qué te resultó útil, qué no y qué todavía no puedes valorar. Si aún no tienes registros, puedes usar una experiencia que recuerdes o indicar que no tienes una para revisar.",
         "Si quieres ordenar qué explorar, abre Tu lista de excitación: marca lo que te gusta, añade hasta cinco prioridades y ordénalas con las flechas. En Detalles por canal puedes precisar tus preferencias.",
         "Pulsa Volver a la práctica. Elige una cosa que quieras mantener y otra que quieras cambiar. Al terminar, escríbelas en Tu reflexión como siguiente paso."
       ],
@@ -477,8 +477,8 @@
       "metricLabel": "Confianza (0–10)",
       "safe": true,
       "steps": [
-        "Busca tres momentos recientes en los que notaste interés, curiosidad o ganas de acercarte. Pueden ser detalles pequeños, como disfrutar una caricia, una imagen o una conversación.",
-        "En cada recuerdo, identifica qué estaba pasando y qué te resultó agradable. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
+        "Revisa tres momentos o situaciones relacionados con interés, curiosidad o cercanía. Describe solo lo que recuerdes; puedes indicar que no identificas una experiencia o que aún no puedes valorarla.",
+        "Si recuerdas una experiencia, identifica qué estaba pasando y cómo te resultó. Puedes consultar Deseo y edad para explorar qué estímulos y condiciones prefieres hoy.",
         "Pulsa Volver a la práctica si abriste el recurso. Al terminar, escribe tus recuerdos en Tu reflexión y elige un detalle que quieras recuperar en otra experiencia."
       ],
       "reflective": true,

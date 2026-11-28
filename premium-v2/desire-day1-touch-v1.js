@@ -104,12 +104,19 @@
     if(!t.started)return '';
     return `<div class="spm-ds1-clockbar" role="group" aria-label="Cronómetro opcional de la práctica"><div class="spm-ds1-clock"><span aria-hidden="true">◷</span><strong data-ds1-clock>${time(t.sec)}</strong><span>referencia: ${which==='first'?'05:00':'03:00'}</span></div><div class="spm-ds1-clock-actions"><button type="button" data-ds1-act="${t.running?'pause':'resume'}" data-ds1-val="${which}">${t.running?'Pausar':'Reanudar'}</button><button type="button" class="spm-ds1-complete" data-ds1-act="end" data-ds1-val="${which}">Terminar y registrar</button></div></div>`;
   }
+  function writtenGuide(m){
+    if(m.page===1)return [NARRATION.formIntro,...Object.values(FORM_AUDIO)].join('\n\n');
+    if(m.page===2)return [NARRATION.preparation,NARRATION[m.form==='resp'?'respIntro':'spontIntro'],...(FORM_STEPS[m.form]||[])].join('\n\n');
+    if(m.page===3)return NARRATION.presenceExit;
+    if(m.page===4)return [NARRATION.stimulusIntro,NARRATION.stimulusOptions,NARRATION.stimulusExplore,...Object.values(STIMULI)].join('\n\n');
+    return [NARRATION.stimulusExit,NARRATION.close].join('\n\n');
+  }
   function render(m){
     if(!m.host?.isConnected)return;
     const previous=m.host.querySelector('.spm-ds1-session');
     const scrollTop=previous?.dataset?.ds1Page===String(m.page)?(previous.scrollTop||0):0;
     const step=m.page,art=m.images[step-1];
-    m.host.innerHTML=`<section class="spm-ds1-session" data-ds1-page="${step}" aria-label="Deseo · Día 1 · Pantalla ${step} de 5"><div class="spm-ds1-art"><img src="${esc(art)}" width="864" height="1536" alt="" draggable="false" loading="eager">${pageHits(m)}</div>${clock(m)}<nav class="spm-ds1-nav" aria-label="Navegación de Deseo"><button type="button" data-ds1-act="back">← ${step===1?'Actividades de hoy':'Anterior'}</button><span>Pantalla ${step} de 5</span><button type="button" data-ds1-act="forward">${step===5?'Volver a Hoy':'Siguiente →'}</button></nav><div class="spm-ds1-bottom"><button type="button" class="spm-ds1-exit" data-ds1-act="exit">Salir a Actividades de hoy</button><button type="button" class="spm-ds1-audio" data-ds1-act="audio" data-ds1-val="${step===3?'register':step===5?'close':'guide'}" aria-label="Escuchar instrucciones adicionales">🔊 Escuchar instrucciones</button></div><p class="spm-ds1-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
+    m.host.innerHTML=`<section class="spm-ds1-session" data-ds1-page="${step}" aria-label="Deseo · Día 1 · Pantalla ${step} de 5"><div class="spm-ds1-art"><img src="${esc(art)}" width="864" height="1536" alt="" draggable="false" loading="eager">${pageHits(m)}</div>${clock(m)}<nav class="spm-ds1-nav" aria-label="Navegación de Deseo"><button type="button" data-ds1-act="back">← ${step===1?'Actividades de hoy':'Anterior'}</button><span>Pantalla ${step} de 5</span><button type="button" data-ds1-act="forward">${step===5?'Volver a Hoy':'Siguiente →'}</button></nav><div class="spm-ds1-bottom"><button type="button" class="spm-ds1-exit" data-ds1-act="exit">Salir a Actividades de hoy</button><button type="button" class="spm-ds1-audio" data-ds1-act="audio" data-ds1-val="${step===3?'register':step===5?'close':'guide'}" aria-label="Escuchar instrucciones adicionales">🔊 Escuchar instrucciones</button></div>${window.SPM_VOICE?.transcript(writtenGuide(m))||''}<p class="spm-ds1-status" role="status" aria-live="polite">${esc(m.message||'')}</p></section>`;
     const current=m.host.querySelector('.spm-ds1-session');
     if(current)current.scrollTop=scrollTop;
   }
@@ -123,7 +130,7 @@
     if(key==='guide')return NARRATION.presenceExit;
     return '';
   }
-  function stopVoice(m){if(!m)return;try{window.speechSynthesis?.cancel?.()}catch{}m.audioKey=null;m.host?.querySelectorAll('.spm-ds1-hit.is-speaking').forEach(el=>el.classList.remove('is-speaking'));}
+  function stopVoice(m){if(!m)return;try{window.SPM_VOICE?.cancel?.()}catch{}m.audioKey=null;m.host?.querySelectorAll('.spm-ds1-hit.is-speaking').forEach(el=>el.classList.remove('is-speaking'));}
   function say(m,key,text){
     if(!m||!text)return;
     if(m.audioKey===key){stopVoice(m);return;}
@@ -133,7 +140,7 @@
     utter.onend=()=>{if(m.audioKey===key)m.audioKey=null;};
     utter.onerror=evt=>{if(m.audioKey===key){m.audioKey=null;if(evt?.error!=='interrupted'&&evt?.error!=='canceled')status(m,'No se pudo reproducir el audio. Las indicaciones continúan visibles.')}};
     m.audioKey=key;
-    try{window.speechSynthesis.speak(utter);}catch{status(m,'No se pudo reproducir la guía en este dispositivo.');m.audioKey=null;}
+    try{window.SPM_VOICE.speak(utter);}catch{status(m,'No se pudo reproducir la guía en este dispositivo.');m.audioKey=null;}
   }
   function timerObj(raw){const t=normal(raw);return {sec:Math.max(0,Math.min(7200,Math.floor(Number(t.sec)||0))),started:t.started===true,done:t.done===true,running:false,lastAt:0};}
   function stamp(m){return {page:m.page,form:m.form,before:m.before,after:m.after,observation:m.observation,stimulus:m.stimulus,comfort:m.comfort,repeat:m.repeat,lastStep:m.lastStep,firstSaved:m.firstSaved,finalSaved:m.finalSaved,firstTimer:{sec:m.firstTimer.sec,started:m.firstTimer.started,done:m.firstTimer.done},secondTimer:{sec:m.secondTimer.sec,started:m.secondTimer.started,done:m.secondTimer.done}};}
@@ -177,7 +184,7 @@
     if(m.page===5)void exit(m);
   }
   function prev(m){if(m.page===1){void exit(m);return;}move(m,m.page-1);}
-  async function exit(m){pauseIfRunning(m);stopVoice(m);clearTimeout(m.saveDelay);try{await saveTx(m);m.onBack?.();}catch{status(m,'No pudimos guardar el avance. Reintenta para regresar sin perder tus respuestas.');}}
+  async function exit(m){if(m.busy)return false;m.busy=true;pauseIfRunning(m);stopVoice(m);clearTimeout(m.saveDelay);try{await saveTx(m);m.onBack?.();return true;}catch{status(m,'No pudimos guardar el avance. Reintenta para regresar sin perder tus respuestas.');return false;}finally{m.busy=false;}}
   function sessionId(program,id){const all=Array.isArray(program.sessions)?program.sessions:[];const old=[...all].reverse().find(s=>s&&s.practiceId===id&&s.day===1);return old?.id||`${id}-d1-touch-20261118`;}
   function upsertSession(program,session){const list=Array.isArray(program.sessions)?program.sessions:[];const prior=list.findIndex(s=>s?.id===session.id);program.sessions=prior<0?[...list,session]:list.map((s,i)=>i===prior?session:s);}
   function session(m,id,metric,metricLabel,before,after,reflection,timer){return {id:null,day:DAY,date:new Date().toISOString().slice(0,10),practiceId:id,variant:'solo',status:'completed',activeSec:timer.sec,metricKey:metric,metricLabel,before,after,reflection};}
@@ -289,5 +296,5 @@
   }
   function stop(){const m=active;active=null;if(!m)return;pauseIfRunning(m);stopVoice(m);clearInterval(m.interval);clearTimeout(m.saveDelay);m.events?.abort();}
   function pause(){if(active){pauseIfRunning(active);stopVoice(active)}}
-  window.SPM_DESIRE_DAY1_TOUCH={mount,stop,pause,images:DEFAULT_IMAGES.slice(),audioSource:'narraciones aprobadas del programa Deseo, voz estándar del dispositivo',curriculum:['presence-5','explore-new-stimulus']};
+  window.SPM_DESIRE_DAY1_TOUCH={mount,stop,close:()=>active?exit(active):Promise.resolve(true),pause,images:DEFAULT_IMAGES.slice(),audioSource:'narraciones aprobadas del programa Deseo, voz estándar del dispositivo',curriculum:['presence-5','explore-new-stimulus']};
 })();

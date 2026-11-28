@@ -1,4 +1,5 @@
 const {chromium,webkit}=require('playwright'),assert=require('node:assert/strict');
+// These calendar cards use the historical Desire day-to-content mapping.
 const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
 (async()=>{
  const browser=process.env.SPM_BROWSER==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});
@@ -9,8 +10,9 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
    p.on('pageerror',e=>errors.push(e.message));
    p.on('console',e=>{if(e.type()==='error')errors.push(e.text().slice(0,220))});
    try{
-    await p.goto(base+'revision-programas-28-dias.html?programa=desire&dia='+day,{waitUntil:'domcontentloaded',timeout:30000});
+    await p.goto(base+'revision-programas-28-dias.html?agenda=legacy&programa=desire&dia='+day,{waitUntil:'domcontentloaded',timeout:30000});
     await p.locator('#reviewProgram:not([disabled])').waitFor({timeout:30000});
+    assert.equal(await p.evaluate(()=>window.SPM_RESOURCE_CONTEXT().scheduleVersion),'legacy');
     // Reproduce the existing calendar card markup injected by app-live.js,
     // keeping the reviewer scoped to an isolated fake account.
     await p.evaluate(()=>{

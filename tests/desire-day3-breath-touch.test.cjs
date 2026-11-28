@@ -27,6 +27,7 @@ function env(){let now=0,interval=null;const voices=[];
  const w={speechSynthesis:speech,SpeechSynthesisUtterance:class{constructor(t){this.text=t;}},addEventListener(){}};
  const sandbox={window:w,document:doc,AbortController,Date,JSON,Promise,performance:{now:()=>now},
   setInterval(f){interval=f;return 12},clearInterval(){interval=null},setTimeout,clearTimeout,console};
+ require('./helpers/device-voice-fixture.cjs').installOn(w,sandbox.SpeechSynthesisUtterance);
  vm.runInNewContext(controller,sandbox);
  return {w,host,doc,voices,advance(seconds){now+=1000*seconds;interval?.();},time(){return now},stop(){w.SPM_DESIRE_DAY3_TOUCH.stop()}};
 }
@@ -98,7 +99,7 @@ test('timer buttons exist on original circles but have NO circular halo; large b
  assert.match(controller,/data-ds3-clock/);assert.match(controller,/data-ds3-progress/);
 });
 test('original breath-routine, voice device and scoped bridge preserve other days',async t=>{
- assert.match(controller,/breath-routine/);assert.match(controller,/es-CO/);assert.match(bridge,/Number\(c.day\)===3/);
+ assert.match(controller,/breath-routine/);assert.match(controller,/es-CO/);assert.match(bridge,/Number\(assignment\(c\)\?\.sourceDay\|\|c.day\)===3/);
  assert.match(review,/datos simulados/);assert.doesNotMatch(review,/supabase\.co|wompi\.co/);
  const e=env();t.after(()=>e.stop());let fallbacks=0;const state={userId:'test',planId:'x',primary:'desire',day:3};
  e.w.SPM_RESOURCE_CONTEXT=()=>state;

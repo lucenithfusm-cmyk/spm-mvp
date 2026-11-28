@@ -26,13 +26,18 @@ function open(src,title){
  opener=document.activeElement;document.getElementById('spmVpTitle').textContent=title||'Video SPM';shell.classList.remove('spmPortrait','spmLowDesire');
  const item=(window.SPM_VIDEO_LIBRARY||[]).find(video=>normalized(video.url)===normalized(src));
  action.innerHTML=item?window.SPM_VIDEO_ACTIONS?.markup(item.key)||'':'';action.hidden=!action.firstElementChild;
- modal.querySelector('.spmVpFoot').hidden=!!item?.action;
- modal.querySelector('.spmVpFoot').textContent=item?.action?'Puedes volver a consultar este video y su acción cuando lo necesites.':'Estás dentro de SPM. Al terminar, cierra el reproductor y continúa tu actividad.';
+ const continuation=modal.querySelector('.spmVpFoot:not([data-spm-media-status])');
+ continuation.hidden=!!item?.action;
+ continuation.textContent=item?.action?'Puedes volver a consultar este video y su acción cuando lo necesites.':'Estás dentro de SPM. Al terminar, cierra el reproductor y continúa tu actividad.';
  const lowDesire=/dr-spm-low-desire\.mp4(?:$|\?)/.test(src);shell.classList.toggle('spmLowDesire',lowDesire);
  v.onloadedmetadata=()=>shell.classList.toggle('spmPortrait',v.videoHeight>v.videoWidth);
  const clean=src.replace(/dr-spm-(vascular|metabolic|medications|performance-anxiety)\.mp4$/, 'dr-spm-$1-content.mp4');
- v.onerror=()=>{if(v.getAttribute('src')!==src){v.src=src;v.play().catch(()=>{});}};
- window.SPM_PROGRAM_VIDEOS?.pause();v.src=clean;modal.classList.add('on');modal.querySelector('.spmVpScroll').scrollTop=0;modal.querySelector('.spmVpClose').focus();v.play().catch(()=>{});
+ let mediaStatus=modal.querySelector('[data-spm-media-status]');if(!mediaStatus){mediaStatus=document.createElement('div');mediaStatus.dataset.spmMediaStatus='';mediaStatus.className='spmVpFoot';mediaStatus.setAttribute('role','status');mediaStatus.innerHTML='<p></p><button type="button">Reintentar video</button>';modal.querySelector('.spmVpBody').appendChild(mediaStatus)}
+ const unavailable=()=>{mediaStatus.hidden=false;mediaStatus.querySelector('p').textContent='No se pudo iniciar el video. Puedes reintentar, leer la acción complementaria o cerrar para continuar.';};
+ const playVideo=()=>{mediaStatus.hidden=true;try{v.play()?.catch(unavailable)}catch{unavailable()}};
+ mediaStatus.querySelector('button').onclick=playVideo;mediaStatus.hidden=true;
+ v.onerror=()=>{if(v.getAttribute('src')!==src){v.src=src;playVideo();}else unavailable();};
+ window.SPM_PROGRAM_VIDEOS?.pause();v.src=clean;modal.classList.add('on');modal.querySelector('.spmVpScroll').scrollTop=0;modal.querySelector('.spmVpClose').focus();playVideo();
 }
 ensure();window.SPM_NATIVE_VIDEO={open};window.SPM_INLINE_VIDEO_PLAYER={open};
 })();

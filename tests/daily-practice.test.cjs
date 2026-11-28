@@ -8,14 +8,14 @@ function harness(primary='erection',day=12,initialRecords={}){
  w.HTMLMediaElement.prototype.pause=function(){};w.HTMLMediaElement.prototype.play=async function(){};w.HTMLMediaElement.prototype.load=function(){};w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
  const observers=[],NativeObserver=w.MutationObserver;
  w.MutationObserver=class extends NativeObserver{constructor(fn){super(fn);observers.push(this);}};
- const c={userId:'qa',planId:'plan',primary,day,secondary:'desire',motives:[primary,'desire'],answers:{pf_awareness:'good_control',pf_tension:1},safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
+ const c={userId:'qa',planId:'plan',scheduleVersion:'legacy',primary,day,secondary:'desire',motives:[primary,'desire'],answers:{pf_awareness:'good_control',pf_tension:1},safety:'none',flags:[],checkins:[],completed:[]},writes=[],opens=[];
  w.SPM_RESOURCE_CONTEXT=()=>c;w.SPM_DAILY_RECORDS={read:async()=>JSON.parse(JSON.stringify(initialRecords)),save:async(...args)=>writes.push(args)};
  w.SPM_ERECTILE_FUNCTION={open:(...args)=>opens.push(['erection',...args])};
  w.SPM_ACTIVE_MODULE_RELEASE={ready:()=>true,resolve:()=>null};
  // Solo un registro EHS correspondiente puede completar la sesión 1, nunca un dato antiguo.
  w.SPM_ERECTION_PRACTICE={stop(){},pause(){},supports:()=>false,valid:(record,day)=>record?.day===day&&record?.erectionPracticeVersion===1&&record?.ehsEvaluable===true};
  w.SPM_EJACULATORY_CONTROL={schedule:w.eval('('+read('ejaculatory-control.js').match(/const SCHEDULE=(\{[^;]+\});/)[1]+')'),open:(...args)=>opens.push(['ejaculation',...args])};
- for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>opens.push([lab,o])};
+ for(const lab of ['DESIRE','SENSATE','BREATHING'])w['SPM_'+lab+'_LAB']={open:async o=>{opens.push([lab,o]);return true;}};
  w.SPM_PELVIC_LAB={openScheduled:async o=>opens.push(['PELVIC',o]),close:async()=>true,validState:s=>!!s&&typeof s==='object'&&!Array.isArray(s)};
   w.SPM_PELVIC_RECORDS={read:async()=>({})};
  w.SPM_PELVIC_GUIDANCE={definition:intent=>({script:intent==='scheduled'?'Comprueba tu preparación para las contracciones.':'Reconoce, respira y suelta a tu ritmo.',audioSrc:`/test-pelvic-${intent}.mp3`}),firstPractice:()=>({script:'Respira a tu ritmo.',audioSrc:'/test-first-practice.mp3'})};
@@ -27,7 +27,7 @@ test('all 28 days have concrete launchers; secondary Desire is never the main da
  for(const route of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle']){
   const h=harness(route);try{await wait();for(let day=1;day<=28;day++){
    h.c.day=day;const items=h.w.SPM_DAILY_PRACTICE.assignments();assert.ok(items.length>=2&&items.length<=9);assert.equal(items[0].id,'main');assert.equal(new Set(items.map(x=>x.id)).size,items.length);
-   if(route==='erection')assert.equal(items[0].kind,[1,3,6,9].includes(day)?'erection':'erection-support-day');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
+   if(route==='erection')assert.equal(items[0].kind,[1,3,6,9,12,15,18,21,24,27].includes(day)?'erection':'erection-support-day');if(route==='desire')assert.equal(items[0].kind,'desire');else if(route!=='erection')assert.notEqual(items[0].kind,'desire');
    assert.ok(items.every(x=>x.title&&x.summary));
   }}finally{h.close()}
  }
@@ -60,7 +60,7 @@ test('other Desire days retain their audio and route registration through the ac
  }finally{h.close()}
 });
 test('saving one activity does not complete or advance the day; stale and restricted writes fail',async()=>{
- const h=harness('confidence',12);try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,true);
+ const h=harness('confidence',12);try{await wait();await h.w.SPM_DAILY_PRACTICE.saveActivity('main',{note:'example'});assert.equal(h.writes.length,1);assert.equal(h.c.day,12);assert.deepEqual(h.c.completed,[]);assert.equal(h.w.document.querySelector('#spmDailyComplete').disabled,false,'saving enables explicit closure once the only requirement is valid, without advancing');
  await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main',{},'qa:old-plan',12));h.c.safety='urgent';h.c.day=9;assert.equal(h.w.SPM_DAILY_PRACTICE.restricted(h.c,'main'),true);await assert.rejects(h.w.SPM_DAILY_PRACTICE.saveActivity('main'));assert.equal(h.writes.length,1);
  }finally{h.close()}
 });
@@ -118,11 +118,11 @@ test('new check-in safety flags and unknown status retain the physical pause',as
  assert.equal(h.w.SPM_DAILY_PRACTICE.restricted(null),true);
  }finally{h.close()}
 });
-test('weekly Lab appears only on days 3, 10, 17 and 24 in six domains',async()=>{
+test('legacy weekly Lab retains route-specific days (EP uses 18; the other routes use 17)',async()=>{
  const h=harness('confidence');try{await wait();
  for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(let day=1;day<=28;day++){
   const lab=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day}).filter(a=>a.id==='pelvic-daily-lab');
-  assert.equal(lab.length,[3,10,17,24].includes(day)?1:0);
+  assert.equal(lab.length,(primary==='ejaculation'?[3,10,18,24]:[3,10,17,24]).includes(day)?1:0);
   assert.ok(lab.every(a=>a.optional&&a.pelvicIntent==='daily-relax'));
  }
  }finally{h.close()}
@@ -327,6 +327,7 @@ test('day 3 sleep audio keeps only the introduction in Today and its card withou
   await wait();h.w.SPM_DAILY_PRACTICE.open();const d=h.w.document,library=h.w.SPM_SLEEP_LIBRARY_V1,spoken=[];
   h.w.SpeechSynthesisUtterance=function(text){this.text=text};
   h.w.speechSynthesis={getVoices:()=>[],cancel(){},speak:utterance=>spoken.push(utterance.text)};
+  require('./helpers/device-voice-fixture.cjs').installOn(h.w);
   const tip=library.tips.find(t=>t.id==='sl-horario-02'),intro='Si quieres acostarte antes, haz cambios pequeños que puedas sostener. No hay una hora exacta que sirva para todos.';
   assert.equal(tip.body,intro);
   assert.equal(tip.action,'Si quieres acostarte antes, elige para esta noche una hora un poco más temprana que te resulte cómoda.');
@@ -364,7 +365,7 @@ test('all six routes receive a weekly Lab and separate strength when indicated',
  const h=harness();try{for(const primary of ['erection','ejaculation','desire','confidence','wellbeing','lifestyle'])for(let day=1;day<=28;day++){
   const items=h.w.SPM_DAILY_PRACTICE.assignments({...h.c,primary,day});
   const lab=items.filter(a=>a.id==='pelvic-daily-lab'),strength=items.filter(a=>a.kind==='pelvic'&&a.pelvicIntent==='scheduled');
-  assert.equal(lab.length,[3,10,17,24].includes(day)?1:0);
+  assert.equal(lab.length,(primary==='ejaculation'?[3,10,18,24]:[3,10,17,24]).includes(day)?1:0);
   assert.ok(lab.every(a=>a.optional&&a.pelvicIntent==='daily-relax'&&a.pelvicPreference==='lab'));
   assert.equal(strength.length,[2,6].includes((day-1)%7+1)?1:0);
   assert.ok(strength.every(a=>a.optional&&a.pelvicPreference==='classic'));
@@ -382,10 +383,10 @@ test('weekly Lab has a single entry and its narration plays only inside the prac
  }finally{h.close();}
 });
 
-test('another activity can supply its recorded guide without a second generic speech button',async()=>{
+test('another activity supplies one device guide and its exact readable transcript',async()=>{
  const h=harness('erection',2);try{await wait();const original=h.w.SPM_DAILY_SUPPORT.assignments;
   h.w.SPM_DAILY_SUPPORT.assignments=(day,c)=>original(day,c).map(a=>a.lab==='breathing'?{...a,guide:{script:'Guía breve de respiración.',audioSrc:'/breathing-guide.mp3'}}:a);
-  h.c.day=3;h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();const card=h.w.document.querySelector('[data-activity="breath-learn"]');assert.ok(card);assert.equal(card.querySelector('audio').getAttribute('src'),'/breathing-guide.mp3');assert.equal(card.querySelector('[data-spm-speak]'),null);assert.equal(card.querySelector('details').open,false);assert.equal(h.writes.length,0);
+  h.c.day=3;h.w.dispatchEvent(new h.w.Event('spm:resourcecontext'));await wait();const card=h.w.document.querySelector('[data-activity="breath-learn"]');assert.ok(card);assert.equal(card.querySelector('audio'),null);assert.equal(card.querySelectorAll('[data-spm-speak]').length,1);assert.equal(card.querySelector('[data-spm-speak]').dataset.spmSpeak,'Guía breve de respiración.');assert.equal(card.querySelector('[data-checkpoint-audio-transcript] p').textContent,'Guía breve de respiración.');assert.equal(card.querySelector('details').open,false);assert.equal(h.writes.length,0);
  }finally{h.close();}
 });
 
@@ -506,17 +507,17 @@ test('discomfort and danger flags suppress strength without taking away the Lab 
 });
 
 test('La agenda de Erección admite días transversales sin formulario viejo ni guardado ficticio',async()=>{
- const h=harness('erection',12);
+ const h=harness('erection',16);
  try{
   await wait();const api=h.w.SPM_DAILY_PRACTICE,doc=h.w.document;
   const current=api.assignments();assert.equal(current[0].kind,'erection-support-day');
-  assert.equal(current[0].erectionScheduledLesson,5);
+  assert.equal(current[0].erectionScheduledLesson,null);
   assert.equal(doc.querySelector('[data-activity="main"] [data-daily-open]'),null);
   assert.ok(doc.querySelector('[data-erection-transversal="true"]'));
   assert.ok(current.some(x=>x.kind==='wellness'||x.kind==='desire'||x.kind==='sensate'));
   await assert.rejects(api.saveActivity('main',{confirmed:true}));
   assert.equal(h.writes.length,0);
   assert.equal(api.nextActivities().some(x=>x.kind==='erection-support-day'),false);
-  assert.equal(h.c.day,12);
+  assert.equal(h.c.day,16);
  }finally{h.close()}
 });

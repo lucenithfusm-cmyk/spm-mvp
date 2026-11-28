@@ -50,3 +50,5 @@
 .spm-ed1-continue{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-sizing:border-box;appearance:none;border:2px solid #d6aa54;border-radius:999px;background:linear-gradient(180deg,#f3d184,#ebbf69);color:#17334c;box-shadow:0 4px 10px rgba(13,32,47,.18);font:900 clamp(15px,4.8vw,25px)/1.2 system-ui,-apple-system,Arial,sans-serif;padding:4px 13px}
 .spm-ed1-continue:active{background:#ffe0a0}
 .spm-ed1-continue:focus-visible{outline:3px solid #fff3c7;outline-offset:3px}
+.spm-ed1-skip-score{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 12px;border:1px solid #d1ab62;border-radius:16px;background:#103958;color:#fff7df;font:750 clamp(13px,3.8vw,21px)/1.2 system-ui,-apple-system,sans-serif;cursor:pointer;touch-action:manipulation;box-sizing:border-box}
+.spm-ed1-skip-score:focus-visible{outline:3px solid #fff1bc;outline-offset:2px}

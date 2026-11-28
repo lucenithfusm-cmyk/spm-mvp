@@ -1,6 +1,7 @@
 const {test, before} = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
+const fs = require('node:fs');
 const {JSDOM, VirtualConsole} = require('../labs/desire/node_modules/jsdom');
 const {build} = require('../labs/pelvic-floor/node_modules/esbuild');
 const root = path.resolve(__dirname, '../labs/pelvic-floor');
@@ -8,7 +9,7 @@ let bundle;
 
 before(async()=>{
   // Actual React, host adapter and Lab. The test bundle stays in memory.
-  const output=await build({stdin:{contents:"import React from 'react'; import {createRoot} from 'react-dom/client'; import {PelvicLab} from './src/components/PelvicLab'; window.__act=React.act;window.IS_REACT_ACT_ENVIRONMENT=true;window.__root=createRoot(document.getElementById('root'));window.__mount=()=>window.__root.render(React.createElement(PelvicLab));",resolveDir:root,loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',alias:{'@':path.join(root,'src')},loader:{'.jpg':'dataurl'},define:{'process.env.NODE_ENV':'"test"'}});
+  const output=await build({stdin:{contents:"import React from 'react'; import {createRoot} from 'react-dom/client'; import {PelvicLab} from './src/components/PelvicLab'; window.__act=React.act;window.IS_REACT_ACT_ENVIRONMENT=true;window.__root=createRoot(document.getElementById('root'));window.__mount=()=>window.__root.render(React.createElement(PelvicLab));",resolveDir:root,loader:'tsx'},bundle:true,write:false,format:'iife',platform:'browser',jsx:'automatic',alias:{'@':path.join(root,'src')},loader:{'.jpg':'dataurl','.webp':'dataurl'},define:{'process.env.NODE_ENV':'"test"'}});
   bundle=output.outputFiles[0].text;
 });
 
@@ -31,6 +32,9 @@ async function setup(options={}){
   Object.defineProperty(win.performance,'now',{value:()=>clock});
   Object.defineProperty(win,'localStorage',{get(){throw Error('The daily Lab must never use localStorage');}});
   win.setInterval=fn=>{timers.set(++timerId,fn);return timerId;};win.clearInterval=id=>timers.delete(id);
+  win.SpeechSynthesisUtterance=class{constructor(text){this.text=text;this.voice=null;}};
+  win.speechSynthesis={speak(u){audio.push(u.text);u.onstart?.();},cancel(){paused++;},getVoices:()=>[],addEventListener(){},paused:false,resume(){}};
+  win.eval(fs.readFileSync(path.resolve(root,'../../premium-v2/device-voice-v1.js'),'utf8'));
   win.eval(bundle);
   const act=async fn=>{await win.__act(fn);};await act(()=>win.__mount());
   return {dom,win,context,state,writes,results,audio,errors,act,get closed(){return closed;},get paused(){return paused;},reject(value){reject=value;},
@@ -59,7 +63,7 @@ test('manual cues, pause and visibility changes stop the clock and return the vi
   const h=await setup();assert.deepEqual(h.audio,[]);assert.deepEqual(h.results,[]);
   await start(h);await click(h,/2Respira$/);
   assert.equal(doc(h).querySelector('[data-floor-state]').dataset.floorState,'breathe');
-  assert.ok(h.audio.at(-1).includes('pf.cue.respira'));
+  assert.equal(h.audio.at(-1),require('../labs/pelvic-floor/src/lib/pf-narration-texts.json')['pf.cue.respira']);
   await h.tick(2400);await click(h,'Pausar guía');const elapsed=doc(h).querySelector('[data-elapsed]').dataset.elapsed;
   await h.tick(60000);assert.equal(doc(h).querySelector('[data-elapsed]').dataset.elapsed,elapsed);
   assert.equal(doc(h).querySelector('[data-floor-state]').dataset.floorState,'rest');assert.deepEqual(h.results,[]);

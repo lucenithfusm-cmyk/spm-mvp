@@ -38,7 +38,7 @@ const pos=(x1,y1,x2,y2)=>`left:${(x1/1080*100).toFixed(3)}%;top:${(y1/1920*100).
 let active=null;
 function stopVoice(m){
  if(!m)return;
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  m.voice=null;
  m.host?.querySelector('[data-ed8-action="audio"]')?.classList.remove('playing');
  m.host?.querySelector('[data-ed8-action="audio"]')?.setAttribute('aria-pressed','false');
@@ -63,7 +63,7 @@ function speak(m){
   button?.classList.add('playing');button?.setAttribute('aria-pressed','true');
   u.onend=()=>{if(m.voice===u)stopVoice(m)};
   u.onerror=()=>{if(m.voice===u){stopVoice(m);message(m,'No se pudo reproducir la guía. Puedes intentar nuevamente.')}};
-  window.speechSynthesis.speak(u);
+  window.SPM_VOICE.speak(u);
  }catch{stopVoice(m);message(m,'No se pudo reproducir la voz del dispositivo.')}
 }
 function hit(rect,action,label,{value=null,selected=false,audio=false,disabled=false}={}){
@@ -107,7 +107,7 @@ function render(m){
  }
  const timer=m.page===1&&m.timerVisible?`<div class="spm-ed8-timer-panel" role="group" aria-label="Cronómetro opcional"><span data-ed8-timer>${formatTimer(m.seconds)}</span><button data-ed8-action="timer-toggle" type="button">${m.timer?'Pausar':'Iniciar'}</button><button data-ed8-action="timer-reset" type="button">Reiniciar</button><button data-ed8-action="timer-close" type="button">Cerrar</button></div>`:'';
  const nav=`<nav class="spm-ed8-toolbar" aria-label="Navegación Día 21"><button type="button" data-ed8-action="back">${m.page===1?'← Volver a Hoy':'← Anterior'}</button><span>${m.page} de 3 · Día ${m.calendarDay}</span><button type="button" data-ed8-action="exit">Salir a Hoy</button></nav>`;
- m.host.innerHTML=`<section class="spm-ed8-session spm-er-fullscreen" data-ed8-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: Sostener la erección, pantalla ${m.page} de 3"><div class="spm-ed8-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Imagen premium aprobada de la pantalla ${m.page}">${hits}${checks}${extra}</div>${timer}${nav}<p class="spm-ed8-status" data-ed8-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
+ m.host.innerHTML=`<section class="spm-ed8-session spm-er-fullscreen" data-ed8-session data-screen="${m.page}" aria-label="Día ${m.calendarDay}: Sostener la erección, pantalla ${m.page} de 3"><div class="spm-ed8-artwork" style="background-image:url(&quot;${IMAGES[m.page-1]}&quot;)" role="group" aria-label="Imagen premium aprobada de la pantalla ${m.page}">${hits}${checks}${extra}</div>${timer}${nav}${window.SPM_VOICE?.transcript(GUIDES[m.page-1])||''}<p class="spm-ed8-status" data-ed8-status role="status" aria-live="polite">${esc(m.status)}</p></section>`;
  if(m.voice){const btn=m.host.querySelector('[data-ed8-action="audio"]');btn?.classList.add('playing');btn?.setAttribute('aria-pressed','true')}
 }
 function formatTimer(sec){const n=Math.max(0,Math.floor(sec||0));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}

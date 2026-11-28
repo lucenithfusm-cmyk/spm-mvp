@@ -30,8 +30,11 @@ test('Las revisiones simulan Hoy, en lugar de reiniciar automáticamente',()=>{
 });
 test('Día 1 usa EHS-4 propio y el acceso público sigue pausado',()=>{
  assert.match(routes,/program-paused\.html/);
- assert.match(live,/erection-day1-touch-v1\.js\?v=20261117-d1-cierre-manual1/);
- assert.match(live,/erection-day2-touch-v1\.js\?v=20261117-erection10x28-v1/);
+ const central=read('premium-v2/program-review-v1.js');
+ for(const [lesson,directReview]of [[1,review1],[2,review2]]){
+  const name='erection-day'+lesson+'-touch-v1.js',url=[...live.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]).find(v=>v.startsWith(name+'?v='));
+  assert.equal(url,name+'?v=20261127-technical');assert.ok(central.includes("'"+url+"'"));assert.ok(directReview.includes('src="'+url+'"'));
+ }
  assert.match(live,/erection-day1-bridge-v1\.js/);
  assert.match(live,/erection-day2-bridge-v1\.js/);
 });

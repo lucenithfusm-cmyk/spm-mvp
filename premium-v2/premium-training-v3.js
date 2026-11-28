@@ -24,7 +24,7 @@ const css=`
 `;
 const style=document.createElement('style');style.textContent=css;document.head.appendChild(style);
 
-function speak(text){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.86;u.pitch=1;const voices=speechSynthesis.getVoices();u.voice=voices.find(v=>/es-CO/i.test(v.lang))||voices.find(v=>/^es/i.test(v.lang))||null;speechSynthesis.speak(u)}catch(e){}}
+function speak(text){if(!state?.voiceEnabled)return;try{window.SPM_VOICE.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-CO';u.rate=.86;u.pitch=1;window.SPM_VOICE.speak(u)}catch(e){}}
 function humanSvg(kind){
  const anatomy=kind==='breathing'?`
  <g class="spmx-overlay">
@@ -78,7 +78,7 @@ function openTraining(type){
  modal=document.createElement('div');modal.className='spmx';modal.innerHTML=`<div class="spmx-card"><div class="spmx-head"><b>SPM Premium · ${f.title}</b><button class="spmx-close" aria-label="Cerrar">×</button></div><div class="spmx-main"><div class="spmx-stage" data-view="person">${humanSvg(type)}<div style="position:absolute;left:18px;bottom:18px;background:rgba(4,16,23,.78);padding:10px 12px;border-radius:12px"><div class="spmx-timer" style="font-size:34px">—</div><div class="spmx-phase">Demostración</div><div class="spmx-sub">Visual + voz sincronizadas</div></div></div><div class="spmx-copy"></div></div></div>`;
  document.body.appendChild(modal);$('.spmx-close',modal).onclick=closeTraining;renderStep();
 }
-function closeTraining(){if(timer)clearTimeout(timer);timer=null;try{speechSynthesis.cancel()}catch(e){};modal?.remove();modal=null;state=null}
+function closeTraining(){if(timer)clearTimeout(timer);timer=null;try{window.SPM_VOICE.cancel()}catch(e){};modal?.remove();modal=null;state=null}
 function renderStep(){
  const f=flows[state.type],s=f.steps[state.idx],copy=$('.spmx-copy',modal),stage=$('.spmx-stage',modal);stage.dataset.view=s.view||'person';delete stage.dataset.breath;delete stage.dataset.pelvic;
  const isLast=s.k==='finish';copy.innerHTML=`<span class="spmx-kicker">Paso ${state.idx+1} de ${f.steps.length}</span><h2>${s.t}</h2><p>${s.p}</p>${s.note?`<div class="spmx-note ${/mareo|dolor|consulta/i.test(s.note)?'spmx-warn':''}">${s.note}</div>`:''}<div class="spmx-progress"><i style="width:${((state.idx+1)/f.steps.length)*100}%"></i></div><div class="spmx-actions"></div>`;
@@ -91,7 +91,7 @@ function renderStep(){
  }else if(isLast){renderFinish(actions)} else {
   const b=document.createElement('button');b.className='spmx-action spmx-primary';b.textContent='Continuar';b.onclick=nextStep;actions.appendChild(b);
  }
- speak(`${s.t}. ${s.p} ${s.note||''}`);
+ const listen=document.createElement('button');listen.className='spmx-action spmx-secondary';listen.type='button';listen.textContent='Escuchar guía';listen.onclick=()=>{state.voiceEnabled=true;speak(`${s.t}. ${s.p} ${s.note||''}`)};actions.appendChild(listen);
 }
 function nextStep(){state.idx=Math.min(state.idx+1,flows[state.type].steps.length-1);renderStep()}
 function wait(ms){return new Promise(r=>{timer=setTimeout(r,ms)})}

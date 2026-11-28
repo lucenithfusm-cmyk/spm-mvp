@@ -1,0 +1,45 @@
+name: SPM technical corrections QA
+on:
+  push:
+    branches: ["fix/spm-technical-20261127"]
+  pull_request:
+    paths: ["premium-v2/**", "labs/**", "supabase/**", "tests/**", "scripts/qa/**", ".github/workflows/spm-technical-corrections-qa.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install fixed QA and Lab dependencies
+        run: |
+          npm ci --prefix scripts/qa --no-audit --no-fund
+          npm ci --prefix labs/desire --no-audit --no-fund
+          npm ci --prefix labs/breathing --no-audit --no-fund
+          npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - name: Verify shipped UI adapters and local PostgreSQL contracts
+        env:
+          NODE_PATH: ${{ github.workspace }}/scripts/qa/node_modules
+        run: node --test --test-reporter=tap --test-force-exit tests/*.test.cjs > spm-technical-tests.tap
+      - name: Verify breathing controller
+        working-directory: labs/breathing
+        run: npx vitest run
+      - name: Check Lab types
+        run: |
+          npm run typecheck --prefix labs/desire
+          npm run typecheck --prefix labs/breathing
+          npm run typecheck --prefix labs/pelvic-floor
+      - name: Retain test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spm-technical-tests
+          path: spm-technical-tests.tap

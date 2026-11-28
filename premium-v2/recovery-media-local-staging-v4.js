@@ -35,11 +35,8 @@ function hydrate(){
   const id=scenario(root),audioSrc=AUDIO[id];if(!id||!audioSrc)return;
   root.dataset.spmPatientScenario=id;
   root.dataset.spmPatientAudio=audioSrc;
-  let audio=root.querySelector('audio.spm-patient-story-audio');
-  if(!audio){
-   audio=document.createElement('audio');audio.className='spm-patient-story-audio';audio.hidden=true;
-   audio.preload='auto';audio.src=audioSrc;root.appendChild(audio);try{audio.load()}catch{}
-  }else if(!audio.src.endsWith(audioSrc)){audio.src=audioSrc;try{audio.load()}catch{}}
+  // Historical audio URLs are provenance only; current narration uses SPM_VOICE.
+  root.querySelectorAll('audio.spm-patient-story-audio').forEach(audio=>{try{audio.pause()}catch{}audio.remove()});
   root.querySelectorAll('.spm-v4-card.doctor .spm-v4-visual').forEach(box=>{
    let v=box.querySelector('video'),needsLoad=false;
    if(!v){v=document.createElement('video');box.insertBefore(v,box.firstChild);needsLoad=true}

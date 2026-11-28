@@ -212,8 +212,9 @@ async function checkOptions(frame, label, screenshotPage) {
 
     // Integration uses the real isolated reviewer, not the geometry parent.
     await page.setViewportSize(viewports[0]);
-    await page.goto(new URL('revision-programas-28-dias.html?programa=desire&dia=15', base).href, { waitUntil: 'domcontentloaded' });
+    await page.goto(new URL('revision-programas-28-dias.html?agenda=legacy&programa=desire&dia=15', base).href, { waitUntil: 'domcontentloaded' });
     await page.locator('#reviewDay:not([disabled])').waitFor({ timeout: 30000 });
+    assert.equal(await page.evaluate(() => window.SPM_RESOURCE_CONTEXT().scheduleVersion), 'legacy');
     for (const day of [15, 22, 27, 28]) {
       if (await page.locator('#reviewDay').inputValue() !== String(day)) await page.locator('#reviewDay').selectOption(String(day));
       await page.waitForFunction(day => window.SPM_RESOURCE_CONTEXT?.().day === day && !document.querySelector('#reviewDay').disabled, day);

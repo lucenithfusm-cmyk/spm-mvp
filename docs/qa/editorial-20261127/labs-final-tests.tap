@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: the six original scenes have complete readable narration and no autoplay or automatic progression
+ok 1 - the six original scenes have complete readable narration and no autoplay or automatic progression
+  ---
+  duration_ms: 519.180747
+  type: 'test'
+  ...
+# Subtest: pause repeats the current text; manual navigation and unmount cancel speech and invalidate old callbacks
+ok 2 - pause repeats the current text; manual navigation and unmount cancel speech and invalidate old callbacks
+  ---
+  duration_ms: 86.080291
+  type: 'test'
+  ...
+# Subtest: a blocked or absent voice leaves the complete text and a retry; the preserved motion is always muted
+ok 3 - a blocked or absent voice leaves the complete text and a retry; the preserved motion is always muted
+  ---
+  duration_ms: 25.802072
+  type: 'test'
+  ...
+# Subtest: manual cues, pause and visibility changes stop the clock and return the visual to rest without completing
+ok 4 - manual cues, pause and visibility changes stop the clock and return the visual to rest without completing
+  ---
+  duration_ms: 657.160702
+  type: 'test'
+  ...
+# Subtest: intentional completion has no minimum and requires explicit answers before offering only a fresh scoped perception result
+ok 5 - intentional completion has no minimum and requires explicit answers before offering only a fresh scoped perception result
+  ---
+  duration_ms: 174.16072
+  type: 'test'
+  ...
+# Subtest: a failed host close keeps the iframe usable with its guide, clock and audio paused and no result
+ok 6 - a failed host close keeps the iframe usable with its guide, clock and audio paused and no result
+  ---
+  duration_ms: 207.472185
+  type: 'test'
+  ...
+# Subtest: interrupting can record a difficulty without completing, while a rejected write preserves answers for one retry
+ok 7 - interrupting can record a difficulty without completing, while a rejected write preserves answers for one retry
+  ---
+  duration_ms: 137.045475
+  type: 'test'
+  ...
+# Subtest: a stale-day save is rejected and a safety review removes the practice instead of resuming it
+ok 8 - a stale-day save is rejected and a safety review removes the practice instead of resuming it
+  ---
+  duration_ms: 109.765573
+  type: 'test'
+  ...
+# Subtest: all sixteen screens stay reachable without a contraction action in ready, awareness, relax or review
+ok 9 - all sixteen screens stay reachable without a contraction action in ready, awareness, relax or review
+  ---
+  duration_ms: 1060.184459
+  type: 'test'
+  ...
+# Subtest: flags and the local No lo sé observation cannot overwrite strength screening or recommend progression
+ok 10 - flags and the local No lo sé observation cannot overwrite strength screening or recommend progression
+  ---
+  duration_ms: 70.113067
+  type: 'test'
+  ...
+# Subtest: Las posturas usan fotos SPM y conservan la selección accesible
+ok 11 - Las posturas usan fotos SPM y conservan la selección accesible
+  ---
+  duration_ms: 2.035612
+  type: 'test'
+  ...
+# Subtest: Las dos fotos del build son WebP y conservan exactamente los bytes aprobados de fuente
+ok 12 - Las dos fotos del build son WebP y conservan exactamente los bytes aprobados de fuente
+  ---
+  duration_ms: 1.106229
+  type: 'test'
+  ...
+# Subtest: La web carga sus recursos vigentes y conserva la pausa pública
+ok 13 - La web carga sus recursos vigentes y conserva la pausa pública
+  ---
+  duration_ms: 0.699065
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2990.122555

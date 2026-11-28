@@ -41,6 +41,7 @@ function harness(options={}){
   setInterval:()=>++sequence,clearInterval(){},
   fetch:()=>new Promise(resolve=>{fetchResolve=resolve})};
  Object.defineProperty(sandbox,'localStorage',{get(){storageAccesses++;if(options.noStorage)throw Error('Storage unavailable');return {getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)}}});
+ require('./helpers/device-voice-fixture.cjs').installOn(window,sandbox.SpeechSynthesisUtterance);
  if(!options.withoutNarration)vm.runInNewContext(narrationSource,sandbox,{filename:'desire-week3-v1/narration.js'});
  vm.runInNewContext(source,sandbox,{filename:'desire-week3-v1/app.js'});
  function markup(id,attribute='data-control',where=app){const escaped=id.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const match=where.innerHTML.match(new RegExp('<[^>]*'+attribute+'="'+escaped+'"[^>]*>'));assert(match,'Visible control '+id);return match[0];}

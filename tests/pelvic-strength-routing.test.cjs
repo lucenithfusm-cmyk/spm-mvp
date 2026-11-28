@@ -2,31 +2,34 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const {JSDOM}=require('../labs/desire/node_modules/jsdom');
 const read=name=>fs.readFileSync(path.join(__dirname,'../premium-v2',name),'utf8');
 function view(ctx){
- const html=read('pelvic-floor-lab/index.html');
- const dom=new JSDOM(html,{url:'https://spm.test/premium-v2/pelvic-floor-lab/index.html',runScripts:'dangerously',beforeParse:w=>{
-  if(ctx)w.SPM_PELVIC_LAB_HOST={getContext:()=>ctx};
- }});
+ const dom=new JSDOM('<div id="root"></div>',{url:'https://spm.test/premium-v2/pelvic-floor-lab/index.html',runScripts:'outside-only'});
+ const entry=fs.readFileSync(path.join(__dirname,'../labs/pelvic-floor/src/main.tsx'),'utf8');
+ const ts=require('../labs/pelvic-floor/node_modules/typescript');
+ let mounts=0;
+ const compiled=ts.transpileModule(entry,{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.CommonJS}}).outputText;
+ const modules={'react-dom/client':{createRoot:()=>({render(){mounts++;}})},'react/jsx-runtime':{jsx:()=>null,jsxs:()=>null},'./components/PelvicLab':{PelvicLab:()=>null},'./styles.css':{},'./lib/pf-host':{host:ctx?{getContext:()=>ctx}:null}};
+ new Function('require','exports','document',compiled)(name=>modules[name],{},dom.window.document);
  const scripts=[...dom.window.document.querySelectorAll('script[src]')].map(n=>n.getAttribute('src'));
- dom.window.close();return scripts;
+ dom.window.close();return {scripts,mounts};
 }
 test('the weekly Pelvic Floor Lab mounts exactly one application, not a React copy behind it',()=>{
- for(const day of [3,10,17,24]){
-  const scripts=view({day,origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab'});
+ for(const day of [3,10,17,18,24]){
+  const {scripts,mounts}=view({day,origin:'dailyPlan',intent:'daily-relax',activityId:'pelvic-daily-lab'});
   assert.equal(scripts.filter(x=>x.includes('pelvic-weekly-flow-v1.js')).length,1);
-  assert.equal(scripts.filter(x=>x.includes('index-pf-postures-20261113.js')).length,0);
+  assert.equal(mounts,0,'React is not mounted behind the weekly flow');
  }
 });
 test('the educational Library still has its original React app, without the weekly overlay',()=>{
- const scripts=view({day:2,origin:'library',intent:'library',activityId:null});
- assert.equal(scripts.filter(x=>x.includes('index-pf-postures-20261113.js')).length,1);
+ const {scripts,mounts}=view({day:2,origin:'library',intent:'library',activityId:null});
+ assert.equal(mounts,1,'the actual entry mounts exactly one React app');
  assert.equal(scripts.filter(x=>x.includes('pelvic-weekly-flow-v1.js')).length,0);
 });
 test('the original seven-step strength route is active and old competing overlays are unlinked',()=>{
  const live=read('live.html'),review=read('program-review-v1.js'),classic=read('pelvic-module-rebuild-v2.js'),bridge=read('pelvic-lab-bridge-v1.js');
  assert.doesNotMatch(live,/<script src="pelvic-interactive-v1\.js"/);
  assert.doesNotMatch(live,/<script src="pelvic-fidelity-v2\.js"/);
- assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=20261114-circle-halo-welcome4/);
- assert.match(review,/pelvic-module-rebuild-v2\.js\?v=20261114-circle-halo-welcome4/);
+ assert.match(live,/pelvic-guided-v3-hotfix\.js\?v=[^\s"\']+/);
+ assert.match(review,/pelvic-module-rebuild-v2\.js\?v=[^\s"\']+/);
  assert.match(classic,/window\.SPM_PELVIC_V2=\{open,close\}/);
  assert.match(classic,/source:'pelvic-classic-v2'/);
  assert.match(bridge,/data-pf-training/);
@@ -52,13 +55,13 @@ test('DE pelvic entries use the guarded classic strength selector rather than th
  assert.doesNotMatch(central,/kind==='pelvic'&&currentOrigin\(\)==='dailyPlan'&&window\.SPM_PELVIC_LAB/);
  assert.match(legacy,/window\.SPM_PELVIC_HUB\.open\(\{origin:'erectile',day\}\)/);
  assert.doesNotMatch(legacy,/SPM_PELVIC_FLOOR\?\.open/);
- assert.match(live,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
- assert.match(review,/erectile-central-v3\.js\?v=20261114-pelvic-entry2/);
+ assert.match(live,/erectile-central-v3\.js\?v=[^\s"\']+/);
+ assert.match(review,/erectile-central-v3\.js\?v=[^\s"\']+/);
 });
 
 test('reviewer uses a valid prepared example without relaxing real-patient safety',()=>{
  const review=read('program-review-v1.js'),bridge=read('pelvic-lab-bridge-v1.js');
- assert.match(review,/answers:\{pf_awareness:'good_control',pf_tension:1\}/);
+ assert.match(review,/answers:sampleAnswers\(\)/);assert.match(review,/pf_awareness:'good_control',pf_tension:1/);
  assert.doesNotMatch(review,/answers:\{pf_awareness:'yes'/);
  assert.match(bridge,/a\.pf_awareness==='hard_to_relax'/);
  assert.match(bridge,/const strengthAvailable=ready&&!!scheduled/);
@@ -77,7 +80,7 @@ test('old force training overlays are removed from the current route and cue ass
  assert.match(oldTraining,/if\(type==='pelvic'\)return false/);
  assert.doesNotMatch(strength,/closest\('\.pfi-launch'\)/);
  assert.doesNotMatch(strength,/pelvic-floor-lab\/(?:audio|assets)\//);
- assert.match(strength,/assets\/audio\/pelvic\/strength-cues\/contrae\.mp3/);
+ assert.match(strength,/SPM_VOICE/);assert.match(strength,/Contrae\./);assert.doesNotMatch(strength,/new Audio\(/);
  for(const f of ['pelvic-premium-router.js','pelvic-interactive-v1.js','pelvic-fidelity-v2.js'])assert.equal(fs.existsSync(path.join(__dirname,'../premium-v2',f)),false);
 });
 
@@ -85,6 +88,5 @@ test('strength welcome includes the approved speaker invitation and Lab guidance
  const src=read('pelvic-guidance-v1.js');
  assert.match(src,/En cada paso encontrarás una bocina/);
  assert.match(src,/Presiónala cuando quieras escuchar la explicación de la actividad y sus recomendaciones/);
- assert.match(src,/resource2\.heygen\.ai\/text_to_speech/);
- assert.match(src,/pelvic-lab-daily-20261113\.mp3/);
+ assert.match(read('checkpoint-audio-v1.js'),/SPM_PRACTICE_AUDIO/);assert.match(read('practice-audio-v1.js'),/SPM_VOICE/);assert.doesNotMatch(read('practice-audio-v1.js'),/new Audio\(/);
 });

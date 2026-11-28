@@ -13,6 +13,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --prefix labs/pelvic-floor --no-audit --no-fund
+      - run: npm ci --prefix labs/breathing --no-audit --no-fund
       - run: npm run typecheck --prefix labs/pelvic-floor && npm run build --prefix labs/pelvic-floor
       - run: git diff --exit-code -- premium-v2/pelvic-floor-lab
       - run: npm install --prefix /tmp/spm-pelvic-qa jsdom@26.1.0 --no-audit --no-fund

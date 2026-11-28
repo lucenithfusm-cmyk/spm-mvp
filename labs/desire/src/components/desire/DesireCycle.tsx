@@ -60,20 +60,18 @@ function Measure({ metric, label, value, onChange }: { metric: string; label: st
 function SpokenSteps({ text, label = 'Escuchar indicaciones' }: { text: string; label?: string }) {
   const [speaking, setSpeaking] = useState(false);
   const [error, setError] = useState(false);
-  const supported = typeof window !== 'undefined' && 'speechSynthesis' in window;
-  useEffect(() => () => { if (supported) window.speechSynthesis.cancel(); }, [text, supported]);
+  const supported = typeof window !== 'undefined' && !!window.SPM_VOICE?.supported;
+  useEffect(() => () => { if (supported) window.SPM_VOICE?.cancel(); }, [text, supported]);
   if (!supported) return null;
   return <><button type="button" className="dz-btn gold" style={{ width: '100%', minHeight: 64, fontSize: 18 }} aria-pressed={speaking} onClick={() => {
-    window.speechSynthesis.cancel();
+    window.SPM_VOICE?.cancel();
     if (speaking) { setSpeaking(false); return; }
     setError(false);
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = 'es-CO'; speech.rate = 0.92;
-    const voice = window.speechSynthesis.getVoices().find(v => v.lang.startsWith('es'));
-    if (voice) speech.voice = voice;
     speech.onend = () => setSpeaking(false);
     speech.onerror = () => { setSpeaking(false); setError(true); };
-    setSpeaking(true); window.speechSynthesis.speak(speech);
+    setSpeaking(true); window.SPM_VOICE?.speak(speech);
   }}><Volume2 size={30} />{speaking ? 'Detener audio' : label}</button>{error && <p role="status">No pudimos reproducir la voz de este dispositivo. Puedes consultar las mismas indicaciones en el paso a paso escrito.</p>}</>;
 }
 

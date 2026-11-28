@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><meta name="robots" content="noindex,nofollow"><title>SPM · Día 15 · Erección y firmeza · Revisión táctil</title>
+<html lang="es"><head><script src="/premium-v2/device-voice-v1.js?v=20261127-technical"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1"><meta name="robots" content="noindex,nofollow"><title>SPM · Día 15 · Erección y firmeza · Revisión táctil</title>
 <style>
 :root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#071d30;color:white}
@@ -70,7 +70,7 @@ for(const c of cards){const btn=hotspot(c.box,{className:'art-card',value:c.key,
 let speaking=false, utterance=null;
 const guide="Hoy identificarás qué estímulos suelen favorecer tu excitación y tu respuesta sexual. Cada persona responde de manera diferente, y no necesitas provocar una erección ni medir su firmeza para completar esta actividad. Recuerda experiencias que ya hayas vivido y selecciona los estímulos que más te han ayudado: contacto físico, sonidos agradables, estímulos visuales, un ambiente cómodo, fantasías sexuales u otros. Puedes elegir varios. En una próxima experiencia, incorpora de forma consciente alguno de ellos, a tu ritmo, sin presionarte por conseguir una respuesta específica. Si compartes la experiencia con otra persona, acuerden lo que ambos disfrutan. Cuando estés listo, guarda tu selección y continúa con tu ruta de hoy.";
 function stopAudio(){
- try{window.speechSynthesis?.cancel?.()}catch{}
+ try{window.SPM_VOICE?.cancel?.()}catch{}
  speaking=false;utterance=null;
  listen?.classList.remove('is-playing');listen?.setAttribute('aria-pressed','false');
 }
@@ -89,7 +89,7 @@ const listen=hotspot([214,298,650,389],{className:'guide',label:'Escuchar guía 
   status('Reproduciendo la guía con la voz estándar del dispositivo…');
   u.onend=()=>{if(utterance===u){stopAudio();status('Guía finalizada. Elige los estímulos que reconozcas.')}};
   u.onerror=()=>{if(utterance===u){stopAudio();status('No se pudo reproducir esta guía. Intenta de nuevo.','error')}};
-  window.speechSynthesis.speak(u);
+  window.SPM_VOICE.speak(u);
  }catch{stopAudio();status('No se pudo reproducir esta guía.','error')}
 }});
 listen.setAttribute('aria-pressed','false');

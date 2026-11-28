@@ -71,6 +71,16 @@
     }
     function hit(label,rect,fn,cls=''){const b=button(label,fn,'cx-hit '+cls);b.setAttribute('aria-label',label);return place(stage,b,rect);}
     tools.append(button('‹ Volver',leave));
+    // El modo se elige antes de explorar el mapa, no solo al cerrar la actividad.
+    let modeSelect;
+    if(day===13){
+      if(!['Individual','En pareja'].includes(data.mode))data.mode='Individual';
+      const modeLabel=el('label','cx-mode','Modalidad ');modeSelect=el('select');
+      modeSelect.setAttribute('aria-label','Modalidad de la actividad');
+      for(const value of ['Individual','En pareja']){const option=el('option','',value);option.value=value;modeSelect.append(option);}
+      modeSelect.value=data.mode;modeSelect.onchange=()=>{data.mode=modeSelect.value;};
+      modeLabel.append(modeSelect);tools.append(modeLabel);
+    }
     const guide=button('◖))  Guía',null,'cx-audio');guide.dataset.spmSpeak=a.guide;guide.dataset.spmDeviceVoice='true';guide.dataset.audioLabel='Escuchar guía';guide.setAttribute('aria-label','Escuchar guía');
     if(a.guideOverlay){
       guide.replaceChildren();
@@ -101,6 +111,10 @@
     function rhythmButton(title,rect,key,cue){
       const b=hit(title,rect,()=>{
         panel(title);
+        if(key==='other'&&data.mode!=='En pareja'){
+          content.append(el('p','','En la modalidad Individual registra tus propias preferencias. Si compartes la reflexión, elige «En pareja» en Modalidad y recoge solo lo que la otra persona haya expresado.'));
+          return;
+        }
         const item=a.fields.find(f=>f.key===key);
         content.append(el('p','',cue));say(cue);
         const editor=el('form','cx-form'),label=el('label','cx-field'),input=el('textarea');
@@ -111,7 +125,6 @@
           e.preventDefault();const value=input.value.trim();
           if(!value && input.required){input.setCustomValidity('Escribe tu respuesta.');input.reportValidity();input.oninput=()=>input.setCustomValidity('');return;}
           data[key]=value;
-          if(key==='other'&&value)data.mode='En pareja';
           if(!data.mode)data.mode='Individual';
           if(draftKey){try{sessionStorage.setItem(draftKey,JSON.stringify({base:prior?.revision||'',answers:data}));}catch{}}
           b.classList.toggle('cx-answered',!!value);closeSheet();tone(540);
@@ -171,7 +184,7 @@
           const vals=item.values==='scale'?[...Array(11).keys(),null]:item.values==='chosen'?(data.topics||[]).filter(Boolean):item.values;
           for(const v of vals){const o=el('option','',v===null?'No aplica':v);o.value=v===null?'na':v;input.append(o);}
           input.value=data[k]===null?'na':data[k]??'';
-          input.onchange=()=>{if(input.value==='')delete data[k];else data[k]=item.values==='scale'?(input.value==='na'?null:Number(input.value)):input.value;update();tone(470);if(k==='mode')form('mode');};
+          input.onchange=()=>{if(input.value==='')delete data[k];else data[k]=item.values==='scale'?(input.value==='na'?null:Number(input.value)):input.value;update();tone(470);if(k==='mode'){if(modeSelect)modeSelect.value=data.mode||'Individual';form('mode');}};
         }
         input.name=k;input.required=!item.optional;label.append(input);f.append(label);
       }

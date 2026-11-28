@@ -1,6 +1,7 @@
-// Mobile regression for the real reviewed Desire entry. Synthetic review-only state.
+// Mobile regression for the historical Desire entry. Synthetic legacy review state.
 // It catches a screen mounted below the activity cards but never scrolled into view.
 const {chromium,webkit}=require('playwright');
+const assert=require('node:assert/strict');
 const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
 (async()=>{
  const browser=process.env.SPM_BROWSER==='webkit'?await webkit.launch({headless:true}):await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});
@@ -10,8 +11,9 @@ const base=process.env.SPM_TEST_BASE||'http://127.0.0.1:4173/premium-v2/';
   const p=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];p.on('pageerror',e=>errors.push(e.message));
   try{
-   await p.goto(base+'revision-programas-28-dias.html?programa=desire&dia='+day,{waitUntil:'domcontentloaded',timeout:30000});
+   await p.goto(base+'revision-programas-28-dias.html?agenda=legacy&programa=desire&dia='+day,{waitUntil:'domcontentloaded',timeout:30000});
    await p.locator('#reviewProgram:not([disabled])').waitFor({timeout:30000});
+   assert.equal(await p.evaluate(()=>window.SPM_RESOURCE_CONTEXT().scheduleVersion),'legacy');
    const trigger=p.locator('#spmDailySession [data-daily-open="main"]');
    await trigger.waitFor({timeout:10000});
    await trigger.click();

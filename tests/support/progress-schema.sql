@@ -1,0 +1,36 @@
+-- Isolated PostgreSQL test fixture reconstructed from schema-only inspection, 27 Nov 2026.
+-- Contains no patient records, production credentials, or hosted Auth users.
+create role anon;
+create role authenticated;
+create role service_role;
+create schema auth;
+create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
+create function auth.role() returns text language sql stable as $$ select nullif(current_setting('request.jwt.claim.role',true),'') $$;
+grant usage on schema auth to authenticated,anon;
+grant execute on function auth.uid(),auth.role() to authenticated,anon;
+create table auth.users(id uuid primary key);
+create table public.assessments(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users, status text not null default 'completed',motives text[] not null default '{}', answers jsonb not null default '{}',created_at timestamptz not null default now(),updated_at timestamptz not null default now(),completed_at timestamptz);
+create table public.performance_maps(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users,assessment_id uuid references public.assessments,primary_domain text,secondary_domain text,domain_scores jsonb not null default '{}',spm_score smallint,safety_level text not null default 'none',safety_flags jsonb not null default '[]',created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table public.plans(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users,assessment_id uuid references public.assessments,performance_map_id uuid references public.performance_maps,route_key text,cycle_days smallint not null default 28,current_day smallint not null default 1,status text not null default 'active',start_date date not null default current_date,plan_snapshot jsonb not null default '{}',created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table public.activity_completions(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users,plan_id uuid not null references public.plans,day_number smallint not null,module_key text not null default 'daily_practice',metric_value numeric,metadata jsonb not null default '{}',completed_at timestamptz not null default now(),unique(plan_id,day_number,module_key));
+create table public.daily_checkins(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users,plan_id uuid not null references public.plans,day_number smallint not null,sleep smallint,stress smallint,confidence smallint,desire smallint,outcome smallint,sexual_activity boolean,practice_completed boolean,new_safety_flag boolean not null default false,note text,coach_decision text,decision_code text,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table public.weekly_reviews(id uuid primary key default gen_random_uuid(),user_id uuid not null references auth.users,plan_id uuid not null references public.plans,week_number smallint not null check(week_number between 1 and 13),adherence_pct smallint check(adherence_pct between 0 and 100),confidence_avg numeric,outcome_avg numeric,summary jsonb not null default '{}',next_action text,created_at timestamptz not null default now(),updated_at timestamptz not null default now(),unique(plan_id,week_number));
+create table public.spm_program_access(plan_id uuid primary key references public.plans,user_id uuid not null references auth.users,source text not null default 'legacy',status text not null default 'active',created_at timestamptz not null default now());
+alter table public.assessments enable row level security;
+alter table public.performance_maps enable row level security;
+alter table public.plans enable row level security;
+alter table public.activity_completions enable row level security;
+alter table public.daily_checkins enable row level security;
+alter table public.weekly_reviews enable row level security;
+alter table public.spm_program_access enable row level security;
+grant select,insert,update,delete on public.assessments,public.performance_maps,public.activity_completions,public.daily_checkins,public.weekly_reviews to authenticated;
+grant select,update on public.plans to authenticated;
+grant select on public.spm_program_access to authenticated;
+create policy assessments_own on public.assessments to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create policy maps_own on public.performance_maps to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create policy activities_own on public.activity_completions to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create policy checkins_own on public.daily_checkins to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create policy reviews_own on public.weekly_reviews to authenticated using(user_id=(select auth.uid())) with check(user_id=(select auth.uid()));
+create policy access_read on public.spm_program_access for select to authenticated using(user_id=(select auth.uid()));
+create policy plans_read on public.plans for select to authenticated using(user_id=(select auth.uid()) and exists(select 1 from public.spm_program_access a where a.plan_id=plans.id and a.user_id=(select auth.uid()) and a.status='active'));
+create policy plans_update on public.plans for update to authenticated using(user_id=(select auth.uid()) and exists(select 1 from public.spm_program_access a where a.plan_id=plans.id and a.user_id=(select auth.uid()) and a.status='active')) with check(user_id=(select auth.uid()));

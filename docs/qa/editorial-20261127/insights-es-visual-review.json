@@ -1,0 +1,51 @@
+{
+  "scope": "Four Spanish insight PNGs only; no physical audio verification; no product edits",
+  "source_script": "premium-v2/evaluation-refresh-v1.js MOMENTS.es",
+  "script_sha256": "d0cc6b27bad8d8c03648e25880136c03b143ee0b0e81b016b8e00ad7ae40be88",
+  "images": [
+    {
+      "id": 1,
+      "file": "premium-v2/assets/insights/insight-1-es.png",
+      "sha256": "da59918a40417d7ad30798be16cab689008b42684227c23e90df35680ae2bcfd",
+      "inspection": "Visual inspection of the actual PNG using view_image, 27 Nov 2026; line wrapping normalized; punctuation retained as visible. No OCR-only inference.",
+      "visible_text": "SPM™\nSEXUAL PERFORMANCE MAP\nEVALÚA | COMPRENDE | MEJORA\n1 / 4\nESPAÑOL\nINSIGHT 1\nTu rendimiento comienza en tu mente\nLa confianza, el enfoque y el control no solo están en lo mental. También impactan directamente en tu rendimiento sexual. Cuando gestionas el estrés y entrenas tu mentalidad, tu cuerpo también responde.\nMenos estrés\nMás enfoque\nMayor control\n“Una mente más tranquila construye una versión más fuerte de ti.”\nEscucha tu insight\nSPM | CONOCIMIENTO ACCIÓN MEJORES RESULTADOS\nUN HOMBRE MÁS FUERTE COMIENZA HOY\nDESLIZA PARA CONTINUAR",
+      "current_script_title": "Tu patrón empieza a tomar forma.",
+      "consistent_with_current_MOMENTS_es": false,
+      "gap": "Baked-in image text presents a different message and expected benefits, while the current script describes assessment/context/route. Changing the JavaScript voice text does not change the readable PNG.",
+      "source_needed": "Editable approved image/layout or explicit revised artwork specification; this review does not modify the approved PNG."
+    },
+    {
+      "id": 2,
+      "file": "premium-v2/assets/insights/insight-2-es.png",
+      "sha256": "ba9adef4a49dbe653b04fdac47ef1c1e53b28a8a7c781b7a44364d4f14c93268",
+      "inspection": "Visual inspection of the actual PNG using view_image, 27 Nov 2026; line wrapping normalized; punctuation retained as visible. No OCR-only inference.",
+      "visible_text": "SPM\nSEXUAL PERFORMANCE MAP™\n2/4\nES\nINSIGHT 2\nMejor circulación, mejor rendimiento\nUna buena circulación es clave para erecciones más firmes, mayor resistencia y una experiencia sexual más satisfactoria. A través del ejercicio, la respiración y hábitos saludables, puedes mejorar tu flujo sanguíneo de forma natural.\nCorazón más sano\nMás energía\nMejor rendimiento\n“Tu cuerpo rinde cuando la vida fluye.”\nEscucha tu insight\nSPM | CONOCIMIENTO ACCIÓN MEJORES RESULTADOS\nDESLIZA PARA CONTINUAR",
+      "current_script_title": "Lo que ocurre fuera también cuenta.",
+      "consistent_with_current_MOMENTS_es": false,
+      "gap": "Baked-in image text presents a different message and expected benefits, while the current script describes assessment/context/route. Changing the JavaScript voice text does not change the readable PNG.",
+      "source_needed": "Editable approved image/layout or explicit revised artwork specification; this review does not modify the approved PNG."
+    },
+    {
+      "id": 3,
+      "file": "premium-v2/assets/insights/insight-3-es.png",
+      "sha256": "24bbf2037695ca4328fcdd8fa9c9c2350db74ccef48dafb89d4c321b1178f210",
+      "inspection": "Visual inspection of the actual PNG using view_image, 27 Nov 2026; line wrapping normalized; punctuation retained as visible. No OCR-only inference.",
+      "visible_text": "SPM\nSEXUAL PERFORMANCE MAP™\n3/4\nES\nINSIGHT 3\nMenos ansiedad, más conexión\nCuando reduces la ansiedad y vives el momento, disfrutas más la intimidad, te sientes más seguro y conectas mejor con tu pareja. Las técnicas de relajación te ayudan a mantener el control cuando más importa.\nMás calma\nMayor conexión\nExperiencias más satisfactorias\n“La calma te da control. El control te da libertad.”\nEscucha tu insight\nSPM | CONOCIMIENTO ACCIÓN MEJORES RESULTADOS\nDESLIZA PARA CONTINUAR",
+      "current_script_title": "Tus respuestas orientan la ruta.",
+      "consistent_with_current_MOMENTS_es": false,
+      "gap": "Baked-in image text presents a different message and expected benefits, while the current script describes assessment/context/route. Changing the JavaScript voice text does not change the readable PNG.",
+      "source_needed": "Editable approved image/layout or explicit revised artwork specification; this review does not modify the approved PNG."
+    },
+    {
+      "id": 4,
+      "file": "premium-v2/assets/insights/insight-4-es.png",
+      "sha256": "9caae66807952865e18139196b8ca066d26ef8b753f8e70fff28d5128bc4d97e",
+      "inspection": "Visual inspection of the actual PNG using view_image, 27 Nov 2026; line wrapping normalized; punctuation retained as visible. No OCR-only inference.",
+      "visible_text": "SPM\nSEXUAL PERFORMANCE MAP™\n4/4\nES\nINSIGHT 4\nPequeños cambios, grandes resultados\nDormir mejor, ejercitarte, comer bien y ser constante puede transformar tu rendimiento sexual y tu bienestar general. No necesitas ser perfecto, solo constante.\nHábitos más saludables\nMás vitalidad\nResultados duraderos\n“La constancia de hoy construye un mejor mañana.”\nEscucha tu insight\nSPM | CONOCIMIENTO ACCIÓN MEJORES RESULTADOS\nDESLIZA PARA CONTINUAR",
+      "current_script_title": "Tu Performance Map™ está casi listo.",
+      "consistent_with_current_MOMENTS_es": false,
+      "gap": "Baked-in image text presents a different message and expected benefits, while the current script describes assessment/context/route. Changing the JavaScript voice text does not change the readable PNG.",
+      "source_needed": "Editable approved image/layout or explicit revised artwork specification; this review does not modify the approved PNG."
+    }
+  ]
+}

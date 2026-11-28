@@ -18,8 +18,8 @@ const FIELD_KEYS=['reflection','like_phrase','avoid_phrase','partner_solo','refl
 const REFLECTION_KEYS=['reflection','like_phrase','avoid_phrase','partner_solo','reflection_keep','reflection_adapt','reflection_next'];
 const ctx=()=>window.SPM_RESOURCE_CONTEXT?.();
 const scopeOf=c=>c?.userId&&c?.planId?String(c.userId)+':'+String(c.planId):'';
-const main=c=>window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.id==='main');
-const eligible=(c,o)=>o?.origin==='dailyPlan'&&c?.primary==='desire'&&DAYS.has(Number(c.day));
+const main=c=>window.SPM_DAILY_PRACTICE?.contentAssignment?.('desire',c)||window.SPM_DAILY_PRACTICE?.assignments?.(c)?.find(a=>a?.kind==='desire');
+const eligible=(c,o)=>o?.origin==='dailyPlan'&&(c?.primary==='desire'||c?.scheduleVersion==='spm-20261127-v1')&&main(c)?.kind==='desire'&&DAYS.has(Number(main(c)?.sourceDay||c.day));
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const text=(v,max=400)=>typeof v==='string'?v.slice(0,max):'';
 const list=v=>Array.isArray(v)?v.filter(x=>typeof x==='string'):[];
@@ -97,8 +97,8 @@ function historyFor(p){return (Array.isArray(p.sessions)?p.sessions:[]).filter(v
 let current=null;
 function attached(m){
  if(!m||current!==m||!m.host.isConnected||m.iframe&&(!m.iframe.isConnected||!m.wrap?.isConnected))return false;
- const c=ctx();if(!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.day||scopeOf(c)!==m.scope)return false;
- const active=window.SPM_DAILY_PRACTICE?.active?.();return !active||(active.id==='main'&&active.scope===m.scope&&Number(active.day)===m.day);
+ const c=ctx();if((c?.scheduleVersion||'legacy')!==m.scheduleVersion||(main(c)?.assignmentId||null)!==(m.assignmentId||null)||!eligible(c,{origin:'dailyPlan'})||Number(c.day)!==m.scheduledDay||scopeOf(c)!==m.scope)return false;
+ const active=window.SPM_DAILY_PRACTICE?.active?.();return !active||(active.id===m.activityId&&active.scope===m.scope&&Number(active.day)===m.scheduledDay);
 }
 function allowed(m){const c=ctx(),a=main(c);return attached(m)&&a?.kind==='desire'&&!window.SPM_DAILY_PRACTICE?.restricted?.(c,a)}
 function send(m,type,fields={}){if(m.iframe?.isConnected)m.iframe.contentWindow?.postMessage({type,sid:m.sid,day:m.day,...fields},location.origin)}
@@ -130,7 +130,7 @@ function mergeProgram(p,s,patch,v,day){
 }
 function addSession(p,m,v){
  const now=new Date().toISOString(),metric=METRICS[m.day],reflection=REFLECTION_KEYS.map(k=>v.fields[k]).filter(Boolean).join(' · ').slice(0,400);
- const item={id:m.recordId,day:m.day,date:now.slice(0,10),practiceId:v.practiceId,variant:v.variant==='partner'||v.route==='partner'?'partner':'solo',status:'completed',activeSec:Math.round(v.elapsed),metricKey:metric[0],metricLabel:metric[1],before:v.before,after:m.day===21?v.localAfter??v.after:v.after,reflection};
+ const item={id:m.recordId,day:m.day,sourceDay:m.day,scheduledDay:m.scheduledDay,assignmentId:m.assignmentId,date:now.slice(0,10),practiceId:v.practiceId,variant:v.variant==='partner'||v.route==='partner'?'partner':'solo',status:'completed',activeSec:Math.round(v.elapsed),metricKey:metric[0],metricLabel:metric[1],before:v.before,after:m.day===21?v.localAfter??v.after:v.after,reflection};
  if(v.practiceId==='sensate-1'||v.practiceId==='sensate-2')item.comfort=v.comfort;
  if(v.practiceId==='sensate-1')item.comfortable=v.comfortableAnswered?v.comfortable:null;
  if(v.practiceId==='sensate-2')item.ready=v.ready;
@@ -159,7 +159,7 @@ function enqueue(m,completed=false,closing=false){
   const next={...bundle,'spm-desire-program':JSON.stringify(p)};
   if(!interrupted&&Object.hasOwn(patch,'context'))next['spm-desire-state']=JSON.stringify(s);
   if(!valid(m))throw Error('La sesión cambió antes de guardar.');
-  await records.save(next,m.scope,m.day);
+  await records.save(next,m.scope,m.scheduledDay);
   if(completed||interrupted)m.latest=record;
   if(completed)m.completedVerified=true;
  };
@@ -184,9 +184,9 @@ async function complete(m){
  if(!allowed(m)||m.busy||!m.latest)return false;m.busy=true;
  try{
   clearTimeout(m.timer);await enqueue(m,true);if(!allowed(m))return false;
-  const ok=await window.SPM_DAILY_PRACTICE.saveActivity('main',{day:m.day,confirmed:true,source:'desire-lab',practiceId:m.latest.practiceId,desireWeek3TouchVersion:1,activeSec:Math.round(m.latest.elapsed)},m.scope,m.day);
+  const ok=await window.SPM_DAILY_PRACTICE.saveActivity(m.activityId,{day:m.day,confirmed:true,source:'desire-lab',practiceId:m.latest.practiceId,desireWeek3TouchVersion:1,activeSec:Math.round(m.latest.elapsed)},m.scope,m.scheduledDay);
   if(ok===false)throw Error('La práctica se guardó, pero falta confirmar el cierre del día. Pulsa Guardar para reintentar.');
-  send(m,'SPM_WEEK3_DONE');returnToToday(m);window.SPM_DAILY_PRACTICE?.showContinuation?.();return true;
+  if(!allowed(m))return false;send(m,'SPM_WEEK3_DONE');returnToToday(m);window.SPM_DAILY_PRACTICE?.showContinuation?.();return true;
  }catch(error){failure(m,error);return false}finally{m.busy=false}
 }
 async function initialize(m){
@@ -226,12 +226,12 @@ async function onMessage(m,event){
 async function open(opts={}){
  if(current&&!attached(current))dispose(current);
  const c=ctx();if(!eligible(c,opts))return legacyOpen(opts);
- const scope=scopeOf(c),day=Number(c.day);if(!scope)return false;
+ const scope=scopeOf(c),day=Number(main(c)?.sourceDay||c.day),scheduledDay=Number(c.day),activityId=main(c).id,assignmentId=main(c).assignmentId;if(!scope)return false;
  if(current&&!await closeActive(current))return false;
  if(document.querySelector('.spm-desire-modal[open]')&&await legacyClose()===false)return false;
  const host=document.getElementById('spmDailyWorkspace');if(!host?.isConnected)return false;
  const sid=window.crypto?.randomUUID?.()||'week3-'+Math.random().toString(36).slice(2);
- const m={scope,day,host,sid,recordId:'',wrap:null,iframe:null,queue:Promise.resolve(),latest:null,programPatch:{},safety:null,busy:false,loading:false,initialized:false,completedVerified:false,timer:0,watch:0,onMessage:null};current=m;
+ const m={scope,day,scheduledDay,activityId,assignmentId,scheduleVersion:c.scheduleVersion||'legacy',host,sid,recordId:'',wrap:null,iframe:null,queue:Promise.resolve(),latest:null,programPatch:{},safety:null,busy:false,loading:false,initialized:false,completedVerified:false,timer:0,watch:0,onMessage:null};current=m;
  if(!allowed(m)){current=null;return false}
  try{
   const bundle=await records.read(scope);if(!allowed(m))return false;

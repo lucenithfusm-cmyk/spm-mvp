@@ -31,7 +31,7 @@ function harness(){
 }
 test('recovery opens where the user is blocked, saves explicit missing answers and preserves day/history/flags',async()=>{
  const h=harness();try{
- const {w,c}=h;let returnedToPlan=false;w.document.getElementById('navPlan').onclick=()=>{returnedToPlan=true};assert.match(w.document.querySelector('#spmProgramWelcome').textContent,/2 días con práctica registrada/);
+ const {w,c}=h;let returnedToPlan=false;w.document.getElementById('navPlan').onclick=()=>{returnedToPlan=true};assert(w.document.querySelector('#spmProgramWelcome [data-missing-assessment]'));assert.doesNotMatch(w.document.querySelector('#spmProgramWelcome').textContent,/2 días con práctica realizada/);
  w.document.querySelector('[data-complete-missing]').click();const input=w.document.querySelector('#repair-h_has_condition');assert(input);input.value='false';input.dispatchEvent(new w.Event('change'));
  w.document.querySelector('#spmRecoveryDialog form').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));
  assert.equal(h.saves.length,1);assert.deepEqual(JSON.parse(JSON.stringify(h.saves[0])),{patch:{h_has_condition:false},scope:'user:plan'});assert.equal(c.day,15);assert.deepEqual(c.completed,[1,2]);assert.deepEqual(c.flags,['s_penile']);assert.equal(w.document.querySelector('#spmRecoveryDialog'),null);assert.equal(returnedToPlan,true);
@@ -39,7 +39,7 @@ test('recovery opens where the user is blocked, saves explicit missing answers a
 });
 test('failed recovery retains answers and offers retry; welcome never claims new patients have practised',async()=>{
  const h=harness();try{
- h.c.completed=[];h.c.answers.h_has_condition=false;h.w.SPM_PROGRAM_WELCOME.mount();assert.match(h.w.document.querySelector('#spmProgramWelcome').textContent,/Tus prácticas de entrenamiento comienzan ahora/);
+ h.c.completed=[];h.c.answers.h_has_condition=false;h.w.SPM_PROGRAM_WELCOME.mount();assert.match(h.w.document.querySelector('#spmProgramWelcome').textContent,/Empieza por hoy/);assert.doesNotMatch(h.w.document.querySelector('#spmProgramWelcome').textContent,/prácticas (realizadas|completadas)/);
  delete h.c.answers.h_has_condition;h.setFail();h.w.SPM_PROGRAM_RECOVERY.open();const input=h.w.document.querySelector('#repair-h_has_condition');input.value='false';input.dispatchEvent(new h.w.Event('change'));
  h.w.document.querySelector('#spmRecoveryDialog form').dispatchEvent(new h.w.Event('submit',{cancelable:true}));await new Promise(r=>setImmediate(r));
  assert.equal(input.value,'false');assert.match(h.w.document.querySelector('#spmRecoveryDialog [role=status]').textContent,/Tus respuestas siguen aquí/);assert.equal(h.w.document.querySelector('#spmRecoveryDialog [type=submit]').disabled,false);assert.equal(h.c.day,15);assert.equal(h.saves.length,0);
@@ -61,8 +61,8 @@ test('repeating a recovery after a lost response succeeds without changing valid
 });
 test('welcome does not call an incomplete assessment completed',()=>{
  const h=harness();try{h.c.completed=[];h.w.SPM_PROGRAM_WELCOME.mount();
- const text=[...h.w.document.querySelectorAll('.spm-welcome-progress')].map(el=>el.textContent).join(' ');
- assert.match(text,/respuestas pendientes/);assert.doesNotMatch(text,/autoevaluación está completada/);
+ const text=h.w.document.querySelector('#spmProgramWelcome [data-missing-assessment]').textContent;
+ assert.match(text,/respuesta(?:s)? pendiente(?:s)?/);assert.doesNotMatch(text,/autoevaluación está completada/);
  assert(h.w.document.querySelector('[data-complete-missing]'));
  }finally{h.close();}
 });

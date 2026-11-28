@@ -1,0 +1,572 @@
+[
+  {
+    "content_id": "connection.1.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "1.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 1,
+    "surface": "title",
+    "before": "Mi satisfacción sexual real",
+    "after": "Mi satisfacción sexual real",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual real",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.1.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "1.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 1,
+    "surface": "guide",
+    "before": "Piensa en un encuentro sexual reciente o en una experiencia a solas. Para valorar el placer, recuerda si disfrutaste los besos, las caricias o la masturbación. Para valorar la conexión corporal, pregúntate si pudiste notar qué contacto te gustaba y cuándo querías cambiarlo. Si hubo pareja, ¿te sentiste cerca y con libertad para decir lo que querías? Por último, ¿qué tan satisfecho quedaste con la experiencia en conjunto? Da a cada aspecto su propia puntuación. Si alguno no corresponde a tu experiencia, elige «No aplica».",
+    "after": "Puedes recordar un encuentro sexual o una experiencia a solas. Para valorar el placer, recuerda si disfrutaste los besos, las caricias o la masturbación. Para valorar la conexión corporal, observa si reconociste qué contacto te gustaba y cuándo querías cambiarlo. Si hubo pareja, considera la cercanía y la libertad para expresar tus preferencias. Puntúa por separado, de 0 a 10, Placer, Intimidad y cercanía, Satisfacción personal y Conexión corporal. Si una dimensión no corresponde a tu experiencia, elige «No aplica» en esa dimensión. Después elige qué dimensión quieres seguir cuidando y pulsa «Guardar y finalizar». La valoración es voluntaria: puedes volver al recorrido sin responderla.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual real",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.1.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "1.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 1,
+    "surface": "practice",
+    "before": "Valora placer, conexión corporal, satisfacción y cercanía de 0 a 10; permite no aplica. Elige una dimensión que quieras mejorar.",
+    "after": "Valora por separado las cuatro dimensiones de 0 a 10 o con «No aplica» cuando corresponda. Elige una dimensión que quieras seguir cuidando. Esta valoración es voluntaria.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual real",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.4.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "4.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 4,
+    "surface": "title",
+    "before": "Mi identidad sexual actual",
+    "after": "Mi identidad sexual actual",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi identidad sexual actual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.4.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "4.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 4,
+    "surface": "guide",
+    "before": "Tu sexualidad puede cambiar con el tiempo, con tu salud y con tus experiencias. Recuerda qué valorabas antes y qué valoras hoy. No necesitas recuperar exactamente la sexualidad de otra etapa de tu vida. Identifica una preferencia actual, un cambio que aceptas y una necesidad que quieres atender.",
+    "after": "Tu sexualidad puede cambiar con el tiempo, con tu salud y con tus experiencias. Recuerda qué valorabas antes y qué valoras hoy. No necesitas recuperar exactamente la sexualidad de otra etapa de tu vida. En «¿Qué disfrutas hoy?», escribe una preferencia actual. En «¿Qué cambio reconoces?», describe un cambio que hayas observado; si no reconoces cambios, puedes escribirlo. En «¿Qué te gustaría explorar o cuidar?», anota una necesidad que quieras atender. Pulsa «Guardar y finalizar» para conservar tus respuestas.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi identidad sexual actual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.4.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "4.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 4,
+    "surface": "practice",
+    "before": "Identifica qué disfrutas hoy, qué ha cambiado y qué quieres explorar.",
+    "after": "Describe una preferencia actual, un cambio observado o la ausencia de cambios y una necesidad que quieras atender.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi identidad sexual actual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.7.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "7.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 7,
+    "surface": "title",
+    "before": "Mi mapa personal de placer",
+    "after": "Mi mapa personal de placer",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi mapa personal de placer",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.7.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "7.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 7,
+    "surface": "guide",
+    "before": "Recuerda un encuentro sexual que disfrutaste o un momento de placer a solas. ¿Qué hizo que quisieras seguir? Toca los cuatro puntos del mapa. En Contacto, piensa dónde y cómo te gusta que te toquen. En Ambiente, identifica qué te permite concentrarte en el placer. En Cercanía, reconoce cómo comunicas el deseo. En Experiencias, decide qué repetirías y qué cambiarías. Al final, escribe una preferencia y un límite con palabras que usarías en un encuentro real.",
+    "after": "Recuerda un encuentro sexual o un momento de placer a solas. Toca los cuatro puntos del mapa. En Contacto, recuerda qué zona de tu cuerpo y qué tipo de contacto disfrutaste. Si tu recuerdo incluye estimulación del pene, puedes nombrarla. En Ambiente, identifica qué condiciones te permiten prestar atención al placer. En Cercanía, reconoce cómo expresas tus preferencias, si compartes la experiencia. En Experiencias, identifica qué repetirías y qué cambiarías. Al final, escribe «Una preferencia que reconozco» y «Un límite que quiero respetar» y pulsa «Guardar y finalizar». No necesitas realizar un encuentro para responder esta reflexión.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi mapa personal de placer",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.7.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "7.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 7,
+    "surface": "practice",
+    "before": "Selecciona formas de cercanía y contacto que disfrutas; identifica una preferencia y un límite.",
+    "after": "Recuerda el contacto y las condiciones que disfrutas; registra una preferencia y un límite.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi mapa personal de placer",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.10.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "10.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 10,
+    "surface": "title",
+    "before": "Placer más allá de la penetración",
+    "after": "Placer más allá de la penetración",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Placer más allá de la penetración",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.10.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "10.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 10,
+    "surface": "guide",
+    "before": "Recuerda una parte de un encuentro que disfrutarías por sí misma. Tal vez fue besarse durante un buen rato, sentir el cuerpo de tu pareja contra el tuyo o guiar su mano hacia una zona que te gusta. Toca las cuatro imágenes para escuchar ejemplos. Puedes escucharlos todos antes de decidir. Después pulsa «Elegir mis dos opciones» y marca las dos que tú disfrutas. Si te apetece compartir una, pregúntale a tu pareja cuál elegiría.",
+    "after": "Recuerda una experiencia de placer sexual, a solas o con otra persona, que disfrutarías por sí misma. Revisa las cuatro imágenes y sus ejemplos. Después pulsa «Elegir mis dos opciones» y marca dos formas de disfrute que reconozcas como propias. Si compartes la actividad con tu pareja, puedes preguntarle cuáles elegiría. No necesitas realizar ninguna de las opciones para responder. Puedes elegir cuál te gustaría explorar en el campo opcional y pulsar «Guardar y finalizar».",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Placer más allá de la penetración",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.10.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "10.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 10,
+    "surface": "practice",
+    "before": "Identifica dos formas de disfrute que no dependan de la penetración y elige una para explorar si lo deseas.",
+    "after": "Elige dos formas de disfrute que no dependan de la penetración. No necesitas realizarlas para responder.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Placer más allá de la penetración",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.13.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "13.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 13,
+    "surface": "title",
+    "before": "Mi ritmo sexual y el de mi pareja",
+    "after": "Mi ritmo sexual y el de mi pareja",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi ritmo sexual y el de mi pareja",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.13.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "13.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 13,
+    "surface": "guide",
+    "before": "Piensa en la última vez que tú y tu pareja quisieron cosas distintas durante un encuentro. Tal vez tú querías seguir con los besos y la otra persona quería pasar a la penetración. En «Mi ritmo», escribe qué te apetecía a ti. En «Su ritmo», recoge solo lo que tu pareja te haya dicho. En «Nuestro punto de encuentro» puedes anotar una frase como «Me gustaría que siguiéramos así un rato. ¿A ti qué te apetece?». Si haces la actividad a solas, anota qué ritmo disfrutas. Guarda cada respuesta para volver al mapa. Cuando termines de explorarlo, pulsa «Finalizar».",
+    "after": "Primero elige «Individual» o «En pareja». En «Mi ritmo», describe qué ritmo sexual disfrutas o prefieres. Si eliges «En pareja», recoge en «Su ritmo» solo lo que la otra persona te haya expresado; puedes dejarlo en blanco. En «Nuestro punto de encuentro», anota una decisión propia o un acuerdo que te resulte cómodo. «Guardar y volver» conserva cada respuesta en el mapa mientras continúas. Al terminar, pulsa «Finalizar», revisa tus respuestas y pulsa «Finalizar actividad» para guardar el registro completo.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi ritmo sexual y el de mi pareja",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.13.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "13.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 13,
+    "surface": "practice",
+    "before": "Identifica preferencias de tiempo, cercanía e iniciativa; elige un acuerdo posible. Alternativa individual disponible.",
+    "after": "Elige modalidad individual o en pareja y registra tu ritmo, lo que la otra persona haya expresado cuando corresponda y una decisión o acuerdo cómodo.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi ritmo sexual y el de mi pareja",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.16.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "16.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 16,
+    "surface": "title",
+    "before": "Comunicar lo que disfruto",
+    "after": "Comunicar lo que disfruto",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Comunicar lo que disfruto",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.16.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "16.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 16,
+    "surface": "guide",
+    "before": "Piensa en algo que quisiste pedir durante un encuentro y te costó decir. Prueba a ponerlo en una frase corta: «Disfruto cuando me besas el cuello», «Me gustaría guiar tu mano para mostrarte dónde me gusta» o «Hoy prefiero seguir con las caricias». Escribe tus propias frases y elige una que de verdad usarías. Si la compartes, deja espacio para que tu pareja te diga qué disfruta también.",
+    "after": "Puedes preparar tus frases a solas, aunque no hayas tenido un encuentro reciente. En «Disfruto cuando…», escribe una preferencia; en «Me gustaría…», una petición; y en «Prefiero evitar…», un límite. Puedes escribir, si corresponde a tu experiencia: «Me gustaría explicarte qué estimulación del pene disfruto». Usa tus propias palabras y elige la frase que quieras comunicar o recordar. Si decides compartirla, escucha lo que la otra persona exprese sin asumir su respuesta. Pulsa «Guardar y finalizar» para guardar tus frases.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Comunicar lo que disfruto",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.16.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "16.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 16,
+    "surface": "practice",
+    "before": "Completa: disfruto cuando…, me gustaría…, prefiero evitar…; elige una frase para conversar.",
+    "after": "Completa «Disfruto cuando…», «Me gustaría…» y «Prefiero evitar…». Elige una frase para comunicar o recordar.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Comunicar lo que disfruto",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.19.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "19.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 19,
+    "surface": "title",
+    "before": "Intimidad fuera del encuentro sexual",
+    "after": "Intimidad fuera del encuentro sexual",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Intimidad fuera del encuentro sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.19.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "19.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 19,
+    "surface": "guide",
+    "before": "La intimidad también se construye fuera del encuentro sexual. Una conversación privada, un abrazo deseado o un momento compartido pueden expresar cercanía sin convertirse en una obligación de tener relaciones. Elige una acción que tenga sentido para ti y, si involucra a otra persona, asegúrate de que sea bienvenida.",
+    "after": "La intimidad también puede construirse fuera del encuentro sexual. Una conversación privada, un abrazo deseado o un momento compartido pueden expresar cercanía sin convertirse en una obligación de tener relaciones. En «Una acción de cercanía que elijo», escribe una acción que tenga sentido para ti. Si involucra a otra persona, debe ser bienvenida. Después responde «¿Cómo me sentí o cómo imagino que me sentiría?», según corresponda a tu experiencia. No tienes que afirmar que ya realizaste la acción. Pulsa «Guardar y finalizar».",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Intimidad fuera del encuentro sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.19.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "19.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 19,
+    "surface": "practice",
+    "before": "Elige una acción de cercanía sin expectativa sexual; registra cómo te sentiste.",
+    "after": "Elige una acción de cercanía sin expectativa sexual y describe cómo te sentiste o cómo imaginas que te sentirías.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Intimidad fuera del encuentro sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.21.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "21.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 21,
+    "surface": "title",
+    "before": "Después del encuentro",
+    "after": "Después del encuentro",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Después del encuentro",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.21.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "21.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 21,
+    "surface": "guide",
+    "before": "Recuerda los minutos que siguieron a un encuentro sexual o a una experiencia de masturbación. ¿Cómo quedó tu cuerpo? Quizás te apetecía seguir en contacto, o la zona genital estaba sensible y preferías parar. Ahora piensa en cómo te sentiste emocionalmente. Si hubo pareja, ¿qué te habría gustado decirle? Podría ser «Me gustó cuando me preguntaste qué quería» o «Ahora me apetece que nos abracemos». Registra lo que reconoces. También puedes elegir «No aplica».",
+    "after": "Puedes recordar lo que ocurrió después de un encuentro sexual o de la masturbación. Elige «Experiencia reciente», «Algo que recuerdo» o «No aplica». En «¿Cómo se sintió mi cuerpo?», describe lo que recuerdas. Si lo que recuerdas es sensibilidad en el pene, puedes anotarlo con esas palabras. Responde por separado «¿Cómo me sentí emocionalmente?» y «¿Qué necesito después?». Si eliges «No aplica», no necesitas responder esas tres preguntas. Pulsa «Guardar y finalizar» para conservar tu respuesta.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Después del encuentro",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.21.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "21.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 21,
+    "surface": "practice",
+    "before": "Registra bienestar físico, satisfacción emocional y necesidades posteriores; permite reflexión retrospectiva o no aplica.",
+    "after": "Describe por separado tu experiencia física, emocional y lo que necesitas después. Puedes recordar una experiencia o elegir «No aplica».",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Después del encuentro",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.24.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "24.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 24,
+    "surface": "title",
+    "before": "Mi proyecto de bienestar sexual",
+    "after": "Mi proyecto de bienestar sexual",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi proyecto de bienestar sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.24.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "24.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 24,
+    "surface": "guide",
+    "before": "Elige dos cosas que quieras cuidar en tu vida sexual y piensa qué podrías hacer esta semana. Si quieres comunicarte mejor, una acción concreta sería contarle a tu pareja qué caricia disfrutaste la última vez y preguntarle cuál le gustó. Si quieres conocer mejor tu propio placer, puedes reservar un momento a solas para reconocer qué contacto disfrutas. Escribe tus dos prioridades y una acción realista para cada una.",
+    "after": "Elige dos prioridades que quieras cuidar en tu vida sexual, a solas o con otra persona. En «Mi primera prioridad» y «Mi segunda prioridad», escribe qué quieres atender. En cada campo «Mi acción semanal para esa prioridad», anota una acción realista que dependa de ti. Por ejemplo, expresar una preferencia sobre el contacto o reservar un momento para reconocer qué disfrutas. Si una acción incluye a otra persona, acuerden lo que ambos deseen. Pulsa «Guardar y finalizar».",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi proyecto de bienestar sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.24.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "24.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 24,
+    "surface": "practice",
+    "before": "Elige dos prioridades realistas y una acción semanal para cada una.",
+    "after": "Elige dos prioridades realistas y una acción semanal para cada una.",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi proyecto de bienestar sexual",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.28.title",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "28.title",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 28,
+    "surface": "title",
+    "before": "Mi satisfacción sexual: antes y ahora",
+    "after": "Mi satisfacción sexual: antes y ahora",
+    "status": "reviewed_unchanged",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual: antes y ahora",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.28.guide",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "28.guide",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 28,
+    "surface": "guide",
+    "before": "Vuelve a valorar tu placer, la cercanía, tu satisfacción y la conexión con tu cuerpo. Usa como referencia algo concreto: ¿reconoces antes qué contacto te gusta?, ¿te resulta más fácil pedir un cambio de ritmo o decir cuándo quieres parar? Compara cada respuesta con la del primer día cuando esté disponible. Elige una cosa que quieras seguir cuidando en tus próximos encuentros o a solas. Si hay molestias o dificultades que te preocupan, puedes consultar con un profesional.",
+    "after": "Vuelve a valorar por separado Placer, Intimidad y cercanía, Satisfacción personal y Conexión corporal, de 0 a 10 o con «No aplica» cuando corresponda. Compara las mismas cuatro dimensiones con el día 1 cuando haya un registro disponible. Describe qué ha cambiado y qué se mantiene igual, sin tener que registrar una mejoría. Si falta el registro inicial, verás «Sin registrar» y puedes valorar tu experiencia actual. La comodidad para expresar preferencias es una pregunta opcional de hoy; no se compara con el inicio. Elige qué dimensión quieres seguir cuidando y pulsa «Guardar y finalizar». La valoración es voluntaria y puedes volver al recorrido sin responderla.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual: antes y ahora",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  },
+  {
+    "content_id": "connection.28.practice",
+    "file": "premium-v2/conexion-satisfaccion/guiones.js",
+    "key": "28.practice",
+    "route": [
+      "wellbeing",
+      "shared"
+    ],
+    "source_day": 28,
+    "surface": "practice",
+    "before": "Recupera valores del día 1 y compara las mismas dimensiones; elige una prioridad de continuidad.",
+    "after": "Valora las mismas cuatro dimensiones y compáralas con el inicio si hay datos. Elige una prioridad de continuidad, sin exigir una mejoría. La valoración es voluntaria.",
+    "status": "changed",
+    "reason": "Anexo 02: acción, modalidad, campos reales y cierre; sin cambiar escalas ni técnica.",
+    "objective": "Mi satisfacción sexual: antes y ahora",
+    "record": "answers por connectionDay; escalas 0–10/null solo días 1 y 28",
+    "close": "Guardar y finalizar; Finalizar actividad en día 13",
+    "test_pending": "Escucha física y persistencia real autenticada"
+  }
+]

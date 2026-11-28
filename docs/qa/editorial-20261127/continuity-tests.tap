@@ -1,0 +1,599 @@
+TAP version 13
+# Subtest: Today shows one principal and at most one support while resources remain compact
+ok 1 - Today shows one principal and at most one support while resources remain compact
+  ---
+  duration_ms: 730.071395
+  type: 'test'
+  ...
+# Subtest: a voluntary day asks explicitly and closes with zero performed activities
+ok 2 - a voluntary day asks explicitly and closes with zero performed activities
+  ---
+  duration_ms: 470.250355
+  type: 'test'
+  ...
+# Subtest: a required activity cannot be bypassed by calling the reviewer closure adapter
+ok 3 - a required activity cannot be bypassed by calling the reviewer closure adapter
+  ---
+  duration_ms: 361.402315
+  type: 'test'
+  ...
+# Subtest: moved Connection day 10 opens its real screen on Control day 11 without changing the plan day
+ok 4 - moved Connection day 10 opens its real screen on Control day 11 without changing the plan day
+  ---
+  duration_ms: 472.640947
+  type: 'test'
+  ...
+# Subtest: moved Confianza source day 12 opens on scheduled day 11
+ok 5 - moved Confianza source day 12 opens on scheduled day 11
+  ---
+  duration_ms: 314.780241
+  type: 'test'
+  ...
+# Subtest: Desire source day 26 opens on the final scheduled day without a fake context switch
+ok 6 - Desire source day 26 opens on the final scheduled day without a fake context switch
+  ---
+  duration_ms: 324.870744
+  type: 'test'
+  ...
+# Subtest: an integrated Focalización video opens inside the support, not as a second completion task
+ok 7 - an integrated Focalización video opens inside the support, not as a second completion task
+  ---
+  duration_ms: 327.251887
+  type: 'test'
+  ...
+# Subtest: Desire source day 26 saves to scheduled day 28 with its original curriculum identity
+ok 8 - Desire source day 26 saves to scheduled day 28 with its original curriculum identity
+  ---
+  duration_ms: 351.488147
+  type: 'test'
+  ...
+# Subtest: a voluntary close flushes the open Desire draft without creating a performed practice
+ok 9 - a voluntary close flushes the open Desire draft without creating a performed practice
+  ---
+  duration_ms: 454.743645
+  type: 'test'
+  ...
+# Subtest: a changed schedule version rejects the old iframe response even when account, plan and day match
+ok 10 - a changed schedule version rejects the old iframe response even when account, plan and day match
+  ---
+  duration_ms: 330.014596
+  type: 'test'
+  ...
+# Subtest: DE01 omitted attention satisfies the saved decision and remains zero performed practices
+ok 11 - DE01 omitted attention satisfies the saved decision and remains zero performed practices
+  ---
+  duration_ms: 373.069383
+  type: 'test'
+  ...
+# Subtest: a failed draft flush keeps the voluntary day open and the actual activity available for retry
+ok 12 - a failed draft flush keeps the voluntary day open and the actual activity available for retry
+  ---
+  duration_ms: 621.689468
+  type: 'test'
+  ...
+# Subtest: a completed cycle keeps its closed label when a later safety flag blocks all practice
+ok 13 - a completed cycle keeps its closed label when a later safety flag blocks all practice
+  ---
+  duration_ms: 312.398899
+  type: 'test'
+  ...
+# Subtest: actual compositor resolves 168 days and three mixed scenarios with one principal and at most one optional support
+ok 14 - actual compositor resolves 168 days and three mixed scenarios with one principal and at most one optional support
+  ---
+  duration_ms: 155.943501
+  type: 'test'
+  ...
+# Subtest: the ten erection sessions, twelve control sessions and original focus sequence retain their intended days
+ok 15 - the ten erection sessions, twelve control sessions and original focus sequence retain their intended days
+  ---
+  duration_ms: 57.110579
+  type: 'test'
+  ...
+# Subtest: all seven former zero-required failures now have a valid voluntary close, without fake activity records
+ok 16 - all seven former zero-required failures now have a valid voluntary close, without fake activity records
+  ---
+  duration_ms: 18.817505
+  type: 'test'
+  ...
+# Subtest: every new day with zero requirements permits deliberate closure, including optional principals
+ok 17 - every new day with zero requirements permits deliberate closure, including optional principals
+  ---
+  duration_ms: 76.205172
+  type: 'test'
+  ...
+# Subtest: missing catalogue, unknown version, unloaded records and urgent pause cannot look like an empty valid day
+ok 18 - missing catalogue, unknown version, unloaded records and urgent pause cannot look like an empty valid day
+  ---
+  duration_ms: 26.520049
+  type: 'test'
+  ...
+# Subtest: a required record must match its actual content and assignment version; optional data never replaces it
+ok 19 - a required record must match its actual content and assignment version; optional data never replaces it
+  ---
+  duration_ms: 27.03848
+  type: 'test'
+  ...
+# Subtest: source day, scheduled day and connection content day remain distinct when an existing activity moves
+ok 20 - source day, scheduled day and connection content day remain distinct when an existing activity moves
+  ---
+  duration_ms: 30.839987
+  type: 'test'
+  ...
+# Subtest: recovery is offered only on request; requesting it never changes the closure requirements
+ok 21 - recovery is offered only on request; requesting it never changes the closure requirements
+  ---
+  duration_ms: 23.278257
+  type: 'test'
+  ...
+# Subtest: explanation video belongs to the correct host without another requirement; midpoint reminder is compact and optional
+ok 22 - explanation video belongs to the correct host without another requirement; midpoint reminder is compact and optional
+  ---
+  duration_ms: 23.210214
+  type: 'test'
+  ...
+# Subtest: source hydration is stable when strength readiness changes, while strength stays a separate optional resource
+ok 23 - source hydration is stable when strength readiness changes, while strength stays a separate optional resource
+  ---
+  duration_ms: 19.53618
+  type: 'test'
+  ...
+# Subtest: source-derived minimal fixtures satisfy the real DE, Connection, checkpoint and generic closure validators
+ok 24 - source-derived minimal fixtures satisfy the real DE, Connection, checkpoint and generic closure validators
+  ---
+  duration_ms: 111.963831
+  type: 'test'
+  ...
+# 1221 assigned fixtures accepted by the real validators, with omitted DE01 counted separately.
+# Subtest: mixed DE plus Desire retains one week-three review and the original Connection closure schema preserves historical validity
+ok 25 - mixed DE plus Desire retains one week-three review and the original Connection closure schema preserves historical validity
+  ---
+  duration_ms: 37.930607
+  type: 'test'
+  ...
+# Subtest: all 28 days have concrete launchers; secondary Desire is never the main daily practice
+ok 26 - all 28 days have concrete launchers; secondary Desire is never the main daily practice
+  ---
+  duration_ms: 592.000698
+  type: 'test'
+  ...
+# Subtest: Today opens the current approved erection lesson and keeps the library intact
+ok 27 - Today opens the current approved erection lesson and keeps the library intact
+  ---
+  duration_ms: 84.443784
+  type: 'test'
+  ...
+# Subtest: Desire day one has one entry button and keeps audio and recording inside its practice
+ok 28 - Desire day one has one entry button and keeps audio and recording inside its practice
+  ---
+  duration_ms: 165.603588
+  type: 'test'
+  ...
+# Subtest: other Desire days retain their audio and route registration through the actual practice
+ok 29 - other Desire days retain their audio and route registration through the actual practice
+  ---
+  duration_ms: 110.25993
+  type: 'test'
+  ...
+# Subtest: saving one activity does not complete or advance the day; stale and restricted writes fail
+ok 30 - saving one activity does not complete or advance the day; stale and restricted writes fail
+  ---
+  duration_ms: 67.78751
+  type: 'test'
+  ...
+# Subtest: day 16 uses the approved sensory video as one independent voluntary practice, without Focus I duplication
+ok 31 - day 16 uses the approved sensory video as one independent voluntary practice, without Focus I duplication
+  ---
+  duration_ms: 61.466792
+  type: 'test'
+  ...
+# Subtest: wellness rotates over 28 days while the primary and scheduled supports stay separate
+ok 32 - wellness rotates over 28 days while the primary and scheduled supports stay separate
+  ---
+  duration_ms: 83.689982
+  type: 'test'
+  ...
+# Subtest: review flag allows day 14 educational review without clearing the flag or unlocking physical practice
+ok 33 - review flag allows day 14 educational review without clearing the flag or unlocking physical practice
+  ---
+  duration_ms: 506.89797
+  type: 'test'
+  ...
+# Subtest: urgent flags cannot be bypassed; blocked buttons explain the restriction and keep library access
+ok 34 - urgent flags cannot be bypassed; blocked buttons explain the restriction and keep library access
+  ---
+  duration_ms: 65.725664
+  type: 'test'
+  ...
+# Subtest: new check-in safety flags and unknown status retain the physical pause
+ok 35 - new check-in safety flags and unknown status retain the physical pause
+  ---
+  duration_ms: 59.001072
+  type: 'test'
+  ...
+# Subtest: legacy weekly Lab retains route-specific days (EP uses 18; the other routes use 17)
+ok 36 - legacy weekly Lab retains route-specific days (EP uses 18; the other routes use 17)
+  ---
+  duration_ms: 61.289971
+  type: 'test'
+  ...
+# Subtest: all routes schedule short videos; mixed Desire support never replaces the primary session
+ok 37 - all routes schedule short videos; mixed Desire support never replaces the primary session
+  ---
+  duration_ms: 65.634421
+  type: 'test'
+  ...
+# Subtest: all seven recovery stories and the approved weekly frequencies are real assignments
+ok 38 - all seven recovery stories and the approved weekly frequencies are real assignments
+  ---
+  duration_ms: 68.81438
+  type: 'test'
+  ...
+# Subtest: recovery completion retains the assigned scenario for day-specific tracking
+ok 39 - recovery completion retains the assigned scenario for day-specific tracking
+  ---
+  duration_ms: 76.561318
+  type: 'test'
+  ...
+# Subtest: erection Desire is twice weekly, or daily for expressed low Desire, without changing shared cadence
+ok 40 - erection Desire is twice weekly, or daily for expressed low Desire, without changing shared cadence
+  ---
+  duration_ms: 60.007268
+  type: 'test'
+  ...
+# Subtest: safety next steps expose only permitted activities without changing flags or day
+ok 41 - safety next steps expose only permitted activities without changing flags or day
+  ---
+  duration_ms: 129.14017
+  type: 'test'
+  ...
+# Subtest: refreshing after a requirement reloads saved state without erasing a clinical flag
+ok 42 - refreshing after a requirement reloads saved state without erasing a clinical flag
+  ---
+  duration_ms: 116.970108
+  type: 'test'
+  ...
+# Subtest: all 18 sleep cards and both movement alternatives are assigned in every domain
+ok 43 - all 18 sleep cards and both movement alternatives are assigned in every domain
+  ---
+  duration_ms: 21.16032
+  type: 'test'
+  ...
+# Subtest: maintenance difficulty never increases contraction frequency beyond two conditional sessions weekly
+ok 44 - maintenance difficulty never increases contraction frequency beyond two conditional sessions weekly
+  ---
+  duration_ms: 16.919961
+  type: 'test'
+  ...
+# Subtest: checkpoint cannot be marked complete without its actual answers
+ok 45 - checkpoint cannot be marked complete without its actual answers
+  ---
+  duration_ms: 73.057931
+  type: 'test'
+  ...
+# Subtest: checkpoint entry has one action and no summary text, speaker or shortcut registration
+ok 46 - checkpoint entry has one action and no summary text, speaker or shortcut registration
+  ---
+  duration_ms: 170.305688
+  type: 'test'
+  ...
+# Subtest: missing followups do not prevent completion or final report in any domain
+ok 47 - missing followups do not prevent completion or final report in any domain
+  ---
+  duration_ms: 57.372672
+  type: 'test'
+  ...
+# Subtest: all six routes return to Hoy without an intermediate continuation panel
+ok 48 - all six routes return to Hoy without an intermediate continuation panel
+  ---
+  duration_ms: 450.507299
+  type: 'test'
+  ...
+# Subtest: every route has a concrete closing advice for each day, with an individual alternative
+ok 49 - every route has a concrete closing advice for each day, with an individual alternative
+  ---
+  duration_ms: 56.659636
+  type: 'test'
+  ...
+# Subtest: finishing a day presents that day closing advice even when the calendar advances
+ok 50 - finishing a day presents that day closing advice even when the calendar advances
+  ---
+  duration_ms: 89.354061
+  type: 'test'
+  ...
+# Subtest: breathing keeps continuation outside its iframe dialog when the assignment is pending
+ok 51 - breathing keeps continuation outside its iframe dialog when the assignment is pending
+  ---
+  duration_ms: 190.468557
+  type: 'test'
+  ...
+# Subtest: breathing keeps continuation outside its iframe dialog when the assignment is completed
+ok 52 - breathing keeps continuation outside its iframe dialog when the assignment is completed
+  ---
+  duration_ms: 152.344781
+  type: 'test'
+  ...
+# Subtest: sensate keeps continuation outside its iframe dialog when the assignment is pending
+ok 53 - sensate keeps continuation outside its iframe dialog when the assignment is pending
+  ---
+  duration_ms: 192.320181
+  type: 'test'
+  ...
+# Subtest: sensate keeps continuation outside its iframe dialog when the assignment is completed
+ok 54 - sensate keeps continuation outside its iframe dialog when the assignment is completed
+  ---
+  duration_ms: 153.286251
+  type: 'test'
+  ...
+# Subtest: a saved EP session closes to Hoy without continuing to another activity
+ok 55 - a saved EP session closes to Hoy without continuing to another activity
+  ---
+  duration_ms: 120.16964
+  type: 'test'
+  ...
+# Subtest: day 3 sleep audio keeps only the introduction in Today and its card without changing written steps
+ok 56 - day 3 sleep audio keeps only the introduction in Today and its card without changing written steps
+  ---
+  duration_ms: 87.549227
+  type: 'test'
+  ...
+# Subtest: Today shows the existing sleep design and practical nutrition with its library link
+ok 57 - Today shows the existing sleep design and practical nutrition with its library link
+  ---
+  duration_ms: 111.085563
+  type: 'test'
+  ...
+# Subtest: all six routes receive a weekly Lab and separate strength when indicated
+ok 58 - all six routes receive a weekly Lab and separate strength when indicated
+  ---
+  duration_ms: 18.646757
+  type: 'test'
+  ...
+# Subtest: weekly Lab has a single entry and its narration plays only inside the practice
+ok 59 - weekly Lab has a single entry and its narration plays only inside the practice
+  ---
+  duration_ms: 64.73998
+  type: 'test'
+  ...
+# Subtest: another activity supplies one device guide and its exact readable transcript
+ok 60 - another activity supplies one device guide and its exact readable transcript
+  ---
+  duration_ms: 105.664203
+  type: 'test'
+  ...
+# Subtest: fresh Lab completion needs explicit confirmation, survives a failed save, and counts only the Lab
+ok 61 - fresh Lab completion needs explicit confirmation, survives a failed save, and counts only the Lab
+  ---
+  duration_ms: 90.921806
+  type: 'test'
+  ...
+# Subtest: classic strength needs its own fresh result and never completes the daily awareness Lab
+ok 62 - classic strength needs its own fresh result and never completes the daily awareness Lab
+  ---
+  duration_ms: 75.667754
+  type: 'test'
+  ...
+# Subtest: changed day, account or safety state invalidates weekly Lab results
+ok 63 - changed day, account or safety state invalidates weekly Lab results
+  ---
+  duration_ms: 159.570138
+  type: 'test'
+  ...
+# Subtest: real Lab bridge hands a fresh result to Today only after its state save and close
+ok 64 - real Lab bridge hands a fresh result to Today only after its state save and close
+  ---
+  duration_ms: 83.377417
+  type: 'test'
+  ...
+# Subtest: historical day-six Lab records never appear as the newly separated strength activity
+ok 65 - historical day-six Lab records never appear as the newly separated strength activity
+  ---
+  duration_ms: 243.281395
+  type: 'test'
+  ...
+# Subtest: El resultado previo de fuerza no completa Erección día 6, pero su apoyo independiente sí se reconoce
+ok 66 - El resultado previo de fuerza no completa Erección día 6, pero su apoyo independiente sí se reconoce
+  ---
+  duration_ms: 62.938452
+  type: 'test'
+  ...
+# Subtest: ready patients in all six domains see the optional program on day 1 and two weekly sessions on days 2 and 6
+ok 67 - ready patients in all six domains see the optional program on day 1 and two weekly sessions on days 2 and 6
+  ---
+  duration_ms: 64.832665
+  type: 'test'
+  ...
+# Subtest: uncertain control starts with weekly Lab only, then saved positive result enables the future strength sessions
+ok 68 - uncertain control starts with weekly Lab only, then saved positive result enables the future strength sessions
+  ---
+  duration_ms: 56.049757
+  type: 'test'
+  ...
+# Subtest: discomfort and danger flags suppress strength without taking away the Lab assignment
+ok 69 - discomfort and danger flags suppress strength without taking away the Lab assignment
+  ---
+  duration_ms: 55.824717
+  type: 'test'
+  ...
+# Subtest: La agenda de Erección admite días transversales sin formulario viejo ni guardado ficticio
+ok 70 - La agenda de Erección admite días transversales sin formulario viejo ni guardado ficticio
+  ---
+  duration_ms: 60.771502
+  type: 'test'
+  ...
+# Subtest: all 14 EP capsule scripts match their written narration and preserve the original artwork bytes
+ok 71 - all 14 EP capsule scripts match their written narration and preserve the original artwork bytes
+  ---
+  duration_ms: 248.682272
+  type: 'test'
+  ...
+# Subtest: all 14 optional EP capsules render a readable title, 9:16 poster and explicit voice control without creating a record
+ok 72 - all 14 optional EP capsules render a readable title, 9:16 poster and explicit voice control without creating a record
+  ---
+  duration_ms: 1624.451389
+  type: 'test'
+  ...
+# Subtest: existing day-19 DE, EP and Deseo links automatically open real Focus II screens
+ok 73 - existing day-19 DE, EP and Deseo links automatically open real Focus II screens
+  ---
+  duration_ms: 2310.462429
+  type: 'test'
+  ...
+# Subtest: day-19 manual Focus II review button opens the same session and preserves test-only context
+ok 74 - day-19 manual Focus II review button opens the same session and preserves test-only context
+  ---
+  duration_ms: 430.53075
+  type: 'test'
+  ...
+# Subtest: direct breathing review opens the real voice library with isolated example records
+ok 75 - direct breathing review opens the real voice library with isolated example records
+  ---
+  duration_ms: 500.206466
+  type: 'test'
+  ...
+# Subtest: direct daily breathing review launches the actual assigned session on days 3 and 6
+ok 76 - direct daily breathing review launches the actual assigned session on days 3 and 6
+  ---
+  duration_ms: 971.338226
+  type: 'test'
+  ...
+# Subtest: daily breathing review explains an unassigned day without opening the library
+ok 77 - daily breathing review explains an unassigned day without opening the library
+  ---
+  duration_ms: 479.985504
+  type: 'test'
+  ...
+# Subtest: direct weekly Pelvic review uses the assigned activity and retains the daily result flow
+ok 78 - direct weekly Pelvic review uses the assigned activity and retains the daily result flow
+  ---
+  duration_ms: 539.519649
+  type: 'test'
+  ...
+# Subtest: all five Focus I sessions can be opened directly from review links with active patient-style screens
+ok 79 - all five Focus I sessions can be opened directly from review links with active patient-style screens
+  ---
+  duration_ms: 2664.039745
+  type: 'test'
+  ...
+# Subtest: all six domains offer five voluntary Focus I practices, one direct Focus II and the independent day-16 video
+ok 80 - all six domains offer five voluntary Focus I practices, one direct Focus II and the independent day-16 video
+  ---
+  duration_ms: 451.800533
+  type: 'test'
+  ...
+# Subtest: all six real programs expose 28 review days with guarded controls and no patient clients
+ok 81 - all six real programs expose 28 review days with guarded controls and no patient clients
+  ---
+  duration_ms: 7965.454501
+  type: 'test'
+  ...
+# Subtest: review isolates programs and daily records, rejects stale writes, and preserves real-origin storage
+ok 82 - review isolates programs and daily records, rejects stale writes, and preserves real-origin storage
+  ---
+  duration_ms: 342.726905
+  type: 'test'
+  ...
+# Subtest: a failed lab close prevents navigation; successful navigation closes actual legacy modals
+ok 83 - a failed lab close prevents navigation; successful navigation closes actual legacy modals
+  ---
+  duration_ms: 599.359642
+  type: 'test'
+  ...
+# Subtest: invalid query choices normalize safely and completion stays within the selected example day
+ok 84 - invalid query choices normalize safely and completion stays within the selected example day
+  ---
+  duration_ms: 260.862916
+  type: 'test'
+  ...
+# Subtest: review recovers a midpoint answered on day 18 and isolates its version 2 values by program
+ok 85 - review recovers a midpoint answered on day 18 and isolates its version 2 values by program
+  ---
+  duration_ms: 435.865706
+  type: 'test'
+  ...
+# Subtest: day 28 closing audio stays separate from navigation and opens the final report without extra records
+ok 86 - day 28 closing audio stays separate from navigation and opens the final report without extra records
+  ---
+  duration_ms: 395.330896
+  type: 'test'
+  ...
+# Subtest: Erección distribuye diez sesiones aprobadas, sin formulario antiguo y con evaluaciones independientes
+ok 87 - Erección distribuye diez sesiones aprobadas, sin formulario antiguo y con evaluaciones independientes
+  ---
+  duration_ms: 1857.230385
+  type: 'test'
+  ...
+# Subtest: Una restricción posterior cierra la sesión táctil del día 6 e impide un guardado vencido
+ok 88 - Una restricción posterior cierra la sesión táctil del día 6 e impide un guardado vencido
+  ---
+  duration_ms: 277.340153
+  type: 'test'
+  ...
+# Subtest: Una carga lenta no abre ni descarta la sesión táctil actual de día 3
+ok 89 - Una carga lenta no abre ni descarta la sesión táctil actual de día 3
+  ---
+  duration_ms: 313.271703
+  type: 'test'
+  ...
+# Subtest: Día 6 mantiene su sesión propia y la fuerza pélvica como apoyo independiente
+ok 90 - Día 6 mantiene su sesión propia y la fuerza pélvica como apoyo independiente
+  ---
+  duration_ms: 340.821288
+  type: 'test'
+  ...
+# Subtest: DE day one includes an actionable body-release and no-hold breathing practice with coordinated device guidance
+ok 91 - DE day one includes an actionable body-release and no-hold breathing practice with coordinated device guidance
+  ---
+  duration_ms: 314.419655
+  type: 'test'
+  ...
+# Subtest: Con alerta de revisión los días transversales siguen disponibles sin activar el módulo antiguo
+ok 92 - Con alerta de revisión los días transversales siguen disponibles sin activar el módulo antiguo
+  ---
+  duration_ms: 410.711201
+  type: 'test'
+  ...
+# Subtest: DE day two opens the real seven-step strength interface with the unmodified review profile
+ok 93 - DE day two opens the real seven-step strength interface with the unmodified review profile
+  ---
+  duration_ms: 314.00721
+  type: 'test'
+  ...
+# Subtest: EP pre-activity speaker explains repetition in the correct 28-day sessions, without changing cadence
+ok 94 - EP pre-activity speaker explains repetition in the correct 28-day sessions, without changing cadence
+  ---
+  duration_ms: 725.683091
+  type: 'test'
+  ...
+# Subtest: days 15/17/19 open pelvic-floor combined rather than obsolete EP modal; week four order is Squeeze, Start, Combined
+ok 95 - days 15/17/19 open pelvic-floor combined rather than obsolete EP modal; week four order is Squeeze, Start, Combined
+  ---
+  duration_ms: 580.409705
+  type: 'test'
+  ...
+# Subtest: las actividades reprogramadas 2, 3 y 4 se abren en días 3, 6 y 9 sin formularios antiguos
+ok 96 - las actividades reprogramadas 2, 3 y 4 se abren en días 3, 6 y 9 sin formularios antiguos
+  ---
+  duration_ms: 767.155982
+  type: 'test'
+  ...
+# Subtest: El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el CTA
+ok 97 - El Día 1 mantiene su cierre tras guardar y solo vuelve a Hoy mediante el CTA
+  ---
+  duration_ms: 2209.63533
+  type: 'test'
+  ...
+# Subtest: Hoy opens the shared touch activities in both wellbeing profiles
+ok 98 - Hoy opens the shared touch activities in both wellbeing profiles
+  ---
+  duration_ms: 3695.58645
+  type: 'test'
+  ...
+1..98
+# tests 98
+# suites 0
+# pass 98
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 30723.797641

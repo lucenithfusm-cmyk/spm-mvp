@@ -1,0 +1,15 @@
+
+> spm-breathing-lab@1.0.0 build
+> vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1617 modules transformed.
+rendering chunks...
+computing gzip size...
+../../premium-v2/breathing-lab/index.html                                0.44 kB │ gzip:  0.32 kB
+../../premium-v2/breathing-lab/assets/breath-demo-poster-DljZiMRl.jpg   68.43 kB
+../../premium-v2/breathing-lab/assets/spm-trainer-S_8BWHIQ.jpg          86.00 kB
+../../premium-v2/breathing-lab/assets/index-oi2SjPgH.css                55.78 kB │ gzip: 11.93 kB
+../../premium-v2/breathing-lab/assets/index-jG_XMQk8.js                309.87 kB │ gzip: 95.66 kB
+✓ built in 1.68s

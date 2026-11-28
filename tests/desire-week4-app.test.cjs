@@ -31,6 +31,7 @@ function harness(options={}){
   SpeechSynthesisUtterance:class{constructor(text){this.text=text}},speechSynthesis,
   setTimeout:(fn,delay)=>{const id=++n;timeouts.set(id,{fn,delay});return id},clearTimeout:id=>timeouts.delete(id),setInterval:()=>++n,clearInterval(){},addEventListener:(e,f)=>callbacks['window_'+e]=f};
  Object.defineProperty(sandbox,'localStorage',{get(){storageAccesses++;if(options.noStorage)throw Error('storage off');return{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)}}});
+ require('./helpers/device-voice-fixture.cjs').installOn(window,sandbox.SpeechSynthesisUtterance);
  vm.runInNewContext(coreCode,sandbox);vm.runInNewContext(code,sandbox);
  const escapeRx=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
  function markup(id,kind='control',where=app){const m=where.innerHTML.match(new RegExp('<[^>]*data-'+kind+'="'+escapeRx(id)+'"[^>]*>'));assert(m,'Visible '+kind+' '+id);return m[0]}

@@ -1,0 +1,73 @@
+[
+  {
+    "id": "clinical-sensate-sequence",
+    "status": "requires_clinical_decision",
+    "source": "anexo02 §6; agenda/decisiones_y_transformaciones.md",
+    "detail": "II19 precede I4/23 e I5/26; no reordenado por edición.",
+    "next": "Responsable clínico confirma secuencia/frecuencia."
+  },
+  {
+    "id": "assessment-penetration-applicability",
+    "status": "requires_clinical_decision",
+    "source_files": [
+      "premium-v2/engine.js",
+      "premium-v2/assessment-app-v3.js",
+      "premium-v2/app-live.js"
+    ],
+    "source_keys": [
+      "e_loss",
+      "scaleOptions",
+      "qNext"
+    ],
+    "detail": "e_loss exige experiencia de penetración con escala1–5, peso1.1 y sin No aplica; ambos controladores impiden continuar sin respuesta. No se alteraron escala, peso o cálculo.",
+    "next": "Definir política clínica de ausencia de experiencia y cálculo cuando no es evaluable; no imputar0."
+  },
+  {
+    "id": "agenda-video-transcripts",
+    "status": "source_missing",
+    "content_ids": [
+      "video:sensory-focus",
+      "video:partner-communication",
+      "video:anxiety-regulation",
+      "video:breathing-guided"
+    ],
+    "source": "premium-v2/spm-video-library.js; inventario de voz",
+    "detail": "Los cuatro videos de agenda están entre12 de Biblioteca sin guion íntegro localizado. Acciones posteriores/resúmenes no equivalen a transcripción. Demo final Respiración tiene guion publicado propio.",
+    "next": "Localizar guion íntegro y cotejar con audiovisual antes de fusionar o narrar."
+  },
+  {
+    "id": "insight-png-script-mismatch",
+    "status": "requires_approved_editable_art_or_specification",
+    "source_files": [
+      "premium-v2/assets/insights/insight-1-es.png",
+      "premium-v2/assets/insights/insight-2-es.png",
+      "premium-v2/assets/insights/insight-3-es.png",
+      "premium-v2/assets/insights/insight-4-es.png",
+      "premium-v2/evaluation-refresh-v1.js"
+    ],
+    "evidence": "insights-es-visual-review.json",
+    "detail": "Inspección visual íntegra de los4PNG: mensajes y promesas integrados incompatibles con MOMENTS.es actual. Corregir guion/alt no cambia el bitmap.",
+    "next": "Obtener fuente editable o especificación de arte revisado respetando pantallas aprobadas; después cotejar imagen y voz."
+  },
+  {
+    "id": "approved-art-mobile",
+    "status": "requires_visual_runtime_verification",
+    "source": "Assets originales; Confianza13/24, Conexión13, DE01;14 microcápsulas EP",
+    "detail": "14 bitmaps EP y4Insights sí inspeccionados; eso no acredita el render móvil de todas las pantallas. Confianza24 conserva titular histórico en bitmap.",
+    "next": "Cotejo visual de preview/móviles y controles. Documentar cualquier arte restante; no afirmar que DOM equivale a inspección visual."
+  },
+  {
+    "id": "physical-audio-and-account-flow",
+    "status": "requires_real_environment",
+    "source": "Anexo02 §10; informe integrado y de voz",
+    "detail": "DOM/simulación no prueban audio audible ni flujo autenticado de producción.",
+    "next": "Escucha/dispositivos y guardado/retorno/cierre con cuenta autorizada; mantener pausa comercial."
+  },
+  {
+    "id": "english",
+    "status": "not_claimed_complete",
+    "source": "pares es/en conservados",
+    "detail": "Este inventario principal es español.",
+    "next": "Revisión del recorrido inglés antes de acreditar su integridad editorial."
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "kind": "focused_execution_summary",
+  "date": "2026-11-27",
+  "canonical_migration": "supabase/migrations/20261127203151_spm_versioned_agenda_atomic_progress.sql",
+  "canonical_sha256": "f1a58aa247a9fcfcd6e1d0d788c94ed4e2f9a831c02eeddf80fef03ba5a4a02a",
+  "generator": "scripts/qa/split-progress-migration.cjs",
+  "test": "tests/progress-migration-parts.test.cjs",
+  "test_command": "NODE_PATH=$PWD/scripts/qa/node_modules node --test --test-reporter=tap tests/progress-migration-parts.test.cjs",
+  "result": {"passed": 6, "failed": 0, "skipped": 0, "duration_seconds_rounded": 6.99},
+  "method": "Execute the canonical migration and generated parts in two independent PGlite instances using the existing schema fixture; compare complete catalogues, functions, triggers, RLS, policies, privileges and columns.",
+  "catalogues_compared": 4,
+  "legacy_contexts_compared": 72,
+  "days_per_legacy_context": 28,
+  "parts": 8,
+  "largest_part_bytes": 895380,
+  "exclusive_limit_bytes": 900000,
+  "hosted_actions": false,
+  "limitations": [
+    "The TAP result was observed in the local execution output; this file is a summary, not a reconstructed TAP log.",
+    "Each part has its own transaction; there is no transaction spanning all calls.",
+    "An empty plans table does not prove the target is an isolated Supabase branch.",
+    "Verify target project_ref and complete catalogue values before connecting synthetic clients.",
+    "No real Auth, PostgREST or hosted concurrency was tested."
+  ]
+}
