@@ -10,6 +10,29 @@ const approvedText=Object.fromEntries([
  ...require('../labs/breathing/src/assets/audio/practical-guidance-manifest.json').entries.map(({id,text})=>[id,text]),
  ...content.exports.trainerLines.map((text,index)=>['screen.'+String(index+1).padStart(2,'0'),text]),
 ]);
+function installSensateDailyFixture(){
+ const clone=value=>JSON.parse(JSON.stringify(value));
+ const state=window.testSensateDaily={rows:{},writes:[],failRead:false};
+ const context=()=>window.SPM_RESOURCE_CONTEXT();
+ const assignment=(c=context())=>{const a=window.SPM_DAILY_SUPPORT.activity('sensate',Number(c.day),c);return a?{...a,kind:'sensate'}:null;};
+ const verify=(scope,day)=>{const c=context();if(scope!==c.userId+':'+c.planId||Number(day)!==Number(c.day))throw Error('Daily fixture context changed');};
+ window.SPM_DAILY_RECORDS={read:async(scope,day)=>{
+  verify(scope,day);if(state.failRead)throw Error('Daily progress unavailable');
+  return clone(state.rows[scope]?.[day]||{});
+ }};
+ window.SPM_DAILY_PRACTICE={
+  contentAssignment:(kind,c)=>kind==='sensate'?assignment(c):null,
+  assignments:()=>{const a=assignment();return a?[a]:[];},
+  active:()=>null,
+  saveActivity:async(id,data,scope,day)=>{
+   verify(scope,day);const a=assignment();
+   if(!a||a.id!==id||data?.confirmed!==true||data.source!=='sensate-lab')throw Error('Invalid daily Sensate confirmation');
+   const scopeRows=state.rows[scope]??={};const rows=scopeRows[day]??={};
+   const row={completed:true,data:clone(data)};rows[id]=row;
+   state.writes.push({id,data:clone(data),scope,day});return clone(row);
+  }
+ };
+}
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox']});
  let checks=0;const errors=[];
@@ -128,6 +151,8 @@ const approvedText=Object.fromEntries([
   await day(page,12);await page.evaluate(()=>SPM_BREATHING_LAB.open({origin:'dailyPlan'}));f=await frame(page,'breathing');await f.locator('.bl-route-shell[data-daily-journey="education"]').waitFor();await noHeaderVoice(f);await f.getByRole('heading',{name:'Explora la respiración con calma',exact:true}).waitFor();await f.getByRole('status').filter({hasText:'Hoy no tienes una sesión de respiración asignada'}).waitFor();assert.equal(await f.locator('.bl-pacer').count(),0);assert.equal(await f.getByRole('button',{name:'Continuar',exact:true}).count(),0);checks+=2;await close(page,'breathing');
   // The shipped tactile Focus I lessons teach now and preserve an unperformed
   // intimate practice as null. The retired React tutorial is not this route.
+  // This isolated host supplies the daily contracts consulted before any save.
+  await page.evaluate(installSensateDailyFixture);
   for(const [scheduledDay,session] of [[12,3],[8,2]]){
    await day(page,scheduledDay);const prior=await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']||'[]').length);
    await page.evaluate(()=>SPM_SENSATE_LAB.open({origin:'dailyPlan'}));f=await frame(page,'sensate');
@@ -139,6 +164,14 @@ const approvedText=Object.fromEntries([
    }
    assert.equal(await f.locator('[data-act="startguide"]').count(),0,'learning does not pretend to start an intimate practice');
    assert.equal(await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']||'[]').length),prior,'navigation alone never records completion');checks+=2;
+   if(session===3){
+    await page.evaluate(()=>{testSensateDaily.failRead=true;});await f.locator('[data-act="save"]:visible').click();
+    await f.getByRole('alert').filter({hasText:'No pude comprobar si la actividad estaba guardada'}).waitFor();
+    assert.equal(await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']||'[]').length),prior);
+    assert.equal(await page.evaluate(()=>testSensateDaily.writes.length),0);
+    assert.equal(await page.locator('.spm-sensate-modal').isVisible(),true);checks+=3;
+    await page.evaluate(()=>{testSensateDaily.failRead=false;});
+   }
    // Saving returns to Hoy through the real host and removes this iframe.
    // Assert the durable result, not the transient overlay inside that frame.
    await f.locator('[data-act="save"]:visible').click();await page.locator('.spm-sensate-modal').waitFor({state:'detached'});
@@ -146,6 +179,8 @@ const approvedText=Object.fromEntries([
    assert.equal(saved.length,prior+1,'explicit save writes exactly one learning record');checks++;
    const record=saved.at(-1);
    assert.equal(record.practiceId,'sf-i-'+session);assert.equal(record.day,scheduledDay);assert.equal(record.completed,true);assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);checks+=5;
+   const daily=await page.evaluate(async()=>{const c=SPM_RESOURCE_CONTEXT(),a=SPM_DAILY_PRACTICE.contentAssignment('sensate');return{rows:await SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,c.day),id:a.id,writes:testSensateDaily.writes.filter(x=>x.day===c.day)};});
+   assert.deepEqual(Object.keys(daily.rows),[daily.id]);assert.equal(daily.rows[daily.id].completed,true);assert.equal(daily.writes.length,1,'learning confirms its daily activity once');checks+=3;
    assert.equal(await page.evaluate(()=>testContext.day),scheduledDay);assert.equal(await page.evaluate(()=>testContext.completed.length),0);checks+=2;
   }
   // Focus II is voluntary and has no prerequisite gate in the approved module.
@@ -158,6 +193,7 @@ const approvedText=Object.fromEntries([
   assert.equal(await f.locator('[data-act="nextphase"]').isDisabled(),true);await f.locator('[data-act="next"]:visible').click();
   await f.getByRole('alert').filter({hasText:'Inicia los pasos'}).waitFor();checks+=2;await close(page,'sensate');
   assert.equal(await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']).length),beforeFocus,'early exit cannot create a completed practice');checks++;
+  assert.equal(await page.evaluate(()=>testSensateDaily.writes.filter(x=>x.day===19).length),0,'early exit never confirms the daily activity');checks++;
   await page.evaluate(()=>SPM_SENSATE_LAB.open({origin:'dailyPlan'}));f=await frame(page,'sensate');await f.locator('.spm-f2-artwork').waitFor();
   await f.locator('[data-act="next"]:visible').click();await f.locator('[data-act="branch"][data-value="partner"]').click();await f.locator('[data-act="next"]:visible').click();
   await f.locator('[data-act="f2toggle"]').click();for(let step=0;step<4;step++)await f.locator('[data-act="nextphase"]').click();
@@ -166,6 +202,8 @@ const approvedText=Object.fromEntries([
   await f.locator('[data-act="save"]:visible').click();await page.locator('.spm-sensate-modal').waitFor({state:'detached'});
   const focus=await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']).at(-1));
   assert.equal(focus.practiceId,'sf-focus-2');assert.equal(focus.modality,'partner');assert.equal(focus.completed,true);assert.equal(focus.day,19);assert.equal(await page.evaluate(()=>testContext.completed.length),0);checks+=5;
+  assert.equal(await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']).length),beforeFocus+1);
+  assert.equal(await page.evaluate(()=>testSensateDaily.writes.filter(x=>x.day===19).length),1,'Focus II confirms its daily activity once without closing the day');checks+=2;
   await page.close();
  }
  const page=await create(390);await day(page,1);
