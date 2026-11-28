@@ -85,11 +85,21 @@ const base=process.env.SPM_TEST_BASE||'https://spm-premium-staging.vercel.app/pr
         await p.locator('#reviewProgram:not([disabled])').waitFor({timeout:50000});
         const b=p.locator('[data-daily-open="main"]');
         if(await b.count())await b.click();await p.waitForTimeout(400);
-        const before=await p.evaluate(()=>({modal:document.querySelectorAll('dialog[open]').length,session:document.querySelector('#spmDailySession')?.innerHTML?.slice(0,90)}));
+        const before=await p.evaluate(async()=>{const c=SPM_RESOURCE_CONTEXT();return{modal:document.querySelectorAll('dialog[open]').length,session:document.querySelector('#spmDailySession')?.innerHTML?.slice(0,90),records:await SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,c.day)}});
+        if(previous==='ejaculation'){
+          // The native EP dialog must be dismissed before a person can use the
+          // review controls underneath it. selectOption alone bypasses that UI.
+          const practice=p.locator('dialog.ep-block[open]');await practice.waitFor();
+          await p.keyboard.press('Escape');await practice.waitFor({state:'detached'});
+          const returned=await p.evaluate(async()=>{const c=SPM_RESOURCE_CONTEXT();return{primary:c.primary,day:c.day,records:await SPM_DAILY_RECORDS.read(c.userId+':'+c.planId,c.day)}});
+          assert.equal(returned.primary,previous);assert.equal(returned.day,4);
+          assert.deepEqual(returned.records,before.records,'leaving the unfinished practice does not save or complete it');
+        }
         await p.locator('#reviewProgram').selectOption('desire');
-        await p.waitForTimeout(700);
+        await p.waitForFunction(()=>SPM_RESOURCE_CONTEXT().primary==='desire'&&SPM_RESOURCE_CONTEXT().day===4);
         const selection=await p.evaluate(()=>({context:SPM_RESOURCE_CONTEXT(),program:document.querySelector('#reviewProgram')?.value,status:document.querySelector('#reviewStatus')?.textContent}));
         assert.equal(selection.context.scheduleVersion,'legacy');
+        assert.equal(selection.program,'desire');
         await p.locator('[data-daily-open="main"]').click();
         await p.waitForTimeout(700);
         const ok=selection.context?.primary==='desire'&&await p.locator('.spm-ds-week1-root iframe').count()===1;

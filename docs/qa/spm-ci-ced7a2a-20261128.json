@@ -1,0 +1,647 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-28 06:20:28 UTC",
+  "repository": "lucenithfusm-cmyk/spm-mvp",
+  "pull_request": 85,
+  "pull_request_url": "https://github.com/lucenithfusm-cmyk/spm-mvp/pull/85",
+  "branch": "fix/spm-technical-20261127",
+  "remote_commit": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b",
+  "local_equivalent_commit": "bf2015873ecd164a4d8c2af1c8fcde48c29aa0c7",
+  "git_tree": "c63ebd30871c40e37dfcdd761d3cee1cdd2f30cd",
+  "scope": "Resultados completos de Actions de este SHA y correcciones locales posteriores de tres smoke; no describe un commit posterior como aprobado.",
+  "summary": {
+    "workflows": {
+      "total": 21,
+      "success": 17,
+      "failure": 4,
+      "in_progress": 0
+    },
+    "checks": {
+      "total": 38,
+      "success": 31,
+      "failure": 6,
+      "skipped": 1,
+      "in_progress": 0
+    },
+    "note": "Los workflows y checks incluyen push y pull_request y no son casos de prueba. Los conteos de suites que se solapan no se suman."
+  },
+  "main_suite": {
+    "push_run_id": 46115625997,
+    "push_job_id": 140888688646,
+    "pull_request_run_id": 46115631464,
+    "pull_request_job_id": 140888706037,
+    "push_url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625997/job/140888688646",
+    "pull_request_url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631464/job/140888706037",
+    "both_jobs": "success",
+    "node": {
+      "tests": 733,
+      "pass": 733,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 70159.967404,
+      "source": "Artifact del job push aprobado",
+      "artifact_id": 15251601873,
+      "artifact_name": "spm-technical-tests",
+      "archive_sha256": "fbdb8e630d3e0984e8dc3c8f9f789c0cd3a75565e3410d50344dd6e48fd4b0e2",
+      "archive_digest_verified": true,
+      "tap_file": "spm-actions-node-ced7a2a-20261128.tap"
+    },
+    "vitest": {
+      "tests": 127,
+      "pass": 127,
+      "files": 8,
+      "fail": 0,
+      "source": "Logs de ambos jobs local-contracts; ambos registran 127 passed (127), 8 passed (8)"
+    }
+  },
+  "mobile_regressions": {
+    "week2_chromium": "success",
+    "week2_webkit": "success",
+    "week2_standalone": "success",
+    "weeks3_4_chromium": "success",
+    "weeks3_4_webkit": "success",
+    "note": "Las acciones reales de navegación siguen activas. No se utilizó force-click."
+  },
+  "failed_causes": [
+    {
+      "cause": "El smoke seleccionaba otro programa detrás de un diálogo EP modal todavía abierto.",
+      "checks": [
+        140888705724,
+        140888705480,
+        140888688774,
+        140888688689
+      ],
+      "files": [
+        "tests/desire-access-browser.cjs"
+      ],
+      "observed_error": "La ep-canvas Atención sin examen intercepta el clic al abrir main después de selectOption.",
+      "classification": "Interacción imposible del test; la guardia de producto impide cambiar mientras permanece una actividad abierta.",
+      "local_correction": "Usar Escape, la cancelación nativa del diálogo EP, verificar que no guarda ni cambia el día y después seleccionar Deseo. Mantiene apertura del iframe y agenda legacy."
+    },
+    {
+      "cause": "El smoke esperaba un overlay Guardado dentro de un iframe que el guardado real retira al volver a Hoy.",
+      "checks": [
+        140888705719
+      ],
+      "files": [
+        "tests/breathing-lab-browser.cjs"
+      ],
+      "observed_error": "Timeout esperando .spm-s3-saved-overlay con texto Guardado.",
+      "classification": "Espera de un estado transitorio en el test; save() persiste y llama al cierre del host.",
+      "local_correction": "Esperar retirada del modal después del clic de guardar y exigir exactamente un registro nuevo, aprendizaje completado, práctica íntima null, día fijo y cero avance. Mantiene las comprobaciones de voz, video, seguridad y las tres anchuras."
+    },
+    {
+      "cause": "El smoke comercial omitía la bienvenida anónima y esperaba componentes retirados del flujo actual.",
+      "checks": [
+        140888705718
+      ],
+      "files": [
+        "tests/commercial-funnel-browser.cjs"
+      ],
+      "observed_error": "Timeout esperando #ageCard mientras se mostraba la bienvenida.",
+      "classification": "Expectativas anteriores al flujo ya presente en la base c27bbbba.",
+      "local_correction": "Pulsar el inicio real, completar evaluación y cuatro insights, verificar resultado/oferta y dos CTA hacia un único formulario inline. Conserva precio, anonimato, mapa bloqueado y cero solicitudes Supabase, checkout y Wompi."
+    }
+  ],
+  "local_followup_validation": {
+    "changed_browser_script_syntax": {
+      "pass": 3,
+      "total": 3
+    },
+    "diff_check": "pass",
+    "commercial_contracts": {
+      "pass": 23,
+      "total": 23,
+      "files": [
+        "tests/commercial-approved.test.cjs",
+        "tests/guest-return-preview.test.cjs"
+      ],
+      "source": "spm-commercial-ci-contracts.tap"
+    },
+    "sensate_focused_contracts": {
+      "pass": 3,
+      "total": 3,
+      "scope": "Sesiones 2, 3 y cierre real de la vista de revisión",
+      "source": "spm-sensate-ci-save-contracts.tap"
+    },
+    "ep_review_harness": {
+      "assertions_passed": 10,
+      "scope": "DOM real cargado por el harness del visor: bloqueo con diálogo abierto, cancelación nativa, ningún registro/avance, selección válida de Deseo e iframe visible en DOM.",
+      "browser_hit_testing": false
+    },
+    "playwright": "Pendiente de Actions para el commit que contenga estos tres cambios. No se ejecutó localmente porque falta el binario del navegador."
+  },
+  "manual_production_audit": {
+    "check_name": "Published program (manual)",
+    "conclusion": "skipped",
+    "reason": "workflow_dispatch solamente; en PR se mantiene Commercial source.",
+    "limitation": "La omisión en PR no acredita que producción esté activa ni que el recorrido del alias de producción haya pasado."
+  },
+  "operational_limits": [
+    "No se modificó producto en estas tres correcciones posteriores.",
+    "No se modificaron aserciones para ignorar errores ni se utilizaron clics forzados.",
+    "El resultado verde de 733 Node y 127 Vitest corresponde al SHA ced7a2a; los tres smoke corregidos necesitan una ejecución posterior.",
+    "La voz se verifica mediante peticiones al API nativo y estado de interfaz; no se certifica sonido audible del sistema operativo.",
+    "No se aplicaron migraciones alojadas, se fusionó main ni se ejecutaron pagos.",
+    "La evidencia excluye credenciales, URLs firmadas y cabeceras de herramientas."
+  ],
+  "workflow_runs": [
+    {
+      "id": 46115631326,
+      "name": "SPM — Checkpoints tactile review and report compatibility",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631326",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631377,
+      "name": "Pelvic Floor Lab weekly flow QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631377",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631374,
+      "name": "SPM - one current module release",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631374",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631416,
+      "name": "SPM Focalización Sensorial Premium QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631416",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631346,
+      "name": "Returning user restoration QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631346",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631328,
+      "name": "SPM source and published release QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631328",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631444,
+      "name": "SPM técnica combinada — semanas 3 y 4",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631444",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631422,
+      "name": "Pelvic Floor Lab integration QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631422",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631331,
+      "name": "SPM Deseo tactile days 4-7 QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631430,
+      "name": "SPM Deseo Semana 2 · QA táctil",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631430",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631461,
+      "name": "SPM Stop-Squeeze clinical QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631461",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631367,
+      "name": "Pelvic strength and Lab separation QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631367",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631353,
+      "name": "SPM Desire visible opening mobile QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631353",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631329,
+      "name": "SPM Movimiento · Tarjetas diarias",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631329",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631409,
+      "name": "Stop-Start SPM Premium — 28-day integration QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631409",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631411,
+      "name": "Daily practice and media QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631411",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631426,
+      "name": "SPM Deseo Semanas 3 y 4 · QA táctil",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631426",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115631464,
+      "name": "SPM technical corrections QA",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631464",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115625997,
+      "name": "SPM technical corrections QA",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625997",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115625957,
+      "name": "SPM Deseo tactile days 4-7 QA",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    },
+    {
+      "id": 46115625939,
+      "name": "SPM Desire visible opening mobile QA",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625939",
+      "head_sha": "ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b"
+    }
+  ],
+  "checks": [
+    {
+      "id": 140888707016,
+      "name": "Published program (manual)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631328/job/140888707016",
+      "completed_at": "2026-11-28T06:13:48Z"
+    },
+    {
+      "id": 140888706037,
+      "name": "local-contracts",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631464/job/140888706037",
+      "completed_at": "2026-11-28T06:16:54Z"
+    },
+    {
+      "id": 140888705991,
+      "name": "squeeze-integration",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631461/job/140888705991",
+      "completed_at": "2026-11-28T06:14:53Z"
+    },
+    {
+      "id": 140888705977,
+      "name": "mobile-journeys (chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631426/job/140888705977",
+      "completed_at": "2026-11-28T06:16:19Z"
+    },
+    {
+      "id": 140888705970,
+      "name": "week2-standalone",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631430/job/140888705970",
+      "completed_at": "2026-11-28T06:15:07Z"
+    },
+    {
+      "id": 140888705931,
+      "name": "week3-contract",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631426/job/140888705931",
+      "completed_at": "2026-11-28T06:15:11Z"
+    },
+    {
+      "id": 140888705930,
+      "name": "mobile-smoke (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631430/job/140888705930",
+      "completed_at": "2026-11-28T06:15:56Z"
+    },
+    {
+      "id": 140888705898,
+      "name": "combined-integration",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631444/job/140888705898",
+      "completed_at": "2026-11-28T06:15:06Z"
+    },
+    {
+      "id": 140888705854,
+      "name": "pelvic-lab",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631422/job/140888705854",
+      "completed_at": "2026-11-28T06:15:06Z"
+    },
+    {
+      "id": 140888705829,
+      "name": "premium-sensate",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631416/job/140888705829",
+      "completed_at": "2026-11-28T06:14:44Z"
+    },
+    {
+      "id": 140888705774,
+      "name": "mobile-journeys (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631426/job/140888705774",
+      "completed_at": "2026-11-28T06:16:31Z"
+    },
+    {
+      "id": 140888705754,
+      "name": "movement-responsive (chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631329/job/140888705754",
+      "completed_at": "2026-11-28T06:14:51Z"
+    },
+    {
+      "id": 140888705748,
+      "name": "mobile-smoke (chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631430/job/140888705748",
+      "completed_at": "2026-11-28T06:15:32Z"
+    },
+    {
+      "id": 140888705730,
+      "name": "weekly-flow",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631377/job/140888705730",
+      "completed_at": "2026-11-28T06:14:08Z"
+    },
+    {
+      "id": 140888705724,
+      "name": "ios-webkit-smoke",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331/job/140888705724",
+      "completed_at": "2026-11-28T06:15:47Z"
+    },
+    {
+      "id": 140888705719,
+      "name": "breathing",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631411/job/140888705719",
+      "completed_at": "2026-11-28T06:15:37Z"
+    },
+    {
+      "id": 140888705718,
+      "name": "Commercial source (local, no payment)",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631328/job/140888705718",
+      "completed_at": "2026-11-28T06:15:01Z"
+    },
+    {
+      "id": 140888705714,
+      "name": "calendar-direct-smoke",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331/job/140888705714",
+      "completed_at": "2026-11-28T06:14:22Z"
+    },
+    {
+      "id": 140888705699,
+      "name": "ios-calendar-direct-smoke",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331/job/140888705699",
+      "completed_at": "2026-11-28T06:15:02Z"
+    },
+    {
+      "id": 140888705682,
+      "name": "mobile-viewport (chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631353/job/140888705682",
+      "completed_at": "2026-11-28T06:14:28Z"
+    },
+    {
+      "id": 140888705681,
+      "name": "movement-responsive (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631329/job/140888705681",
+      "completed_at": "2026-11-28T06:15:09Z"
+    },
+    {
+      "id": 140888705674,
+      "name": "Five screens, 28-day schedule and cloud-save safety",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631409/job/140888705674",
+      "completed_at": "2026-11-28T06:15:10Z"
+    },
+    {
+      "id": 140888705641,
+      "name": "clinical-touch-week1",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331/job/140888705641",
+      "completed_at": "2026-11-28T06:14:08Z"
+    },
+    {
+      "id": 140888705593,
+      "name": "restore",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631346/job/140888705593",
+      "completed_at": "2026-11-28T06:14:46Z"
+    },
+    {
+      "id": 140888705561,
+      "name": "separate-strength",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631367/job/140888705561",
+      "completed_at": "2026-11-28T06:14:57Z"
+    },
+    {
+      "id": 140888705535,
+      "name": "Current modules in Hoy and Review",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631374/job/140888705535",
+      "completed_at": "2026-11-28T06:14:22Z"
+    },
+    {
+      "id": 140888705513,
+      "name": "mobile-viewport (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631353/job/140888705513",
+      "completed_at": "2026-11-28T06:14:59Z"
+    },
+    {
+      "id": 140888705480,
+      "name": "access-smoke",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631331/job/140888705480",
+      "completed_at": "2026-11-28T06:15:12Z"
+    },
+    {
+      "id": 140888705460,
+      "name": "checkpoint-tactile-and-report",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631326/job/140888705460",
+      "completed_at": "2026-11-28T06:14:12Z"
+    },
+    {
+      "id": 140888705447,
+      "name": "movement-behavior",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115631329/job/140888705447",
+      "completed_at": "2026-11-28T06:14:24Z"
+    },
+    {
+      "id": 140888688836,
+      "name": "mobile-viewport (webkit)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625939/job/140888688836",
+      "completed_at": "2026-11-28T06:15:37Z"
+    },
+    {
+      "id": 140888688774,
+      "name": "access-smoke",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957/job/140888688774",
+      "completed_at": "2026-11-28T06:15:25Z"
+    },
+    {
+      "id": 140888688727,
+      "name": "clinical-touch-week1",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957/job/140888688727",
+      "completed_at": "2026-11-28T06:14:04Z"
+    },
+    {
+      "id": 140888688715,
+      "name": "mobile-viewport (chrome)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625939/job/140888688715",
+      "completed_at": "2026-11-28T06:14:37Z"
+    },
+    {
+      "id": 140888688694,
+      "name": "calendar-direct-smoke",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957/job/140888688694",
+      "completed_at": "2026-11-28T06:14:32Z"
+    },
+    {
+      "id": 140888688689,
+      "name": "ios-webkit-smoke",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957/job/140888688689",
+      "completed_at": "2026-11-28T06:15:44Z"
+    },
+    {
+      "id": 140888688646,
+      "name": "local-contracts",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625997/job/140888688646",
+      "completed_at": "2026-11-28T06:15:35Z"
+    },
+    {
+      "id": 140888688469,
+      "name": "ios-calendar-direct-smoke",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46115625957/job/140888688469",
+      "completed_at": "2026-11-28T06:14:52Z"
+    }
+  ]
+}

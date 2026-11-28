@@ -139,10 +139,13 @@ const approvedText=Object.fromEntries([
    }
    assert.equal(await f.locator('[data-act="startguide"]').count(),0,'learning does not pretend to start an intimate practice');
    assert.equal(await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']||'[]').length),prior,'navigation alone never records completion');checks+=2;
-   await f.locator('[data-act="save"]:visible').click();await f.locator('.spm-s'+session+'-saved-overlay').filter({hasText:'Guardado'}).waitFor();
-   const record=await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']).at(-1));
+   // Saving returns to Hoy through the real host and removes this iframe.
+   // Assert the durable result, not the transient overlay inside that frame.
+   await f.locator('[data-act="save"]:visible').click();await page.locator('.spm-sensate-modal').waitFor({state:'detached'});
+   const saved=await page.evaluate(()=>JSON.parse(sensateState['spm-sensate-records']||'[]'));
+   assert.equal(saved.length,prior+1,'explicit save writes exactly one learning record');checks++;
+   const record=saved.at(-1);
    assert.equal(record.practiceId,'sf-i-'+session);assert.equal(record.day,scheduledDay);assert.equal(record.completed,true);assert.equal(record.lessonCompleted,true);assert.equal(record.intimatePracticeCompleted,null);checks+=5;
-   await f.locator('[data-act="close"]:visible').first().click();await page.locator('.spm-sensate-modal').waitFor({state:'detached'});
    assert.equal(await page.evaluate(()=>testContext.day),scheduledDay);assert.equal(await page.evaluate(()=>testContext.completed.length),0);checks+=2;
   }
   // Focus II is voluntary and has no prerequisite gate in the approved module.

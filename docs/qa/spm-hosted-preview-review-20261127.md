@@ -34,4 +34,18 @@ Estos recorridos acreditan el comportamiento observado del visor y su persistenc
 
 La voz de este navegador cloud devolvió el estado de recuperación «No disponible» en algunos intentos. Se comprobó que el texto y la navegación seguían disponibles; no se acredita reproducción acústica, timbre ni calidad de voz en un dispositivo físico. Safari iOS y Chrome Android físicos siguen pendientes.
 
-La revisión de las cápsulas de Control y el resumen HTTP final se incorporarán con sus commits y resultados efectivos. No se extiende una comprobación anterior a código posterior sin identificar las diferencias.
+## Revisión consolidada de las cápsulas y HTTP
+
+El commit remoto `ced7a2ad731387ecabf0fb31cbbf53f3e6ad9b1b`, árbol `c63ebd30871c40e37dfcdd761d3cee1cdd2f30cd`, se desplegó como `dpl_FZgx9ReERMnabcNJc8DaF4SjdFeD` y alcanzó READY. Su árbol es idéntico al commit local `bf2015873ecd164a4d8c2af1c8fcde48c29aa0c7`. La nueva revisión cambia la presentación EP, actualiza las pruebas y sus dependencias y regenera las huellas de los inventarios.
+
+Se inspeccionaron en el navegador cloud las cápsulas de los días **1, 5, 15, 19, 23 y 25**. En las seis, la imagen se presentó completa en su proporción original dentro del lienzo 9:16. Se observaron el logo, el indicador de día, la ilustración, el icono y la onda de reproducción y la cinta inferior. Los títulos revisados quedaron íntegros dentro de su caja, incluidos el margen reducido del día 19 y el titular del día 5. No se observó invasión del control de reproducción. Las cajas opacas de sustitución son visibles; cubren exclusivamente el área del titular original, incluido su fondo cuando el texto estaba sobre la ilustración.
+
+En el día 1, pulsar el póster activó la solicitud de voz y «Leer narración» mostró la guía completa. El estado «No disponible» del dispositivo mantuvo el panel cerrado y el texto accesible. «Volver a Hoy» permitió cerrar las cápsulas y cambiar de día. No se declara reproducción acústica aprobada. Los otros ocho carteles tienen inspección de fuente y pruebas DOM, pero no se presentan como ocho recorridos visuales adicionales.
+
+La comprobación HTTP inicial aprobó **24/24** en `287b9b1`: once recursos 200 con MIME y SHA-256 exactos, diez rutas internas 404 y tres entradas que conservan la página de pausa. El delta de `ced7a2a` aprobó **8/8**: nuevo JavaScript EP, visor y política 200 con huellas exactas, tres rutas internas 404 y dos entradas de pausa. La configuración de deployment, la política y el coordinador de voz permanecen idénticos entre ambos commits. Estas tandas se solapan y no se suman como controles independientes.
+
+- [HTTP completo del primer preview corregido](spm-http-preview-287b9b.json).
+- [HTTP del delta consolidado](spm-http-preview-ced7a2a.json).
+- [34 pruebas focales de publicación, continuidad y visor](spm-prepublish-focused.tap).
+
+Los inventarios regenerados mantienen 171 paquetes y 6.948 referencias españolas; las huellas de sus 171 fuentes coinciden con el código local publicado. Esa identidad no sustituye las verificaciones pendientes de vídeo, audio físico, backend alojado o arte de Insights.
