@@ -7887,7 +7887,7 @@
       "id": "entry-live-page",
       "file": "premium-v2/live.html",
       "names": [],
-      "source_sha256": "b19c4521ebdd656fcb28d7549130e425900abfb06a07c09d38c9d0298f1e1781",
+      "source_sha256": "f50a786d8128b2c09ce0dc59d1e0a3952e8e2ca65f6a28d1a1dd749cb8d15459",
       "family": "onboarding",
       "scope": "spanish_visible_and_spoken_source_reviewed",
       "text_ids": [
@@ -9559,7 +9559,7 @@
       "id": "continuity-today-states",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -9761,7 +9761,7 @@
       "id": "continuity-daily-advice",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -9896,7 +9896,7 @@
       "id": "continuity-reviewer-states",
       "file": "premium-v2/program-review-v1.js",
       "names": [],
-      "source_sha256": "d02c5b1b0f84bf3c9638251ce57dd813797c8ab426edaa81e70e7325469a6bd7",
+      "source_sha256": "4b58e05c66dcf7a1d3227308ef5e473e56435cd8fb0c5e26e96b8f724fa17bda",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10029,7 +10029,7 @@
       "id": "continuity-live-coach-controls",
       "file": "premium-v2/live.html",
       "names": [],
-      "source_sha256": "b19c4521ebdd656fcb28d7549130e425900abfb06a07c09d38c9d0298f1e1781",
+      "source_sha256": "f50a786d8128b2c09ce0dc59d1e0a3952e8e2ca65f6a28d1a1dd749cb8d15459",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10059,7 +10059,7 @@
       "id": "continuity-ep-capsule-1",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10068,14 +10068,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-3",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10084,14 +10084,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-5",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10100,14 +10100,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-7",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10116,14 +10116,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-9",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10132,14 +10132,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-11",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10148,14 +10148,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-13",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10164,14 +10164,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-15",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10180,14 +10180,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-17",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10196,14 +10196,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-19",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10212,14 +10212,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-21",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10228,14 +10228,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-23",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10244,14 +10244,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-25",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10260,14 +10260,14 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     },
     {
       "id": "continuity-ep-capsule-27",
       "file": "premium-v2/daily-practice-v1.js",
       "names": [],
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "family": "continuity",
       "scope": "spanish_active_continuity_source_reviewed",
       "text_ids": [
@@ -10276,7 +10276,7 @@
       ],
       "content_ids": [],
       "mirrors": [],
-      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "notes": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "pending": "QA visual real de microcápsulas y flujo autenticado; ver continuity-review.md."
     }
   ],

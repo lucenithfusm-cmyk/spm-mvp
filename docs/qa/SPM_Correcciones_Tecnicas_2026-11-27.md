@@ -78,7 +78,7 @@ La verificación adicional de los componentes de Respiración aprobó **42/42 pr
 
 Después de las últimas cuatro redacciones HTML se ejecutó otra tanda focal de aplicación y reingreso: **17/17**, también sin fallos ni omisiones (`spm-app-final-20261127.tap`). Estos casos se solapan con la suite principal.
 
-El recorrido visual del preview sigue pendiente de publicación. El Chromium local no tiene un binario operativo y su descarga normal devolvió 403; el navegador cloud no pudo acceder al servidor de revisión en localhost. No se calificó ese intento como una prueba visual aprobada. Estas pruebas tampoco certifican el backend alojado ni sonido físico.
+Después de la autorización expresa se publicaron la rama, el PR borrador #85 y un preview de Vercel. La suite Node de la primera publicación aprobó **729/729**. La revisión del preview corrigió una política de evaluación que no se servía y un panel de voz que podía interceptar navegación móvil. En el navegador cloud ya se verificaron Conexión 1→28, ausencia de línea base, cierre voluntario del ciclo, guardado parcial/final de Conexión 13 y los tres estados de EHS en Erección 1. Los commits comprobados, las comprobaciones de CI y los límites están en los informes enlazados. Esta evidencia no certifica el backend alojado ni sonido físico.
 
 Para reproducir las pruebas principales:
 
@@ -96,11 +96,11 @@ La migración se regenera con `node scripts/qa/build-progress-migration.cjs`. Su
 
 ### Preparación adicional del preview
 
-Se añadieron exclusiones del deployment y reglas HTTP terminales para impedir que el sitio sirva informes internos, fuentes de servidor, SQL, scripts, tests o fuentes de Labs. El visor y sus módulos compilados conservan sus recursos, incluida la política pública de evaluación. La tanda focal de esta protección aprobó **19/19**; contiene cinco pruebas nuevas y catorce casos ya incluidos en la suite anterior. La comprobación HTTP efectiva queda pendiente de un preview autorizado.
+Se añadieron exclusiones del deployment y reglas HTTP terminales para impedir que el sitio sirva informes internos, fuentes de servidor, SQL, scripts, tests o fuentes de Labs. El visor y sus módulos compilados conservan sus recursos; la política pública de evaluación es una copia exacta del módulo canónico, verificada por prueba. La tanda focal inicial aprobó **19/19**; la corrección posterior de publicación y continuidad aprobó **16/16**. En el deployment corregido se confirmaron 200 para la política pública y 404 para su antigua ruta backend, junto con la carga y operación del visor.
 
 El visor usa datos ficticios en memoria. El sitio completo no constituye todavía un entorno de backend aislado: la página de retorno de pago y los clientes de la aplicación siguen apuntando al proyecto principal. La validación real de Auth y persistencia necesita una rama separada y configuración expresa. No se crearon cuentas ni se escribieron datos en ese proyecto.
 
-La presentación de las cápsulas de Control requiere revisión visual explícita: conserva las imágenes de origen, pero actualmente encuadra su 49 % superior para sustituir el texto integrado. Se mantiene pendiente la decisión sobre ese encuadre, además de la discrepancia de los cuatro Insights.
+Se retiró el recorte superior de las cápsulas de Control: las 14 imágenes originales se contienen completas en el lienzo 9:16 y solo se reemplaza la caja medida de cada titular por su texto revisado. Los bytes y los guiones se conservaron. Las cajas y sus límites figuran en el inventario; cuando había un fondo ilustrado bajo las letras, esa zona concreta queda cubierta. La evidencia de render se registra por separado en el informe del preview. La discrepancia de los cuatro Insights continúa pendiente.
 
 La revisión automática había rechazado publicar el inventario completo después de una petición genérica de continuar. La autorización expresa posterior resolvió ese bloqueo. Las exclusiones de Vercel no alteran la visibilidad de los archivos publicados en GitHub.
 
@@ -114,7 +114,9 @@ La revisión automática había rechazado publicar el inventario completo despu�
 - [Fuente SQL revisable](../../supabase/sql/spm-atomic-progress-body.sql)
 - [Suite completa: 718 pruebas](spm-full-suite-20261127.tap)
 - [Revisión independiente de persistencia](persistence-independent-review-20261127.md)
-- [Estado de publicación y autorización requerida](spm-publication-status-20261127.md)
+- [Estado de publicación y antecedentes de autorización](spm-publication-status-20261127.md)
+- [Revisión del preview alojado y límites](spm-hosted-preview-review-20261127.md)
+- [Correcciones de integración continua](spm-ci-reconciliation-20261127.md)
 - [Preparación del preview, protección de archivos y recorridos pendientes](spm-preview-preparation-20261127.md)
 - [Prueba focal de protección y continuidad: 19 casos](spm-preview-boundary-20261127.tap)
 - [Resumen de la prueba focal de partición de la migración: 6 casos](spm-migration-parts-20261127.json)

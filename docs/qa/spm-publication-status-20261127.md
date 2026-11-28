@@ -4,7 +4,9 @@
 
 La usuaria autorizó expresamente publicar el código corregido, los calendarios, los inventarios completos de textos y voz y los informes de QA en la rama `fix/spm-technical-20261127` del repositorio público `lucenithfusm-cmyk/spm-mvp`, y crear el PR borrador y el preview de Vercel. El bloqueo de autorización quedó resuelto: la subida de los objetos se aceptó y sus SHA coinciden con los archivos locales.
 
-Los apartados siguientes conservan el registro de los bloqueos anteriores. El resultado alojado y sus comprobaciones se documentan en el PR de la rama y en la entrega de publicación. Esta autorización no incluye fusionar en `main`, aplicar la migración a producción o reabrir cobros.
+La rama ya está publicada y el [PR #85](https://github.com/lucenithfusm-cmyk/spm-mvp/pull/85) permanece como borrador. Vercel generó el preview del proyecto `spm-premium-staging`; después de corregir la carga de una dependencia se completaron recorridos reales del visor sintético. El resultado alojado y sus límites se documentan en [la revisión del preview](spm-hosted-preview-review-20261127.md) y en el PR. Esta autorización no incluye fusionar en `main`, aplicar la migración a producción o reabrir cobros.
+
+Los apartados siguientes conservan exclusivamente el registro histórico previo a esta publicación; no describen un bloqueo actual.
 
 ## Trabajo conservado
 

@@ -13,7 +13,8 @@ test('all 14 EP capsule scripts match their written narration and preserve the o
   assert.ok(now.querySelector('img').alt.trim());
  }
 });
-test('all 14 optional EP capsules render a readable title, 9:16 poster and explicit voice control without creating a record',async()=>{
+// DOM contracts do not certify the final visual alignment of text and artwork.
+test('all 14 optional EP capsules retain full-image geometry, revised titles and explicit voice controls without creating a record',async()=>{
  const h=await harness('?programa=ejaculation&dia=1');
  try{
   const w=h.w,spoken=[];w.SPM_VOICE={supported:true,cancel(){},speak:u=>spoken.push(u.text)};
@@ -22,10 +23,18 @@ test('all 14 optional EP capsules render a readable title, 9:16 poster and expli
    const d=w.document,poster=d.querySelector('.spm-ep-poster'),original=JSDOM.fragment(html);
    assert.ok(poster,'capsule '+day);assert.match(d.querySelector('.spm-ep-entry style').textContent,/\.spm-ep-poster\{[^}]*aspect-ratio:9\/16/);
    assert.equal(poster.querySelector('.spm-ep-title').textContent,original.querySelector('img').alt);
-   assert.ok(poster.querySelector('.spm-ep-art[aria-hidden="true"] img[alt=""]'));
-   const play=poster.querySelector('[data-ep-play]'),guide=d.querySelector('.spm-ep-capsule details p');
+   const art=poster.querySelector('.spm-ep-art'),image=art.querySelector('img[alt=""]'),style=d.querySelector('.spm-ep-entry style').textContent;
+   assert.ok(image);assert.equal(image.getAttribute('src'),original.querySelector('img').getAttribute('src'));
+   assert.match(style,/\.spm-ep-art img\{[^}]*object-fit:contain/);assert.doesNotMatch(style,/height:49%|\.spm-ep-art::after|linear-gradient/);
+   const [x,y,width,height]=art.dataset.epTitleBox.split(',').map(Number),iw=Number(image.getAttribute('width')),ih=Number(image.getAttribute('height'));
+   assert.ok(x>=0&&x+width<=iw,'title within image width '+day);
+   assert.ok(y>=ih*.4&&y+height<ih*.75,'bounded title zone above playback row '+day);
+   assert.ok(height<ih*.3,'no half-image replacement '+day);
+   assert.equal(art.style.getPropertyValue('--ep-title-top'),`${y/ih*100}%`);
+   const play=poster.closest('button[data-ep-play]'),guide=d.querySelector('.spm-ep-capsule details p');
+   assert.ok(play);assert.equal(play.querySelector('.spm-ep-control').previousElementSibling,poster);
    assert.equal(play.dataset.script,guide.textContent);assert.match(play.textContent,/Escuchar guía/);assert.match(play.textContent,/Detener guía/);
-   const before=await w.SPM_DAILY_RECORDS.read('review-only:review-ejaculation',Number(day));play.click();assert.equal(spoken.at(-1),guide.textContent);assert.equal(play.getAttribute('aria-pressed'),'true');play.click();assert.equal(play.getAttribute('aria-pressed'),'false');
+   const before=await w.SPM_DAILY_RECORDS.read('review-only:review-ejaculation',Number(day));poster.click();assert.equal(spoken.at(-1),guide.textContent);assert.equal(play.getAttribute('aria-pressed'),'true');play.click();assert.equal(play.getAttribute('aria-pressed'),'false');
    assert.deepEqual(JSON.parse(JSON.stringify(await w.SPM_DAILY_RECORDS.read('review-only:review-ejaculation',Number(day)))),JSON.parse(JSON.stringify(before)));
    assert.equal(w.SPM_DAILY_PRACTICE.assignments().some(a=>/capsule/i.test(a.id)),false);
   }

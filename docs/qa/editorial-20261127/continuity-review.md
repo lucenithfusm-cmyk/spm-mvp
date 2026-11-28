@@ -8,7 +8,7 @@ Se leyeron los estados de Hoy/agenda, guardado, cierre, salida, error y recupera
 
 19 cambios textuales adicionales: 4 estados/descripciones de Hoy, 4 guías EP (con su transcripción) y 11 ayudas. Se matizan resultados demasiado seguros y se admite ausencia de experiencia o cambios. No se cambian técnicas, dosis, zonas, escalas, restricciones ni requisitos de cierre.
 
-La inspección de las 14 imágenes originales encontró titulares integrados distintos de los títulos/guías revisados. La presentación conserva los bytes de la ilustración y el formato 9:16, y muestra un título HTML legible, Escuchar/Detener y transcripción. El encuadre superior excluye la frase antigua; no se declara que un cambio de alt haya corregido los píxeles.
+La inspección de las 14 imágenes originales encontró titulares integrados distintos de los títulos/guías revisados. La presentación conserva los bytes y la composición completa de la imagen, ajustada con contain dentro del lienzo 9:16. Solo la caja medida del titular antiguo recibe el título HTML revisado; no se recorta la ilustración ni se aplica un fundido. Las dimensiones y coordenadas por cápsula quedan en image_review. El póster y la etiqueta Escuchar/Detener forman un único botón, con transcripción debajo. Cuando las letras estaban sobre fondo ilustrado, ese fondo queda cubierto únicamente dentro de su caja tipográfica; no se reconstruyen píxeles ni se regenera arte.
 
 DailyCoach tenía respuestas preseleccionadas. El defecto se reportó a root, que implementó selecciones explícitas, No evaluable→null, validación sin Number(vacío)→0 e idempotencia del registro. El guardado del check-in y el cierre de la jornada permanecen separados. Las pruebas de esa implementación se documentan en el grupo backend/app.
 
@@ -21,7 +21,7 @@ DailyCoach tenía respuestas preseleccionadas. El defecto se reportó a root, qu
 
 ## Verificación visual y límite
 
-Las14 imágenes originales se examinaron visualmente con view_image. La presentación nueva necesita cotejo de render en el preview cloud que prepara root: no hay binario Chromium local operativo. El DOM y la equivalencia de guion/texto sí tienen prueba automática. La reproducción audible física y los 12 videos con guion pendiente siguen documentados por el grupo de voz.
+Las 14 imágenes originales se examinaron visualmente con view_image el 28/11/2026 y sus cajas tipográficas se contrastaron con OCR local. La presentación completa nueva necesita cotejo de render en el nuevo preview; las pruebas DOM no acreditan encuadre visual ni hit-testing. El DOM y la equivalencia de guion/texto sí tienen prueba automática. La reproducción audible física y los 12 videos con guion pendiente siguen documentados por el grupo de voz.
 
 ## Paquetes
 

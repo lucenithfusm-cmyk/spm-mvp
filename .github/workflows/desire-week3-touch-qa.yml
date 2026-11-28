@@ -2,6 +2,8 @@ name: SPM Deseo Semanas 3 y 4 · QA táctil
 on:
   pull_request:
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/desire-week3-v1/**'
       - 'premium-v2/desire-week3-bridge-v1.*'
       - 'tests/desire-week3-*.cjs'
@@ -20,6 +22,8 @@ on:
       - 'fix/deseo-semana3-continuacion-20261119'
       - 'fix/deseo-fullscreen-weeks3-4-20261119'
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/desire-week3-v1/**'
       - 'premium-v2/desire-week3-bridge-v1.*'
       - 'tests/desire-week3-*.cjs'
@@ -40,6 +44,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix scripts/qa --no-audit --no-fund
       - name: Verify scripts parse
         run: |
           node --check premium-v2/desire-week3-v1/app.js

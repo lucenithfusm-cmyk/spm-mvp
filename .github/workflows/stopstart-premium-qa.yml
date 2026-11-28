@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/ejaculatory-startstop-v2.js'
       - 'premium-v2/ejaculatory-control.js'
       - 'premium-v2/daily-practice-v1.js'
@@ -16,6 +18,8 @@ on:
       - '.github/workflows/stopstart-premium-qa.yml'
   pull_request:
     paths:
+      - 'tests/helpers/device-voice-fixture.cjs'
+      - 'scripts/qa/package*.json'
       - 'premium-v2/ejaculatory-startstop-v2.js'
       - 'premium-v2/ejaculatory-control.js'
       - 'premium-v2/daily-practice-v1.js'
@@ -33,6 +37,7 @@ jobs:
           node-version: 22
       - run: npm ci --prefix labs/desire --no-audit --no-fund
       - run: npm ci --prefix labs/breathing --no-audit --no-fund
+      - run: npm ci --prefix scripts/qa --no-audit --no-fund
       - name: Validate production scripts
         run: |
           node --check premium-v2/ejaculatory-startstop-v2.js

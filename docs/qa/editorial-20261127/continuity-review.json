@@ -14,7 +14,7 @@
     {
       "id": "continuity-today-states",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "safetyNotice().reasons#0": "Una respuesta de tu evaluación requiere revisión profesional.",
         "safetyNotice()#0": "En un seguimiento de este programa registraste una nueva señal de seguridad.",
@@ -816,575 +816,575 @@
           "column": 439
         },
         "epPlay()#0": {
-          "line": 203,
+          "line": 207,
           "column": 163
         },
         "epCard().title#0": {
-          "line": 208,
+          "line": 212,
           "column": 32
         },
         "render()#1": {
-          "line": 243,
+          "line": 248,
           "column": 181
         },
         "render()#2": {
-          "line": 243,
+          "line": 248,
           "column": 212
         },
         "render()#3": {
-          "line": 243,
+          "line": 248,
           "column": 303
         },
         "render()#4": {
-          "line": 243,
+          "line": 248,
           "column": 326
         },
         "render()#5": {
-          "line": 243,
+          "line": 248,
           "column": 359
         },
         "render()#6": {
-          "line": 243,
+          "line": 248,
           "column": 504
         },
         "render().approvedPreview#0": {
-          "line": 248,
+          "line": 253,
           "column": 39
         },
         "render().section#1": {
-          "line": 253,
+          "line": 258,
           "column": 84
         },
         "render().section#2": {
-          "line": 253,
+          "line": 258,
           "column": 108
         },
         "render()#10": {
-          "line": 255,
+          "line": 260,
           "column": 287
         },
         "render()#11": {
-          "line": 255,
+          "line": 260,
           "column": 308
         },
         "render()#13": {
-          "line": 255,
+          "line": 260,
           "column": 543
         },
         "render()#14": {
-          "line": 255,
+          "line": 260,
           "column": 681
         },
         "render().label#0": {
-          "line": 255,
+          "line": 260,
           "column": 849
         },
         "render()#16": {
-          "line": 255,
+          "line": 260,
           "column": 875
         },
         "render()#17": {
-          "line": 255,
+          "line": 260,
           "column": 1207
         },
         "render()#18": {
-          "line": 255,
+          "line": 260,
           "column": 1574
         },
         "render()#19": {
-          "line": 255,
+          "line": 260,
           "column": 1607
         },
         "render()#20": {
-          "line": 255,
+          "line": 260,
           "column": 1642
         },
         "render()#21": {
-          "line": 255,
+          "line": 260,
           "column": 1710
         },
         "render()#22": {
-          "line": 255,
+          "line": 260,
           "column": 1736
         },
         "render()#23": {
-          "line": 255,
+          "line": 260,
           "column": 1784
         },
         "render()#24": {
-          "line": 255,
+          "line": 260,
           "column": 1850
         },
         "render()#25": {
-          "line": 255,
+          "line": 260,
           "column": 1891
         },
         "render()#26": {
-          "line": 255,
+          "line": 260,
           "column": 1936
         },
         "render()#27": {
-          "line": 255,
+          "line": 260,
           "column": 1955
         },
         "render()#28": {
-          "line": 255,
+          "line": 260,
           "column": 2014
         },
         "render()#29": {
-          "line": 255,
+          "line": 260,
           "column": 2078
         },
         "render()#30": {
-          "line": 255,
+          "line": 260,
           "column": 2169
         },
         "render()#31": {
-          "line": 255,
+          "line": 260,
           "column": 2291
         },
         "render()#32": {
-          "line": 256,
+          "line": 261,
           "column": 302
         },
         "render()#33": {
-          "line": 256,
+          "line": 261,
           "column": 320
         },
         "render()#34": {
-          "line": 256,
+          "line": 261,
           "column": 337
         },
         "render()#35": {
-          "line": 256,
+          "line": 261,
           "column": 391
         },
         "render()#36": {
-          "line": 256,
+          "line": 261,
           "column": 583
         },
         "render()#37": {
-          "line": 256,
+          "line": 261,
           "column": 636
         },
         "render()#38": {
-          "line": 256,
+          "line": 261,
           "column": 756
         },
         "render()#39": {
-          "line": 256,
+          "line": 261,
           "column": 836
         },
         "render()#40": {
-          "line": 256,
+          "line": 261,
           "column": 939
         },
         "render()#41": {
-          "line": 256,
+          "line": 261,
           "column": 1018
         },
         "render()#42": {
-          "line": 256,
+          "line": 261,
           "column": 1139
         },
         "render()#43": {
-          "line": 256,
+          "line": 261,
           "column": 1235
         },
         "render()#45": {
-          "line": 264,
+          "line": 269,
           "column": 153
         },
         "compactResources()#0": {
-          "line": 277,
+          "line": 282,
           "column": 9
         },
         "compactResources()#1": {
-          "line": 277,
+          "line": 282,
           "column": 36
         },
         "compactResources()#3": {
-          "line": 277,
+          "line": 282,
           "column": 932
         },
         "safetyNext()#0": {
-          "line": 296,
+          "line": 301,
           "column": 16
         },
         "safetyNext()#1": {
-          "line": 296,
+          "line": 301,
           "column": 163
         },
         "safetyNext()#2": {
-          "line": 296,
+          "line": 301,
           "column": 255
         },
         "safetyNext()#3": {
-          "line": 296,
+          "line": 301,
           "column": 649
         },
         "safetyNext()#5": {
-          "line": 296,
+          "line": 301,
           "column": 1294
         },
         "safetyNext()#6": {
-          "line": 298,
+          "line": 303,
           "column": 129
         },
         "safetyNext()#8": {
-          "line": 303,
+          "line": 308,
           "column": 119
         },
         "safetyNext()#9": {
-          "line": 303,
+          "line": 308,
           "column": 218
         },
         "safetyNext()#10": {
-          "line": 303,
+          "line": 308,
           "column": 278
         },
         "safetyNext()#11": {
-          "line": 304,
+          "line": 309,
           "column": 51
         },
         "pausedActivity()#0": {
-          "line": 311,
+          "line": 316,
           "column": 16
         },
         "pausedActivity()#1": {
-          "line": 311,
+          "line": 316,
           "column": 231
         },
         "pausedActivity()#3": {
-          "line": 312,
+          "line": 317,
           "column": 199
         },
         "openDesireFromCalendar()#0": {
-          "line": 341,
+          "line": 346,
           "column": 22
         },
         "openDesireFromCalendar()#1": {
-          "line": 346,
+          "line": 351,
           "column": 11
         },
         "openDesireFromCalendar()#2": {
-          "line": 351,
+          "line": 356,
           "column": 20
         },
         "openDesireFromCalendar()#3": {
-          "line": 354,
+          "line": 359,
           "column": 10
         },
         "saveActivity()#0": {
-          "line": 361,
+          "line": 366,
           "column": 176
         },
         "saveActivity()#1": {
-          "line": 362,
+          "line": 367,
           "column": 116
         },
         "saveActivity()#2": {
-          "line": 362,
+          "line": 367,
           "column": 300
         },
         "saveActivity()#3": {
-          "line": 362,
+          "line": 367,
           "column": 465
         },
         "saveActivity()#4": {
-          "line": 362,
+          "line": 367,
           "column": 693
         },
         "saveActivity()#5": {
-          "line": 363,
+          "line": 368,
           "column": 141
         },
         "saveActivity()#6": {
-          "line": 375,
+          "line": 380,
           "column": 18
         },
         "saveActivity()#7": {
-          "line": 375,
+          "line": 380,
           "column": 88
         },
         "confirmActivity()#0": {
-          "line": 392,
+          "line": 397,
           "column": 16
         },
         "confirmActivity()#2": {
-          "line": 392,
+          "line": 397,
           "column": 231
         },
         "confirmActivity()#3": {
-          "line": 392,
+          "line": 397,
           "column": 320
         },
         "confirmActivity()#4": {
-          "line": 392,
+          "line": 397,
           "column": 428
         },
         "confirmActivity()#5": {
-          "line": 392,
+          "line": 397,
           "column": 447
         },
         "confirmActivity()#6": {
-          "line": 393,
+          "line": 398,
           "column": 355
         },
         "dailyVideo()#0": {
-          "line": 397,
+          "line": 402,
           "column": 20
         },
         "dailyVideo()#1": {
-          "line": 399,
+          "line": 404,
           "column": 16
         },
         "dailyVideo()#2": {
-          "line": 399,
+          "line": 404,
           "column": 844
         },
         "dailyVideo()#3": {
-          "line": 405,
+          "line": 410,
           "column": 357
         },
         "wellness().instructions#0": {
-          "line": 411,
+          "line": 416,
           "column": 102
         },
         "wellness().content#0": {
-          "line": 412,
+          "line": 417,
           "column": 104
         },
         "wellness().content#1": {
-          "line": 412,
+          "line": 417,
           "column": 389
         },
         "wellness().content#2": {
-          "line": 412,
+          "line": 417,
           "column": 673
         },
         "wellness()#0": {
-          "line": 413,
+          "line": 418,
           "column": 16
         },
         "wellness()#3": {
-          "line": 413,
+          "line": 418,
           "column": 173
         },
         "wellness()#4": {
-          "line": 413,
+          "line": 418,
           "column": 389
         },
         "wellness()#5": {
-          "line": 413,
+          "line": 418,
           "column": 422
         },
         "wellness()#6": {
-          "line": 416,
+          "line": 421,
           "column": 278
         },
         "patternTouch().pages.[1]#0": {
-          "line": 422,
+          "line": 427,
           "column": 80
         },
         "patternTouch().pages.[2]#0": {
-          "line": 422,
+          "line": 427,
           "column": 153
         },
         "patternTouch().pages.[3]#0": {
-          "line": 422,
+          "line": 427,
           "column": 213
         },
         "patternTouch().pages.[3]#1": {
-          "line": 422,
+          "line": 427,
           "column": 260
         },
         "patternTouch().pages.[3]#2": {
-          "line": 422,
+          "line": 427,
           "column": 316
         },
         "patternTouch().fields()#0": {
-          "line": 423,
+          "line": 428,
           "column": 55
         },
         "patternTouch().draw()#0": {
-          "line": 424,
+          "line": 429,
           "column": 963
         },
         "patternTouch().draw()#1": {
-          "line": 424,
+          "line": 429,
           "column": 1118
         },
         "patternTouch().draw()#2": {
-          "line": 424,
+          "line": 429,
           "column": 1140
         },
         "patternTouch().draw()#4": {
-          "line": 424,
+          "line": 429,
           "column": 1681
         },
         "patternTouch().draw().reflection#0": {
-          "line": 424,
+          "line": 429,
           "column": 1837
         },
         "patternTouch().draw().reflection#1": {
-          "line": 424,
+          "line": 429,
           "column": 1871
         },
         "patternTouch().draw()#5": {
-          "line": 424,
+          "line": 429,
           "column": 2032
         },
         "worksheet()#1": {
-          "line": 431,
+          "line": 436,
           "column": 400
         },
         "launch()#0": {
-          "line": 480,
+          "line": 485,
           "column": 10
         },
         "launch()#1": {
-          "line": 484,
+          "line": 489,
           "column": 73
         },
         "launch()#2": {
-          "line": 484,
+          "line": 489,
           "column": 148
         },
         "launch()#3": {
-          "line": 488,
+          "line": 493,
           "column": 35
         },
         "launch()#4": {
-          "line": 503,
+          "line": 508,
           "column": 45
         },
         "launch()#5": {
-          "line": 503,
+          "line": 508,
           "column": 101
         },
         "launch()#6": {
-          "line": 516,
+          "line": 521,
           "column": 34
         },
         "launch()#7": {
-          "line": 516,
+          "line": 521,
           "column": 90
         },
         "launch()#8": {
-          "line": 522,
+          "line": 527,
           "column": 24
         },
         "launch()#10": {
-          "line": 540,
+          "line": 545,
           "column": 34
         },
         "launch()#11": {
-          "line": 541,
+          "line": 546,
           "column": 16
         },
         "installExplanations()#0": {
-          "line": 550,
+          "line": 555,
           "column": 16
         },
         "installExplanations()#2": {
-          "line": 552,
+          "line": 557,
           "column": 209
         },
         "installExplanations()#3": {
-          "line": 555,
+          "line": 560,
           "column": 192
         },
         "closingAdvice().title#0": {
-          "line": 605,
+          "line": 610,
           "column": 16
         },
         "showClosingAdvice()#1": {
-          "line": 610,
+          "line": 615,
           "column": 111
         },
         "showClosingAdvice()#2": {
-          "line": 610,
+          "line": 615,
           "column": 148
         },
         "showClosingAdvice()#3": {
-          "line": 610,
+          "line": 615,
           "column": 334
         },
         "showClosingAdvice()#4": {
-          "line": 610,
+          "line": 615,
           "column": 455
         },
         "showClosingAdvice()#5": {
-          "line": 610,
+          "line": 615,
           "column": 634
         },
         "showClosingAdvice()#6": {
-          "line": 610,
+          "line": 615,
           "column": 657
         },
         "confirmVoluntary()#0": {
-          "line": 619,
+          "line": 624,
           "column": 20
         },
         "confirmVoluntary()#1": {
-          "line": 619,
+          "line": 624,
           "column": 92
         },
         "confirmVoluntary()#2": {
-          "line": 619,
+          "line": 624,
           "column": 294
         },
         "confirmVoluntary()#4": {
-          "line": 619,
+          "line": 624,
           "column": 597
         },
         "confirmVoluntary()#5": {
-          "line": 619,
+          "line": 624,
           "column": 632
         },
         "confirmVoluntary()#7": {
-          "line": 619,
+          "line": 624,
           "column": 736
         },
         "confirmVoluntary()#8": {
-          "line": 619,
+          "line": 624,
           "column": 760
         },
         "complete()#0": {
-          "line": 626,
+          "line": 631,
           "column": 72
         },
         "complete()#1": {
-          "line": 632,
+          "line": 637,
           "column": 33
         },
         "complete()#2": {
-          "line": 633,
+          "line": 638,
           "column": 25
         },
         "complete()#3": {
-          "line": 633,
+          "line": 638,
           "column": 134
         },
         "complete()#4": {
-          "line": 637,
+          "line": 642,
           "column": 145
         },
         "complete()#5": {
-          "line": 638,
+          "line": 643,
           "column": 57
         },
         "complete()#6": {
-          "line": 641,
+          "line": 646,
           "column": 45
         },
         "complete()#7": {
-          "line": 641,
+          "line": 646,
           "column": 110
         },
         "complete()#8": {
-          "line": 642,
+          "line": 647,
           "column": 84
         }
       },
@@ -1843,7 +1843,7 @@
     {
       "id": "continuity-daily-advice",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "dailyAdvice.[0].[0]#0": "Si hoy compartes un momento de intimidad, pregunta: «¿Qué te haría sentir a gusto hoy?». Escucha sin intentar resolver ni demostrar nada.",
         "dailyAdvice.[0].[1]#0": "Si estás solo, identifica una cosa que te ayude a sentirte a gusto.",
@@ -2078,227 +2078,227 @@
       ],
       "source_locations": {
         "dailyAdvice.[0].[0]#0": {
-          "line": 574,
+          "line": 579,
           "column": 3
         },
         "dailyAdvice.[0].[1]#0": {
-          "line": 574,
+          "line": 579,
           "column": 143
         },
         "dailyAdvice.[1].[0]#0": {
-          "line": 575,
+          "line": 580,
           "column": 3
         },
         "dailyAdvice.[1].[1]#0": {
-          "line": 575,
+          "line": 580,
           "column": 142
         },
         "dailyAdvice.[2].[0]#0": {
-          "line": 576,
+          "line": 581,
           "column": 3
         },
         "dailyAdvice.[2].[1]#0": {
-          "line": 576,
+          "line": 581,
           "column": 145
         },
         "dailyAdvice.[3].[0]#0": {
-          "line": 577,
+          "line": 582,
           "column": 3
         },
         "dailyAdvice.[3].[1]#0": {
-          "line": 577,
+          "line": 582,
           "column": 108
         },
         "dailyAdvice.[4].[0]#0": {
-          "line": 578,
+          "line": 583,
           "column": 3
         },
         "dailyAdvice.[4].[1]#0": {
-          "line": 578,
+          "line": 583,
           "column": 132
         },
         "dailyAdvice.[5].[0]#0": {
-          "line": 579,
+          "line": 584,
           "column": 3
         },
         "dailyAdvice.[5].[1]#0": {
-          "line": 579,
+          "line": 584,
           "column": 146
         },
         "dailyAdvice.[6].[0]#0": {
-          "line": 580,
+          "line": 585,
           "column": 3
         },
         "dailyAdvice.[6].[1]#0": {
-          "line": 580,
+          "line": 585,
           "column": 118
         },
         "dailyAdvice.[7].[0]#0": {
-          "line": 581,
+          "line": 586,
           "column": 3
         },
         "dailyAdvice.[7].[1]#0": {
-          "line": 581,
+          "line": 586,
           "column": 110
         },
         "dailyAdvice.[8].[0]#0": {
-          "line": 582,
+          "line": 587,
           "column": 3
         },
         "dailyAdvice.[8].[1]#0": {
-          "line": 582,
+          "line": 587,
           "column": 135
         },
         "dailyAdvice.[9].[0]#0": {
-          "line": 583,
+          "line": 588,
           "column": 3
         },
         "dailyAdvice.[9].[1]#0": {
-          "line": 583,
+          "line": 588,
           "column": 121
         },
         "dailyAdvice.[10].[0]#0": {
-          "line": 584,
+          "line": 589,
           "column": 3
         },
         "dailyAdvice.[10].[1]#0": {
-          "line": 584,
+          "line": 589,
           "column": 129
         },
         "dailyAdvice.[11].[0]#0": {
-          "line": 585,
+          "line": 590,
           "column": 3
         },
         "dailyAdvice.[11].[1]#0": {
-          "line": 585,
+          "line": 590,
           "column": 117
         },
         "dailyAdvice.[12].[0]#0": {
-          "line": 586,
+          "line": 591,
           "column": 3
         },
         "dailyAdvice.[12].[1]#0": {
-          "line": 586,
+          "line": 591,
           "column": 107
         },
         "dailyAdvice.[13].[0]#0": {
-          "line": 587,
+          "line": 592,
           "column": 3
         },
         "dailyAdvice.[13].[1]#0": {
-          "line": 587,
+          "line": 592,
           "column": 138
         },
         "dailyAdvice.[14].[0]#0": {
-          "line": 588,
+          "line": 593,
           "column": 3
         },
         "dailyAdvice.[14].[1]#0": {
-          "line": 588,
+          "line": 593,
           "column": 125
         },
         "dailyAdvice.[15].[0]#0": {
-          "line": 589,
+          "line": 594,
           "column": 3
         },
         "dailyAdvice.[15].[1]#0": {
-          "line": 589,
+          "line": 594,
           "column": 122
         },
         "dailyAdvice.[16].[0]#0": {
-          "line": 590,
+          "line": 595,
           "column": 3
         },
         "dailyAdvice.[16].[1]#0": {
-          "line": 590,
+          "line": 595,
           "column": 112
         },
         "dailyAdvice.[17].[0]#0": {
-          "line": 591,
+          "line": 596,
           "column": 3
         },
         "dailyAdvice.[17].[1]#0": {
-          "line": 591,
+          "line": 596,
           "column": 128
         },
         "dailyAdvice.[18].[0]#0": {
-          "line": 592,
+          "line": 597,
           "column": 3
         },
         "dailyAdvice.[18].[1]#0": {
-          "line": 592,
+          "line": 597,
           "column": 136
         },
         "dailyAdvice.[19].[0]#0": {
-          "line": 593,
+          "line": 598,
           "column": 3
         },
         "dailyAdvice.[19].[1]#0": {
-          "line": 593,
+          "line": 598,
           "column": 112
         },
         "dailyAdvice.[20].[0]#0": {
-          "line": 594,
+          "line": 599,
           "column": 3
         },
         "dailyAdvice.[20].[1]#0": {
-          "line": 594,
+          "line": 599,
           "column": 130
         },
         "dailyAdvice.[21].[0]#0": {
-          "line": 595,
+          "line": 600,
           "column": 3
         },
         "dailyAdvice.[21].[1]#0": {
-          "line": 595,
+          "line": 600,
           "column": 148
         },
         "dailyAdvice.[22].[0]#0": {
-          "line": 596,
+          "line": 601,
           "column": 3
         },
         "dailyAdvice.[22].[1]#0": {
-          "line": 596,
+          "line": 601,
           "column": 112
         },
         "dailyAdvice.[23].[0]#0": {
-          "line": 597,
+          "line": 602,
           "column": 3
         },
         "dailyAdvice.[23].[1]#0": {
-          "line": 597,
+          "line": 602,
           "column": 122
         },
         "dailyAdvice.[24].[0]#0": {
-          "line": 598,
+          "line": 603,
           "column": 3
         },
         "dailyAdvice.[24].[1]#0": {
-          "line": 598,
+          "line": 603,
           "column": 156
         },
         "dailyAdvice.[25].[0]#0": {
-          "line": 599,
+          "line": 604,
           "column": 3
         },
         "dailyAdvice.[25].[1]#0": {
-          "line": 599,
+          "line": 604,
           "column": 135
         },
         "dailyAdvice.[26].[0]#0": {
-          "line": 600,
+          "line": 605,
           "column": 3
         },
         "dailyAdvice.[26].[1]#0": {
-          "line": 600,
+          "line": 605,
           "column": 123
         },
         "dailyAdvice.[27].[0]#0": {
-          "line": 601,
+          "line": 606,
           "column": 3
         },
         "dailyAdvice.[27].[1]#0": {
-          "line": 601,
+          "line": 606,
           "column": 198
         }
       },
@@ -3024,7 +3024,7 @@
     {
       "id": "continuity-reviewer-states",
       "file": "premium-v2/program-review-v1.js",
-      "source_sha256": "d02c5b1b0f84bf3c9638251ce57dd813797c8ab426edaa81e70e7325469a6bd7",
+      "source_sha256": "4b58e05c66dcf7a1d3227308ef5e473e56435cd8fb0c5e26e96b8f724fa17bda",
       "before": {
         "programs.[0].label#0": "Deseo",
         "programs.[0].profile#0": "Deseo",
@@ -4178,7 +4178,7 @@
     {
       "id": "continuity-live-coach-controls",
       "file": "premium-v2/live.html",
-      "source_sha256": "b19c4521ebdd656fcb28d7549130e425900abfb06a07c09d38c9d0298f1e1781",
+      "source_sha256": "f50a786d8128b2c09ce0dc59d1e0a3952e8e2ca65f6a28d1a1dd749cb8d15459",
       "before": {
         "coach.visible_text": null
       },
@@ -4230,7 +4230,7 @@
     {
       "id": "continuity-ep-capsule-1",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Tu control también se entrena en el cerebro",
         "guide": "El control eyaculatorio no se mide únicamente en minutos. Reconocer tus señales, sentir mayor capacidad de decisión y reducir la presión son aspectos importantes del progreso."
@@ -4251,7 +4251,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4261,7 +4261,7 @@
     {
       "id": "continuity-ep-capsule-3",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La base del control está en tu piso pélvico",
         "guide": "El piso pélvico participa en la respuesta sexual. Aprender a distinguir tensión y relajación puede ayudarte a reconocer cómo responde tu cuerpo, sin mantener los músculos contraídos todo el tiempo."
@@ -4282,7 +4282,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4292,7 +4292,7 @@
     {
       "id": "continuity-ep-capsule-5",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Conoce tu nivel de excitación",
         "guide": "El control mejora cuando reconoces la excitación antes del punto de inevitabilidad. No se trata de mantenerte siempre en un nivel bajo, sino de aprender a modular la excitación."
@@ -4313,7 +4313,7 @@
         "title": "changed_reviewed",
         "guide": "changed_reviewed"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4323,7 +4323,7 @@
     {
       "id": "continuity-ep-capsule-7",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La respiración te da control en el momento clave",
         "guide": "La respiración cómoda puede ayudarte a reducir la tensión y a prestar atención a las señales de tu cuerpo. No necesitas forzarla ni convertirla en una prueba de rendimiento."
@@ -4344,7 +4344,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4354,7 +4354,7 @@
     {
       "id": "continuity-ep-capsule-9",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Identifica y modera tus estímulos",
         "guide": "La intensidad de los estímulos, la prisa y las expectativas pueden influir en cómo aumenta tu excitación. Reconocer tus propios aceleradores te ayuda a comprender tu patrón."
@@ -4375,7 +4375,7 @@
         "title": "changed_reviewed",
         "guide": "changed_reviewed"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4385,7 +4385,7 @@
     {
       "id": "continuity-ep-capsule-11",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "El ritmo también te ayuda a durar más",
         "guide": "El ritmo y la intensidad influyen en la excitación. Cambiar de ritmo o hacer una pausa puede darte margen para reconocer tus sensaciones antes del punto de inevitabilidad."
@@ -4406,7 +4406,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4416,7 +4416,7 @@
     {
       "id": "continuity-ep-capsule-13",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Reconoce el punto de mayor sensibilidad",
         "guide": "La sensibilidad y las señales previas a la eyaculación varían entre hombres y entre encuentros. Conocer tu patrón es más útil que compararte con otros."
@@ -4437,7 +4437,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4447,7 +4447,7 @@
     {
       "id": "continuity-ep-capsule-15",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Tu sistema de recompensa puede ser tu aliado",
         "guide": "Los patrones de respuesta sexual pueden cambiar con experiencias repetidas y sin presión. El aprendizaje gradual importa más que conseguir un resultado perfecto en cada ocasión."
@@ -4468,7 +4468,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4478,7 +4478,7 @@
     {
       "id": "continuity-ep-capsule-17",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La buena circulación también favorece el control",
         "guide": "Cuando preocupa perder la erección, algunas personas aceleran la estimulación. Esa prisa puede dificultar la regulación de la excitación. Si la dificultad persiste, conviene una valoración profesional."
@@ -4499,7 +4499,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4509,7 +4509,7 @@
     {
       "id": "continuity-ep-capsule-19",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La conexión emocional también modula tu respuesta",
         "guide": "Una pausa acordada puede formar parte de un encuentro satisfactorio. La comunicación ayuda a reducir expectativas y permite que ambos se sientan cómodos, sin convertir el encuentro en una prueba."
@@ -4530,7 +4530,7 @@
         "title": "changed_reviewed",
         "guide": "changed_reviewed"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4540,7 +4540,7 @@
     {
       "id": "continuity-ep-capsule-21",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La atención plena te ayuda a mantener el control",
         "guide": "Anticipar el fracaso puede aumentar la presión. Volver la atención a las sensaciones presentes puede ayudarte a reconocer tu respuesta sin vigilar constantemente el resultado."
@@ -4561,7 +4561,7 @@
         "title": "changed_reviewed",
         "guide": "changed_reviewed"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4571,7 +4571,7 @@
     {
       "id": "continuity-ep-capsule-23",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "La práctica constante consolida tu progreso",
         "guide": "La práctica constante puede favorecer el aprendizaje. Observa también si reconoces antes tus señales, si tienes más confianza y si puedes adaptar tus respuestas sin tanta presión."
@@ -4592,7 +4592,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4602,7 +4602,7 @@
     {
       "id": "continuity-ep-capsule-25",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Evita los factores que disparan la eyaculación prematura",
         "guide": "La respuesta sexual puede variar con el cansancio, el estrés y el contexto. Un encuentro difícil no significa volver al inicio ni perder todo lo aprendido."
@@ -4623,7 +4623,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -4633,7 +4633,7 @@
     {
       "id": "continuity-ep-capsule-27",
       "file": "premium-v2/daily-practice-v1.js",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "before": {
         "title": "Tu control es un proceso de aprendizaje y consolidación",
         "guide": "El control es un aprendizaje gradual. Conserva las herramientas que te resulten útiles y busca orientación profesional si las dificultades persisten o generan malestar."
@@ -4654,7 +4654,7 @@
         "title": "changed_reviewed",
         "guide": "reviewed_unchanged"
       },
-      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. Título antiguo integrado se sustituye en la presentación por título HTML coherente con la guía. No cambia una técnica o dosis.",
+      "reason": "Guía y transcripción leídas completas; imagen original inspeccionada visualmente. La composición completa se conserva y solo la caja medida del titular integrado recibe el título HTML coherente con la guía. No cambia una técnica o dosis.",
       "objective": "Consultar una explicación breve de control eyaculatorio.",
       "action": "Abrir cápsula; leer narración o pulsar Escuchar guía/Detener guía.",
       "record": "Ninguno. La cápsula es recurso opcional sin requisito de cierre.",
@@ -5125,140 +5125,308 @@
       "source": "premium-v2/daily-practice-v1.js::epCapsules.1",
       "artwork_sha256": "15a4ea20bdfc45a14152856c7f8fffda75b6584fd4185c50ccdb2266e466a9e6",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        224,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 52,
+        "y": 235,
+        "width": 133,
+        "height": 112,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Tu control también se entrena en el cerebro",
       "after_visible_title": "El control también se aprende",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 3,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.3",
       "artwork_sha256": "69a7e74db3eb3b85d44be8f2b9b7985454b5d5372b87af773430a5e0fd555fa4",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        212,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 41,
+        "y": 232,
+        "width": 141,
+        "height": 116,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La base del control está en tu piso pélvico",
       "after_visible_title": "Reconoce la tensión de tu cuerpo",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 5,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.5",
       "artwork_sha256": "214ace9d0cadc506b58cc27e9cf5967278e54f475edd31599f41fb04a35424c5",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        205,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 41,
+        "y": 234,
+        "width": 124,
+        "height": 87,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Conoce tu nivel de excitación",
       "after_visible_title": "Reconoce la excitación a tiempo",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 7,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.7",
       "artwork_sha256": "3cd8910f1fd8dfa49e30182ddc7e740be0b6d5f6fa3d29be3d6f27eb0668c926",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        206,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 18,
+        "y": 232,
+        "width": 172,
+        "height": 112,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La respiración te da control en el momento clave",
       "after_visible_title": "Respirar sin añadir presión",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 9,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.9",
       "artwork_sha256": "0f3820de993b0e6f6964bc653505b17f67fd38278da534f112703157f384c20f",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        206,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 54,
+        "y": 233,
+        "width": 113,
+        "height": 110,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Identifica y modera tus estímulos",
       "after_visible_title": "Identifica tus aceleradores",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 11,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.11",
       "artwork_sha256": "a62edee75a5293a13cb6ca9f8b537049e00e7052ca8e723878713988311dd97e",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        204,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 34,
+        "y": 229,
+        "width": 142,
+        "height": 113,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "El ritmo también te ayuda a durar más",
       "after_visible_title": "Cambiar el ritmo también es controlar",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 13,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.13",
       "artwork_sha256": "80f1c47fce3adc73c44c9640922826ed7fac531d19e7593a42ce4c5fac56f0c9",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        209,
+        466
+      ],
+      "title_replacement_box": {
+        "x": 36,
+        "y": 231,
+        "width": 143,
+        "height": 111,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Reconoce el punto de mayor sensibilidad",
       "after_visible_title": "Reconoce tus señales de sensibilidad",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 15,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.15",
       "artwork_sha256": "5db783d3428fc49a993aaf8f0d2c62af5d98c11dce343171bb6b1883cdaa5859",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        220,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 40,
+        "y": 222,
+        "width": 162,
+        "height": 114,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Tu sistema de recompensa puede ser tu aliado",
       "after_visible_title": "Tu cuerpo puede aprender nuevos patrones",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 17,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.17",
       "artwork_sha256": "49bfdf13f1ee54b6f61947bd42b57f649f5276e8b9f04b96ab92b0543116048f",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        207,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 46,
+        "y": 209,
+        "width": 130,
+        "height": 135,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La buena circulación también favorece el control",
       "after_visible_title": "Firmeza y control pueden relacionarse",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 19,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.19",
       "artwork_sha256": "6b5cf6ba67b737bfe3d8a042e1622c2c0a696ad0f7a92cb49cf768bb18803d65",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        208,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 38,
+        "y": 209,
+        "width": 141,
+        "height": 140,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La conexión emocional también modula tu respuesta",
       "after_visible_title": "Comunicar una pausa no es fracasar",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 21,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.21",
       "artwork_sha256": "78de9dfe07069468ae6e52aa7b3e9115db26fa32b2cb4e30bf7ebd88423243e4",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        211,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 26,
+        "y": 222,
+        "width": 168,
+        "height": 111,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La atención plena te ayuda a mantener el control",
       "after_visible_title": "Tu atención también importa",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 23,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.23",
       "artwork_sha256": "6c90cfa97a77721946cd3db4e1d9771ddb94fb7714102c5c9391fb124e214f94",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        212,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 41,
+        "y": 222,
+        "width": 140,
+        "height": 116,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "La práctica constante consolida tu progreso",
       "after_visible_title": "El progreso va más allá del cronómetro",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 25,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.25",
       "artwork_sha256": "fd58b34614e4faded610511353e6ae2b588fe0dcbafbbbb816baccba972f3df6",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        209,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 26,
+        "y": 210,
+        "width": 161,
+        "height": 137,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Evita los factores que disparan la eyaculación prematura",
       "after_visible_title": "Un episodio difícil no borra tu progreso",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     },
     {
       "day": 27,
       "source": "premium-v2/daily-practice-v1.js::epCapsules.27",
       "artwork_sha256": "0613012f1bebde918a41b25e6985cec182da239532a5e9d27ccbdd2dca14e92b",
       "artwork_bytes_preserved": true,
+      "source_dimensions": [
+        199,
+        474
+      ],
+      "title_replacement_box": {
+        "x": 15,
+        "y": 229,
+        "width": 177,
+        "height": 110,
+        "coordinate_space": "original_image_pixels"
+      },
       "before_visible_title": "Tu control es un proceso de aprendizaje y consolidación",
       "after_visible_title": "Lo aprendido continúa contigo",
-      "presentation": "Cartel HTML 9:16. Ilustración superior original en recuadro de 49% de altura con fundido; antiguo titular bitmap fuera del encuadre visible. Título revisado, botón Escuchar/Detener y texto completo legible.",
-      "inspection": "14 bitmaps originales examinados con view_image el 27/11/2026; comprobación DOM de 14 títulos/guías/controles. Render visual browser pendiente de preview cloud; no se acredita aquí."
+      "presentation": "Lienzo 9:16 con imagen original completa ajustada con contain, sin recorte ni fundido. Solo se sustituye la caja del titular, medida por cápsula; logo, día, ilustración, icono/onda de reproducción y cinta inferior conservan su composición. El póster y su etiqueta Escuchar/Detener forman un único botón; texto completo disponible debajo.",
+      "inspection": "14 fuentes originales examinadas con view_image y límites tipográficos contrastados con OCR local el 28/11/2026. Prueba DOM de bytes, títulos, geometría y controles; render visual final pendiente del nuevo preview.",
+      "limit": "Si el título estaba sobre fondo ilustrado, la sustitución cubre ese fondo únicamente dentro de la caja tipográfica. Sin material por capas no se reconstruyen los píxeles bajo las letras."
     }
   ],
   "additional_changes": {

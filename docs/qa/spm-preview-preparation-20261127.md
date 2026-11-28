@@ -2,7 +2,7 @@
 
 ## Estado
 
-Cambios preparados y comprobados localmente después de la entrega inicial. La usuaria dio posteriormente autorización expresa para publicar el código, los calendarios, los inventarios completos y los informes de QA en la rama pública de revisión, junto con un PR borrador y un preview de Vercel. El bloqueo anterior quedó resuelto y la subida de los objetos fue aceptada. Este documento describe la preparación; la validación HTTP y visual alojada debe registrarse tras el deployment.
+La rama pública `fix/spm-technical-20261127` y el [PR borrador #85](https://github.com/lucenithfusm-cmyk/spm-mvp/pull/85) ya están publicados con autorización expresa de la usuaria. El primer preview corregido alcanzó READY en Vercel y permitió completar los recorridos de Conexión 1/13/28 y Erección 1. Este documento describe la preparación y las correcciones; la evidencia alojada, con sus commits y límites, está en [la revisión del preview](spm-hosted-preview-review-20261127.md).
 
 ## Protección de archivos del deployment
 
@@ -18,13 +18,13 @@ Estas protecciones afectan a los archivos cargados y servidos por Vercel. **No h
 
 ### Comprobación local
 
-`tests/deployment-source-boundary.test.cjs` comprueba la precedencia de las denegaciones, los archivos internos realmente versionados, la excepción exacta de la política pública, las dependencias del visor, la existencia de los módulos distribuidos y las exclusiones con la semántica de patrones Git. También preserva las rutas de pausa.
+`tests/deployment-source-boundary.test.cjs` comprueba la precedencia de las denegaciones, los archivos internos realmente versionados, la identidad exacta de la copia pública de la política, las dependencias del visor, la existencia de los módulos distribuidos y las exclusiones con la semántica de patrones Git. También preserva las rutas de pausa.
 
 La tanda focal inicial junto con las regresiones de módulos y retorno a Hoy aprobó **19/19**, sin fallos ni omisiones. Evidencia: `spm-preview-boundary-20261127.tap`. Esta tanda incluye cinco pruebas nuevas; sus otros catorce casos ya pertenecían a la suite anterior. No se suma como si fueran diecinueve casos adicionales únicos.
 
 La primera comprobación alojada detectó que Vercel devolvía 404 para la antigua política bajo `supabase/functions/_shared`, aunque la excepción pasaba la simulación local de patrones. El visor mostraba su error de carga. Se sustituyó esa dependencia por la copia pública exacta dentro de `premium-v2` y se excluyó todo el árbol backend. La regresión local de publicación y continuidad aprobó **16/16**, incluyendo la nueva comprobación de identidad de la política. El resultado HTTP efectivo debe verificarse en el deployment corregido.
 
-**Pendiente:** comprobar las respuestas HTTP 404, la exclusión efectiva de archivos y la carga visual del visor en un deployment autorizado. La prueba local de configuración no se presenta como una prueba HTTP alojada.
+En el deployment del commit `287b9b1` se confirmó HTTP 200 para la copia pública y 404 para la antigua ruta backend; el visor cargó y sus controles funcionaron. La matriz HTTP y el resultado de los recorridos se documentan separadamente para no confundir pruebas de configuración con respuestas alojadas.
 
 ## Entrada sintética para la revisión visual
 
@@ -42,7 +42,7 @@ El visor usa un usuario y planes ficticios, con registros y almacenamiento en me
 | Variante mixta | Abrir `?programa=erection&dia=13&secundario=desire`; comprobar identidades y máximo de un apoyo. |
 | Agenda anterior | Añadir `agenda=legacy`; no inferir la asignación de una actividad nueva a partir de un enlace histórico. |
 
-La presentación de las cápsulas de Control aún requiere aprobación visual: mantiene los bytes originales, pero muestra solo el 49 % superior de su arte para sustituir el titular integrado por texto HTML. Esto no equivale a conservar el encuadre completo. No se afirma que el recorte esté aprobado.
+La inspección posterior corrigió el recorte superior de las cápsulas de Control: ahora se contiene la imagen completa dentro de un lienzo 9:16 y se sustituye exclusivamente la caja medida del titular de cada cápsula. Los 14 originales conservan sus bytes y guiones. Cuando el texto antiguo estaba sobre una ilustración, la máscara cubre ese fondo solo dentro de la caja tipográfica; no reconstruye píxeles ausentes. El cotejo visual final del nuevo render se registra en el informe del preview.
 
 ## Límite del aislamiento
 

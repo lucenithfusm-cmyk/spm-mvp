@@ -82,8 +82,9 @@ fs.mkdirSync(artifacts, { recursive: true });
   try {
     // Enter at day 15 and switch within the reviewer. Its direct day-19 URL
     // intentionally opens a separate, previously approved focalization module.
-    await page.goto(base + 'revision-programas-28-dias.html?programa=desire&dia=15', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(base + 'revision-programas-28-dias.html?agenda=legacy&programa=desire&dia=15', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.locator('#reviewProgram:not([disabled])').waitFor({ timeout: 30000 });
+    assert.equal(await page.evaluate(() => window.SPM_RESOURCE_CONTEXT().scheduleVersion), 'legacy');
     await page.evaluate(async () => {
       const c = window.SPM_RESOURCE_CONTEXT();
       if (c.userId !== 'review-only' || c.planId !== 'review-desire') throw Error('Refusing to seed a non-review context.');

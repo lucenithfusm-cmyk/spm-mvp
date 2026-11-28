@@ -1,0 +1,524 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-28 06:07:53 UTC",
+  "repository": "lucenithfusm-cmyk/spm-mvp",
+  "branch": "fix/spm-technical-20261127",
+  "pullRequest": {
+    "number": 85,
+    "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/pull/85",
+    "draft": true
+  },
+  "initialPublication": {
+    "commit": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+    "tree": "582fba7aa2afd15a81cf3d6ab22a9b3e73a7a779",
+    "runs": [
+      {
+        "id": 46114166191,
+        "name": "Pelvic strength and Lab separation QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166191",
+        "updated_at": "2026-11-28T05:54:39Z"
+      },
+      {
+        "id": 46114166184,
+        "name": "Pelvic Floor Lab weekly flow QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166184",
+        "updated_at": "2026-11-28T05:54:34Z"
+      },
+      {
+        "id": 46114166173,
+        "name": "Returning user restoration QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166173",
+        "updated_at": "2026-11-28T05:54:36Z"
+      },
+      {
+        "id": 46114166326,
+        "name": "SPM técnica combinada — semanas 3 y 4",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166326",
+        "updated_at": "2026-11-28T05:54:37Z"
+      },
+      {
+        "id": 46114166181,
+        "name": "SPM Stop-Squeeze clinical QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166181",
+        "updated_at": "2026-11-28T05:54:45Z"
+      },
+      {
+        "id": 46114166215,
+        "name": "SPM — Checkpoints tactile review and report compatibility",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166215",
+        "updated_at": "2026-11-28T05:55:00Z"
+      },
+      {
+        "id": 46114166165,
+        "name": "SPM Movimiento · Tarjetas diarias",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166165",
+        "updated_at": "2026-11-28T05:55:16Z"
+      },
+      {
+        "id": 46114166182,
+        "name": "SPM Deseo Semana 2 · QA táctil",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166182",
+        "updated_at": "2026-11-28T05:55:26Z"
+      },
+      {
+        "id": 46114166359,
+        "name": "SPM - one current module release",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166359",
+        "updated_at": "2026-11-28T05:55:30Z"
+      },
+      {
+        "id": 46114166368,
+        "name": "Pelvic Floor Lab integration QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166368",
+        "updated_at": "2026-11-28T05:55:15Z"
+      },
+      {
+        "id": 46114166279,
+        "name": "SPM Focalización Sensorial Premium QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166279",
+        "updated_at": "2026-11-28T05:55:09Z"
+      },
+      {
+        "id": 46114166304,
+        "name": "Daily practice and media QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166304",
+        "updated_at": "2026-11-28T05:55:12Z"
+      },
+      {
+        "id": 46114166212,
+        "name": "SPM technical corrections QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166212",
+        "updated_at": "2026-11-28T05:55:33Z"
+      },
+      {
+        "id": 46114166285,
+        "name": "Published SPM release QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166285",
+        "updated_at": "2026-11-28T05:55:33Z"
+      },
+      {
+        "id": 46114166390,
+        "name": "Stop-Start SPM Premium — 28-day integration QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166390",
+        "updated_at": "2026-11-28T05:56:00Z"
+      },
+      {
+        "id": 46114166169,
+        "name": "SPM Deseo Semanas 3 y 4 · QA táctil",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166169",
+        "updated_at": "2026-11-28T05:56:34Z"
+      },
+      {
+        "id": 46114166197,
+        "name": "SPM Desire visible opening mobile QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166197",
+        "updated_at": "2026-11-28T05:57:26Z"
+      },
+      {
+        "id": 46114166257,
+        "name": "SPM Deseo tactile days 4-7 QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114166257",
+        "updated_at": "2026-11-28T05:57:21Z"
+      },
+      {
+        "id": 46114158341,
+        "name": "SPM technical corrections QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114158341",
+        "updated_at": "2026-11-28T05:55:45Z"
+      },
+      {
+        "id": 46114158328,
+        "name": "SPM Deseo tactile days 4-7 QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114158328",
+        "updated_at": "2026-11-28T05:56:12Z"
+      },
+      {
+        "id": 46114158292,
+        "name": "SPM Desire visible opening mobile QA",
+        "head_sha": "8075d4bd3ca66353c2004d3148a9bb9863daa872",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/lucenithfusm-cmyk/spm-mvp/actions/runs/46114158292",
+        "updated_at": "2026-11-28T05:55:57Z"
+      }
+    ],
+    "workflowTotals": {
+      "total": 21,
+      "success": 5,
+      "failure": 16
+    },
+    "nodeArtifact": {
+      "runId": 46114166212,
+      "artifactId": 15250908671,
+      "zipSha256": "3c5b9d481ab931060f3adfe2e0dd2e38a976e6b0bf9ceaa3e28c3e69332287bc",
+      "tapPath": "/workspace/scratch/349f79528487/spm-ci-8075d4b-node.tap",
+      "tests": 729,
+      "passed": 729,
+      "failed": 0,
+      "durationMs": 50609.042666
+    },
+    "vitest": {
+      "passed": 126,
+      "failed": 1,
+      "total": 127,
+      "failure": "Legacy Control breathing calendar expected day 10 instead of the existing day 11."
+    }
+  },
+  "intermediatePublicationReportedByRoot": {
+    "commit": "287b9b182640dc10908aedafe1ff0bf6cf231449",
+    "localCommit": "b6690f41e62d228705af9557569ec9de82637f71",
+    "tree": "1441952f723ef921d3bd38f78c61c11197abfbac",
+    "scope": "Public assessment policy and voice-panel fix. Does not yet contain this uncommitted CI repair.",
+    "ciNotAssessedInThisReport": true
+  },
+  "localRepair": {
+    "baseCommit": "b6690f41e62d228705af9557569ec9de82637f71",
+    "changedFiles": [
+      {
+        "path": ".github/workflows/breathing-lab-qa.yml",
+        "sha256": "2e1888d2ab5b351263570ab4e3a0e79fb556fde816ce6903bfc5098263f47fe0"
+      },
+      {
+        "path": ".github/workflows/combined-premium-qa.yml",
+        "sha256": "4c53c23d41a8bbca6bbb5caa3e79a8d2dabd1d310e93c6ceaea12ca275e6dccb"
+      },
+      {
+        "path": ".github/workflows/desire-week3-touch-qa.yml",
+        "sha256": "9b4e0a5967f61869df84408939d21038f06f48e66e2ba331f5066b9cf0d510d5"
+      },
+      {
+        "path": ".github/workflows/pelvic-lab-qa.yml",
+        "sha256": "7926b1889f8a0b91a12fa8d6e0d9effc33a72ca4fc18dd8fab960340a40c68c1"
+      },
+      {
+        "path": ".github/workflows/pelvic-strength-qa.yml",
+        "sha256": "f9d72c5d75a3b820b703d40777b9e8d25b52579e5d5681dc3443abea43846262"
+      },
+      {
+        "path": ".github/workflows/sensate-premium-qa.yml",
+        "sha256": "365b7a61555857e6bf2cd5f11027102bd39a08b0853415c5623b9984d72e5dac"
+      },
+      {
+        "path": ".github/workflows/stopsqueeze-premium-qa.yml",
+        "sha256": "2534d479362e1736f3d1914b9bb92c0b6fccad0341f2a5a12db90b9e49d64f48"
+      },
+      {
+        "path": ".github/workflows/stopstart-premium-qa.yml",
+        "sha256": "897ed011d64c96de443d61158b43c21a3bbcbd4d492348347a98d5b93fd4be8d"
+      },
+      {
+        "path": "labs/breathing/index.html",
+        "sha256": "c8ead10b6b449339214d05d89c37326fab5d140fd444f66b17914b1f57a6f8b5"
+      },
+      {
+        "path": "labs/breathing/src/lib/breath-daily-journey.test.ts",
+        "sha256": "b276b2dc590cd4595071c95b3be4fecbcbb93cc22b5a8bc84b077cd43aa4bd1c"
+      },
+      {
+        "path": "labs/pelvic-floor/index.html",
+        "sha256": "f8445325d2b4ffe19d1f659c73b1d33f0d7a64337a5f99be320df7639cfbf967"
+      },
+      {
+        "path": "tests/breathing-lab-browser.cjs",
+        "sha256": "0699c8a3aa1fd7fc68cd83fa6fff1e1e20ba94e4321a9a10f802fa7507d132ca"
+      },
+      {
+        "path": "tests/daily-entry-browser.cjs",
+        "sha256": "fdabe50ae5432ac9f2e0c774924e8904050687149ba10f1ff9b0deae92542cc2"
+      },
+      {
+        "path": "tests/daily-practice-browser.cjs",
+        "sha256": "4c08d6ae194d2da61badf5e58755c084f3095dcb1fe22baa22fb4f969ca0fa5f"
+      },
+      {
+        "path": "tests/desire-access-browser.cjs",
+        "sha256": "4ffb36667ba1d4b66a589a9f5c66d7809d021fa7e1e835e27c8a06a947d93e54"
+      },
+      {
+        "path": "tests/desire-calendar-access-browser.cjs",
+        "sha256": "5399f449927374ae91bb2bfb9a771def7d86285cbe9de519896c76405d473397"
+      },
+      {
+        "path": "tests/desire-viewport-access-browser.cjs",
+        "sha256": "dae6bca850688f79ecf3218ee6da3a7863255e2dafee9f6312792407919fed38"
+      },
+      {
+        "path": "tests/desire-week3-central-browser.cjs",
+        "sha256": "58f3f4252ca3d76727a381135154759f3564fb691e4fe254bf88b86f3f75fff5"
+      },
+      {
+        "path": "tests/desire-weeks3-4-viewport-browser.cjs",
+        "sha256": "191c14855b405e791a4f0a1dac41d4817522840e4993a8a4f0134e2d5388fff6"
+      },
+      {
+        "path": "tests/helpers/device-voice-fixture.cjs",
+        "sha256": "84abeb979fdc68b2affd59cd383fa5a9320d7ac1b7edfb06f3922af8bb118c94"
+      },
+      {
+        "path": "tests/returning-user-fixture.js",
+        "sha256": "791c9ddc25bab10e5cbf21307d9649edb4d2a0e0c79fbca253c00984cccc44a2"
+      },
+      {
+        "path": "tests/returning-user-restore.test.cjs",
+        "sha256": "e3a9ea5d31cf29dbfa7d45bffbab40b8a721195911e366aa2b8c1d6d359894d5"
+      },
+      {
+        "path": "tests/support/daily-fixture.js",
+        "sha256": "3a2300decc8155a183cff14819b33db88bc61637b843367ed4589e483c7adca0"
+      },
+      {
+        "path": ".github/workflows/production-release-qa.yml",
+        "sha256": "d0e178537b5cc3d4d8b6f67ea47fe27ba608188c9850ffc3376a9fc96da04987"
+      }
+    ],
+    "preScopeAdjustmentDiffSha256": "6cbf49af6f8bd5e0a7188de6855c1b5e9abcfc1031a315f0b1dcba184d68c20a",
+    "scopeNote": "24 repair files; this historical evidence excludes its own two report files and concurrent changes by root."
+  },
+  "localValidation": {
+    "suitesAreOverlappingDoNotSum": true,
+    "returningAllLayers": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "command": "NODE_PATH=$PWD/scripts/qa/node_modules SPM_QA_ALL_LAYERS=1 node --test tests/returning-user-restore.test.cjs",
+      "evidence": "/workspace/scratch/349f79528487/spm-restore-all-layers.tap"
+    },
+    "breathingVitest": {
+      "tests": 127,
+      "passed": 127,
+      "failed": 0,
+      "files": 8,
+      "command": "cd labs/breathing && npx vitest run"
+    },
+    "initialFocusedContracts": {
+      "tests": 262,
+      "passed": 261,
+      "failed": 1,
+      "evidence": "/workspace/scratch/349f79528487/spm-ci-focal-contracts.tap",
+      "failure": "Real JSDOM windows were attached to a coordinator created by a separate installed JSDOM package. MutationObserver rejected the foreign Node."
+    },
+    "affectedContractsAfterFix": {
+      "tests": 63,
+      "passed": 63,
+      "failed": 0,
+      "evidence": "/workspace/scratch/349f79528487/spm-fixture-cross-realm.tap",
+      "command": "NODE_PATH=$PWD/scripts/qa/node_modules node --test --test-reporter=tap tests/daily-practice.test.cjs tests/device-voice-20261127.test.cjs",
+      "fix": "installOn evaluates the real coordinator in the real application's JSDOM window. Minimal object fixtures retain their isolated coordinator."
+    },
+    "browserRpcFixtureContracts": {
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "reportedBy": "/root/pr_and_ci/audit_test_workflows",
+      "execution": "Inline VM focal tests; no browser",
+      "checks": [
+        "Assessment completeness across six routes without changing existing safety",
+        "failNext and save without day closure",
+        "idempotent receipts, request conflict and stale revision",
+        "single explicit close and immutable prior responses",
+        "pending work and incomplete history rejection",
+        "day 28 completion without day 29",
+        "returning fixture remains read-only",
+        "foreign plan and query-write errors"
+      ]
+    },
+    "buildReproduction": {
+      "breathing": {
+        "files": 45,
+        "byteIdentical": true
+      },
+      "pelvicFloor": {
+        "files": 54,
+        "byteIdentical": true
+      },
+      "method": "Vite builds in isolated scratch output directories, comparing the full relative path set and SHA-256 of every file with shipped dist."
+    },
+    "yaml": {
+      "files": 9,
+      "passed": true
+    },
+    "changedScriptSyntax": {
+      "files": 12,
+      "passed": true
+    },
+    "gitDiffCheck": true,
+    "playwright": {
+      "executed": false,
+      "reason": "Playwright package resolves, but /usr/bin/chromium points to the missing /usr/lib/chromium/chromium binary. Browser checks await Actions; no audible OS voice claim."
+    },
+    "legacySensateBuild": {
+      "executedLocally": false,
+      "reason": "Archived Lab dependencies are not installed locally. Workflow retains npm ci, typecheck and build in RUNNER_TEMP without overwriting the shipped tactile wrapper."
+    },
+    "releaseWorkflowScope": {
+      "publishedStepsAndEnvironmentUnchanged": true,
+      "localCommercialStepUnchanged": true,
+      "pullRequestAndDispatchTriggersUnchanged": true,
+      "publishedJobCondition": "github.event_name == 'workflow_dispatch'",
+      "pushTriggerAdded": false
+    }
+  },
+  "diagnoses": [
+    {
+      "category": "introduced integration dependency",
+      "jobs": [
+        140884113453,
+        140884113022,
+        140884113011,
+        140884113154
+      ],
+      "repair": "Voice fixture uses scripts/qa/jsdom pinned at 26.1.0; seven consuming workflows explicitly install scripts/qa. Workflow path triggers include the fixture and lockfile."
+    },
+    {
+      "category": "missing build/test dependencies",
+      "jobs": [
+        140884112972
+      ],
+      "repair": "Pelvic strength installs labs/pelvic-floor for TypeScript; Daily/media installs labs/desire for program-checkpoint; Pelvic integration installs labs/breathing for its bridge test."
+    },
+    {
+      "category": "absolute script URL exposed harness defects",
+      "jobs": [
+        140884113049
+      ],
+      "repair": "Resolve URLs as a browser, emulate currentScript, use persistent VM global scope and clone transport responses."
+    },
+    {
+      "category": "cache-query source/dist mismatch",
+      "jobs": [
+        140884113256,
+        140884113561
+      ],
+      "repair": "Two source HTML voice queries match shipped 20261127-technical; rebuilt artifacts are byte-identical."
+    },
+    {
+      "category": "new calendar default versus historical UI smoke",
+      "repair": "Five Desire browser scripts explicitly request agenda=legacy and assert scheduleVersion, preserving navigation and layout checks."
+    },
+    {
+      "category": "pre-existing Vitest expectation",
+      "repair": "Legacy Control day 11 expectation aligns with unchanged base daily-support-plan and its existing Node test. New agenda assigns Control breathing on days 2/6/20/27, separately from source days 1/6/20/27; product calendar unchanged."
+    },
+    {
+      "category": "pre-existing archived Sensate mismatch",
+      "repair": "Archived React build goes to RUNNER_TEMP; shipped wrapper remains guarded by git diff and current tactile unit/browser checks. Current learned lessons do not report an intimate practice as performed."
+    },
+    {
+      "category": "transport fixture obsolete after RPC integration",
+      "repair": "Daily/returning browser fixtures implement the canonical RPC response contract, explicit legacy history and no-advance-on-save behavior; only historical closure assertions changed."
+    },
+    {
+      "category": "new device narration versus MP3 smoke",
+      "repair": "Breathing browser test observes real SPM_VOICE requests through a native speech double, full approved text, cancellation and exclusion; retains geometry, video, save retry and safety checks."
+    },
+    {
+      "category": "actual product defect delegated to root",
+      "jobs": [
+        140884112879
+      ],
+      "failure": "At 390x844, Desire week2 day8 next button is blocked by the fixed aside.spm-device-voice.",
+      "testPreserved": true
+    },
+    {
+      "category": "unrelated paused production alias",
+      "jobs": [
+        140884113372
+      ],
+      "workflow": "Published SPM release QA",
+      "target": "https://spm-premium-staging.vercel.app/premium-v2/",
+      "failure": "Published production smoke waits for #ageCard on live.html while the alias is intentionally paused.",
+      "modified": true,
+      "repair": "Split jobs: commercial-source keeps the local commercial test on pull_request/dispatch; published is workflow_dispatch-only with all six commands, target URL and assertions unchanged. No push main trigger. A skipped published job does not certify an active program."
+    }
+  ],
+  "pending": [
+    "Publish the local CI repair and regenerate consolidated evidence via root.",
+    "Run Actions on the final remote commit and inspect the browser results.",
+    "Verify the new preview independently; this agent has not started HTTP checks.",
+    "The published-program audit remains manual and strict against the intentionally paused production alias; it is not a PR-source check."
+  ],
+  "externalWritesByThisAgent": false,
+  "committedByThisAgent": false,
+  "safeguards": "No credentials, signed share URLs, setup headers, patient data or raw connector responses are included."
+}

@@ -1,0 +1,290 @@
+{
+  "checked_at_utc": "2026-11-28T06:11:40.973Z",
+  "deployment": {
+    "id": "dpl_AXD3szuyVQZNYsdRH4JToz3e34SY",
+    "state": "READY",
+    "readyState": "READY",
+    "target": null,
+    "source": "git",
+    "githubCommitSha": "287b9b182640dc10908aedafe1ff0bf6cf231449",
+    "githubCommitRef": "fix/spm-technical-20261127",
+    "url": "spm-premium-staging-5tjl9sem5-lucenithfusm-cmyk.vercel.app"
+  },
+  "local_source_commit": "b6690f41e62d228705af9557569ec9de82637f71",
+  "remote_source_commit": "287b9b182640dc10908aedafe1ff0bf6cf231449",
+  "source_identity_verified": true,
+  "method": "GET through the authorized Vercel connector, using the existing deployment access. SHA-256 is calculated from the UTF-8 decoded response body and compared with git show at the local commit whose tree matches the remote deployment. No forms, authentication against SPM, payment actions, or production writes were performed.",
+  "summary": {
+    "checks": 24,
+    "passed": 24,
+    "failed": 0,
+    "public_asset_status_and_hash_checks": 11,
+    "internal_route_404_checks": 10,
+    "commercial_pause_checks": 3
+  },
+  "limitations": [
+    "This is HTTP evidence for the listed paths only; it is not a full URL-space scan or proof of uploaded-file absence.",
+    "A public GitHub repository remains public regardless of Vercel exclusions.",
+    "No visual rendering, acoustic playback, live Supabase Auth/PostgREST/RLS, or payment flow is certified by these checks.",
+    "Commercial pause routes return identical pause-page HTML; payment-return and live client source were not exercised against the primary backend."
+  ],
+  "checks": [
+    {
+      "category": "allowed",
+      "path": "/premium-v2/revision-programas-28-dias.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 4802,
+      "sha256": "c1377c6e2aa0b0c65ef33886883ff047780bfd45abcd5fdf0884aa8d8eae5468",
+      "expected_sha256": "c1377c6e2aa0b0c65ef33886883ff047780bfd45abcd5fdf0884aa8d8eae5468",
+      "mime": "text/html; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/program-review-v1.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 19725,
+      "sha256": "4b58e05c66dcf7a1d3227308ef5e473e56435cd8fb0c5e26e96b8f724fa17bda",
+      "expected_sha256": "4b58e05c66dcf7a1d3227308ef5e473e56435cd8fb0c5e26e96b8f724fa17bda",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/device-voice-v1.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 14690,
+      "sha256": "9b9b649fbe5b67deb510ee8918c26c7778a1ba2c7deda77ee827f3e5930e2026",
+      "expected_sha256": "9b9b649fbe5b67deb510ee8918c26c7778a1ba2c7deda77ee827f3e5930e2026",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/agenda-manifest-20261127.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 431590,
+      "sha256": "12cac89b94f89816dd1f461ea76d5f546046492d4650b260e371d44f3db0f72d",
+      "expected_sha256": "12cac89b94f89816dd1f461ea76d5f546046492d4650b260e371d44f3db0f72d",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/assessment-policy.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3442,
+      "sha256": "c76409e68127447be491e815574afe8fde8b68b3850088206cde2437ba989b30",
+      "expected_sha256": "c76409e68127447be491e815574afe8fde8b68b3850088206cde2437ba989b30",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/breathing-lab/index.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 451,
+      "sha256": "cb83670a69ae0783de49ecab96746e17b74f1cc864a9244ad28ebcd0f48057a6",
+      "expected_sha256": "cb83670a69ae0783de49ecab96746e17b74f1cc864a9244ad28ebcd0f48057a6",
+      "mime": "text/html; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/breathing-lab/assets/index-jG_XMQk8.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 309872,
+      "sha256": "e1d0d3dfbea18d5cc62a22a20f6a106833a19c7fc90d1157cc649ab9907ec3f4",
+      "expected_sha256": "e1d0d3dfbea18d5cc62a22a20f6a106833a19c7fc90d1157cc649ab9907ec3f4",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/desire-lab/index.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 429,
+      "sha256": "fe89a380084b5a44da25fc0cded098ece174156c31513e6e32afa0a9593be658",
+      "expected_sha256": "fe89a380084b5a44da25fc0cded098ece174156c31513e6e32afa0a9593be658",
+      "mime": "text/html; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/desire-lab/assets/index-m4bu1fWk.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 371275,
+      "sha256": "04012512bf0a6a4288792fafe867bbba12970b05fc7c329593f1918158fed31d",
+      "expected_sha256": "04012512bf0a6a4288792fafe867bbba12970b05fc7c329593f1918158fed31d",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/pelvic-floor-lab/index.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 575,
+      "sha256": "1f9dac19426325578bfc62b34c086d89ca9799848a39f30251af2d54a6362aa9",
+      "expected_sha256": "1f9dac19426325578bfc62b34c086d89ca9799848a39f30251af2d54a6362aa9",
+      "mime": "text/html; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "allowed",
+      "path": "/premium-v2/pelvic-floor-lab/assets/index-UtNoVM_L.js",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 258166,
+      "sha256": "af0a09d36205aba90b7418653ade33086d81ff7ba84b4bc768b73ddd1b832c16",
+      "expected_sha256": "af0a09d36205aba90b7418653ade33086d81ff7ba84b4bc768b73ddd1b832c16",
+      "mime": "application/javascript; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/docs/qa/editorial-20261127/onboarding-review.json",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "f100861423b5ab75f90762694c470c984eb3b5395a0ec1d434e499b58c96f89f",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/docs/qa/spm-agenda-legacy-manifest.json",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "ff1c8336e38fda4d4f6b79275bdd2f90b57f4fa377f72b249e4bfba3f15ea41a",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/scripts/qa/split-progress-migration.cjs",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "a45e5733b8811cd9f411b4ae4f47e82e72190f0d3388c0223dd3106039886812",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/tests/deployment-source-boundary.test.cjs",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "cd1cd48722f3c765b75ce010a8a2b5bd315b79158818474836538686b0e5d983",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/labs/breathing/src/lib/breath-audio.ts",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "22c22cf99c78078cc74262bef02dc484254e19a1c979321b09c3004f113a3c94",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/.github/workflows/spm-technical-corrections-qa.yml",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "ffe7d402a93be9a6f9078328a1c3dabfa5c355226a0ac59a9c51d9fa5cd95ffd",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/supabase/migrations/20261127203151_spm_versioned_agenda_atomic_progress.sql",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "05cbe38f893e11b3e52239b0eb445cd9daaab266e579ad51ed3f425de92d2d13",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/supabase/functions/check-payment-status/index.ts",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "0c368971c8cc34b12abf219524d4165ae6d3d11243b620c508d750d3e90298e4",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/supabase/functions/_shared/assessment-policy.js.backup",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "150858ae447c1f0ee7ac4fc410c484cae3381cef2c59236f8a2d3159456d1e3c",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "blocked",
+      "path": "/supabase/functions/_shared/assessment-policy.js",
+      "status": 404,
+      "expected_status": 404,
+      "bytes": 84,
+      "sha256": "9183f1d958e39f2506408200e3a5175784b945b235fb6a270fba9425217381cd",
+      "mime": "text/plain; charset=utf-8",
+      "pass": true
+    },
+    {
+      "category": "paused",
+      "path": "/",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3512,
+      "sha256": "32548b28021342bd8de0c95240997bcef55b89907aa549f261c5a1f672e5fd91",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_visible_text": "Estamos afinando tu experiencia",
+      "contains_expected_text": true
+    },
+    {
+      "category": "paused",
+      "path": "/premium-v2/live.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3512,
+      "sha256": "32548b28021342bd8de0c95240997bcef55b89907aa549f261c5a1f672e5fd91",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_visible_text": "Estamos afinando tu experiencia",
+      "contains_expected_text": true
+    },
+    {
+      "category": "paused",
+      "path": "/premium-v2/free-assessment.html",
+      "status": 200,
+      "expected_status": 200,
+      "bytes": 3512,
+      "sha256": "32548b28021342bd8de0c95240997bcef55b89907aa549f261c5a1f672e5fd91",
+      "mime": "text/html; charset=utf-8",
+      "pass": true,
+      "expected_visible_text": "Estamos afinando tu experiencia",
+      "contains_expected_text": true
+    }
+  ]
+}

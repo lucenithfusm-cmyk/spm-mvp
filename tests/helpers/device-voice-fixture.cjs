@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path');
-const {JSDOM}=require('../../labs/breathing/node_modules/jsdom');
+const {JSDOM}=require('../../scripts/qa/node_modules/jsdom');
 const read=p=>fs.readFileSync(path.join(__dirname,'../..',p),'utf8');
 const source=read('premium-v2/device-voice-v1.js');
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -16,6 +16,12 @@ function setup({missing=false,voices=[]}={}){
 // JSDOM, forwarding its native utterances to that fixture's speech recorder.
 // This proves delegation/wording, not acoustic playback or the fixture's layout.
 function installOn(windowLike,Utterance){
+ // A real JSDOM window must own its coordinator: DOM brands from separate
+ // installed JSDOM copies cannot be mixed in MutationObserver/appendChild.
+ if(windowLike.document?.defaultView===windowLike&&typeof windowLike.eval==='function'){
+  if(Utterance)windowLike.SpeechSynthesisUtterance=Utterance;
+  windowLike.eval(source);return windowLike.SPM_VOICE;
+ }
  const dom=new JSDOM('<!doctype html><html><head></head><body></body></html>',{url:'https://spm.test/premium-v2/live.html',runScripts:'outside-only'});
  const w=dom.window;w.speechSynthesis=windowLike.speechSynthesis;
  w.SpeechSynthesisUtterance=Utterance||windowLike.SpeechSynthesisUtterance||class{constructor(text){this.text=text;this.voice=null;}};

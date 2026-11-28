@@ -2841,7 +2841,7 @@
       "file": "premium-v2/daily-practice-v1.js",
       "route_day_bindings": [],
       "before_sha256": "b71d6118f40b113ea4fbcd575bdef5c6638dd7d51fd82da3d418ce373c7a90b5",
-      "after_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "after_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "reachability": "direct_live_or_review_reference",
       "controller_status": "delegates_to_standard_device_voice",
       "historical_recorded_references": [],
@@ -3724,7 +3724,7 @@
       "file": "premium-v2/device-voice-v1.js",
       "route_day_bindings": [],
       "before_sha256": null,
-      "after_sha256": "817c4c42ee49996a3873c73d3e6bae124edc9b3b5c36c98c936cf619bb4e2bea",
+      "after_sha256": "9b9b649fbe5b67deb510ee8918c26c7778a1ba2c7deda77ee827f3e5930e2026",
       "reachability": "direct_live_or_review_reference",
       "controller_status": "single_coordinator",
       "historical_recorded_references": [],
@@ -9892,7 +9892,7 @@
       "file": "premium-v2/program-review-v1.js",
       "route_day_bindings": [],
       "before_sha256": "1b4a7829f9d94a17d941d801c14adf3c69d417eab22eeea1c20f91012a58742d",
-      "after_sha256": "d02c5b1b0f84bf3c9638251ce57dd813797c8ab426edaa81e70e7325469a6bd7",
+      "after_sha256": "4b58e05c66dcf7a1d3227308ef5e473e56435cd8fb0c5e26e96b8f724fa17bda",
       "reachability": "dynamic_or_legacy_candidate",
       "controller_status": "delegates_to_standard_device_voice",
       "historical_recorded_references": [],
@@ -22047,7 +22047,7 @@
     {
       "entry_id": "VOICE-0032",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 203,
+      "line": 207,
       "route_day_bindings": [],
       "token": "new SpeechSynthesisUtterance(",
       "call_context": "function epPlay(b){const same=epActive===b;epStop();if(same)return;const voice=window.SPM_VOICE||window.speechSynthesis;if(!voice||voice.supported===false){alert('La voz no está disponible. Puedes leer la guía debajo.');return;}const u=new SpeechSynthesisUtterance(b.dataset.script);u.lang='es-CO';u.rate=1;epActive=b;epVoice=u;b.setAttribute('aria-pressed','true');u.onend=u.onerror=()=>{if(epVoice===u){b.setAttribute('aria-pressed','false');epActive=null;epVoice=null;}};voice.speak(u);}",
@@ -22119,7 +22119,7 @@
     {
       "entry_id": "VOICE-0033",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 255,
+      "line": 260,
       "route_day_bindings": [],
       "token": "SPM_CHECKPOINT_AUDIO?.markup(",
       "call_context": "consultar el motivo y el contenido educativo.':a.kind==='desire'?'Tu práctica guiada de hoy.':a.summary)}</p>`}${guide?`<div data-daily-recorded-guide>${window.SPM_CHECKPOINT_AUDIO?.markup({src:guide.audioSrc,text:guide.script,label:'Escuchar guía de hoy'})||`<details><summary>Leer indicaciones</summary><p>${esc(guide.script)}</p></details>`}</div>`:''}${!['video','program-checkpoint'].includes(a.kind)&&!blocked&&!directEntry&&!guide&&!firstBreath?(window.SPM_PRACTICE_AUDIO?.button(a.kind==='ejaculation'?(window.SPM_EJACULATORY_CONTROL?.introFor?.(c.day)||a.summary):a.kind==='desire'?'Abre la actividad para escuchar el paso a paso y realizarla a tu ritmo. Al terminar podrás registrar tu experiencia.':a.summary)||''):''}<div class=\"spm-daily-actions\"><button type=\"button\" class=\"btn pri\" data-daily-open=\"${esc(a.id)}\" ${(directErectionEntry||guidedPelvicEntry)&&!blocked&&!loaded?'disabled':''}>${blocked?(window.SPM_PROGRAM_RECOVERY?.blocks(c,a)?'Completar evaluación pendiente':'Ver indicación y opciones'):saved?'Volver a abrir':guidedPelvicEntry",
@@ -22191,7 +22191,7 @@
     {
       "entry_id": "VOICE-0034",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 255,
+      "line": 260,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": "mary><p>${esc(guide.script)}</p></details>`}</div>`:''}${!['video','program-checkpoint'].includes(a.kind)&&!blocked&&!directEntry&&!guide&&!firstBreath?(window.SPM_PRACTICE_AUDIO?.button(a.kind==='ejaculation'?(window.SPM_EJACULATORY_CONTROL?.introFor?.(c.day)||a.summary):a.kind==='desire'?'Abre la actividad para escuchar el paso a paso y realizarla a tu ritmo. Al terminar podrás registrar tu experiencia.':a.summary)||''):''}<div class=\"spm-daily-actions\"><button type=\"button\" class=\"btn pri\" data-daily-open=\"${esc(a.id)}\" ${(directErectionEntry||guidedPelvicEntry)&&!blocked&&!loaded?'disabled':''}>${blocked?(window.SPM_PROGRAM_RECOVERY?.blocks(c,a)?'Completar evaluación pendiente':'Ver indicación y opciones'):saved?'Volver a abrir':guidedPelvicEntry?(pelvicIntent(a)==='daily-relax'?'Empezar práctica guiada':'Abrir entrenamiento programado'):activeRelease?`Iniciar ${activeRelease.screens} pantallas táctiles`:directEntry?'Iniciar mi práctica de hoy':firstBreath?'Comenzar Respira y suelta':a.kind==='video'?'Ver video de hoy':'Abrir actividad'}${d",
@@ -22263,7 +22263,7 @@
     {
       "entry_id": "VOICE-0035",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 263,
+      "line": 268,
       "route_day_bindings": [],
       "token": "SPM_CHECKPOINT_AUDIO?.bind(",
       "call_context": " window.SPM_CHECKPOINT_AUDIO?.bind(host);",
@@ -22335,7 +22335,7 @@
     {
       "entry_id": "VOICE-0036",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 327,
+      "line": 332,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": "function open({focus:shouldFocus=true}={}){window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;delete $('#spmDailySession')?.dataset.focusedPractice;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}",
@@ -22407,7 +22407,7 @@
     {
       "entry_id": "VOICE-0037",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 327,
+      "line": 332,
       "route_day_bindings": [],
       "token": "SPM_CHECKPOINT_AUDIO?.stop(",
       "call_context": "function open({focus:shouldFocus=true}={}){window.SPM_ERECTION_PRACTICE?.stop();window.SPM_PRACTICE_AUDIO?.stop();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailyClosing'));$('#spmDailyWorkspace')?.replaceChildren();$('#spmDailyClosing')?.remove();delete $('#spmDailySession')?.dataset.continuation;delete $('#spmDailySession')?.dataset.focusedPractice;pauseDailyVideo();view='today';load();layout();if(shouldFocus)focus($('#spmDailySession'));}",
@@ -22479,7 +22479,7 @@
     {
       "entry_id": "VOICE-0038",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 358,
+      "line": 363,
       "route_day_bindings": [],
       "token": "SPM_CHECKPOINT_AUDIO?.stop(",
       "call_context": "function pauseDailyVideo(){window.SPM_ERECTION_PRACTICE?.pause();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailySession'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}",
@@ -22551,7 +22551,7 @@
     {
       "entry_id": "VOICE-0039",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 358,
+      "line": 363,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": "function pauseDailyVideo(){window.SPM_ERECTION_PRACTICE?.pause();window.SPM_CHECKPOINT_AUDIO?.stop($('#spmDailySession'));window.SPM_PRACTICE_AUDIO?.stop($('#spmDailyWorkspace'));document.querySelectorAll('#spmDailyWorkspace video').forEach(v=>v.pause());}",
@@ -22623,7 +22623,7 @@
     {
       "entry_id": "VOICE-0040",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 412,
+      "line": 417,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": " const content=nutrition&&window.SPM_NUTRITION_DAILY?window.SPM_NUTRITION_DAILY.recipe(a.tip):movement?`<h3 class=\"spm-movement-accessible-heading\">Movimiento · Día ${day}: ${esc(a.tip.title)}</h3><img class=\"spm-movement-art\" src=\"${esc(a.tip.image)}\" alt=\"${esc(a.tip.imageAlt||a.tip.title)}\" width=\"1536\" height=\"1024\" decoding=\"async\">${window.SPM_PRACTICE_AUDIO?.button(instructions,'Escuchar guía')||''}<details class=\"spm-movement-instructions\"><summary>Ver indicaciones</summary>${steps.length?`<ol>${steps.map(step=>`<li>${esc(step)}</li>`).join('')}</ol>`:`<p>${esc(a.tip.body)}</p>`}${a.tip.optionalBenefit?`<p>${esc(a.tip.optionalBenefit)}</p>`:''}</details>`:`<span class=\"stepBadge\">${esc(a.tip.label)} · Día ${day}</span><h3>${esc(a.tip.title)}</h3>${window.SPM_PRACTICE_AUDIO?.button(instructions)||''}${steps.length?`<ol>${steps.map(step=>`<li>${esc(step)}</li>`).join('')}</ol>`:`<p>${esc(a.tip.body)}</p>`}`;",
@@ -22695,7 +22695,7 @@
     {
       "entry_id": "VOICE-0041",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 412,
+      "line": 417,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": " const content=nutrition&&window.SPM_NUTRITION_DAILY?window.SPM_NUTRITION_DAILY.recipe(a.tip):movement?`<h3 class=\"spm-movement-accessible-heading\">Movimiento · Día ${day}: ${esc(a.tip.title)}</h3><img class=\"spm-movement-art\" src=\"${esc(a.tip.image)}\" alt=\"${esc(a.tip.imageAlt||a.tip.title)}\" width=\"1536\" height=\"1024\" decoding=\"async\">${window.SPM_PRACTICE_AUDIO?.button(instructions,'Escuchar guía')||''}<details class=\"spm-movement-instructions\"><summary>Ver indicaciones</summary>${steps.length?`<ol>${steps.map(step=>`<li>${esc(step)}</li>`).join('')}</ol>`:`<p>${esc(a.tip.body)}</p>`}${a.tip.optionalBenefit?`<p>${esc(a.tip.optionalBenefit)}</p>`:''}</details>`:`<span class=\"stepBadge\">${esc(a.tip.label)} · Día ${day}</span><h3>${esc(a.tip.title)}</h3>${window.SPM_PRACTICE_AUDIO?.button(instructions)||''}${steps.length?`<ol>${steps.map(step=>`<li>${esc(step)}</li>`).join('')}</ol>`:`<p>${esc(a.tip.body)}</p>`}`;",
@@ -22767,7 +22767,7 @@
     {
       "entry_id": "VOICE-0042",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 415,
+      "line": 420,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": " box.querySelector('[data-wellness-library]').onclick=()=>{window.SPM_PRACTICE_AUDIO?.stop();window.SPM_RESOURCES?.open(a.tip.category,day,{origin:'dailyPlan',activityId:a.tip.movementId});};",
@@ -22839,7 +22839,7 @@
     {
       "entry_id": "VOICE-0043",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 424,
+      "line": 429,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": " function draw(){window.SPM_PRACTICE_AUDIO?.stop(box);box.innerHTML='<section class=\"spm-pattern-touch\"><style>.spm-pattern-touch{background:#f4f1ea;color:#164b50;padding:24px;border-radius:20px;min-height:65vh;display:grid;align-content:center;gap:18px}.spm-pattern-touch h2{color:#164b50;font-size:1.8rem}.spm-pattern-touch p,.spm-pattern-touch label{color:#164b50}.spm-pattern-touch input,.spm-pattern-touch textarea{display:block;width:100%;box-sizing:border-box;background:white;color:#164b50;border:1px solid #a9c5c6;border-radius:12px;padding:14px;margin:8px 0}.spm-pattern-touch progress{width:100%;accent-color:#236a70}.spm-pattern-touch button{min-height:48px;border-radius:12px}.spm-pattern-nav{display:flex;gap:10px;flex-wrap:wrap}</style><small>SPM · DÍA '+day+' · '+(step+1)+'/4</small><progress max=\"4\" value=\"'+(step+1)+'\"></progress>'+pages[step]()+ (window.SPM_PRACTICE_AUDIO?.button(step===0?d.learn_es:st",
@@ -22911,7 +22911,7 @@
     {
       "entry_id": "VOICE-0044",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 424,
+      "line": 429,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": "lex;gap:10px;flex-wrap:wrap}</style><small>SPM · DÍA '+day+' · '+(step+1)+'/4</small><progress max=\"4\" value=\"'+(step+1)+'\"></progress>'+pages[step]()+ (window.SPM_PRACTICE_AUDIO?.button(step===0?d.learn_es:step===3?d.apply_es:d.practice_es)||'')+'<div class=\"spm-pattern-nav\"><button type=\"button\" class=\"btn sec\" data-prev>Anterior</button><button type=\"button\" class=\"btn pri\" data-next>'+(step===3?'Finalizar y guardar':'Siguiente')+'</button></div><p role=\"alert\"></p></section>';box.querySelectorAll('[data-context]').forEach(el=>el.oninput=()=>{(el.dataset.context==='better'?better:worse)[Number(el.dataset.index)]=el.value;});const m=box.querySelector('[data-measure]');if(m)m.oninput=()=>measure=m.value;box.querySelector('[data-prev]').onclick=()=>{if(step>0){step--;draw();}else returnToToday();};box.querySelector('[data-next]').onclick=async e=>{if((step===1?better:step===2?worse:[]).some(v=>!v.trim())){box.querySelector('[role=alert]').textContent='Registra los dos contextos para continuar.';return;}if(step<3){step++;draw();return;}e.current",
@@ -22983,7 +22983,7 @@
     {
       "entry_id": "VOICE-0045",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 430,
+      "line": 435,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": " box.innerHTML=`<form class=\"spm-daily-work\"><span class=\"stepBadge\">Práctica del día ${day}</span><h3>${esc(d.title_es)}</h3><details><summary>Antes de practicar</summary><p>${esc(d.learn_es)}</p></details><h4>Hazlo ahora</h4><p>${esc(d.practice_es)}</p>${window.SPM_PRACTICE_AUDIO?.button(d.practice_es)||''}<label>Tu registro<textarea name=\"reflection\" rows=\"3\" maxlength=\"2000\" required placeholder=\"Escribe lo que identificaste o practicaste…\">${esc(prior.reflection)}</textarea></label><label>${esc(d.measure_es)}<textarea name=\"measure\" rows=\"2\" maxlength=\"1000\" placeholder=\"Tu medida u observación; puedes indicar no evaluable.\">${esc(prior.measure)}</textarea></label><p>${esc(d.apply_es)}</p><label><input name=\"confirmed\" type=\"checkbox\" required> Ya realicé esta práctica.</label><button type=\"submit\" class=\"btn pri\">Guardar práctica y volver a Hoy</button><p role=\"status\"></p></form>`;",
@@ -23055,7 +23055,7 @@
     {
       "entry_id": "VOICE-0046",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 475,
+      "line": 480,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": " window.SPM_PRACTICE_AUDIO?.stop();pauseDailyVideo();",
@@ -23127,7 +23127,7 @@
     {
       "entry_id": "VOICE-0047",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 555,
+      "line": 560,
       "route_day_bindings": [],
       "token": "SPM_VOICE?.cancel(",
       "call_context": " box.querySelectorAll('video').forEach(v=>{v.onplay=()=>{window.SPM_VOICE?.cancel();window.SPM_PRACTICE_AUDIO?.stop();};v.onerror=()=>{const text=document.createElement('p');text.textContent='El video no se pudo cargar. Puedes continuar con las indicaciones de la práctica.';v.after(text);};});",
@@ -23199,7 +23199,7 @@
     {
       "entry_id": "VOICE-0048",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 555,
+      "line": 560,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": " box.querySelectorAll('video').forEach(v=>{v.onplay=()=>{window.SPM_VOICE?.cancel();window.SPM_PRACTICE_AUDIO?.stop();};v.onerror=()=>{const text=document.createElement('p');text.textContent='El video no se pudo cargar. Puedes continuar con las indicaciones de la práctica.';v.after(text);};});",
@@ -23271,7 +23271,7 @@
     {
       "entry_id": "VOICE-0049",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 556,
+      "line": 561,
       "route_day_bindings": [],
       "token": "data-spm-speak",
       "call_context": " box.addEventListener('click',e=>{if(e.target.closest('[data-spm-speak]'))box.querySelectorAll('video').forEach(v=>v.pause());},true);",
@@ -23343,7 +23343,7 @@
     {
       "entry_id": "VOICE-0050",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 557,
+      "line": 562,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.stop(",
       "call_context": " box.addEventListener('toggle',()=>{if(!box.open){box.querySelectorAll('video').forEach(v=>v.pause());window.SPM_PRACTICE_AUDIO?.stop(box);}});",
@@ -23415,7 +23415,7 @@
     {
       "entry_id": "VOICE-0051",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 610,
+      "line": 615,
       "route_day_bindings": [],
       "token": "SPM_PRACTICE_AUDIO?.button(",
       "call_context": " card.id='spmDailyClosing';card.className='spm-daily-work';card.innerHTML=`<span class=\"stepBadge\">${day===28?'RECORRIDO DE 28 JORNADAS · CERRADO':`DÍA ${day} · CERRADO`}</span>${final?window.SPM_PROGRAM_CHECKPOINT.closingMarkup():''}<h3>${esc(advice.title)}</h3>${window.SPM_PRACTICE_AUDIO?.button(advice.text+' '+advice.individual,'Escuchar consejo')||''}<p>${esc(advice.text)}</p><p>${esc(advice.individual)}</p><div class=\"spm-daily-actions\">${final?'<button type=\"button\" class=\"btn pri\" data-closing-report>Ver mi informe final →</button>':''}<button type=\"button\" class=\"btn ${final?'sec':'pri'}\" data-closing-next>${day===28?'Volver a mi programa':'Volver a mi ruta'} →</button></div>`;",
@@ -23487,7 +23487,7 @@
     {
       "entry_id": "VOICE-0052",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 611,
+      "line": 616,
       "route_day_bindings": [],
       "token": "SPM_CHECKPOINT_AUDIO?.bind(",
       "call_context": " host.appendChild(card);host.dataset.continuation='true';$('#spmDailyWorkspace')?.replaceChildren();window.SPM_CHECKPOINT_AUDIO?.bind(card);",
@@ -23559,7 +23559,7 @@
     {
       "entry_id": "VOICE-0053",
       "file": "premium-v2/daily-practice-v1.js",
-      "line": 635,
+      "line": 640,
       "route_day_bindings": [],
       "token": "SPM_VOICE?.cancel(",
       "call_context": "  pauseDailyVideo();window.SPM_VOICE?.cancel();",
@@ -38366,7 +38366,7 @@
       "after": "El control eyaculatorio no se mide únicamente en minutos. Reconocer tus señales, sentir mayor capacidad de decisión y reducir la presión son aspectos importantes del progreso.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-1",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38378,7 +38378,7 @@
       "after": "El piso pélvico participa en la respuesta sexual. Aprender a distinguir tensión y relajación puede ayudarte a reconocer cómo responde tu cuerpo, sin mantener los músculos contraídos todo el tiempo.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-3",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38390,7 +38390,7 @@
       "after": "Reconocer la excitación antes del punto de inevitabilidad forma parte del aprendizaje del control. Puedes observar cómo cambia tu excitación, sin exigirte mantenerla siempre en un nivel bajo.",
       "editorial_status": "changed_reviewed",
       "editorial_packet": "continuity-ep-capsule-5",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38402,7 +38402,7 @@
       "after": "La respiración cómoda puede ayudarte a reducir la tensión y a prestar atención a las señales de tu cuerpo. No necesitas forzarla ni convertirla en una prueba de rendimiento.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-7",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38414,7 +38414,7 @@
       "after": "La intensidad de los estímulos, la prisa y las expectativas pueden influir en cómo aumenta tu excitación. Reconocer tus propios aceleradores puede ayudarte a comprender tu patrón.",
       "editorial_status": "changed_reviewed",
       "editorial_packet": "continuity-ep-capsule-9",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38426,7 +38426,7 @@
       "after": "El ritmo y la intensidad influyen en la excitación. Cambiar de ritmo o hacer una pausa puede darte margen para reconocer tus sensaciones antes del punto de inevitabilidad.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-11",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38438,7 +38438,7 @@
       "after": "La sensibilidad y las señales previas a la eyaculación varían entre hombres y entre encuentros. Conocer tu patrón es más útil que compararte con otros.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-13",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38450,7 +38450,7 @@
       "after": "Los patrones de respuesta sexual pueden cambiar con experiencias repetidas y sin presión. El aprendizaje gradual importa más que conseguir un resultado perfecto en cada ocasión.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-15",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38462,7 +38462,7 @@
       "after": "Cuando preocupa perder la erección, algunas personas aceleran la estimulación. Esa prisa puede dificultar la regulación de la excitación. Si la dificultad persiste, conviene una valoración profesional.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-17",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38474,7 +38474,7 @@
       "after": "Una pausa acordada puede formar parte de un encuentro satisfactorio. Hablar de lo que cada persona quiere puede ayudarles a ajustar sus expectativas y a expresar cómo se sienten.",
       "editorial_status": "changed_reviewed",
       "editorial_packet": "continuity-ep-capsule-19",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38486,7 +38486,7 @@
       "after": "La preocupación por cómo resultará un encuentro puede aumentar la presión. Volver la atención a las sensaciones presentes puede ayudarte a reconocer tu respuesta sin vigilar constantemente el resultado.",
       "editorial_status": "changed_reviewed",
       "editorial_packet": "continuity-ep-capsule-21",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38498,7 +38498,7 @@
       "after": "La práctica constante puede favorecer el aprendizaje. Observa también si reconoces antes tus señales, si tienes más confianza y si puedes adaptar tus respuestas sin tanta presión.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-23",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38510,7 +38510,7 @@
       "after": "La respuesta sexual puede variar con el cansancio, el estrés y el contexto. Un encuentro difícil no significa volver al inicio ni perder todo lo aprendido.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-25",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
@@ -38522,7 +38522,7 @@
       "after": "El control es un aprendizaje gradual. Conserva las herramientas que te resulten útiles y busca orientación profesional si las dificultades persisten o generan malestar.",
       "editorial_status": "reviewed_unchanged",
       "editorial_packet": "continuity-ep-capsule-27",
-      "source_sha256": "f5b12d73c80d929bcf6bc7627635f8729760b6932e587acffeb74c0ed2cb974f",
+      "source_sha256": "99a864c1561f4fc8f1f5e4c30f2e19fae7f9a5d861c507fc21939af52d762930",
       "verification": "candidate_text_from_AST; resolve binding at caller; source is not acoustic proof"
     },
     {
